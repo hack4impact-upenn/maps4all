@@ -3,7 +3,6 @@ from flask.ext.login import current_user, login_required
 
 from . import admin
 from .. import db
-from ..email import send_email
 from ..models import Role, User
 from forms import (
     ChangeAccountTypeForm,
@@ -11,6 +10,8 @@ from forms import (
     InviteUserForm,
     NewUserForm
 )
+from ..email import send_async_email
+from app import redis_queue
 
 
 @admin.route('/')
@@ -51,12 +52,16 @@ def invite_user():
         db.session.add(user)
         db.session.commit()
         token = user.generate_confirmation_token()
-        send_email(user.email,
-                   'You Are Invited To Join',
-                   'account/email/invite',
-                   user=user,
-                   user_id=user.id,
-                   token=token)
+        invite_link = url_for('account.join_from_invite', user_id=user.id,
+                              token=token, _external=True)
+        redis_queue.enqueue(
+            send_async_email,
+            recipient=user.email,
+            subject='You Are Invited To Join',
+            template='account/email/invite',
+            user=user,
+            invite_link=invite_link,
+        )
         flash('User {} successfully invited'.format(user.full_name()),
               'form-success')
     return render_template('admin/new_user.html', form=form)
