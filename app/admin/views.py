@@ -1,5 +1,6 @@
 from flask import abort, flash, redirect, render_template, url_for
 from flask.ext.login import current_user, login_required
+from flask.ext.rq import get_queue
 
 from . import admin
 from .. import db
@@ -11,7 +12,6 @@ from forms import (
     NewUserForm
 )
 from ..email import send_async_email
-from app import redis_queue
 
 
 @admin.route('/')
@@ -54,7 +54,7 @@ def invite_user():
         token = user.generate_confirmation_token()
         invite_link = url_for('account.join_from_invite', user_id=user.id,
                               token=token, _external=True)
-        redis_queue.enqueue(
+        get_queue().enqueue(
             send_async_email,
             recipient=user.email,
             subject='You Are Invited To Join',

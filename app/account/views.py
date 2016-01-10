@@ -5,6 +5,7 @@ from flask.ext.login import (
     login_user,
     logout_user
 )
+from flask.ext.rq import get_queue
 from . import account
 from .. import db
 from ..email import send_async_email
@@ -18,7 +19,6 @@ from .forms import (
     RequestResetPasswordForm,
     ResetPasswordForm
 )
-from app import redis_queue
 
 
 @account.route('/login', methods=['GET', 'POST'])
@@ -65,7 +65,7 @@ def reset_password_request():
             token = user.generate_password_reset_token()
             reset_link = url_for('account.reset_password', token=token,
                                  _external=True)
-            redis_queue.enqueue(
+            get_queue().enqueue(
                 send_async_email,
                 recipient=user.email,
                 subject='Reset Your Password',
@@ -151,7 +151,7 @@ def change_email_request():
             token = current_user.generate_email_change_token(new_email)
             change_email_link = url_for('account.change_email', token=token,
                                         _external=True)
-            redis_queue.enqueue(
+            get_queue().enqueue(
                 send_async_email,
                 recipient=new_email,
                 subject='Confirm Your New Email',
@@ -186,7 +186,7 @@ def confirm_request():
     """Respond to new user's request to confirm their account."""
     token = current_user.generate_confirmation_token()
     confirm_link = url_for('account.confirm', token=token, _external=True)
-    redis_queue.enqueue(
+    get_queue().enqueue(
         send_async_email,
         recipient=current_user.email,
         subject='Confirm Your Account',
@@ -250,7 +250,7 @@ def join_from_invite(user_id, token):
         token = new_user.generate_confirmation_token()
         invite_link = url_for('account.join_from_invite', user_id=user_id,
                               token=token, _external=True)
-        redis_queue.enqueue(
+        get_queue().enqueue(
             send_async_email,
             recipient=new_user.email,
             subject='You Are Invited To Join',
