@@ -8,7 +8,7 @@ from flask.ext.login import (
 from flask.ext.rq import get_queue
 from . import account
 from .. import db
-from ..email import send_async_email
+from ..email import send_email
 from ..models import User
 from .forms import (
     ChangeAccountInfoForm,
@@ -66,7 +66,7 @@ def reset_password_request():
             reset_link = url_for('account.reset_password', token=token,
                                  _external=True)
             get_queue().enqueue(
-                send_async_email,
+                send_email,
                 recipient=user.email,
                 subject='Reset Your Password',
                 template='account/email/reset_password',
@@ -152,7 +152,7 @@ def change_email_request():
             change_email_link = url_for('account.change_email', token=token,
                                         _external=True)
             get_queue().enqueue(
-                send_async_email,
+                send_email,
                 recipient=new_email,
                 subject='Confirm Your New Email',
                 template='account/email/change_email',
@@ -187,7 +187,7 @@ def confirm_request():
     token = current_user.generate_confirmation_token()
     confirm_link = url_for('account.confirm', token=token, _external=True)
     get_queue().enqueue(
-        send_async_email,
+        send_email,
         recipient=current_user.email,
         subject='Confirm Your Account',
         template='account/email/confirm',
@@ -251,7 +251,7 @@ def join_from_invite(user_id, token):
         invite_link = url_for('account.join_from_invite', user_id=user_id,
                               token=token, _external=True)
         get_queue().enqueue(
-            send_async_email,
+            send_email,
             recipient=new_user.email,
             subject='You Are Invited To Join',
             template='account/email/invite',
