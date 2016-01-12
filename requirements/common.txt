@@ -40,3 +40,4 @@ WTForms==2.0.2
 wsgiref==0.1.2
 redis==2.10.5
 rq==0.5.6
+rq-scheduler==0.5.1
