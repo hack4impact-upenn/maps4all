@@ -15,7 +15,8 @@ from .forms import (
     ChangePasswordForm,
     ChangeEmailForm,
     RequestResetPasswordForm,
-    ResetPasswordForm
+    ResetPasswordForm,
+    ChangeAccountInfoForm
 )
 
 
@@ -108,6 +109,25 @@ def change_password():
             return redirect(url_for('main.index'))
         else:
             flash('Original password is invalid.', 'form-error')
+    return render_template('account/manage.html', form=form)
+
+
+@account.route('/manage/change-account-info', methods=['GET', 'POST'])
+@login_required
+def change_account_info():
+    """
+    Change an existing user's account information (excluding email and
+    password).
+    """
+    form = ChangeAccountInfoForm()
+    if form.validate_on_submit():
+        current_user.first_name = form.first_name.data
+        current_user.last_name = form.last_name.data
+        db.session.add(current_user)
+        db.session.commit()
+    else:
+        form.first_name.data = current_user.first_name
+        form.last_name.data = current_user.last_name
     return render_template('account/manage.html', form=form)
 
 

@@ -2,7 +2,8 @@ from flask.ext.wtf import Form
 from wtforms.fields import (
     PasswordField,
     BooleanField,
-    SubmitField
+    SubmitField,
+    StringField
 )
 from wtforms.fields.html5 import EmailField
 from wtforms.validators import InputRequired, Length, Email, EqualTo
@@ -82,3 +83,15 @@ class ChangeEmailForm(Form):
     def validate_email(self, field):
         if User.query.filter_by(email=field.data).first():
             raise ValidationError('Email already registered.')
+
+
+class ChangeAccountInfoForm(Form):
+    first_name = StringField('First name', validators=[
+        InputRequired(),
+        Length(1, 64)
+    ])
+    last_name = StringField('Last name', validators=[
+        InputRequired(),
+        Length(1, 64)
+    ])
+    submit = SubmitField('Update account information')
