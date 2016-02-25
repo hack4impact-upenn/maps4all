@@ -64,6 +64,13 @@ def setup_dev():
     """Runs the set-up needed for local development."""
     setup_general()
 
+    admin_email = 'm4a@gmail.com'
+    if User.query.filter_by(email=admin_email).first() is None:
+        User.create_confirmed_admin('Default',
+                                    'Admin',
+                                    admin_email,
+                                    'password')
+
 
 @manager.command
 def setup_prod():
