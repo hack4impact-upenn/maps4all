@@ -11,7 +11,6 @@ from ..email import send_email
 from ..models import User
 from .forms import (
     LoginForm,
-    RegistrationForm,
     CreatePasswordForm,
     ChangePasswordForm,
     ChangeEmailForm,
@@ -33,26 +32,6 @@ def login():
         else:
             flash('Invalid email or password.', 'form-error')
     return render_template('account/login.html', form=form)
-
-
-@account.route('/register', methods=['GET', 'POST'])
-def register():
-    """Register a new user, and send them a confirmation email."""
-    form = RegistrationForm()
-    if form.validate_on_submit():
-        user = User(first_name=form.first_name.data,
-                    last_name=form.last_name.data,
-                    email=form.email.data,
-                    password=form.password.data)
-        db.session.add(user)
-        db.session.commit()
-        token = user.generate_confirmation_token()
-        send_email(user.email, 'Confirm Your Account',
-                   'account/email/confirm', user=user, token=token)
-        flash('A confirmation link has been sent to {}.'.format(user.email),
-              'warning')
-        return redirect(url_for('main.index'))
-    return render_template('account/register.html', form=form)
 
 
 @account.route('/logout')
