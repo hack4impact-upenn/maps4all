@@ -1,15 +1,19 @@
 {% extends 'layouts/base.html' %}
 
 {% block content %}
-    <div class="ui text container">
-        <h1>maps4all</h1>
-        <div id="map"></div>
+    <h1>maps4all</h1>
+    <div id="map" text-align="center"></div>
         <script>
-            new GMaps({
+            var map = new GMaps({
             div: '#map',
             lat: -12.043333,
-            lng: -77.028333
+            lng: -77.028333,
+            width: '500px',
+            height: '500px',
+            zoomControlOpt: {
+                style: 'SMALL',
+                position: 'TOP_LEFT'
+            }
         });
         </script>
-    </div>
 {% endblock %}
