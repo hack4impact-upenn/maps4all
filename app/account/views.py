@@ -1,20 +1,20 @@
-from flask import render_template, redirect, request, url_for, flash
+from flask import flash, redirect, render_template, request, url_for
 from flask.ext.login import (
+    current_user,
     login_required,
     login_user,
-    logout_user,
-    current_user
+    logout_user
 )
 from . import account
 from .. import db
 from ..email import send_email
 from ..models import User
 from .forms import (
-    LoginForm,
-    RegistrationForm,
-    CreatePasswordForm,
-    ChangePasswordForm,
+    ChangeAccountInfoForm,
     ChangeEmailForm,
+    ChangePasswordForm,
+    CreatePasswordForm,
+    LoginForm,
     RequestResetPasswordForm,
     ResetPasswordForm
 )
@@ -33,26 +33,6 @@ def login():
         else:
             flash('Invalid email or password.', 'form-error')
     return render_template('account/login.html', form=form)
-
-
-@account.route('/register', methods=['GET', 'POST'])
-def register():
-    """Register a new user, and send them a confirmation email."""
-    form = RegistrationForm()
-    if form.validate_on_submit():
-        user = User(first_name=form.first_name.data,
-                    last_name=form.last_name.data,
-                    email=form.email.data,
-                    password=form.password.data)
-        db.session.add(user)
-        db.session.commit()
-        token = user.generate_confirmation_token()
-        send_email(user.email, 'Confirm Your Account',
-                   'account/email/confirm', user=user, token=token)
-        flash('A confirmation link has been sent to {}.'.format(user.email),
-              'warning')
-        return redirect(url_for('main.index'))
-    return render_template('account/register.html', form=form)
 
 
 @account.route('/logout')
@@ -129,6 +109,27 @@ def change_password():
             return redirect(url_for('main.index'))
         else:
             flash('Original password is invalid.', 'form-error')
+    return render_template('account/manage.html', form=form)
+
+
+@account.route('/manage/change-account-info', methods=['GET', 'POST'])
+@login_required
+def change_account_info():
+    """
+    Change an existing user's account information (excluding email and
+    password).
+    """
+    form = ChangeAccountInfoForm()
+    if form.validate_on_submit():
+        current_user.first_name = form.first_name.data
+        current_user.last_name = form.last_name.data
+        db.session.add(current_user)
+        db.session.commit()
+    # When form is first displayed, pre-populate its fields with the user's
+    # current information.
+    else:
+        form.first_name.data = current_user.first_name
+        form.last_name.data = current_user.last_name
     return render_template('account/manage.html', form=form)
 
 
