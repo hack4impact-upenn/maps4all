@@ -125,6 +125,8 @@ def change_account_info():
         current_user.last_name = form.last_name.data
         db.session.add(current_user)
         db.session.commit()
+    # When form is first displayed, pre-populate its fields with the user's
+    # current information.
     else:
         form.first_name.data = current_user.first_name
         form.last_name.data = current_user.last_name
