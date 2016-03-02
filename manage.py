@@ -2,8 +2,10 @@
 import os
 from app import create_app, db
 from app.models import Role, User
+from config import Config
 from flask.ext.script import Manager, Shell
 from flask.ext.migrate import Migrate, MigrateCommand
+
 
 # Import settings from .env file. Must define FLASK_CONFIG
 if os.path.exists('.env'):
@@ -64,7 +66,7 @@ def setup_dev():
     """Runs the set-up needed for local development."""
     setup_general()
 
-    admin_email = 'm4a@gmail.com'
+    admin_email = Config.ADMIN_EMAIL
     if User.query.filter_by(email=admin_email).first() is None:
         User.create_confirmed_admin('Default',
                                     'Admin',
