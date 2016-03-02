@@ -10,10 +10,10 @@ from .. import db
 from ..email import send_email
 from ..models import User
 from .forms import (
-    CreatePasswordForm,
     ChangeAccountInfoForm,
     ChangeEmailForm,
     ChangePasswordForm,
+    CreatePasswordForm,
     LoginForm,
     RequestResetPasswordForm,
     ResetPasswordForm
