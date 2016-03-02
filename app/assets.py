@@ -24,15 +24,3 @@ vendor_js = Bundle(
     filters='jsmin',
     output='scripts/vendor.js'
 )
-
-gmaps_js = Bundle(
-    'gmaps.js',
-    filters='jsmin',
-    output='scripts/gmaps.js'
-)
-
-googlemaps_js = Bundle(
-    'googlemaps.js',
-    filters='jsmin',
-    output='scripts/googlemaps.js'
-)
