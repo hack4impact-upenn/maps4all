@@ -30,7 +30,7 @@ class UserModelTestCase(unittest.TestCase):
         db.session.add(r)
         db.session.commit()
 
-    def test_random(self):
+    def test_print_random(self):
         Resource.generate_fake()
         Resource.print_users()
 
