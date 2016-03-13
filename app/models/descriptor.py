@@ -89,7 +89,7 @@ class Resource(db.Model):
                 db.session.rollback()
 
     @staticmethod
-    def print_users():
+    def print_resources():
         for resource in db.session.query(Resource).all():
             print resource 
             print resource.address

@@ -32,7 +32,7 @@ class UserModelTestCase(unittest.TestCase):
 
     def test_print_random(self):
         Resource.generate_fake()
-        Resource.print_users()
+        Resource.print_resources()
 
 
         
