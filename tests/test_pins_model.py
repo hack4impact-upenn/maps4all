@@ -26,3 +26,13 @@ class UserModelTestCase(unittest.TestCase):
         for option_assoc in r.option_descriptors:
         	print option_assoc.option
         	print option_assoc.descriptor
+
+        db.session.add(r)
+        db.session.commit()
+
+    def test_random(self):
+        Resource.generate_fake()
+        Resource.print_users()
+
+
+        
