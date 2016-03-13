@@ -1,0 +1,19 @@
+{% extends 'layouts/base.html' %}
+{% import 'macros/form_macros.html' as f %}
+
+{% block content %}
+    <div class="ui stackable centered grid container">
+        <div class="twelve wide column">
+            <h2 class="ui header">
+                Upload
+            </h2>
+            <div>
+                {{ f.render_form(form) }}
+            </div>
+        </div>
+    </div>
+
+    <script>
+
+    </script>
+{% endblock %}

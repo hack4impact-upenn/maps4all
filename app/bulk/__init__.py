@@ -1,5 +1,5 @@
 from flask import Blueprint
 
-map = Blueprint('map', __name__)
+bulk = Blueprint('bulk', __name__)
 
 from . import views  # noqa
