@@ -19,8 +19,8 @@ class UserModelTestCase(unittest.TestCase):
     def test_create_resource(self):
         r = Resource(name='test')
         a = OptionAssociation(option=0)
-        options = ["True", "False"]
-        a.descriptor = Descriptor(name="Open", values=options)
+        options = ['True', 'False']
+        a.descriptor = Descriptor(name='Open', values=options)
         r.option_descriptors.append(a)
 
         for option_assoc in r.option_descriptors:
@@ -34,5 +34,3 @@ class UserModelTestCase(unittest.TestCase):
         Resource.generate_fake()
         Resource.print_resources()
 
-
-        
