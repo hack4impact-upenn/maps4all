@@ -58,6 +58,8 @@ class Resource(db.Model):
         fake = Faker()
 
         for i in range(count):
+
+            # generates random coordinates around Philadelphia
             latitude=str(fake.geo_coordinate(
                 center=39.951021,
                 radius=0.01))
