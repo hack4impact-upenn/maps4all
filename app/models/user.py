@@ -1,8 +1,8 @@
 from flask import current_app
-from flask.ext.login import UserMixin, AnonymousUserMixin
-from werkzeug.security import generate_password_hash, check_password_hash
-from itsdangerous import TimedJSONWebSignatureSerializer as Serializer, \
-    BadSignature, SignatureExpired
+from flask.ext.login import AnonymousUserMixin, UserMixin
+from werkzeug.security import check_password_hash, generate_password_hash
+from itsdangerous import TimedJSONWebSignatureSerializer as BadSignature, \
+    Serializer, SignatureExpired
 from .. import db, login_manager
 
 
@@ -23,9 +23,6 @@ class Role(db.Model):
     @staticmethod
     def insert_roles():
         roles = {
-            'User': (
-                Permission.GENERAL, 'main', True
-            ),
             'Administrator': (
                 Permission.ADMINISTER, 'admin', False  # grants all permissions
             )
@@ -172,6 +169,26 @@ class User(UserMixin, db.Model):
                 db.session.commit()
             except IntegrityError:
                 db.session.rollback()
+
+    @staticmethod
+    def create_confirmed_admin(first_name, last_name, email, password):
+        """Create a confirmed admin with the given input properties."""
+        from sqlalchemy.exc import IntegrityError
+
+        u = User(
+            first_name=first_name,
+            last_name=last_name,
+            email=email,
+            password=password,
+            confirmed=True,
+            role=Role.query.filter_by(
+                permissions=Permission.ADMINISTER).first()
+        )
+        db.session.add(u)
+        try:
+            db.session.commit()
+        except IntegrityError:
+            db.session.rollback()
 
     def __repr__(self):
         return '<User \'%s\'>' % self.full_name()
