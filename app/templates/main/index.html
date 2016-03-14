@@ -3,7 +3,10 @@
 {% block content %}
     <link rel="stylesheet" type="text/css" href="static/styles/map.css">
     <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyAhkKJDnPxq0_xvF6pLAFcKfVAL6GbARBs&libraries=places&callback=initMap"
+        async defer></script>    
+        <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyAhkKJDnPxq0_xvF6pLAFcKfVAL6GbARBs&libraries=places&callback=initMap"
         async defer></script>
+    <script src="//code.jquery.com/jquery-1.12.0.min.js"></script> 
     <meta name="viewport" content="initial-scale=1.0, user-scalable=no">
     <meta charset="utf-8">
 
@@ -17,6 +20,7 @@
       <input type="radio" name="toggle" id="list_view">
       <label for="list_view">List View</label>
     </div>
+
     <div id="type-selector" class="controls">
       <input type="radio" name="type" id="changetype-all" checked="checked">
       <label for="changetype-all">All</label>
@@ -27,6 +31,7 @@
       <input type="radio" name="type" id="changetype-address">
       <label for="changetype-address">Addresses</label>
     </div>
+    
     <div id="map"></div>
     <div id="list"></div>
 
