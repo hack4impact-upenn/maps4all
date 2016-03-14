@@ -4,9 +4,7 @@ from flask.ext.login import (
     login_required
 )
 from . import bulk
-from forms import (
-    UploadForm
-)
+from forms import UploadForm
 
 
 @bulk.route('/upload', methods=['GET', 'POST'])
