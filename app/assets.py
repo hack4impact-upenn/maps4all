@@ -14,6 +14,7 @@ app_js = Bundle(
 
 vendor_css = Bundle(
     'vendor/semantic.min.css',
+    'vendor/map.css',
     output='styles/vendor.css'
 )
 

@@ -2,13 +2,17 @@
       // parameter when you first load the API. For example:
       // <script src="https://maps.googleapis.com/maps/api/js?key=YOUR_API_KEY&libraries=places">
 
+      var map;
+      var markers = [];
+
       function initMap() {
-        var map = new google.maps.Map(document.getElementById('map'), {
+        map = new google.maps.Map(document.getElementById('map'), {
           center: {lat: -33.8688, lng: 151.2195},
           zoom: 13
         });
         var input = /** @type {!HTMLInputElement} */(
             document.getElementById('pac-input'));
+
 
         var types = document.getElementById('type-selector');
         map.controls[google.maps.ControlPosition.TOP_LEFT].push(input);
@@ -25,7 +29,11 @@
 
         autocomplete.addListener('place_changed', function() {
           infowindow.close();
-          marker.setVisible(false);
+          //marker.setVisible(false);
+          var markerToAdd = new google.maps.Marker({
+            map: map
+          });
+
           var place = autocomplete.getPlace();
           if (!place.geometry) {
             window.alert("Autocomplete's returned place contains no geometry");
@@ -39,15 +47,19 @@
             map.setCenter(place.geometry.location);
             map.setZoom(17);  // Why 17? Because it looks good.
           }
-          marker.setIcon(/** @type {google.maps.Icon} */({
+          markerToAdd.setIcon(/** @type {google.maps.Icon} */({
             url: place.icon,
             size: new google.maps.Size(71, 71),
             origin: new google.maps.Point(0, 0),
             anchor: new google.maps.Point(17, 34),
             scaledSize: new google.maps.Size(35, 35)
           }));
-          marker.setPosition(place.geometry.location);
-          marker.setVisible(true);
+          markerToAdd.setPosition(place.geometry.location);
+          markerToAdd.setVisible(true);
+          markerToAdd.setTitle(place.name);
+          markers.push(markerToAdd);
+          marker = markerToAdd;
+          console.log(markers);
 
           var address = '';
           if (place.address_components) {
@@ -57,7 +69,7 @@
               (place.address_components[2] && place.address_components[2].short_name || '')
             ].join(' ');
           }
-
+          marker.setLabel(address)
           infowindow.setContent('<div><strong>' + place.name + '</strong><br>' + address);
           infowindow.open(map, marker);
         });
@@ -74,4 +86,37 @@
         setupClickListener('changetype-all', []);
         setupClickListener('changetype-address', ['address']);
         setupClickListener('changetype-establishment', ['establishment']);
+
+        var mapViewButton = document.getElementById("map_view");
+        var listViewButton = document.getElementById("list_view");
+
+        mapViewButton.addEventListener('click', function() {
+            $("#map").show();
+            $("#list").hide();
+        });
+
+        listViewButton.addEventListener('click', function() {
+            $("#map").hide();
+            populateListDiv();
+            $("#list").show();
+        });
+
       }
+
+      function populateListDiv() {
+          var markersToShow = [];
+          $("#list").empty();
+          console.log(markers);
+          var bounds = map.getBounds();
+          for (var i = 0; i < markers.length; i++) {
+              if (bounds.contains(markers[i].getPosition())) {
+                  markersToShow.push(markers[i]);
+              }
+          }
+          var html = '<table border=1 frame=void rules=rows>';
+          $.each(markersToShow, function(i, markerToShow) {
+              html += '<tr><td><br><div style="overflow:hidden;width:100%;height:100%;position:absolute"><strong>' + markerToShow.getTitle() + '</strong><br>' + markerToShow.getLabel() + '<div style="width:50px;height:50px; text-align:right; float: right;"><img src=' + markerToShow.getIcon().url + ' style="width:50px;height:50px;"></div>' + '</div><br><br><br><br></td></tr>';
+          });
+          html += '</table>';
+          $("#list").append($(html));
+      }        
