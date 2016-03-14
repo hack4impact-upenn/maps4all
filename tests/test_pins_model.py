@@ -1,5 +1,6 @@
-import unittest
 import time
+import unittest
+
 from app import create_app, db
 from app.models import Resource, Descriptor, OptionAssociation, TextAssociation
 
@@ -17,20 +18,14 @@ class UserModelTestCase(unittest.TestCase):
         self.app_context.pop()
 
     def test_create_resource(self):
+        """Test creating a resource with a single option"""
         r = Resource(name='test')
         a = OptionAssociation(option=0)
         options = ['True', 'False']
         a.descriptor = Descriptor(name='Open', values=options)
         r.option_descriptors.append(a)
 
-        for option_assoc in r.option_descriptors:
-        	print option_assoc.option
-        	print option_assoc.descriptor
-
-        db.session.add(r)
-        db.session.commit()
-
-    def test_print_random(self):
-        Resource.generate_fake()
-        Resource.print_resources()
-
+        option_assoc = r.option_descriptors[0]
+        self.assertEquals(option_assoc.option, 0)
+        self.assertEquals(option_assoc.descriptor.name, 'Open')
+        self.assertEquals(option_assoc.descriptor.values, options)
