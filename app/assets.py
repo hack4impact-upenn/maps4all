@@ -19,6 +19,7 @@ vendor_css = Bundle(
 
 vendor_js = Bundle(
     'vendor/jquery.min.js',
+    'vendor/map.js',
     'vendor/semantic.min.js',
     'vendor/tablesort.min.js',
     filters='jsmin',
