@@ -65,4 +65,7 @@ def create_app(config_name):
     from admin import admin as admin_blueprint
     app.register_blueprint(admin_blueprint, url_prefix='/admin')
 
+    from bulk import bulk as bulk_blueprint
+    app.register_blueprint(bulk_blueprint, url_prefix='/bulk')
+
     return app
