@@ -81,7 +81,7 @@ class Resource(db.Model):
 
         for i in range(count):
 
-            # generates random coordinates around Philadelphia
+            # Generates random coordinates around Philadelphia.
             latitude=str(fake.geo_coordinate(
                 center=center_lat,
                 radius=0.01
@@ -99,7 +99,7 @@ class Resource(db.Model):
                 longitude=longitude
             )
 
-            # alternates options between True and False
+            # Alternates options between True and False.
             oa = OptionAssociation(option= i % 2)
             oa.descriptor = Descriptor(name=fake.word(), 
                 values=['True', 'False'])
