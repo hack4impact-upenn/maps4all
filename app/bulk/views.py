@@ -13,7 +13,7 @@ def upload():
     if form.validate_on_submit():
         file = form.csv.data
         # Read CSV file line-by-line.
-        # Stand-in for future CSV parsing.
+        # TODO: Save CSV data somewhere instead of just printing it.
         with file.stream as csvfile:
             reader = csv.reader(csvfile)
             for row in reader:
