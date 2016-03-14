@@ -65,4 +65,8 @@ def create_app(config_name):
     from admin import admin as admin_blueprint
     app.register_blueprint(admin_blueprint, url_prefix='/admin')
 
+    from admin_dashboard import admin_dashboard as admin_dashboard_blueprint
+    app.register_blueprint(admin_dashboard_blueprint,
+                           url_prefix='/admin-dashboard')
+
     return app

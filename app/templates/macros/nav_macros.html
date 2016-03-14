@@ -19,6 +19,9 @@
 
 {% macro account_items(current_user) %}
     {% if current_user.is_authenticated() %}
+        <a href="{{ url_for('admin_dashboard.manage_resources') }}" class="item">Manage Resources</a>
+        <a href="{{ url_for('admin_dashboard.suggestions') }}" class="item">Suggestions</a>
+        <a href="{{ url_for('admin_dashboard.analytics') }}" class="item">Analytics</a>
         <a href="{{ url_for('account.manage') }}" class="item">Your Account</a>
         <a href="{{ url_for('account.logout') }}" class="item">Log out</a>
     {% else %}
