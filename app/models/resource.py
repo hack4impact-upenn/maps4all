@@ -72,12 +72,21 @@ class Resource(db.Model):
     def generate_fake(count=20, center_lat=39.951021, center_long=-75.197243):
         """Generate a number of fake resources for testing."""
         from sqlalchemy.exc import IntegrityError
-        from random import seed, choice
+        from random import randint
         from faker import Faker
         from geopy.geocoders import Nominatim
 
         geolocater = Nominatim()
         fake = Faker()
+
+        num_options = 5
+        options = []
+
+        for i in range(num_options):
+            options.append(Descriptor(
+                name=fake.word(), 
+                values=['True', 'False']
+            ))
 
         for i in range(count):
 
@@ -99,10 +108,8 @@ class Resource(db.Model):
                 longitude=longitude
             )
 
-            # Alternates options between True and False.
-            oa = OptionAssociation(option= i % 2)
-            oa.descriptor = Descriptor(name=fake.word(), 
-                values=['True', 'False'])
+            oa = OptionAssociation(option=randint(0, 1))
+            oa.descriptor = options[randint(0, num_options - 1)]
             resource.option_descriptors.append(oa)
 
             ta = TextAssociation(text=fake.sentence(nb_words=10))

@@ -29,3 +29,4 @@ class ResourceModelTestCase(unittest.TestCase):
         self.assertEquals(option_assoc.option, 0)
         self.assertEquals(option_assoc.descriptor.name, 'Open')
         self.assertEquals(option_assoc.descriptor.values, options)
+
