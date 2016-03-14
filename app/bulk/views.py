@@ -1,3 +1,4 @@
+import csv
 from flask import redirect, render_template, url_for
 from flask.ext.login import (
     login_required
@@ -6,7 +7,6 @@ from . import bulk
 from forms import (
     UploadForm
 )
-import csv
 
 
 @bulk.route('/upload', methods=['GET', 'POST'])
