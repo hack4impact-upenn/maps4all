@@ -1,10 +1,8 @@
 {% extends 'layouts/base.html' %}
 
 {% block content %}
-<html>
   <h1> Maps4All</h1>
   <head>
-    <title>Place Autocomplete</title>
     <link rel="stylesheet" type="text/css" href="static/styles/map.css">
     <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyAhkKJDnPxq0_xvF6pLAFcKfVAL6GbARBs&libraries=places&callback=initMap"
         async defer></script>
@@ -26,5 +24,4 @@
     </div>
     <div id="map"></div>
   </body>
-</html>
 {% endblock %}
