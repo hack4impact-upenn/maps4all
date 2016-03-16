@@ -1,3 +1,4 @@
+      // This JS file is for the map and list view creations on the homepage of the Maps4All site for the user
       // This example requires the Places library. Include the libraries=places
       // parameter when you first load the API. For example:
       // <script src="https://maps.googleapis.com/maps/api/js?key=YOUR_API_KEY&libraries=places">
@@ -29,7 +30,6 @@
 
         autocomplete.addListener('place_changed', function() {
           infowindow.close();
-          //marker.setVisible(false);
           var markerToAdd = new google.maps.Marker({
             map: map
           });
@@ -59,7 +59,6 @@
           markerToAdd.setTitle(place.name);
           markers.push(markerToAdd);
           marker = markerToAdd;
-          console.log(markers);
 
           var address = '';
           if (place.address_components) {
@@ -106,7 +105,6 @@
       function populateListDiv() {
           var markersToShow = [];
           $("#list").empty();
-          console.log(markers);
           var bounds = map.getBounds();
           for (var i = 0; i < markers.length; i++) {
               if (bounds.contains(markers[i].getPosition())) {
