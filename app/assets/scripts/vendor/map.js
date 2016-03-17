@@ -119,11 +119,9 @@
               'style': 'overflow:hidden;width:100%;height:100%;position:absolute'
             });
             tableCellBoldTitle = document.createElement('strong');
-            $(tableCellBoldTitle).html(markerToShow.getTitle());
-            $(tableCell).append(tableCellBoldTitle);
             tableCellNewline = document.createElement('br');
-            $(tableCell).append(tableCellNewline);
-            $(tableCell).append(markerToShow.getLabel());
+            $(tableCellBoldTitle).html(markerToShow.getTitle());
+            $(tableCell).append(tableCellBoldTitle, tableCellNewline, markerToShow.getLabel());
             tableCellInnerDiv = document.createElement('div');
             $(tableCellInnerDiv).attr({
               'style': 'width:50px;height:50px; text-align:right; float: right;'
