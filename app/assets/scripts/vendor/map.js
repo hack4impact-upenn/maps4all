@@ -1,4 +1,5 @@
-      // This JS file is for the map and list view creations on the homepage of the Maps4All site for the user
+      // This JS file is for the map and list view creations on the homepage of
+      // the Maps4All site for the user
       // This example requires the Places library. Include the libraries=places
       // parameter when you first load the API. For example:
       // <script src="https://maps.googleapis.com/maps/api/js?key=YOUR_API_KEY&libraries=places">
@@ -68,7 +69,7 @@
               (place.address_components[2] && place.address_components[2].short_name || '')
             ].join(' ');
           }
-          marker.setLabel(address)
+          marker.setLabel(address);
           infowindow.setContent('<div><strong>' + place.name + '</strong><br>' + address);
           infowindow.open(map, marker);
         });
@@ -111,10 +112,30 @@
                   markersToShow.push(markers[i]);
               }
           }
-          var html = '<table border=1 frame=void rules=rows>';
+          var table = $("<table border=1></table>");
           $.each(markersToShow, function(i, markerToShow) {
-              html += '<tr><td><br><div style="overflow:hidden;width:100%;height:100%;position:absolute"><strong>' + markerToShow.getTitle() + '</strong><br>' + markerToShow.getLabel() + '<div style="width:50px;height:50px; text-align:right; float: right;"><img src=' + markerToShow.getIcon().url + ' style="width:50px;height:50px;"></div>' + '</div><br><br><br><br></td></tr>';
+            tableCell = document.createElement('td');
+            $(tableCell).attr({
+              'style': 'overflow:hidden;width:100%;height:100%;position:absolute'
+            });
+            tableCellBoldTitle = document.createElement('strong');
+            $(tableCellBoldTitle).html(markerToShow.getTitle());
+            $(tableCell).append(tableCellBoldTitle);
+            tableCellNewline = document.createElement('br');
+            $(tableCell).append(tableCellNewline);
+            $(tableCell).append(markerToShow.getLabel());
+            tableCellInnerDiv = document.createElement('div');
+            $(tableCellInnerDiv).attr({
+              'style': 'width:50px;height:50px; text-align:right; float: right;'
+            });
+            tableCellImg = document.createElement('img');
+            $(tableCellImg).attr({
+              'src': markerToShow.getIcon().url,
+              'style': 'width:50px;height:50px;'
+            });
+            $(tableCellInnerDiv).append(tableCellImg);
+            $(tableCell).append(tableCellInnerDiv);
+            table.append(tableCell);
           });
-          html += '</table>';
-          $("#list").append($(html));
+          $("#list").append(table);
       }        
