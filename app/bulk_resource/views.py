@@ -1,11 +1,11 @@
 import csv
 from flask import redirect, render_template, url_for
 from flask.ext.login import login_required
-from . import bulk
+from . import bulk_resource
 from forms import UploadForm
 
 
-@bulk.route('/upload', methods=['GET', 'POST'])
+@bulk_resource.route('/upload', methods=['GET', 'POST'])
 @login_required
 def upload():
     """Upload new resources in bulk with CSV file."""
@@ -18,11 +18,11 @@ def upload():
             reader = csv.reader(csvfile)
             for row in reader:
                 print ', '.join(row)
-        return redirect(url_for('bulk.review'))
-    return render_template('bulk/upload.html', form=form)
+        return redirect(url_for('bulk_resource.review'))
+    return render_template('bulk_resource/upload.html', form=form)
 
 
-@bulk.route('/review')
+@bulk_resource.route('/review')
 @login_required
 def review():
-    return render_template('bulk/review.html')
+    return render_template('bulk_resource/review.html')
