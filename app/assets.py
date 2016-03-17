@@ -13,6 +13,7 @@ app_js = Bundle(
 )
 
 vendor_css = Bundle(
+    'vendor/map.css',
     'vendor/semantic.min.css',
     output='styles/vendor.css'
 )
