@@ -121,7 +121,9 @@
             tableCellBoldTitle = document.createElement('strong');
             tableCellNewline = document.createElement('br');
             $(tableCellBoldTitle).html(markerToShow.getTitle());
-            $(tableCell).append(tableCellBoldTitle, tableCellNewline, markerToShow.getLabel());
+            $(tableCell).append(tableCellBoldTitle, 
+                                tableCellNewline, 
+                                markerToShow.getLabel());
             tableCellInnerDiv = document.createElement('div');
             $(tableCellInnerDiv).attr({
               'style': 'width:50px;height:50px; text-align:right; float: right;'
