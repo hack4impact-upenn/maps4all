@@ -7,8 +7,7 @@ from .. import db, login_manager
 
 
 class Permission:
-    GENERAL = 0x01
-    ADMINISTER = 0xff
+    ADMINISTER = 0x01
 
 
 class Role(db.Model):
@@ -50,6 +49,8 @@ class User(UserMixin, db.Model):
     email = db.Column(db.String(64), unique=True, index=True)
     password_hash = db.Column(db.String(128))
     role_id = db.Column(db.Integer, db.ForeignKey('roles.id'))
+    csv_dumps = db.relationship('CsvDump', back_populates='csv_dumps',
+                                uselist=True)
 
     def __init__(self, **kwargs):
         super(User, self).__init__(**kwargs)

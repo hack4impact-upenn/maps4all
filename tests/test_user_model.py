@@ -1,7 +1,7 @@
 import unittest
 import time
 from app import create_app, db
-from app.models import User, AnonymousUser, Permission, Role
+from app.models import Permission, Role, User
 
 
 class UserModelTestCase(unittest.TestCase):
@@ -108,7 +108,6 @@ class UserModelTestCase(unittest.TestCase):
     def test_roles_and_permissions(self):
         Role.insert_roles()
         u = User(email='user@example.com', password='password')
-        self.assertTrue(u.can(Permission.GENERAL))
         self.assertFalse(u.can(Permission.ADMINISTER))
 
     def test_make_administrator(self):
@@ -124,9 +123,4 @@ class UserModelTestCase(unittest.TestCase):
         r = Role.query.filter_by(permissions=Permission.ADMINISTER).first()
         u = User(email='user@example.com', password='password', role=r)
         self.assertTrue(u.can(Permission.ADMINISTER))
-        self.assertTrue(u.can(Permission.GENERAL))
         self.assertTrue(u.is_admin())
-
-    def test_anonymous(self):
-        u = AnonymousUser()
-        self.assertFalse(u.can(Permission.GENERAL))
