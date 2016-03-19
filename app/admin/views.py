@@ -159,3 +159,19 @@ def delete_user(user_id):
         db.session.commit()
         flash('Successfully deleted user %s.' % user.full_name(), 'success')
     return redirect(url_for('admin.registered_users'))
+
+@admin.route('/new-descriptor', methods=['GET', 'POST'])
+@login_required
+@admin_required
+def new_descriptor():
+    """Create a new descriptor."""
+    form = NewDescriptorForm()
+    if form.validate_on_submit():
+        descriptor = Descriptor(name=form.name.data,
+                    values=form.values.data
+                    )
+        db.session.add(descriptor)
+        db.session.commit()
+        flash('Descriptor {} successfully created'.format(descriptor.name),
+              'form-success')
+    return render_template('admin/new_descriptor.html', form=form)

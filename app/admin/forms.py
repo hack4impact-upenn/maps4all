@@ -57,3 +57,11 @@ class NewUserForm(InviteUserForm):
     password2 = PasswordField('Confirm password', validators=[InputRequired()])
 
     submit = SubmitField('Create')
+
+class NewDescriptor(Form):
+    descriptor_type = SelectField('Descriptor type',
+                            validators=[InputRequired()],
+                            get_label='name',
+                            query_factory=lambda: db.session.query(Descriptor).
+                            order_by('name'))
+    submit = SubmitField('Add descriptor')
