@@ -4,7 +4,7 @@
 
       function initMap() {
         var map = new google.maps.Map(document.getElementById('map'), {
-          center: {lat: -33.8688, lng: 151.2195},
+          center: {lat: 39.949, lng: -75.181},
           zoom: 13
         });
         var input = /** @type {!HTMLInputElement} */(
@@ -74,4 +74,35 @@
         setupClickListener('changetype-all', []);
         setupClickListener('changetype-address', ['address']);
         setupClickListener('changetype-establishment', ['establishment']);
+
+        $.ajax({
+          type: "GET",
+          url: "/get-resource"
+        }).done(function(data){
+            data = JSON.parse(data)
+            for(var i = 0; i < data.length; i++){
+            //we have the pins data, access it here and place pins on map
+              latLng = new google.maps.LatLng(data[i].Latitude, data[i]
+              .Longitude)
+              var marker = new google.maps.Marker({
+                position: latLng,
+                map: map,
+                visible: true,
+                title: data[i].Name
+              });
+
+              var infowindow = new google.maps.InfoWindow({
+                content: 'Have to fix the content with variable shadowing'
+              });
+
+              marker.addListener('mouseover', function() {
+                infowindow.open(map, this);
+              });
+              marker.addListener('mouseout', function() {
+                infowindow.close();
+              });
+              marker.setMap(map);
+             }
+         })
       }
+
