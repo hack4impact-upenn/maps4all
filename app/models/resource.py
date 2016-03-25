@@ -147,5 +147,5 @@ class CsvDump(db.Model):
     __tablename__ = 'csv_dumps'
     id = db.Column(db.Integer, primary_key=True)
     date_uploaded = db.Column(db.DateTime)
-    users = db.relationship('CsvDump', back_populates='csv_dump')
+    user_id = db.Column(db.Integer, db.ForeignKey('users.id'))
     csv = db.Column(db.Text)

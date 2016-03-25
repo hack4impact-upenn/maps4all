@@ -49,7 +49,7 @@ class User(UserMixin, db.Model):
     email = db.Column(db.String(64), unique=True, index=True)
     password_hash = db.Column(db.String(128))
     role_id = db.Column(db.Integer, db.ForeignKey('roles.id'))
-    csv_dumps = db.relationship('CsvDump', back_populates='csv_dumps',
+    csv_dumps = db.relationship('CsvDump', backref='csv_dumps',
                                 uselist=True)
 
     def __init__(self, **kwargs):
