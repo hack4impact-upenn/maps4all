@@ -5,30 +5,33 @@
     <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyAhkKJDnPxq0_xvF6pLAFcKfVAL6GbARBs&libraries=places&callback=initMap"
             async defer>
     </script>
-    <script src="//code.jquery.com/jquery-1.12.0.min.js"></script> 
+    <script src="//code.jquery.com/jquery-1.12.0.min.js"></script>
     <meta name="viewport" content="initial-scale=1.0, user-scalable=no">
     <meta charset="utf-8">
 
-    <h1> Maps4All</h1>
-    <input id="pac-input" class="controls" type="text"
-           placeholder="Enter a location">
-    <div id="view-selector" class="controls">
-      <input type="radio" name="toggle" id="map_view" checked="checked">
-      <label for="map_view">Map View</label>
+    <div class="ui container">
+        <h1>Maps4All</h1>
+        <a href="{{ url_for('suggestion.suggest_new') }}">Suggest New</a>
+        <input id="pac-input" class="controls" type="text"
+               placeholder="Enter a location">
+        <div id="view-selector" class="controls">
+          <input type="radio" name="toggle" id="map_view" checked="checked">
+          <label for="map_view">Map View</label>
 
-      <input type="radio" name="toggle" id="list_view">
-      <label for="list_view">List View</label>
-    </div>
+          <input type="radio" name="toggle" id="list_view">
+          <label for="list_view">List View</label>
+        </div>
 
-    <div id="type-selector" class="controls">
-      <input type="radio" name="type" id="changetype-all" checked="checked">
-      <label for="changetype-all">All</label>
+        <div id="type-selector" class="controls">
+          <input type="radio" name="type" id="changetype-all" checked="checked">
+          <label for="changetype-all">All</label>
 
-      <input type="radio" name="type" id="changetype-establishment">
-      <label for="changetype-establishment">Establishments</label>
+          <input type="radio" name="type" id="changetype-establishment">
+          <label for="changetype-establishment">Establishments</label>
 
-      <input type="radio" name="type" id="changetype-address">
-      <label for="changetype-address">Addresses</label>
+          <input type="radio" name="type" id="changetype-address">
+          <label for="changetype-address">Addresses</label>
+        </div>
     </div>
 
     <div id="map"></div>
