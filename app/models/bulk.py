@@ -1,0 +1,39 @@
+from .. import db
+
+
+class CsvContainer(db.Model):
+    """
+    Schema for contents of CSV files that are uploaded for bulk resource
+    management.
+    """
+    __tablename__ = 'csv_containers'
+    id = db.Column(db.Integer, primary_key=True)
+    file_name = db.Column(db.String(64), index=True)
+    date_uploaded = db.Column(db.DateTime)
+    user_id = db.Column(db.Integer, db.ForeignKey('users.id'))
+    csv_rows = db.relationship('CsvRow', backref='csv_container', uselist=True)
+
+    def __repr__(self):
+        return '<CsvContainer \'%s\'>' % self.file_name
+
+
+class CsvRow(db.Model):
+    """
+    Schema for a row in a CSV file.
+    """
+    __tablename__ = 'csv_rows'
+    id = db.Column(db.Integer, primary_key=True)
+    csv_cells = db.relationship('CsvCell', backref='csv_row', uselist=True)
+    csv_container_id = db.Column(db.Integer,
+                                 db.ForeignKey('csv_containers.id'))
+
+
+class CsvCell(db.Model):
+    """
+    Schema for a cell in a CSV file. Each cell contains one comma-separated
+    string in a row of a CSV file.
+    """
+    __tablename__ = 'csv_cells'
+    id = db.Column(db.Integer, primary_key=True)
+    csv_row_id = db.Column(db.Integer, db.ForeignKey('csv_rows.id'))
+    data = db.Column(db.Text)

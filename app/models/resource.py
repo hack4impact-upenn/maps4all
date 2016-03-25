@@ -138,14 +138,3 @@ class Resource(db.Model):
             print '(%s , %s)' % (resource.latitude, resource.longitude)
             print resource.text_descriptors
             print resource.option_descriptors
-
-
-class CsvDump(db.Model):
-    """
-    Schema for CSV dumps that are uploaded for bulk resource management.
-    """
-    __tablename__ = 'csv_dumps'
-    id = db.Column(db.Integer, primary_key=True)
-    date_uploaded = db.Column(db.DateTime)
-    user_id = db.Column(db.Integer, db.ForeignKey('users.id'))
-    csv = db.Column(db.Text)
