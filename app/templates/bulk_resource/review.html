@@ -24,7 +24,7 @@
                     </tr>
                 </thead>
                 <tbody>
-                {% set csv_header_row = csv_container.csv_rows[0] %}
+                {% set csv_header_row = csv_container.header_row() %}
                 {% for csv_cell in csv_header_row.csv_cells %}
                 <tr>
                     <td>

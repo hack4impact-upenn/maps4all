@@ -21,6 +21,14 @@ class CsvContainer(db.Model):
             raise ValueError('Invalid cell number')
         return '%s' % self.csv_rows[row_num].csv_cells[cell_num].data
 
+    def header_row(self):
+        return self.csv_rows[0]
+
+    def content_rows_iter(self):
+        i = iter(self.csv_rows)
+        next(i)
+        return i
+
     def __repr__(self):
         return '<CsvContainer \'%s\'>' % self.file_name
 
