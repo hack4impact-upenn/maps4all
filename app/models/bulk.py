@@ -13,6 +13,13 @@ class CsvContainer(db.Model):
     user_id = db.Column(db.Integer, db.ForeignKey('users.id'))
     csv_rows = db.relationship('CsvRow', backref='csv_container', uselist=True)
 
+    def cell_data(self, row_num, cell_num):
+        if row_num < 0 or row_num >= len(self.csv_rows):
+            raise ValueError('Invalid row number')
+        if cell_num < 0 or cell_num >= len(self.csv_rows[row_num].csv_cells):
+            raise ValueError('Invalid row number')
+        return '%s' % self.csv_rows[row_num].csv_cells[cell_num].data
+
     def __repr__(self):
         return '<CsvContainer \'%s\'>' % self.file_name
 

@@ -24,8 +24,8 @@ class OptionAssociation(db.Model):
 
 class TextAssociation(db.Model):
     """
-    Association between a resource and a descriptor with a text
-    field for the value of the descriptor.
+    Association between a resource and a descriptor with a text field for the
+    value of the descriptor.
     """
     __tablename__ = 'text_associations'
     resource_id = db.Column(db.Integer, db.ForeignKey('resources.id'),
@@ -42,8 +42,8 @@ class TextAssociation(db.Model):
 
 class Descriptor(db.Model):
     """
-    Schema for descriptors that contain the name and values for an
-    attribute of a resource.
+    Schema for descriptors that contain the name and values for an attribute of
+    a resource.
     """
     __tablename__ = 'descriptors'
     id = db.Column(db.Integer, primary_key=True)

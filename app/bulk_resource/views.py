@@ -15,8 +15,6 @@ def upload():
     form = UploadForm()
     if form.validate_on_submit():
         csv_data = form.csv.data
-        # Read CSV file line-by-line.
-        # TODO: Save CSV data somewhere instead of just printing it.
         with csv_data.stream as csv_file:
             # Create new CSV container object to hold contents of CSV file.
             csv_container = CsvContainer(
@@ -37,6 +35,10 @@ def upload():
                 db.session.add(csv_row)
             db.session.add(csv_container)
             db.session.commit()
+
+            # TODO: Error catching if CSV is malformed.
+            print csv_container.cell_data(0, 1)
+
         return redirect(url_for('bulk_resource.review'))
     return render_template('bulk_resource/upload.html', form=form)
 
