@@ -6,6 +6,9 @@
             async defer>
     </script>
     <script src="//code.jquery.com/jquery-1.12.0.min.js"></script> 
+    <script type="text/javascript">
+      $('.ui.accordion').accordion();
+    </script>
     <meta name="viewport" content="initial-scale=1.0, user-scalable=no">
     <meta charset="utf-8">
 
@@ -29,6 +32,36 @@
 
       <input type="radio" name="type" id="changetype-address">
       <label for="changetype-address">Addresses</label>
+    </div>
+
+    <div id="filters_list" class="checkboxes">
+      {% if filters|length > 3 %}
+        <input type="checkbox" name="filter">{{ filters[0] }}</input>
+        <input type="checkbox" name="filter">{{ filters[1] }}</input>
+        <input type="checkbox" name="filter">{{ filters[2] }}</input>
+
+        <div class="row block-header">
+          <table>
+            <thead>
+              <tr>  
+                <th width="200" class="search-expand" id="advanced-options-expand">+</th>
+                <th width="100%">Advanced Options</th>
+              </tr>
+            </thead>
+          </table>
+          <div id="advanced-options-checkboxes">
+            <ul class="checkboxes">
+              <div class="large-4 small-6 columns">
+              {% for f in filters %}
+                <li class="checkbox-li">
+                  <input type="checkbox" name="filter">{{ f }}</input>
+                </li>
+              {% endfor %}  
+              </div>
+            </ul>
+          </div>
+        </div>
+      {% endif %}
     </div>
 
     <div id="map"></div>

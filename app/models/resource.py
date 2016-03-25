@@ -52,6 +52,12 @@ class Descriptor(db.Model):
     def __repr__(self):
         return '<Descriptor \'%s\'>' % self.name
 
+    def get_all_descriptors():
+        all_descriptors = []
+        for descriptor in db.session.query(Descriptor).all():
+                all_descriptors.append(descriptor.name)
+        return all_descriptors
+
 class Resource(db.Model):
     """Schema for resources with relationships to descriptors """
     __tablename__ = 'resources'
