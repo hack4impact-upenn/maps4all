@@ -11,13 +11,15 @@ def upload():
     """Upload new resources in bulk with CSV file."""
     form = UploadForm()
     if form.validate_on_submit():
-        file = form.csv.data
+        csv_data = form.csv.data
         # Read CSV file line-by-line.
         # TODO: Save CSV data somewhere instead of just printing it.
-        with file.stream as csvfile:
-            reader = csv.reader(csvfile)
-            for row in reader:
-                print ', '.join(row)
+        with csv_data.stream as csv_file:
+            csv_reader = csv.reader(csv_file)
+            all_rows = ""
+            for row in csv_reader:
+                all_rows += str(row)
+            print all_rows
         return redirect(url_for('bulk_resource.review'))
     return render_template('bulk_resource/upload.html', form=form)
 
