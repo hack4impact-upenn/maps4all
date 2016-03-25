@@ -21,6 +21,7 @@ def upload():
                 date_uploaded=datetime.now(),
                 file_name=csv_data.filename,
             )
+            # TODO: Associate CSV file with current_user.
             # csv_container.user = current_user
 
             # Iterate through the CSV file row-by-row and then cell-by-cell.
@@ -37,7 +38,6 @@ def upload():
             db.session.commit()
 
             # TODO: Error catching if CSV is malformed.
-            print csv_container.cell_data(0, 1)
 
         return redirect(url_for('bulk_resource.review'))
     return render_template('bulk_resource/upload.html', form=form)
@@ -46,4 +46,6 @@ def upload():
 @bulk_resource.route('/review')
 @login_required
 def review():
-    return render_template('bulk_resource/review.html')
+    csv_container = CsvContainer.query.first()
+    return render_template('bulk_resource/review.html',
+                           csv_container=csv_container)

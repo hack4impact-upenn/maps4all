@@ -4,7 +4,8 @@ from .. import db
 class CsvContainer(db.Model):
     """
     Schema for contents of CSV files that are uploaded for bulk resource
-    management.
+    management. Rows should be added in the order that they appeared in the
+    original CSV file.
     """
     __tablename__ = 'csv_containers'
     id = db.Column(db.Integer, primary_key=True)
@@ -17,7 +18,7 @@ class CsvContainer(db.Model):
         if row_num < 0 or row_num >= len(self.csv_rows):
             raise ValueError('Invalid row number')
         if cell_num < 0 or cell_num >= len(self.csv_rows[row_num].csv_cells):
-            raise ValueError('Invalid row number')
+            raise ValueError('Invalid cell number')
         return '%s' % self.csv_rows[row_num].csv_cells[cell_num].data
 
     def __repr__(self):
@@ -26,7 +27,8 @@ class CsvContainer(db.Model):
 
 class CsvRow(db.Model):
     """
-    Schema for a row in a CSV file.
+    Schema for a row in a CSV file. Cells should be added in the order that
+    they appeared in the original row of the CSV file.
     """
     __tablename__ = 'csv_rows'
     id = db.Column(db.Integer, primary_key=True)
