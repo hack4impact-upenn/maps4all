@@ -34,7 +34,6 @@ def new_descriptor():
         for v in form.option_values.data:
             if v is not None and len(v) != 0:
                 values.append(v)
-        print values
         descriptor = Descriptor(name=form.name.data, values=values)
         db.session.add(descriptor)
         db.session.commit()
