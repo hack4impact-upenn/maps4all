@@ -7,10 +7,10 @@ from ..decorators import admin_required
 from ..email import send_email
 from ..models import Role, User
 from forms import (
-    ChangeUserEmailForm,
-    NewUserForm,
     ChangeAccountTypeForm,
+    ChangeUserEmailForm,
     InviteUserForm,
+    NewUserForm
 )
 
 
