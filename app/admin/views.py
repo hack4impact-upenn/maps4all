@@ -191,7 +191,7 @@ def new_descriptor():
         db.session.commit()
         flash('Descriptor {} successfully created'.format(descriptor.name),
               'form-success')
-        return redirect(url_for('admin.existing_descriptors'))
+        return redirect(url_for('admin.new_descriptor'))
     return render_template('admin/new_descriptor.html', form=form)
 
 
