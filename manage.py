@@ -1,7 +1,7 @@
 #!/usr/bin/env python
 import os
 from app import create_app, db
-from app.models import Role, User
+from app.models import Resource, Role, User
 from config import Config
 from flask.ext.script import Manager, Shell
 from flask.ext.migrate import Migrate, MigrateCommand
@@ -59,6 +59,7 @@ def add_fake_data(number_users):
     Adds fake data to the database.
     """
     User.generate_fake(count=number_users)
+    Resource.generate_fake()
 
 
 @manager.command
