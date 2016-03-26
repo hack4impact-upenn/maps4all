@@ -7,10 +7,6 @@
 {% block content %}
     <div class="ui stackable centered grid container">
         <div class="twelve wide column">
-            <a class="ui basic compact button" href="{{ url_for('admin.index') }}">
-                <i class="caret left icon"></i>
-                Back to dashboard
-            </a>
             <h2 class="ui header">
                 Edit Descriptor
                 <div class="sub header">Edit a option or text descriptor</div>
@@ -42,7 +38,7 @@
 
             {{ f.end_form() }}
 
-            <a href = '{{ url_for('admin.delete_descriptor', desc_id=desc_id) }}' class="ui negative deletion button">
+            <a href = '{{ url_for('descriptor.delete_descriptor', desc_id=desc_id) }}' class="ui negative deletion button">
                 Delete Descriptor
             </a>
         </div>
