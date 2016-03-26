@@ -10,15 +10,9 @@ from ..models import Descriptor
 @descriptor.route('/')
 @login_required
 def index():
-    return render_template('descriptor/index.html')
-
-
-@descriptor.route('/descriptors')
-@login_required
-def existing_descriptors():
     """View all resource descriptors."""
     descriptors = Descriptor.query.all()
-    return render_template('descriptor/descriptors.html',
+    return render_template('descriptor/index.html',
                            descriptors=descriptors)
 
 
@@ -62,7 +56,7 @@ def edit_descriptor(desc_id):
         db.session.commit()
         flash('Successfully editted descriptor %s.' % descriptor.name,
               'success')
-        return redirect(url_for('descriptor.existing_descriptors'))
+        return redirect(url_for('descriptor.index'))
     else:
         form.name.data = descriptor.name
         for i in range(10):
@@ -82,4 +76,4 @@ def delete_descriptor(desc_id):
     db.session.delete(descriptor)
     db.session.commit()
     flash('Successfully deleted descriptor %s.' % descriptor.name, 'success')
-    return redirect(url_for('descriptor.existing_descriptors'))
+    return redirect(url_for('descriptor.index'))

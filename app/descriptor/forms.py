@@ -8,12 +8,12 @@ class NewDescriptorForm(Form):
                             choices=[('Text', 'Text'), ('Option', 'Option')],
                             validators=[InputRequired()]
                             )
-    name = TextField('Name', validators=(InputRequired(), Length(1, 64)))
+    name = TextField('Name', validators=[InputRequired(), Length(1, 64)])
     option_values = FieldList(TextField('Option', [Length(0, 64)]))
     submit = SubmitField('Add descriptor')
 
 
 class EditDescriptorForm(Form):
-    name = TextField('Name', validators=(InputRequired(), Length(1, 64)))
+    name = TextField('Name', validators=[InputRequired(), Length(1, 64)])
     option_values = FieldList(TextField('Option', [Length(0, 64)]))
     submit = SubmitField('Edit descriptor')
