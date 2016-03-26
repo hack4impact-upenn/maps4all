@@ -2,8 +2,9 @@ from .. import db
 
 
 class OptionAssociation(db.Model):
-    """Association between a resource and a descriptor with an index
-    for the value of the option
+    """
+    Association between a resource and a descriptor with an index for the
+    value of the option.
     """
     __tablename__ = 'option_associations'
     resource_id = db.Column(db.Integer, db.ForeignKey('resources.id'),
@@ -22,8 +23,9 @@ class OptionAssociation(db.Model):
 
 
 class TextAssociation(db.Model):
-    """Association between a resource and a descriptor with a text
-    field for the value of the descriptor
+    """
+    Association between a resource and a descriptor with a text field for the
+    value of the descriptor.
     """
     __tablename__ = 'text_associations'
     resource_id = db.Column(db.Integer, db.ForeignKey('resources.id'),
@@ -39,8 +41,9 @@ class TextAssociation(db.Model):
 
 
 class Descriptor(db.Model):
-    """Schema for descriptors that contain the name and values for an
-    attribute of a resource
+    """
+    Schema for descriptors that contain the name and values for an
+    attribute of a resource.
     """
     __tablename__ = 'descriptors'
     id = db.Column(db.Integer, primary_key=True)
@@ -62,7 +65,9 @@ class Descriptor(db.Model):
 
 
 class Resource(db.Model):
-    """Schema for resources with relationships to descriptors """
+    """
+    Schema for resources with relationships to descriptors.
+    """
     __tablename__ = 'resources'
     id = db.Column(db.Integer, primary_key=True)
     name = db.Column(db.String(64), index=True)
