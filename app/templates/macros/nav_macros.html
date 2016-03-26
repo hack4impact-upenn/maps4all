@@ -19,10 +19,6 @@
 
 {% macro account_items(current_user) %}
     {% if current_user.is_authenticated() %}
-        <a href="{{ url_for('descriptor.index') }}" class="item">Descriptors</a>
-        <a href="{{ url_for('single_resource.index') }}" class="item">Single Resource</a>
-        <a href="{{ url_for('bulk_resource.review') }}" class="item">Resources in Bulk</a>
-        <a href="{{ url_for('suggestion.index') }}" class="item">Suggestions</a>
         <a href="{{ url_for('account.manage') }}" class="item">Your Account</a>
         <a href="{{ url_for('account.logout') }}" class="item">Log out</a>
     {% else %}
