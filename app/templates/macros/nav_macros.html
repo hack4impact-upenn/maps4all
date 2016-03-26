@@ -32,16 +32,23 @@
             Manage Resources
             <i class="dropdown icon"></i>
             <div class="menu">
+                <h3 class="ui header">Resources</h3>
                 {{ dropdown_choice('All Resources', 'single_resource.index',
                                     icon='book icon') }}
+                {{ dropdown_choice('Add New Resource', 'single_resource.index',
+                                    icon='add circle icon') }}
                 {{ dropdown_choice('Suggested Resources', 'suggestion.index',
                                     icon='checkmark box icon') }}
-                {{ dropdown_choice('Individual Upload', 'single_resource.index',
-                                    icon='add circle icon') }}
-                {{ dropdown_choice('Bulk Upload', 'bulk_resource.index',
-                                    icon='upload icon') }}
-                {{ dropdown_choice('Manage Descriptors', 'descriptor.index',
+                <div class="ui section divider"></div>
+                <h3 class="ui header">Descriptors</h3>
+                {{ dropdown_choice('All Descriptors', 'descriptor.index',
                                     icon='tags icon') }}
+                {{ dropdown_choice('Add New Descriptor', 'descriptor.index',
+                                    icon='add circle icon') }}
+                <div class="ui section divider"></div>
+                <h3 class="ui header">Bulk</h3>
+                {{ dropdown_choice('Upload Resources', 'bulk_resource.index',
+                                    icon='upload icon') }}
                 {{ dropdown_choice('Download Resources', 'single_resource.index',
                                     icon='download icon') }}
             </div>
