@@ -3,7 +3,7 @@
 ## Team Members
 
 - Elizabeth Hamp
-- Natashan Narang
+- Natasha Narang
 - Arman Tokanov
 - Veronica Wharton
 - Daniel Zhang
