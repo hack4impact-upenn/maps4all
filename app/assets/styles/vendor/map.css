@@ -15,10 +15,32 @@ td, th {
   border: solid 1px black;
 }
 
+input[type=checkbox] {
+  margin-top:5px;
+  margin-bottom:5px;
+}
+
 #map {
   height: 80%;
   width: 90%;
   left: 50px;
+}
+
+.checkboxes {
+  list-style-type: none;
+  display: inline;
+  margin: 0px;
+  font-weight: 200;
+}
+
+@media only screen and (min-width: 54.063em) {
+  .checkbox-li {
+    display: inline;
+  }
+}
+
+#checkbox-li {
+  margin: 5px;
 }
 
 .controls {
@@ -74,3 +96,14 @@ td, th {
   font-size: 13px;
   font-weight: 300;
 }  
+
+#advanced-options-checkboxes {
+  background: #fff;
+  overflow: hidden;
+  transition: max-height 300ms;
+  max-height: 0;
+}
+
+#advanced-options-checkboxes.open {
+  max-height: 100px;
+}

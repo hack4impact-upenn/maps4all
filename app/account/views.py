@@ -8,7 +8,7 @@ from flask.ext.login import (
 from . import account
 from .. import db
 from ..email import send_email
-from ..models import User
+from ..models import User, Descriptor
 from .forms import (
     ChangeAccountInfoForm,
     ChangeEmailForm,
@@ -18,7 +18,6 @@ from .forms import (
     RequestResetPasswordForm,
     ResetPasswordForm
 )
-
 
 @account.route('/login', methods=['GET', 'POST'])
 def login():
