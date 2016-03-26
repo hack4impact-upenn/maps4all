@@ -12,7 +12,7 @@ from forms import UploadForm
 
 @bulk_resource.route('/upload', methods=['GET', 'POST'])
 @login_required
-def upload():
+def index():
     """Upload new resources in bulk with CSV file."""
     form = UploadForm()
     if form.validate_on_submit():
