@@ -96,3 +96,14 @@ input[type=checkbox] {
   font-size: 13px;
   font-weight: 300;
 }  
+
+#advanced-options-checkboxes {
+  background: #fff;
+  overflow: hidden;
+  transition: max-height 300ms;
+  max-height: 0;
+}
+
+#advanced-options-checkboxes.open {
+  max-height: 100px;
+}

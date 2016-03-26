@@ -101,6 +101,14 @@
             $("#list").show();
         });
 
+      var advanced_options_button = $("#advanced-options-button");
+      var advanced_options_checkboxes = $("#advanced-options-checkboxes");
+      advanced_options_button.click(function() {
+        console.log("did i do something");
+        advanced_options_checkboxes.toggleClass('open');
+        console.log(advanced_options_button);        
+      });   
+           
       }
 
       function populateListDiv() {

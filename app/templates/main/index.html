@@ -35,33 +35,21 @@
     </div>
 
     <div id="filters_list" class="checkboxes">
-      {% if filters|length > 3 %}
-        <input type="checkbox" name="filter">{{ filters[0] }}</input>
-        <input type="checkbox" name="filter">{{ filters[1] }}</input>
-        <input type="checkbox" name="filter">{{ filters[2] }}</input>
-
-        <div class="row block-header">
-          <table>
-            <thead>
-              <tr>  
-                <th width="200" class="search-expand" id="advanced-options-expand">+</th>
-                <th width="100%">Advanced Options</th>
-              </tr>
-            </thead>
-          </table>
-          <div id="advanced-options-checkboxes">
-            <ul class="checkboxes">
-              <div class="large-4 small-6 columns">
-              {% for f in filters %}
-                <li class="checkbox-li">
-                  <input type="checkbox" name="filter">{{ f }}</input>
-                </li>
-              {% endfor %}  
-              </div>
-            </ul>
-          </div>
-        </div>
-      {% endif %}
+      {% for filter in top %}
+        <input type="checkbox" name="filter">{{ filter }}</input>
+      {% endfor %}
+    </div>
+    <div class="row block-header" class="search-expand" id="advanced-options-expand">
+      <button id="advanced-options-button">Advanced Options</button>
+        <div id="advanced-options-checkboxes">
+          <ul class="checkboxes" id="checkbox-list">
+            {% for filter in advanced %}
+              <li class="checkbox-li">
+                <input type="checkbox" name="filter">{{ filter }}</input>
+              </li>
+            {% endfor %} 
+          </ul>
+        </div>          
     </div>
 
     <div id="map"></div>
