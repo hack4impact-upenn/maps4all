@@ -26,9 +26,6 @@
             <h2 class="ui header">
                 Administrator Dashboard
             </h2>
-            <h3 class="ui header">
-                Manage Users
-            </h3>
             <div class="ui two column stackable grid">
                 {{ dashboard_option('Registered Users', 'admin.registered_users',
                                     description='View and manage user accounts', icon='users icon') }}
@@ -37,27 +34,6 @@
                 {{ dashboard_option('Invite New User', 'admin.invite_user',
                                     description='Invites a new user to create their own account', icon='add user icon') }}
             </div>
-            <h3 class="ui header">
-                Manage Resources
-            </h3>
-            <div class="ui two column stackable grid">
-                {{ dashboard_option('All Resources', 'single_resource.index',
-                                    description='View, edit, and delete existing resources', icon='book icon') }}
-                {{ dashboard_option('Suggested Resources', 'suggestion.index',
-                                    description='Review suggested resources', icon='checkmark box icon') }}
-                {{ dashboard_option('Individual Upload', 'single_resource.index',
-                                    description='Create a single new resource', icon='cube icon') }}
-                {{ dashboard_option('Bulk Upload', 'bulk_resource.index',
-                                    description='Upload a batch of new resources', icon='cubes icon') }}
-                {{ dashboard_option('Manage Descriptors', 'descriptor.index',
-                                    description='Manage global resource descriptors', icon='tags icon') }}
-                {{ dashboard_option('Download Resources', 'single_resource.index',
-                                    description='Download snapshot of all current resources', icon='download icon') }}
-
-            </div>
-            <h3 class="ui header">
-                Manage Static Pages
-            </h3>
         </div>
     </div>
 {% endblock %}

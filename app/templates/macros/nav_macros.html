@@ -17,8 +17,35 @@
     {% endif %}
 {% endmacro %}
 
+{% macro dropdown_choice(title, endpoint, icon=None) %}
+    <a class="item" href="{{ url_for(endpoint) }}">
+        {% if icon is not none %}
+            <i class="{{ icon }}"></i>
+        {% endif %}
+        {{ title }}
+    </a>
+{% endmacro %}
+
 {% macro account_items(current_user) %}
     {% if current_user.is_authenticated() %}
+        <div class="ui simple dropdown item">
+            Manage Resources
+            <i class="dropdown icon"></i>
+            <div class="menu">
+                {{ dropdown_choice('All Resources', 'single_resource.index',
+                                    icon='book icon') }}
+                {{ dropdown_choice('Suggested Resources', 'suggestion.index',
+                                    icon='checkmark box icon') }}
+                {{ dropdown_choice('Individual Upload', 'single_resource.index',
+                                    icon='cube icon') }}
+                {{ dropdown_choice('Bulk Upload', 'bulk_resource.index',
+                                    icon='cubes icon') }}
+                {{ dropdown_choice('Manage Descriptors', 'descriptor.index',
+                                    icon='tags icon') }}
+                {{ dropdown_choice('Download Resources', 'single_resource.index',
+                                    icon='download icon') }}
+            </div>
+        </div>
         <a href="{{ url_for('account.manage') }}" class="item">Your Account</a>
         <a href="{{ url_for('account.logout') }}" class="item">Log out</a>
     {% else %}
