@@ -12,7 +12,7 @@ from forms import (
     NewUserForm
 )
 from . import admin
-from ..models import User, Role, Descriptor
+from ..models import Descriptor, Role, User
 from .. import db
 from ..email import send_email
 
