@@ -1,5 +1,5 @@
-from flask import current_app
 from .. import db
+
 
 class OptionAssociation(db.Model):
     """Association between a resource and a descriptor with an index
@@ -11,14 +11,15 @@ class OptionAssociation(db.Model):
     descriptor_id = db.Column(db.Integer, db.ForeignKey('descriptors.id'),
                               primary_key=True)
     option = db.Column(db.Integer)
-    resource = db.relationship('Resource', 
+    resource = db.relationship('Resource',
                                back_populates='option_descriptors')
-    descriptor = db.relationship('Descriptor', 
+    descriptor = db.relationship('Descriptor',
                                  back_populates='option_resources')
 
     def __repr__(self):
         return '%s: %s' % (self.descriptor.name,
                            self.descriptor.values[self.option])
+
 
 class TextAssociation(db.Model):
     """Association between a resource and a descriptor with a text
@@ -36,21 +37,29 @@ class TextAssociation(db.Model):
     def __repr__(self):
         return '%s: %s' % (self.descriptor.name, self.text)
 
+
 class Descriptor(db.Model):
-    """Schema for descriptors that contain the name and values for an 
+    """Schema for descriptors that contain the name and values for an
     attribute of a resource
     """
     __tablename__ = 'descriptors'
     id = db.Column(db.Integer, primary_key=True)
     name = db.Column(db.String(64), index=True)
     values = db.Column(db.PickleType)
-    text_resources = db.relationship('TextAssociation',
-                                     back_populates='descriptor')
-    option_resources = db.relationship('OptionAssociation',
-                                       back_populates='descriptor')
+    text_resources = db.relationship(
+        'TextAssociation',
+        back_populates='descriptor',
+        cascade="save-update, merge, delete, delete-orphan"
+    )
+    option_resources = db.relationship(
+        'OptionAssociation',
+        back_populates='descriptor',
+        cascade="save-update, merge, delete, delete-orphan"
+    )
 
     def __repr__(self):
         return '<Descriptor \'%s\'>' % self.name
+
 
 class Resource(db.Model):
     """Schema for resources with relationships to descriptors """
@@ -60,10 +69,16 @@ class Resource(db.Model):
     address = db.Column(db.String(64))
     latitude = db.Column(db.Float)
     longitude = db.Column(db.Float)
-    text_descriptors = db.relationship('TextAssociation',
-                                       back_populates='resource')
-    option_descriptors = db.relationship('OptionAssociation',
-                                         back_populates='resource')
+    text_descriptors = db.relationship(
+        'TextAssociation',
+        back_populates='resource',
+        cascade="save-update, merge, delete, delete-orphan"
+    )
+    option_descriptors = db.relationship(
+        'OptionAssociation',
+        back_populates='resource',
+        cascade="save-update, merge, delete, delete-orphan"
+    )
 
     def __repr__(self):
         return '<Resource \'%s\'>' % self.name
@@ -84,18 +99,18 @@ class Resource(db.Model):
 
         for i in range(num_options):
             options.append(Descriptor(
-                name=fake.word(), 
+                name=fake.word(),
                 values=['True', 'False']
             ))
 
         for i in range(count):
 
             # Generates random coordinates around Philadelphia.
-            latitude=str(fake.geo_coordinate(
+            latitude = str(fake.geo_coordinate(
                 center=center_lat,
                 radius=0.01
             ))
-            longitude=str(fake.geo_coordinate(
+            longitude = str(fake.geo_coordinate(
                 center=center_long,
                 radius=0.01
             ))
@@ -103,8 +118,8 @@ class Resource(db.Model):
             location = geolocater.reverse(latitude + ', ' + longitude)
             resource = Resource(
                 name=fake.name(),
-                address=location.address, 
-                latitude=latitude, 
+                address=location.address,
+                latitude=latitude,
                 longitude=longitude
             )
 
@@ -125,13 +140,8 @@ class Resource(db.Model):
     @staticmethod
     def print_resources():
         for resource in db.session.query(Resource).all():
-            print resource 
+            print resource
             print resource.address
             print '(%s , %s)' % (resource.latitude, resource.longitude)
             print resource.text_descriptors
             print resource.option_descriptors
-
-
-
-
-
