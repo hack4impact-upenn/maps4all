@@ -31,7 +31,6 @@
 
                 <div id="values-div">
                     {{ f.render_form_field(form.option_values) }}
-                    <input class="ui button" id="add_option" name="add_option" type="submit" value="Add Option">
                 </div>
 
                 {{ f.form_message(flashes['error'], header='Something went wrong.', class='error') }}
@@ -53,10 +52,5 @@
                 $("#values-div").hide();
             }
         });
-
-        $("#add_option").submit(function(e) {
-            e.preventDefault();
-        })
-
     </script>
 {% endblock %}
