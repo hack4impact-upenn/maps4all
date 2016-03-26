@@ -48,6 +48,7 @@ def upload():
 @bulk_resource.route('/review')
 @login_required
 def review():
+    # TODO: Retrieve CSV associated with current_user.
     csv_container = CsvContainer.query.first()
     return render_template('bulk_resource/review.html',
                            csv_container=csv_container)
