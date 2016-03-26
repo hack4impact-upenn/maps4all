@@ -1,11 +1,13 @@
 import csv
 from datetime import datetime
+
 from flask import redirect, render_template, url_for
 from flask.ext.login import login_required
+
 from . import bulk_resource
 from .. import db
-from forms import UploadForm
 from ..models import CsvCell, CsvContainer, CsvRow
+from forms import UploadForm
 
 
 @bulk_resource.route('/upload', methods=['GET', 'POST'])

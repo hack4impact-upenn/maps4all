@@ -1,18 +1,17 @@
+from flask import abort, flash, redirect, render_template, url_for
+from flask.ext.login import current_user, login_required
+
+from . import admin
+from .. import db
 from ..decorators import admin_required
-
-from flask import render_template, abort, redirect, flash, url_for
-from flask.ext.login import login_required, current_user
-
+from ..email import send_email
+from ..models import Role, User
 from forms import (
     ChangeUserEmailForm,
     NewUserForm,
     ChangeAccountTypeForm,
     InviteUserForm,
 )
-from . import admin
-from ..models import User, Role
-from .. import db
-from ..email import send_email
 
 
 @admin.route('/')
