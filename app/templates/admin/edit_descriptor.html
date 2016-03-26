@@ -1,0 +1,50 @@
+{% extends 'layouts/base.html' %}
+{% import 'macros/form_macros.html' as f %}
+
+{% block scripts %}
+{% endblock %}
+
+{% block content %}
+    <div class="ui stackable centered grid container">
+        <div class="twelve wide column">
+            <a class="ui basic compact button" href="{{ url_for('admin.index') }}">
+                <i class="caret left icon"></i>
+                Back to dashboard
+            </a>
+            <h2 class="ui header">
+                Edit Descriptor
+                <div class="sub header">Edit a option or text descriptor</div>
+            </h2>
+
+            {% set flashes = {
+                'error':   get_flashed_messages(category_filter=['form-error']),
+                'warning': get_flashed_messages(category_filter=['form-check-email']),
+                'info':    get_flashed_messages(category_filter=['form-info']),
+                'success': get_flashed_messages(category_filter=['form-success'])
+            } %}
+
+            {{ f.begin_form(form, flashes) }}
+
+                {{ f.render_form_field(form.name) }}
+
+                {% if is_option %}          
+                    <div id="values-div">
+                        {{ f.render_form_field(form.option_values) }}
+                    </div>
+                {% endif %}
+
+                {{ f.form_message(flashes['error'], header='Something went wrong.', class='error') }}
+                {{ f.form_message(flashes['warning'], header='Check your email.', class='warning') }}
+                {{ f.form_message(flashes['info'], header='Information', class='info') }}
+                {{ f.form_message(flashes['success'], header='Success!', class='success') }}
+
+                {{ f.render_form_field(form.submit) }}
+
+            {{ f.end_form() }}
+
+            <a href = '{{ url_for('admin.delete_descriptor', desc_id=desc_id) }}' class="ui negative deletion button">
+                Delete Descriptor
+            </a>
+        </div>
+    </div>
+{% endblock %}

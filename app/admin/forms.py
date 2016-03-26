@@ -1,5 +1,6 @@
 from flask.ext.wtf import Form
-from wtforms.fields import PasswordField, SelectField, StringField, SubmitField
+from wtforms.fields import FieldList, PasswordField, SelectField, \
+                           StringField, SubmitField, TextField
 from wtforms.fields.html5 import EmailField
 from wtforms.ext.sqlalchemy.fields import QuerySelectField
 from wtforms.validators import InputRequired, Length, Email, EqualTo
@@ -58,11 +59,18 @@ class NewUserForm(InviteUserForm):
 
     submit = SubmitField('Create')
 
-class NewDescriptor(Form):
+
+class NewDescriptorForm(Form):
     desc_type = SelectField('Descriptor type',
-                            choices=[('Text', 'Text'), ('Option', 'Option')]
-                            get_label='name',
+                            choices=[('Text', 'Text'), ('Option', 'Option')],
                             validators=[InputRequired()]
                             )
-    values = FieldList(TextField('Option', [validators.required()]))
+    name = TextField('Name', validators=(InputRequired(), Length(1, 64)))
+    option_values = FieldList(TextField('Option', [Length(0, 64)]))
     submit = SubmitField('Add descriptor')
+
+
+class EditDescriptorForm(Form):
+    name = TextField('Name', validators=(InputRequired(), Length(1, 64)))
+    option_values = FieldList(TextField('Option', [Length(0, 64)]))
+    submit = SubmitField('Edit descriptor')

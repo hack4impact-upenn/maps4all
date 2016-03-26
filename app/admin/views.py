@@ -4,13 +4,15 @@ from flask import render_template, abort, redirect, flash, url_for
 from flask.ext.login import login_required, current_user
 
 from forms import (
-    ChangeUserEmailForm,
-    NewUserForm,
     ChangeAccountTypeForm,
+    ChangeUserEmailForm,
+    EditDescriptorForm,
     InviteUserForm,
+    NewDescriptorForm,
+    NewUserForm
 )
 from . import admin
-from ..models import User, Role
+from ..models import User, Role, Descriptor
 from .. import db
 from ..email import send_email
 
@@ -160,18 +162,78 @@ def delete_user(user_id):
         flash('Successfully deleted user %s.' % user.full_name(), 'success')
     return redirect(url_for('admin.registered_users'))
 
+
+@admin.route('/descriptors')
+@login_required
+@admin_required
+def existing_descriptors():
+    """View all resource descriptors."""
+    descriptors = Descriptor.query.all()
+    return render_template('admin/descriptors.html', descriptors=descriptors)
+
+
 @admin.route('/new-descriptor', methods=['GET', 'POST'])
 @login_required
 @admin_required
 def new_descriptor():
     """Create a new descriptor."""
     form = NewDescriptorForm()
+    for i in range(10):
+        form.option_values.append_entry()
     if form.validate_on_submit():
-        descriptor = Descriptor(name=form.name.data,
-                    values=form.values.data
-                    )
+        values = []
+        for v in form.option_values.data:
+            if v is not None and len(v) != 0:
+                values.append(v)
+        print values
+        descriptor = Descriptor(name=form.name.data, values=values)
         db.session.add(descriptor)
         db.session.commit()
         flash('Descriptor {} successfully created'.format(descriptor.name),
               'form-success')
+        return redirect(url_for('admin.existing_descriptors'))
     return render_template('admin/new_descriptor.html', form=form)
+
+
+@admin.route('/descriptor/<int:desc_id>', methods=['GET', 'POST'])
+@login_required
+@admin_required
+def edit_descriptor(desc_id):
+    """Edit a new descriptor."""
+    form = EditDescriptorForm()
+    descriptor = Descriptor.query.filter_by(id=desc_id).first()
+    is_option = len(descriptor.values) != 0
+
+    if form.validate_on_submit():
+        values = []
+        for v in form.option_values.data:
+            if v is not None and len(v) != 0:
+                values.append(v)
+        descriptor.name = form.name.data
+        descriptor.values = values
+        db.session.add(descriptor)
+        db.session.commit()
+        flash('Descriptor {} successfully editted'.format(descriptor.name),
+              'form-success')
+        return redirect(url_for('admin.existing_descriptors'))
+    else:
+        form.name.data = descriptor.name
+        for i in range(10):
+            if i < len(descriptor.values):
+                form.option_values.append_entry(descriptor.values[i])
+            else:
+                form.option_values.append_entry()
+    return render_template('admin/edit_descriptor.html', form=form,
+                           is_option=is_option, desc_id=desc_id)
+
+
+@admin.route('/descriptor/<int:desc_id>/delete')
+@login_required
+@admin_required
+def delete_descriptor(desc_id):
+    """Deletes a descriptor."""
+    descriptor = Descriptor.query.filter_by(id=desc_id).first()
+    db.session.delete(descriptor)
+    db.session.commit()
+    flash('Successfully deleted descriptor %s.' % descriptor.name, 'success')
+    return redirect(url_for('admin.existing_descriptors'))
