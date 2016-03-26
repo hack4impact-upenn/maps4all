@@ -1,4 +1,4 @@
-from flask import render_template, redirect, flash, url_for
+from flask import flash, render_template, redirect, url_for
 from flask.ext.login import login_required
 
 from forms import EditDescriptorForm, NewDescriptorForm
