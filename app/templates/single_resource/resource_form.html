@@ -1,0 +1,13 @@
+{% import 'macros/form_macros.html' as f %}
+
+<script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyAhkKJDnPxq0_xvF6pLAFcKfVAL6GbARBs&libraries=places&callback=initAutocomplete"
+        async defer>
+</script>
+
+{% set flashes = {
+    'success': get_flashed_messages(category_filter=['form-success']),
+    'error':   get_flashed_messages(category_filter=['form-error'])
+} %}
+
+
+{{ f.render_form(form) }}
