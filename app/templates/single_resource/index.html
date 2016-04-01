@@ -3,13 +3,14 @@
 {% block content %}
     <div class="ui text container">
         <h2 class="ui dividing header">Resources</h2>
-        <a href="/single-resource/create">Add</a>
+        <a href="{{ url_for('single_resource.create') }}">Add</a>
         <table>
             <thead>
                 <tr>
-                    {% for field_name in field_names[1:] %} <!-- excluding id -->
-                        <th>{{ field_name.capitalize() }}</th>
-                    {% endfor %}
+                    <th>Name</th>
+                    <th>Address</th>
+                    <th>Latitude</th>
+                    <th>Longitude</th>
                 </tr>
             </thead>
             <tbody>
@@ -18,9 +19,9 @@
                         <td>
                             <a href="{{ url_for('single_resource.edit', resource_id=resource['id']) }}">{{ resource['name'] }}</a>
                         </td>
-                        {% for field_name in field_names[2:] %} <!-- excluding id and name -->
-                            <td>{{ resource[field_name] }}</td>
-                        {% endfor %}
+                        <td>{{ resource['address'] }}</td>
+                        <td>{{ resource['latitude'] | round }}</td>
+                        <td>{{ resource['longitude'] | round }}</td>
                     </tr>
                 {% endfor %}
             </tbody>

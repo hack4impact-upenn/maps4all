@@ -12,14 +12,11 @@ from .forms import SingleResourceForm
 @login_required
 def index():
     """View resources in a list."""
-    field_names = Resource.__table__.columns.keys()
     resources = Resource.query.all()
-    return render_template('single_resource/index.html',
-                           field_names=field_names,
-                           resources=resources)
+    return render_template('single_resource/index.html', resources=resources)
 
 
-@single_resource.route('/create', methods=('GET', 'POST'))
+@single_resource.route('/create', methods=['GET', 'POST'])
 @login_required
 def create():
     """Add a resource."""
@@ -43,7 +40,7 @@ def create():
     return render_template('single_resource/create.html', form=form)
 
 
-@single_resource.route('/<int:resource_id>', methods=('GET', 'POST'))
+@single_resource.route('/<int:resource_id>', methods=['GET', 'POST'])
 @login_required
 def edit(resource_id):
     """Edit a resource."""
