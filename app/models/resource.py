@@ -39,7 +39,7 @@ class TextAssociation(db.Model):
 
 
 class Descriptor(db.Model):
-    """Schema for descriptors that contain the name and values for an 
+    """Schema for descriptors that contain the name and values for an
     attribute of a resource
     """
     __tablename__ = 'descriptors'
@@ -67,7 +67,6 @@ class Resource(db.Model):
                                        back_populates='resource')
     option_descriptors = db.relationship('OptionAssociation',
                                          back_populates='resource')
-
 
     def __repr__(self):
         return '<Resource \'%s\'>' % self.name
@@ -107,8 +106,8 @@ class Resource(db.Model):
             location = geolocater.reverse(latitude + ', ' + longitude)
             resource = Resource(
                 name=fake.name(),
-                address=location.address, 
-                latitude=latitude, 
+                address=location.address,
+                latitude=latitude,
                 longitude=longitude
             )
 
@@ -135,6 +134,4 @@ class Resource(db.Model):
             print '(%s , %s)' % (resource.latitude, resource.longitude)
             print resource.text_descriptors
             print resource.option_descriptors
-
-
 
