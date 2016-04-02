@@ -28,5 +28,4 @@ def getResource():
 @main.route('/get-info', methods=['POST'])
 def getInfo():
     print request.form.data
-    return json.dumps({'Address': 'test', 'Description': 'decrption test text'})
-
+    return json.dumps({'Address': 'test', 'Description': 'descrption'})
