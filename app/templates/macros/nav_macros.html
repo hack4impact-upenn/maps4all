@@ -17,12 +17,42 @@
     {% endif %}
 {% endmacro %}
 
+{% macro dropdown_choice(title, endpoint, icon=None) %}
+    <a class="item" href="{{ url_for(endpoint) }}">
+        {% if icon is not none %}
+            <i class="{{ icon }}"></i>
+        {% endif %}
+        {{ title }}
+    </a>
+{% endmacro %}
+
 {% macro account_items(current_user) %}
     {% if current_user.is_authenticated() %}
-        <a href="{{ url_for('descriptor.index') }}" class="item">Descriptors</a>
-        <a href="{{ url_for('single_resource.index') }}" class="item">Single Resource</a>
-        <a href="{{ url_for('bulk_resource.review') }}" class="item">Resources in Bulk</a>
-        <a href="{{ url_for('suggestion.index') }}" class="item">Suggestions</a>
+        <div class="ui simple dropdown item">
+            Manage Resources
+            <i class="dropdown icon"></i>
+            <div class="menu">
+                <h3 class="ui header">Resources</h3>
+                {{ dropdown_choice('All Resources', 'single_resource.index',
+                                    icon='book icon') }}
+                {{ dropdown_choice('Add New Resource', 'single_resource.index',
+                                    icon='add circle icon') }}
+                {{ dropdown_choice('Suggested Resources', 'suggestion.index',
+                                    icon='checkmark box icon') }}
+                <div class="ui section divider"></div>
+                <h3 class="ui header">Descriptors</h3>
+                {{ dropdown_choice('All Descriptors', 'descriptor.index',
+                                    icon='tags icon') }}
+                {{ dropdown_choice('Add New Descriptor', 'descriptor.new_descriptor',
+                                    icon='add circle icon') }}
+                <div class="ui section divider"></div>
+                <h3 class="ui header">Bulk</h3>
+                {{ dropdown_choice('Upload Resources', 'bulk_resource.index',
+                                    icon='upload icon') }}
+                {{ dropdown_choice('Download Resources', 'single_resource.index',
+                                    icon='download icon') }}
+            </div>
+        </div>
         <a href="{{ url_for('account.manage') }}" class="item">Your Account</a>
         <a href="{{ url_for('account.logout') }}" class="item">Log out</a>
     {% else %}
