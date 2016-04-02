@@ -3,6 +3,7 @@ from . import main
 from ..models import Resource
 import json
 
+
 @main.route('/', methods=['GET'])
 def index():
     return render_template('main/index.html')
@@ -18,7 +19,7 @@ def getResource():
     counter = 0
     for name in names:
         this_pin = {'Name': name, 'Latitude': lats[counter], 'Longitude':
-           longs[counter]}
+            longs[counter]}
         counter = counter + 1
         data.append(this_pin)
     return json.dumps(data)
@@ -32,6 +33,7 @@ def getInfo():
     # Resource.name == request.data))
     print request.form.data
     return json.dumps({'Address': 'test', 'Description': 'decrption test text'})
+
 
 
 
