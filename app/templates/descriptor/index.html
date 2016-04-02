@@ -1,7 +1,88 @@
 {% extends 'layouts/base.html' %}
 
 {% block content %}
-  <div class="ui text container">
-    This is a page for descriptors.
-  </div>
+    <div class="ui stackable grid container">
+        <div class="sixteen wide tablet twelve wide computer centered column">
+            <h2 class="ui header">
+                Descriptors
+                <div class="sub header">
+                    View and edit current resource descriptors.
+                </div>
+            </h2>
+
+            <div class="ui menu">
+                <div id="select-type" class="ui dropdown item">
+                    <div class="text">
+                        All descriptors
+                    </div>
+                    <i class="dropdown icon"></i>
+                    <div class="menu">
+                        <div class="item" data-value="">All Descriptors</div>
+                        <div class="item" data-value="Text">Text</div>
+                        <div class="item" data-value="Option">Options</div>
+                    </div>
+                </div>
+                <div class="ui right search item">
+                    <div class="ui transparent icon input">
+                        <input id="search-descriptors" type="text" placeholder="Search descriptors…">
+                        <i class="search icon"></i>
+                    </div>
+                </div>
+            </div>
+
+            {# Use overflow-x: scroll so that mobile views don't freak out
+             # when the table is too wide #}
+            <div style="overflow-x: scroll;">
+                <table class="ui searchable sortable unstackable selectable celled table">
+                    <thead>
+                        <tr>
+                            <th class="sorted ascending">Name</th>
+                            <th class="sorted ascending">Type</th>
+                            <th>Values</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                    {% for d in descriptors | sort(attribute='name') %}
+                        <tr onclick="window.location.href = '{{ url_for('descriptor.edit_descriptor', desc_id=d.id) }}';">
+
+                            <td>{{ d.name }}</td>
+                            {% if not d.values %}
+                                <td class="descriptor type">Text</td>
+                                <td></td>
+                            {% else %}
+                                <td class="descriptor type">Option</td>
+                                <td>{{ ', '.join(d.values) }}</td>
+                            {% endif %}
+                        </tr>
+                    {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+
+    <script type="text/javascript">
+        $(document).ready(function () {
+            $('#search-descriptors').keyup(function () {
+                var searchText = $(this).val();
+                if (searchText.length > 0) {
+                    $('tbody td:icontains(' + searchText + ')').addClass('positive');
+                    $('td.positive').not(':icontains(' + searchText + ')').removeClass('positive');
+                    $('tbody td').not(':icontains(' + searchText + ')').closest('tr').addClass('hidden').hide();
+                    $('tr.hidden:icontains(' + searchText + ')').removeClass('hidden').show();
+                } else {
+                    $('td.positive').removeClass('positive');
+                    $('tr.hidden').removeClass('hidden').show();
+                }
+            });
+
+            $('#select-type').dropdown({
+                onChange: function (value, text, $selectedItem) {
+                    console.log(value);
+                    $('td.descriptor.type:contains(' + value + ')').closest('tr').removeClass('hidden').show();
+                    $('td.descriptor.type').not(':contains(' + value + ')').closest('tr').addClass('hidden').hide();
+                }
+            });
+        });
+    </script>
 {% endblock %}
