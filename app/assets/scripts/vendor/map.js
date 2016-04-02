@@ -93,14 +93,13 @@
         }).done(function(data){
             data = JSON.parse(data)
             for(var i = 0; i < data.length; i++){
-            //we have the pins data, access it here and place pins on map
-              latLng = new google.maps.LatLng(data[i].Latitude, data[i]
-              .Longitude)
+              latLng = new google.maps.LatLng(data[i].latitude, data[i]
+              .longitude)
               var marker = new google.maps.Marker({
                 position: latLng,
                 map: map,
                 visible: true,
-                title: data[i].Name
+                title: data[i].name
               });
 
               var infowindow = new google.maps.InfoWindow({

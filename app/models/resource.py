@@ -131,13 +131,5 @@ class Resource(db.Model):
             print resource.text_descriptors
             print resource.option_descriptors
 
-    @staticmethod
-    def get_resources():
-        resources = []
-        for resource in db.session.query(Resource).all():
-            print resource
-            resources.insert(resource)
-        return resources
-
 
 

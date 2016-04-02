@@ -9,13 +9,14 @@ def index():
     return render_template('main/index.html')
 
 @main.route('/get-resource', methods=['GET'])
-def getResource():
+def get_resource():
     Resource.generate_fake()
     pins = Resource.query.all()
     data = []
     for pin in pins:
-       this_pin = {'Name': pin.name, 'Latitude': pin.latitude, 'Longitude':
-           pin.longitude}
+       this_pin = {
+           'name': pin.name,
+           'latitude': pin.latitude,
+           'longitude': pin.longitude}
        data.append(this_pin)
-    print data
     return json.dumps(data)
