@@ -2,11 +2,12 @@ from flask import render_template
 from . import main
 from ..models import Resource
 import json
-from flask import jsonify
+
 
 @main.route('/', methods=['GET'])
 def index():
     return render_template('main/index.html')
+
 
 @main.route('/get-resource', methods=['GET'])
 def get_resource():

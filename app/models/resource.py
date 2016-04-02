@@ -1,5 +1,5 @@
-from flask import current_app
 from .. import db
+
 
 class OptionAssociation(db.Model):
     """Association between a resource and a descriptor with an index
@@ -84,7 +84,7 @@ class Resource(db.Model):
 
         for i in range(num_options):
             options.append(Descriptor(
-                name=fake.word(), 
+                name=fake.word(),
                 values=['True', 'False']
             ))
 
@@ -121,6 +121,7 @@ class Resource(db.Model):
                 db.session.commit()
             except IntegrityError:
                 db.session.rollback()
+
 
     @staticmethod
     def print_resources():
