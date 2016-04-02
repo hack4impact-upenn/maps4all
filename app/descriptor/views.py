@@ -1,7 +1,7 @@
-from flask import flash, render_template, redirect, url_for
+from flask import abort, flash, render_template, redirect, url_for
 from flask.ext.login import login_required
 
-from forms import EditDescriptorForm, NewDescriptorForm
+from forms import ChangeNameForm, EditDescriptorForm, NewDescriptorForm
 from . import descriptor
 from .. import db
 from ..models import Descriptor
@@ -37,7 +37,71 @@ def new_descriptor():
     return render_template('descriptor/new_descriptor.html', form=form)
 
 
-@descriptor.route('/descriptor/<int:desc_id>', methods=['GET', 'POST'])
+@descriptor.route('/<int:desc_id>', methods=['GET', 'POST'])
+@descriptor.route('/<int:desc_id>/info')
+@login_required
+def descriptor_info(desc_id):
+    descriptor = Descriptor.query.filter_by(id=desc_id).first()
+    if descriptor is None:
+        abort(404)
+    return render_template('descriptor/manage_descriptor.html',
+                           desc=descriptor)
+
+
+@descriptor.route('/<int:desc_id>/change-name', methods=['GET', 'POST'])
+@login_required
+def change_name(desc_id):
+    """Change a descriptor's name."""
+    descriptor = Descriptor.query.filter_by(id=desc_id).first()
+    old_name = descriptor.name
+    if descriptor is None:
+        abort(404)
+    form = ChangeNameForm()
+    if form.validate_on_submit():
+        descriptor.name = form.name.data
+        db.session.add(descriptor)
+        db.session.commit()
+        flash('Name for descriptor {} successfully changed to {}.'
+              .format(old_name, descriptor.name),
+              'form-success')
+    else:
+        form.name.data = descriptor.name
+    return render_template('descriptor/manage_descriptor.html',
+                           desc=descriptor, form=form)
+
+
+@descriptor.route('/<int:desc_id>/change-option-values',
+                  methods=['GET', 'POST'])
+@login_required
+def change_option_values(desc_id):
+    """Change a descriptor's option values."""
+    descriptor = Descriptor.query.filter_by(id=desc_id).first()
+    if descriptor is None:
+        abort(404)
+    form = ChangeNameForm()
+    if form.validate_on_submit():
+        descriptor.name = form.name.data
+        db.session.add(descriptor)
+        db.session.commit()
+        flash('Option for descriptor {} successfully changed.'
+              .format(descriptor.name),
+              'form-success')
+    return render_template('descriptor/manage_descriptor.html',
+                           desc=descriptor,
+                           form=form)
+
+
+@descriptor.route('/<int:desc_id>/delete')
+@login_required
+def delete_descriptor_request(desc_id):
+    """Request deletion of a user's account."""
+    descriptor = Descriptor.query.filter_by(id=desc_id).first()
+    if descriptor is None:
+        abort(404)
+    return render_template('descriptor/manage_descriptor.html',
+                           desc=descriptor)
+
+
 @login_required
 def edit_descriptor(desc_id):
     """Edit a new descriptor."""
@@ -68,7 +132,7 @@ def edit_descriptor(desc_id):
                            is_option=is_option, desc_id=desc_id)
 
 
-@descriptor.route('/descriptor/<int:desc_id>/delete')
+@descriptor.route('/<int:desc_id>/delete')
 @login_required
 def delete_descriptor(desc_id):
     """Deletes a descriptor."""

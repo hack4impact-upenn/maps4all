@@ -13,6 +13,11 @@ class NewDescriptorForm(Form):
     submit = SubmitField('Add descriptor')
 
 
+class ChangeNameForm(Form):
+    name = TextField('Name', validators=[InputRequired(), Length(1, 64)])
+    submit = SubmitField('Update name')
+
+
 class EditDescriptorForm(Form):
     name = TextField('Name', validators=[InputRequired(), Length(1, 64)])
     option_values = FieldList(TextField('Option', [Length(0, 64)]))
