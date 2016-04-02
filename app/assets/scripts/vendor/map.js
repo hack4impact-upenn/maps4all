@@ -92,15 +92,31 @@
               });
 
               var infowindow = new google.maps.InfoWindow({
-                content: 'Have to fix the content with variable shadowing'
+                content: 'i cannot get this'
               });
 
-              marker.addListener('mouseover', function() {
-                infowindow.open(map, this);
+              var expandedwindow = new google.maps.InfoWindow({
+                content: '<div id="content">'+
+                  '<p><b>'+ data[i].Name +'</b></p>'+
+                  '</div>'
               });
-              marker.addListener('mouseout', function() {
-                infowindow.close();
+
+              marker.addListener('click', function() {
+                var json_data = {
+                    csrf_token: $('meta[name="csrf-token"]').prop('content'),
+                    data: data[i].Name
+                };
+                console.log(data[i].Name)
+                $.post("/get-info", json_data)
+                .done(function() {
+                    console.log('success');
+                }).fail(function() {
+                    console.log('fail');
+                });
+                //expandedwindow.setContent()
+                expandedwindow.open(map, this);
               });
+
               marker.setMap(map);
              }
          })

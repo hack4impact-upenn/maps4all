@@ -1,6 +1,7 @@
-from flask import render_template
+from flask import render_template, request
 from . import main
-from ..models import Resource
+from ..models import Resource, User
+from .. import db
 import json
 from flask import jsonify
 
@@ -11,11 +12,28 @@ def index():
 @main.route('/get-resource', methods=['GET'])
 def getResource():
     Resource.generate_fake()
-    pins = Resource.query.all()
+    #pins = Resource.query.all()
+    names = Resource.query.with_entities(Resource.name)
+    lats = Resource.query.with_entities(Resource.latitude)
+    longs = Resource.query.with_entities(Resource.longitude)
     data = []
-    for pin in pins:
-       this_pin = {'Name': pin.name, 'Latitude': pin.latitude, 'Longitude':
-           pin.longitude}
-       data.append(this_pin)
-    print data
+    counter = 0
+    for name in names:
+        this_pin = {'Name': name, 'Latitude': lats[counter], 'Longitude':
+           longs[counter]}
+        counter = counter + 1
+        data.append(this_pin)
     return json.dumps(data)
+
+@main.route('/get-info', methods=['POST'])
+def getInfo():
+    #select address, text_descriptor when name is object.name
+    #print(request.data)
+    #s = Resource.select([Resource.address, Resource.text_desciptors].where(Resource.name == request.data))
+    print request.form.data
+    return json.dumps({'Address': 'test', 'Description': 'decrption test text'})
+
+
+
+
+
