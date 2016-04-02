@@ -15,9 +15,9 @@ def get_resource():
     pins = Resource.query.all()
     data = []
     for pin in pins:
-       this_pin = {
+        this_pin = {
            'name': pin.name,
            'latitude': pin.latitude,
            'longitude': pin.longitude}
-       data.append(this_pin)
+        data.append(this_pin)
     return json.dumps(data)

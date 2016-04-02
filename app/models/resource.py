@@ -11,14 +11,15 @@ class OptionAssociation(db.Model):
     descriptor_id = db.Column(db.Integer, db.ForeignKey('descriptors.id'),
                               primary_key=True)
     option = db.Column(db.Integer)
-    resource = db.relationship('Resource', 
+    resource = db.relationship('Resource',
                                back_populates='option_descriptors')
-    descriptor = db.relationship('Descriptor', 
+    descriptor = db.relationship('Descriptor',
                                  back_populates='option_resources')
 
     def __repr__(self):
         return '%s: %s' % (self.descriptor.name,
                            self.descriptor.values[self.option])
+
 
 class TextAssociation(db.Model):
     """Association between a resource and a descriptor with a text
@@ -36,6 +37,7 @@ class TextAssociation(db.Model):
     def __repr__(self):
         return '%s: %s' % (self.descriptor.name, self.text)
 
+
 class Descriptor(db.Model):
     """Schema for descriptors that contain the name and values for an 
     attribute of a resource
@@ -52,6 +54,7 @@ class Descriptor(db.Model):
     def __repr__(self):
         return '<Descriptor \'%s\'>' % self.name
 
+
 class Resource(db.Model):
     """Schema for resources with relationships to descriptors """
     __tablename__ = 'resources'
@@ -64,6 +67,7 @@ class Resource(db.Model):
                                        back_populates='resource')
     option_descriptors = db.relationship('OptionAssociation',
                                          back_populates='resource')
+
 
     def __repr__(self):
         return '<Resource \'%s\'>' % self.name
