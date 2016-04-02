@@ -2,7 +2,7 @@ import csv
 from datetime import datetime
 
 from flask import redirect, render_template, url_for
-from flask.ext.login import login_required
+from flask.ext.login import current_user, login_required
 
 from . import bulk_resource
 from .. import db
@@ -22,9 +22,8 @@ def index():
             csv_container = CsvContainer(
                 date_uploaded=datetime.now(),
                 file_name=csv_data.filename,
+                user=current_user
             )
-            # TODO: Associate CSV file with current_user.
-            # csv_container.user = current_user
 
             # Iterate through the CSV file row-by-row and then cell-by-cell.
             # Each cell contains one comma-separated string in a row of a CSV
@@ -48,7 +47,6 @@ def index():
 @bulk_resource.route('/review')
 @login_required
 def review():
-    # TODO: Retrieve CSV associated with current_user.
-    csv_container = CsvContainer.query.first()
+    csv_container = CsvContainer.query.filter_by(user=current_user).first()
     return render_template('bulk_resource/review.html',
                            csv_container=csv_container)
