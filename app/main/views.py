@@ -27,15 +27,6 @@ def getResource():
 
 @main.route('/get-info', methods=['POST'])
 def getInfo():
-    # select address, text_descriptor when name is object.name
-    # print(request.data)
-    # s = Resource.select([Resource.address, Resource.text_desciptors].where(
-    # Resource.name == request.data))
     print request.form.data
     return json.dumps({'Address': 'test', 'Description': 'decrption test text'})
-
-
-
-
-
 
