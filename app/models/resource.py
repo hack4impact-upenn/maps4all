@@ -94,11 +94,11 @@ class Resource(db.Model):
         for i in range(count):
 
             # Generates random coordinates around Philadelphia.
-            latitude=str(fake.geo_coordinate(
+            latitude = str(fake.geo_coordinate(
                 center=center_lat,
                 radius=0.01
             ))
-            longitude=str(fake.geo_coordinate(
+            longitude = str(fake.geo_coordinate(
                 center=center_long,
                 radius=0.01
             ))
@@ -125,13 +125,11 @@ class Resource(db.Model):
             except IntegrityError:
                 db.session.rollback()
 
-
     @staticmethod
     def print_resources():
         for resource in db.session.query(Resource).all():
-            print resource 
+            print resource
             print resource.address
             print '(%s , %s)' % (resource.latitude, resource.longitude)
             print resource.text_descriptors
             print resource.option_descriptors
-
