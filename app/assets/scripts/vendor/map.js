@@ -31,9 +31,6 @@
 
         autocomplete.addListener('place_changed', function() {
           infowindow.close();
-          var markerToAdd = new google.maps.Marker({
-            map: map
-          });
 
           var place = autocomplete.getPlace();
           if (!place.geometry) {
@@ -48,18 +45,6 @@
             map.setCenter(place.geometry.location);
             map.setZoom(17);  // Why 17? Because it looks good.
           }
-          markerToAdd.setIcon(/** @type {google.maps.Icon} */({
-            url: place.icon,
-            size: new google.maps.Size(71, 71),
-            origin: new google.maps.Point(0, 0),
-            anchor: new google.maps.Point(17, 34),
-            scaledSize: new google.maps.Size(35, 35)
-          }));
-          markerToAdd.setPosition(place.geometry.location);
-          markerToAdd.setVisible(true);
-          markerToAdd.setTitle(place.name);
-          markers.push(markerToAdd);
-          marker = markerToAdd;
 
           var address = '';
           if (place.address_components) {
@@ -112,7 +97,9 @@
               marker.addListener('mouseout', function() {
                 infowindow.close();
               });
+              marker['infowindow'] = infowindow;
               marker.setMap(map);
+              markers.push(marker);
              }
          })
 
@@ -140,7 +127,7 @@
                   markersToShow.push(markers[i]);
               }
           }
-          var table = $("<table border=1></table>");
+          var table = $("<table border=0></table>");
           $.each(markersToShow, function(i, markerToShow) {
             tableCell = document.createElement('td');
             $(tableCell).attr({
@@ -148,21 +135,23 @@
             });
             tableCellBoldTitle = document.createElement('strong');
             tableCellNewline = document.createElement('br');
-            $(tableCellBoldTitle).html(markerToShow.getTitle());
-            $(tableCell).append(tableCellBoldTitle, 
-                                tableCellNewline, 
-                                markerToShow.getLabel());
             tableCellInnerDiv = document.createElement('div');
             $(tableCellInnerDiv).attr({
               'style': 'width:50px;height:50px; text-align:right; float: right;'
             });
-            tableCellImg = document.createElement('img');
+            tableCellImg = document.createElement('img');            
             $(tableCellImg).attr({
-              'src': markerToShow.getIcon().url,
-              'style': 'width:50px;height:50px;'
-            });
-            $(tableCellInnerDiv).append(tableCellImg);
+              'src': 'http://www.google.com/intl/en_us/mapfiles/ms/micons/red-dot.png',
+              'style': 'width:50%;height:50%;'
+            });      
+            $(tableCellInnerDiv).append(tableCellImg);      
+            $(tableCellBoldTitle).html(markerToShow.getTitle());
             $(tableCell).append(tableCellInnerDiv);
+            $(tableCell).append(tableCellBoldTitle, tableCellNewline,
+                                markerToShow['infowindow'].content);
+            
+            table.append('<br>');
+            table.append('<br>');
             table.append(tableCell);
           });
           $("#list").append(table);
