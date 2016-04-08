@@ -1,10 +1,13 @@
 {% extends 'layouts/base.html' %}
+{% import 'macros/form_macros.html' as f %}
 
 {% block content %}
     <div class="ui text container">
-        <h2 class="ui dividing header">Edit Resource</h2>
+        <h2 class="ui dividing header">Edit Name and Location</h2>
         {% include 'single_resource/resource_form.html' %}
+        <h2 class="ui dividing header">Edit Other Data</h2>
+        {{ f.render_form(resource_descriptors_form) }}
         <a href=""
-           class="ui negative deletion button">Delete</a>
+           class="ui negative deletion button">Delete Resource</a>
     </div>
 {% endblock %}

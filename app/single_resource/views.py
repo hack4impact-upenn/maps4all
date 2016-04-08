@@ -1,11 +1,12 @@
 from flask import flash, redirect, render_template, url_for
 from flask.ext.login import login_required
 from sqlalchemy.exc import IntegrityError
+from wtforms.fields import SelectField, StringField, SubmitField
 
 from .. import db
-from ..models import Resource
+from ..models import Descriptor, OptionAssociation, Resource, TextAssociation
 from . import single_resource
-from .forms import SingleResourceForm
+from .forms import BaseForm, SingleResourceForm
 
 
 @single_resource.route('/')
@@ -44,14 +45,15 @@ def create():
 @login_required
 def edit(resource_id):
     """Edit a resource."""
+    # Handling and rendering the form for editing the main resource data
     resource = Resource.query.get(resource_id)
     field_names = Resource.__table__.columns.keys()
-    form = SingleResourceForm()
-    if form.validate_on_submit():
-        resource.name = form.name.data
-        resource.address = form.address.data
-        resource.latitude = form.latitude.data
-        resource.longitude = form.longitude.data
+    resource_main_form = SingleResourceForm()
+    if resource_main_form.validate_on_submit():
+        resource.name = resource_main_form.name.data
+        resource.address = resource_main_form.address.data
+        resource.latitude = resource_main_form.latitude.data
+        resource.longitude = resource_main_form.longitude.data
         try:
             db.session.commit()
             flash('Resource updated', 'form-success')
@@ -62,7 +64,36 @@ def edit(resource_id):
             flash('Error: failed to save resource. Please try again.',
                   'form-error')
     for field_name in field_names[1:]:
-        form[field_name].data = resource.__dict__[field_name]
+        resource_main_form[field_name].data = resource.__dict__[field_name]
+    # Handling and rendering the form for editing the resource descriptors
+    descriptors = Descriptor.query.all()
+    for descriptor in descriptors:
+        if (descriptor.values):
+            choices = [(v, v) for v in descriptor.values]
+            default = None
+            association = OptionAssociation.query.filter_by(
+                resource_id=resource_id,
+                descriptor_id=descriptor.id
+            ).first()
+            if (association is not None):
+                default = descriptor.values[association.option]
+            setattr(
+                BaseForm,
+                descriptor.name,
+                SelectField(choices=choices, default=default)
+            )
+        else:
+            default = None
+            association = TextAssociation.query.filter_by(
+                resource_id=resource_id,
+                descriptor_id=descriptor.id
+            ).first()
+            if (association is not None):
+                default = association.text
+            setattr(BaseForm, descriptor.name, StringField(default=default))
+    setattr(BaseForm, 'submit', SubmitField('Save Data'))
+    resource_descriptors_form = BaseForm()
     return render_template('single_resource/edit.html',
-                           form=form,
-                           resource_id=resource_id)
+                           resource_id=resource_id,
+                           form=resource_main_form,
+                           resource_descriptors_form=resource_descriptors_form)

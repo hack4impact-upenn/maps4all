@@ -3,6 +3,10 @@ from wtforms.fields import FloatField, StringField, SubmitField
 from wtforms.validators import InputRequired, Length
 
 
+class BaseForm(Form):
+    pass
+
+
 class SingleResourceForm(Form):
     name = StringField('Name', validators=[
         InputRequired(),
