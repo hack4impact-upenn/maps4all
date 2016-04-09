@@ -17,6 +17,7 @@
         'success': get_flashed_messages(category_filter=['form-success'])
     } %}
 
+    {# Custom form rendering #}
     {% if form.type == 'FormField' and form.form_class.__name__ == 'ThreeOptionNavigationForm' %}
         {{ begin_form(form, flashes, method=method, extra_classes=extra_classes, enctype=enctype) }}
 
