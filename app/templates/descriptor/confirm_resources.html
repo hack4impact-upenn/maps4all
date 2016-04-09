@@ -1,0 +1,73 @@
+{% extends 'layouts/base.html' %}
+
+{% block content %}
+    <div class="ui stackable grid container">
+        <div class="sixteen wide tablet twelve wide computer centered column">
+            <h2 class="ui header">
+                {{ desc.name }}
+                <div class="sub header">
+                    Resolve issues with current resources.
+                </div>
+            </h2>
+
+            <h3 class="ui red block header">
+                <i class="warning circle icon"></i>
+                <div class="content">
+                    Action Required
+                    <div class="sub header">
+                        Deleting the value {{ desc.values[option_index] }} from descriptor {{ desc.name }}
+                        will affect this resources. Please select the new value for the resources below.
+                    </div>
+                </div>
+            </h3>
+
+            <div class="ui menu">
+                <div class="ui search item">
+                    <div class="ui transparent icon input">
+                        <input id="search-resources" type="text" placeholder="Search resources...">
+                        <i class="search icon"></i>
+                    </div>
+                </div>
+            </div>
+
+            {# Use overflow-x: scroll so that mobile views don't freak out
+             # when the table is too wide #}
+            <div style="overflow-x: scroll;">
+                <table class="ui searchable sortable unstackable selectable celled table">
+                    <thead>
+                        <tr>
+                            <th class="sorted ascending">Name</th>
+                            <th class="sorted ascending">{{ desc.name }}</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                    {% for oa in option_assocs | sort(attribute='resource.name')%}
+                        <tr onclick="window.location.href = '{{ url_for('descriptor.descriptor_info', desc_id=desc.id) }}';">
+
+                            <td>{{ oa.resource.name }}</td>
+                            <td class="descriptor value">{{ desc.values[oa.option] }}</td>
+                        </tr>
+                    {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+
+    <script type="text/javascript">
+        $(document).ready(function () {
+            $('#search-resources').keyup(function () {
+                var searchText = $(this).val();
+                if (searchText.length > 0) {
+                    $('tbody td:icontains(' + searchText + ')').addClass('positive');
+                    $('td.positive').not(':icontains(' + searchText + ')').removeClass('positive');
+                    $('tbody td').not(':icontains(' + searchText + ')').closest('tr').addClass('hidden').hide();
+                    $('tr.hidden:icontains(' + searchText + ')').removeClass('hidden').show();
+                } else {
+                    $('td.positive').removeClass('positive');
+                    $('tr.hidden').removeClass('hidden').show();
+                }
+            });
+        });
+    </script>
+{% endblock %}

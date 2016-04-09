@@ -49,6 +49,7 @@ class Descriptor(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     name = db.Column(db.String(64), index=True)
     values = db.Column(db.PickleType)
+    is_searchable = db.Column(db.Boolean)
     text_resources = db.relationship(
         'TextAssociation',
         back_populates='descriptor',
@@ -105,7 +106,8 @@ class Resource(db.Model):
         for i in range(num_options):
             options.append(Descriptor(
                 name=fake.word(),
-                values=['True', 'False']
+                values=['True', 'False'],
+                is_searchable=fake.boolean()
             ))
 
         for i in range(count):

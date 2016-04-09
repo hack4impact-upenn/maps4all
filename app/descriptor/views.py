@@ -1,10 +1,14 @@
 from flask import abort, flash, render_template, redirect, url_for
 from flask.ext.login import login_required
 
-from forms import ChangeNameForm, EditDescriptorForm, NewDescriptorForm
+from forms import (
+    ChangeNameForm,
+    EditResourceOptionForm,
+    NewDescriptorForm
+)
 from . import descriptor
 from .. import db
-from ..models import Descriptor
+from ..models import Descriptor, OptionAssociation
 
 
 @descriptor.route('/')
@@ -41,18 +45,20 @@ def new_descriptor():
 @descriptor.route('/<int:desc_id>/info')
 @login_required
 def descriptor_info(desc_id):
-    descriptor = Descriptor.query.filter_by(id=desc_id).first()
+    """Display the descriptor info."""
+    descriptor = Descriptor.query.get(desc_id)
+    is_option = len(descriptor.values) != 0
     if descriptor is None:
         abort(404)
     return render_template('descriptor/manage_descriptor.html',
-                           desc=descriptor)
+                           desc=descriptor, is_option=is_option)
 
 
-@descriptor.route('/<int:desc_id>/change-name', methods=['GET', 'POST'])
+@descriptor.route('/<int:desc_id>/name', methods=['GET', 'POST'])
 @login_required
 def change_name(desc_id):
     """Change a descriptor's name."""
-    descriptor = Descriptor.query.filter_by(id=desc_id).first()
+    descriptor = Descriptor.query.get(desc_id)
     old_name = descriptor.name
     if descriptor is None:
         abort(404)
@@ -70,73 +76,80 @@ def change_name(desc_id):
                            desc=descriptor, form=form)
 
 
-@descriptor.route('/<int:desc_id>/change-option-values',
+@descriptor.route('/<int:desc_id>/option-values')
+@login_required
+def change_option_values_request(desc_id):
+    """Request change of a descriptor's option values."""
+    descriptor = Descriptor.query.get(desc_id)
+    is_option = len(descriptor.values) != 0
+    if not is_option:
+        abort(404)
+    return render_template('descriptor/manage_descriptor.html',
+                           desc=descriptor, is_option=is_option,
+                           desc_id=desc_id)
+
+
+@descriptor.route('/<int:desc_id>/option-values/edit/<int:option_index>',
                   methods=['GET', 'POST'])
 @login_required
-def change_option_values(desc_id):
-    """Change a descriptor's option values."""
-    descriptor = Descriptor.query.filter_by(id=desc_id).first()
-    if descriptor is None:
+def edit_option_value(desc_id, option_index):
+    """Request change of a descriptor's option values."""
+    descriptor = Descriptor.query.get(desc_id)
+    is_option = len(descriptor.values) != 0
+    form = EditResourceOptionForm()
+    if not is_option:
         abort(404)
-    form = ChangeNameForm()
     if form.validate_on_submit():
-        descriptor.name = form.name.data
+        old_value = descriptor.values[option_index]
+        descriptor.values[option_index] = form.value.data
         db.session.add(descriptor)
-        db.session.commit()
-        flash('Option for descriptor {} successfully changed.'
-              .format(descriptor.name),
+        db.session.commit()  # Currently not working.
+        flash('Value {} for descriptor {} successfully changed to {}.'
+              .format(old_value, descriptor.name,
+                      descriptor.values[option_index]),
               'form-success')
+    else:
+        form.value.data = descriptor.values[option_index]
     return render_template('descriptor/manage_descriptor.html',
-                           desc=descriptor,
-                           form=form)
+                           desc=descriptor, is_option=is_option,
+                           desc_id=desc_id, form=form)
+
+
+@descriptor.route('/<int:desc_id>/option_values/remove/<int:option_index>')
+@login_required
+def remove_option_value(desc_id, option_index):
+    """Remove a descriptor's option values."""
+
+    descriptor = Descriptor.query.get(desc_id)
+
+    option_assocs = OptionAssociation.query.filter(db.and_(
+        OptionAssociation.descriptor_id == desc_id,
+        OptionAssociation.option == option_index
+        )).all()
+
+    # TODO: Make this into some sort of form to modify the resources
+
+    return render_template('descriptor/confirm_resources.html',
+                           option_assocs=option_assocs, desc_id=desc_id,
+                           desc=descriptor, option_index=option_index)
 
 
 @descriptor.route('/<int:desc_id>/delete')
 @login_required
 def delete_descriptor_request(desc_id):
     """Request deletion of a user's account."""
-    descriptor = Descriptor.query.filter_by(id=desc_id).first()
+    descriptor = Descriptor.query.get(desc_id)
     if descriptor is None:
         abort(404)
     return render_template('descriptor/manage_descriptor.html',
                            desc=descriptor)
 
 
-@login_required
-def edit_descriptor(desc_id):
-    """Edit a new descriptor."""
-    form = EditDescriptorForm()
-    descriptor = Descriptor.query.filter_by(id=desc_id).first()
-    is_option = len(descriptor.values) != 0
-
-    if form.validate_on_submit():
-        values = []
-        for v in form.option_values.data:
-            if v is not None and len(v) != 0:
-                values.append(v)
-        descriptor.name = form.name.data
-        descriptor.values = values
-        db.session.add(descriptor)
-        db.session.commit()
-        flash('Successfully editted descriptor %s.' % descriptor.name,
-              'success')
-        return redirect(url_for('descriptor.index'))
-    else:
-        form.name.data = descriptor.name
-        for i in range(10):
-            if i < len(descriptor.values):
-                form.option_values.append_entry(descriptor.values[i])
-            else:
-                form.option_values.append_entry()
-    return render_template('descriptor/edit_descriptor.html', form=form,
-                           is_option=is_option, desc_id=desc_id)
-
-
 @descriptor.route('/<int:desc_id>/delete')
 @login_required
 def delete_descriptor(desc_id):
     """Deletes a descriptor."""
-    descriptor = Descriptor.query.filter_by(id=desc_id).first()
+    descriptor = Descriptor.query.get(desc_id)
     db.session.delete(descriptor)
     db.session.commit()
     flash('Successfully deleted descriptor %s.' % descriptor.name, 'success')

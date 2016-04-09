@@ -18,7 +18,7 @@ class ChangeNameForm(Form):
     submit = SubmitField('Update name')
 
 
-class EditDescriptorForm(Form):
-    name = TextField('Name', validators=[InputRequired(), Length(1, 64)])
-    option_values = FieldList(TextField('Option', [Length(0, 64)]))
-    submit = SubmitField('Edit descriptor')
+class EditResourceOptionForm(Form):
+    value = TextField('Option Value',
+                      validators=[InputRequired(), Length(1, 64)])
+    submit = SubmitField('Update option value')
