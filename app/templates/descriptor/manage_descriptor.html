@@ -14,7 +14,7 @@
 {% macro navigation(items) %}
     <div class="ui vertical fluid secondary menu">
         {% for route, name in items %}
-            {% if is_option or not route == 'descriptor.change_option_values' %}
+            {% if is_option or not route == change_endpoint %}
                 {% set href = url_for(route, desc_id=desc.id) %}
                 <a class="item {% if request.endpoint == route %}active{% endif %}" href="{{ href }}">
                     {{ name }}
