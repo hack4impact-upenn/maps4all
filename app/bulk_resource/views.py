@@ -7,7 +7,7 @@ from flask.ext.login import current_user, login_required
 from . import bulk_resource
 from .. import db
 from ..models import CsvCell, CsvContainer, CsvRow
-from forms import UploadForm
+from forms import DetermineDescriptorTypesForm, UploadForm
 
 
 @bulk_resource.route('/upload', methods=['GET', 'POST'])
@@ -48,5 +48,13 @@ def index():
 @login_required
 def review():
     csv_container = CsvContainer.query.filter_by(user=current_user).first()
+    form = DetermineDescriptorTypesForm()
+
+    # Add one text/option toggle for each CSV header.
+    for i, csv_cell in enumerate(csv_container.header_row().csv_cells):
+        form.descriptor_types.append_entry()
+        form.descriptor_types[i].label = csv_cell.data
+
     return render_template('bulk_resource/review.html',
-                           csv_container=csv_container)
+                           csv_container=csv_container,
+                           form=form)

@@ -1,7 +1,34 @@
 {% extends 'layouts/base.html' %}
+{% import 'macros/form_macros.html' as f %}
 
 {% block content %}
     <div class="ui stackable centered grid container">
+        <div class="twelve wide column">
+            <div class="ui fluid steps">
+                <div class="completed step">
+                    <i class="truck icon"></i>
+                    <div class="content">
+                        <div class="title">Upload</div>
+                        <div class="description">Upload your CSV file</div>
+                    </div>
+                </div>
+                <div class="active step">
+                    <i class="configure icon"></i>
+                    <div class="content">
+                        <div class="title">Configure</div>
+                        <div class="description">Review your data</div>
+                    </div>
+                </div>
+                <div class="disabled step">
+                    <i class="save icon"></i>
+                    <div class="content">
+                        <div class="title">Save</div>
+                        <div class="description">Add your data</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
         <div class="twelve wide column">
             <h2 class="ui header">
                 Review
@@ -12,29 +39,7 @@
             identify each column as either text or an option.
         </div>
         <div class="twelve wide column">
-            <table class="ui celled striped table">
-                <thead>
-                    <tr>
-                        <th>
-                            Column Name
-                        </th>
-                        <th>
-                            Column Type
-                        </th>
-                    </tr>
-                </thead>
-                <tbody>
-                {% set csv_header_row = csv_container.header_row() %}
-                {% for csv_cell in csv_header_row.csv_cells %}
-                <tr>
-                    <td>
-                        {{ csv_cell.data }}
-                    </td>
-                    <td class="right aligned collapsing">10 hours ago</td>
-                </tr>
-                {% endfor %}
-                </tbody>
-            </table>
+            {{ f.render_form(form) }}
         </div>
     </div>
 {% endblock %}

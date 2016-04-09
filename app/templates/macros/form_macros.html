@@ -17,20 +17,38 @@
         'success': get_flashed_messages(category_filter=['form-success'])
     } %}
 
-    {{ begin_form(form, flashes, method=method, extra_classes=extra_classes, enctype=enctype) }}
-        {% for field in form if not (is_hidden_field(field) or field.type == 'SubmitField') %}
-            {{ render_form_field(field) }}
-        {% endfor %}
+    {% if form.type == 'FormField' and form.form_class.__name__ == 'NextCancelBackForm' %}
+        {{ begin_form(form, flashes, method=method, extra_classes=extra_classes, enctype=enctype) }}
 
-        {{ form_message(flashes['error'], header='Something went wrong.', class='error') }}
-        {{ form_message(flashes['warning'], header='Check your email.', class='warning') }}
-        {{ form_message(flashes['info'], header='Information', class='info') }}
-        {{ form_message(flashes['success'], header='Success!', class='success') }}
+            {% set back_field = form.__getitem__('submit_back') %}
+            {% set cancel_field = form.__getitem__('submit_cancel') %}
+            {% set next_field = form.__getitem__('submit_next') %}
 
-        {% for field in form | selectattr('type', 'equalto', 'SubmitField') %}
-            {{ render_form_field(field) }}
-        {% endfor %}
-    {{ end_form(form) }}
+            <div class="three ui buttons">
+                {{ back_field(class='ui button') }}
+                {{ cancel_field(class='ui button') }}
+                {{ next_field(class='ui primary button') }}
+            </div>
+
+        {{ end_form(form) }}
+    {% else %}
+        {{ begin_form(form, flashes, method=method, extra_classes=extra_classes, enctype=enctype) }}
+
+            {% for field in form if not (is_hidden_field(field) or field.type == 'SubmitField') %}
+                {{ render_form_field(field) }}
+            {% endfor %}
+
+            {{ form_message(flashes['error'], header='Something went wrong.', class='error') }}
+            {{ form_message(flashes['warning'], header='Check your email.', class='warning') }}
+            {{ form_message(flashes['info'], header='Information', class='info') }}
+            {{ form_message(flashes['success'], header='Success!', class='success') }}
+
+            {% for field in form | selectattr('type', 'equalto', 'SubmitField') %}
+                {{ render_form_field(field) }}
+            {% endfor %}
+        {{ end_form(form) }}
+
+    {% endif %}
 {% endmacro %}
 
 {# Set up the form, including hidden fields and error states #}
