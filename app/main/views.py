@@ -3,6 +3,7 @@ from . import main
 from ..models import Resource
 import json
 
+
 @main.route('/', methods=['GET'])
 def index():
     return render_template('main/index.html')
@@ -27,5 +28,4 @@ def getResource():
 @main.route('/get-info', methods=['POST'])
 def getInfo():
     pin_info = Resource.query.filter_by(name=request.form['data']).first()
-    print request.form['data'] #this is printing the last guy every time
     return json.dumps({'Address': pin_info.address})
