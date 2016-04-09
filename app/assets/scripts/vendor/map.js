@@ -2,6 +2,7 @@
       // parameter when you first load the API. For example:
       // <script src="https://maps.googleapis.com/maps/api/js?key=YOUR_API_KEY&libraries=places">
 
+      var markers = []
       function initMap() {
         var map = new google.maps.Map(document.getElementById('map'), {
           center: {lat: 39.949, lng: -75.181},
@@ -37,7 +38,7 @@
             map.fitBounds(place.geometry.viewport);
           } else {
             map.setCenter(place.geometry.location);
-            map.setZoom(17);  // Why 17? Because it looks good.
+            map.setZoom(17);
           }
           marker.setIcon(/** @type {google.maps.Icon} */({
             url: place.icon,
@@ -75,50 +76,72 @@
         setupClickListener('changetype-address', ['address']);
         setupClickListener('changetype-establishment', ['establishment']);
 
+        var marker = new google.maps.Marker({
+          map: map
+        });
         $.ajax({
           type: "GET",
           url: "/get-resource"
         }).done(function(data){
             data = JSON.parse(data)
             for(var i = 0; i < data.length; i++){
-            //we have the pins data, access it here and place pins on map
-              latLng = new google.maps.LatLng(data[i].Latitude, data[i]
-              .Longitude)
-              var marker = new google.maps.Marker({
-                position: latLng,
-                map: map,
-                visible: true,
-                title: data[i].Name
-              });
+              create_marker(data[i]);
+            }
 
-              var infowindow = new google.maps.InfoWindow({
-                content: 'i cannot get this'
-              });
+             for(var i = 0; i < markers.length; i ++){
+                console.log(markers[i]);
+                markers[i].setMap(map);
+             }
+         })
+
+        function create_marker(data){
+              var markerToAdd = new google.maps.Marker({
+                 map: map
+              })
+              latLng = new google.maps.LatLng(data.Latitude, data
+              .Longitude)
+              markerToAdd.setPosition(latLng);
+              markerToAdd.setVisible(true);
+              markerToAdd.setTitle(data.Name)
 
               var expandedwindow = new google.maps.InfoWindow({
                 content: '<div id="content">'+
-                  '<p><b>'+ data[i].Name +'</b></p>'+
+                  '<p><b>'+ markerToAdd.title +'</b></p>'+
                   '</div>'
               });
 
-              marker.addListener('click', function() {
-                var json_data = {
+              markerToAdd.data = data.Name;
+              var json_data = {
                     csrf_token: $('meta[name="csrf-token"]').prop('content'),
-                    data: data[i].Name
-                };
-                console.log(data[i].Name)
-                $.post("/get-info", json_data)
-                .done(function() {
-                    console.log('success');
-                }).fail(function() {
-                    console.log('fail');
-                });
-                //expandedwindow.setContent()
-                expandedwindow.open(map, this);
-              });
+                    data: markerToAdd.data[0]
+              };
+              markerToAdd.json_data = json_data
+              var values = [];
+              values.push(markerToAdd.json_data);
+              async.each(values,
+                function(value, callback){
+                  markerToAdd.addListener('click', function() {
+                    console.log('right before post: ' + markerToAdd.json_data
+                    .data);
+                    $.post("/get-info", markerToAdd.json_data)
+                    .done(function(data) {
+                        data = JSON.parse(data)
+                        var addressWindow = new google.maps.InfoWindow({
+                          content: '<div id="content">'+
+                         '<p><b>'+ data.Address +'</b></p>'+
+                         '</div>'
+                         });
+                        addressWindow.open(map, markerToAdd);
+                    }).fail(function() {
+                        console.log('fail');
+                    });
+                  });
+                  callback();
+               }, function(){
+                markers.push(markerToAdd)
+              }
+            );
+        }
 
-              marker.setMap(map);
-             }
-         })
       }
 
