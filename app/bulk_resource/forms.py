@@ -18,15 +18,15 @@ class DetermineDescriptorTypeForm(Form):
     ])
 
 
-class NextCancelBackForm(Form):
+class ThreeOptionNavigationForm(Form):
     submit_next = SubmitField('Next')
     submit_cancel = SubmitField('Cancel')
     submit_back = SubmitField('Back')
 
 
 class DetermineDescriptorTypesForm(Form):
-    descriptor_types = FieldList(RadioField('Descriptor Type', choices=[
+    descriptor_types = FieldList(RadioField(choices=[
         ('text', 'Text'),
         ('option', 'Option')
     ], validators=[InputRequired()]))
-    progress = FormField(NextCancelBackForm)
+    navigation = FormField(ThreeOptionNavigationForm)

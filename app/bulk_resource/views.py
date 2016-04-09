@@ -44,16 +44,31 @@ def index():
     return render_template('bulk_resource/upload.html', form=form)
 
 
-@bulk_resource.route('/review')
+@bulk_resource.route('/review', methods=['GET', 'POST'])
 @login_required
 def review():
     csv_container = CsvContainer.query.filter_by(user=current_user).first()
     form = DetermineDescriptorTypesForm()
-
-    # Add one text/option toggle for each CSV header.
-    for i, csv_cell in enumerate(csv_container.header_row().csv_cells):
-        form.descriptor_types.append_entry()
-        form.descriptor_types[i].label = csv_cell.data
+    if form.validate_on_submit():
+        if form.navigation.data['submit_next']:
+            for i, data in enumerate(form.descriptor_types.data):
+                if data == 'text':
+                    # TODO: Mark column as a text column.
+                    return redirect(url_for('bulk_resource.index'))
+                elif data == 'option':
+                    # TODO: Mark column as an option column.
+                    return redirect(url_for('bulk_resource.index'))
+        elif form.navigation.data['submit_back']:
+            # TODO: Delete all associated CSV objects.
+            return redirect(url_for('bulk_resource.index'))
+        elif form.navigation.data['submit_cancel']:
+            # TODO: Delete all associated CSV objects.
+            return redirect(url_for('bulk_resource.index'))
+    else:
+        # Add one text/option toggle for each CSV header.
+        for i, csv_cell in enumerate(csv_container.header_row().csv_cells):
+            form.descriptor_types.append_entry()
+            form.descriptor_types[i].label = csv_cell.data
 
     return render_template('bulk_resource/review.html',
                            csv_container=csv_container,
