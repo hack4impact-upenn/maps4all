@@ -89,7 +89,7 @@ class Resource(db.Model):
         return '<Resource \'%s\'>' % self.name
 
     @staticmethod
-    def generate_fake(count=10, center_lat=39.951021, center_long=-75.197243):
+    def generate_fake(count=20, center_lat=39.951021, center_long=-75.197243):
         """Generate a number of fake resources for testing."""
         from sqlalchemy.exc import IntegrityError
         from random import randint

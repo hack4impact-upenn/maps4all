@@ -139,9 +139,9 @@
             $(tableCellInnerDiv).attr({
               'style': 'width:50px;height:50px; text-align:right; float: right;'
             });
-            tableCellImg = document.createElement('img');            
+            tableCellImg = document.createElement('img');
             $(tableCellImg).attr({
-              'src': 'http://www.google.com/intl/en_us/mapfiles/ms/micons/red-dot.png',
+              'src': 'static/images/red-dot.png',
               'style': 'width:50%;height:50%;'
             });      
             $(tableCellInnerDiv).append(tableCellImg);      
