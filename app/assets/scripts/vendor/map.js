@@ -1,15 +1,20 @@
+      // This JS file is for the map and list view creations on the homepage of
+      // the Maps4All site for the user
       // This example requires the Places library. Include the libraries=places
       // parameter when you first load the API. For example:
       // <script src="https://maps.googleapis.com/maps/api/js?key=YOUR_API_KEY&libraries=places">
 
-      var markers = []
+      var map;
+      var markers = [];
+
       function initMap() {
-        var map = new google.maps.Map(document.getElementById('map'), {
+        map = new google.maps.Map(document.getElementById('map'), {
           center: {lat: 39.949, lng: -75.181},
           zoom: 13
         });
         var input = /** @type {!HTMLInputElement} */(
             document.getElementById('pac-input'));
+
 
         var types = document.getElementById('type-selector');
         map.controls[google.maps.ControlPosition.TOP_LEFT].push(input);
@@ -26,7 +31,10 @@
 
         autocomplete.addListener('place_changed', function() {
           infowindow.close();
-          marker.setVisible(false);
+          var markerToAdd = new google.maps.Marker({
+            map: map
+          });
+
           var place = autocomplete.getPlace();
           if (!place.geometry) {
             window.alert("Autocomplete's returned place contains no geometry");
@@ -40,15 +48,18 @@
             map.setCenter(place.geometry.location);
             map.setZoom(17);
           }
-          marker.setIcon(/** @type {google.maps.Icon} */({
+          markerToAdd.setIcon(/** @type {google.maps.Icon} */({
             url: place.icon,
             size: new google.maps.Size(71, 71),
             origin: new google.maps.Point(0, 0),
             anchor: new google.maps.Point(17, 34),
             scaledSize: new google.maps.Size(35, 35)
           }));
-          marker.setPosition(place.geometry.location);
-          marker.setVisible(true);
+          markerToAdd.setPosition(place.geometry.location);
+          markerToAdd.setVisible(true);
+          markerToAdd.setTitle(place.name);
+          markers.push(markerToAdd);
+          marker = markerToAdd;
 
           var address = '';
           if (place.address_components) {
@@ -58,7 +69,7 @@
               (place.address_components[2] && place.address_components[2].short_name || '')
             ].join(' ');
           }
-
+          marker.setLabel(address);
           infowindow.setContent('<div><strong>' + place.name + '</strong><br>' + address);
           infowindow.open(map, marker);
         });
@@ -142,6 +153,55 @@
               }
             );
         }
+        var mapViewButton = document.getElementById("map_view");
+        var listViewButton = document.getElementById("list_view");
+
+        mapViewButton.addEventListener('click', function() {
+            $("#map").show();
+            $("#list").hide();
+        });
+
+        listViewButton.addEventListener('click', function() {
+            $("#map").hide();
+            populateListDiv();
+            $("#list").show();
+        });
 
       }
 
+      function populateListDiv() {
+          var markersToShow = [];
+          $("#list").empty();
+          var bounds = map.getBounds();
+          for (var i = 0; i < markers.length; i++) {
+              if (bounds.contains(markers[i].getPosition())) {
+                  markersToShow.push(markers[i]);
+              }
+          }
+          var table = $("<table border=1></table>");
+          $.each(markersToShow, function(i, markerToShow) {
+            tableCell = document.createElement('td');
+            $(tableCell).attr({
+              'style': 'overflow:hidden;width:100%;height:100%;position:absolute'
+            });
+            tableCellBoldTitle = document.createElement('strong');
+            tableCellNewline = document.createElement('br');
+            $(tableCellBoldTitle).html(markerToShow.getTitle());
+            $(tableCell).append(tableCellBoldTitle, 
+                                tableCellNewline, 
+                                markerToShow.getLabel());
+            tableCellInnerDiv = document.createElement('div');
+            $(tableCellInnerDiv).attr({
+              'style': 'width:50px;height:50px; text-align:right; float: right;'
+            });
+            tableCellImg = document.createElement('img');
+            $(tableCellImg).attr({
+              'src': markerToShow.getIcon().url,
+              'style': 'width:50px;height:50px;'
+            });
+            $(tableCellInnerDiv).append(tableCellImg);
+            $(tableCell).append(tableCellInnerDiv);
+            table.append(tableCell);
+          });
+          $("#list").append(table);
+      }        

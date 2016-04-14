@@ -10,7 +10,7 @@ def index():
 
 
 @main.route('/get-resource', methods=['GET'])
-def getResource():
+def get_resource():
     Resource.generate_fake()
     names = Resource.query.with_entities(Resource.name)
     lats = Resource.query.with_entities(Resource.latitude)

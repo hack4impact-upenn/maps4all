@@ -65,7 +65,17 @@ def create_app(config_name):
     from admin import admin as admin_blueprint
     app.register_blueprint(admin_blueprint, url_prefix='/admin')
 
-    from bulk import bulk as bulk_blueprint
-    app.register_blueprint(bulk_blueprint, url_prefix='/bulk')
+    from bulk_resource import bulk_resource as bulk_resource_blueprint
+    app.register_blueprint(bulk_resource_blueprint, url_prefix='/bulk-resource')
+
+    from descriptor import descriptor as descriptor_blueprint
+    app.register_blueprint(descriptor_blueprint, url_prefix='/descriptor')
+
+    from single_resource import single_resource as single_resource_blueprint
+    app.register_blueprint(single_resource_blueprint,
+                           url_prefix='/single-resource')
+
+    from suggestion import suggestion as suggestion_blueprint
+    app.register_blueprint(suggestion_blueprint, url_prefix='/suggestion')
 
     return app

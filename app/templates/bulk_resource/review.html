@@ -1,0 +1,40 @@
+{% extends 'layouts/base.html' %}
+
+{% block content %}
+    <div class="ui stackable centered grid container">
+        <div class="twelve wide column">
+            <h2 class="ui header">
+                Review
+            </h2>
+        </div>
+        <div class="twelve wide column">
+            We have identified the following columns in your CSV file. Please
+            identify each column as either text or an option.
+        </div>
+        <div class="twelve wide column">
+            <table class="ui celled striped table">
+                <thead>
+                    <tr>
+                        <th>
+                            Column Name
+                        </th>
+                        <th>
+                            Column Type
+                        </th>
+                    </tr>
+                </thead>
+                <tbody>
+                {% set csv_header_row = csv_container.header_row() %}
+                {% for csv_cell in csv_header_row.csv_cells %}
+                <tr>
+                    <td>
+                        {{ csv_cell.data }}
+                    </td>
+                    <td class="right aligned collapsing">10 hours ago</td>
+                </tr>
+                {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+{% endblock %}
