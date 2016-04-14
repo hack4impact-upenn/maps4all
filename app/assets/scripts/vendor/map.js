@@ -100,7 +100,6 @@
             }
 
              for(var i = 0; i < markers.length; i ++){
-                console.log(markers[i]);
                 markers[i].setMap(map);
              }
          })
@@ -132,8 +131,6 @@
               async.each(values,
                 function(value, callback){
                   markerToAdd.addListener('click', function() {
-                    console.log('right before post: ' + markerToAdd.json_data
-                    .data);
                     $.post("/get-info", markerToAdd.json_data)
                     .done(function(data) {
                         data = JSON.parse(data)
