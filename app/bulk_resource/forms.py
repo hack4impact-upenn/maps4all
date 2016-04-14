@@ -1,5 +1,10 @@
 from flask.ext.wtf import Form
-from flask_wtf.file import FileAllowed, FileField, FileRequired, InputRequired
+from flask_wtf.file import (
+    FileAllowed,
+    FileField,
+    FileRequired,
+    InputRequired
+)
 from wtforms.fields import (
     FieldList,
     FormField,

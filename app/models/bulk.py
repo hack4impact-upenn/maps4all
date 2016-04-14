@@ -12,7 +12,7 @@ class CsvContainer(db.Model):
     file_name = db.Column(db.String(64))
     date_uploaded = db.Column(db.DateTime)
     user_id = db.Column(db.Integer, db.ForeignKey('users.id'))
-    csv_rows = db.relationship('CsvRow', backref='csv_rows_container',
+    csv_rows = db.relationship('CsvRow', backref='csv_container',
                                uselist=True)
     csv_header_row = db.relationship('CsvHeaderRow',
                                      backref='csv_header_row_container',
@@ -30,7 +30,6 @@ class CsvContainer(db.Model):
 
     def content_rows_iter(self):
         i = iter(self.csv_rows)
-        next(i)
         return i
 
     def __repr__(self):

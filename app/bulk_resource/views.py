@@ -6,7 +6,12 @@ from flask.ext.login import current_user, login_required
 
 from . import bulk_resource
 from .. import db
-from ..models import CsvCell, CsvContainer, CsvRow
+from ..models import (
+    CsvCell,
+    CsvContainer,
+    CsvHeaderRow,
+    CsvRow
+)
 from forms import (
     DetermineDescriptorTypesForm,
     DetermineOptionsForm,
@@ -28,11 +33,21 @@ def index():
                 file_name=csv_data.filename,
                 user=current_user
             )
+            csv_reader = csv.reader(csv_file)
+
+            # The first row of the CSV file contains the names of the columns.
+            header_row = csv_reader.next()
+            csv_header_row = CsvHeaderRow(
+                csv_header_row_container=csv_container
+            )
+            for column_name in header_row:
+                csv_cell = CsvCell(data=column_name, csv_row=csv_header_row)
+                db.session.add(csv_cell)
+            db.session.add(csv_header_row)
 
             # Iterate through the CSV file row-by-row and then cell-by-cell.
             # Each cell contains one comma-separated string in a row of a CSV
             # file.
-            csv_reader = csv.reader(csv_file)
             for row in csv_reader:
                 csv_row = CsvRow(csv_container=csv_container)
                 for cell_data in row:
@@ -43,7 +58,8 @@ def index():
             db.session.commit()
 
             # TODO: Error catching if CSV is malformed.
-            # TODO: Check that CSV file has "Name" and "Address" headings
+            # TODO: Check that CSV file has "Name", "Address", "Description"
+            # TODO: headings
 
         return redirect(url_for('bulk_resource.review1'))
     return render_template('bulk_resource/upload.html', form=form)
@@ -73,7 +89,7 @@ def review1():
             return redirect(url_for('bulk_resource.index'))
 
     # Add one text/option toggle for each CSV header.
-    for i, csv_cell in enumerate(csv_container.header_row().csv_cells):
+    for i, csv_cell in enumerate(csv_container.csv_header_row.csv_cells):
         form.descriptor_types.append_entry()
         form.descriptor_types[i].label = csv_cell.data
 
