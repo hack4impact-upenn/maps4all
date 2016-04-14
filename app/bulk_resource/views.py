@@ -73,13 +73,11 @@ def review1():
     form = DetermineDescriptorTypesForm()
     if form.validate_on_submit():
         if form.navigation.data['submit_next']:
-            for i, data in enumerate(form.descriptor_types.data):
-                if data == 'text':
-                    # TODO: Mark column as a text column.
-                    print 'hi'
-                elif data == 'option':
-                    # TODO: Mark column as an option column.
-                    print 'hi'
+            for i, descriptor_type in enumerate(form.descriptor_types.data):
+                if descriptor_type == 'text':
+                    csv_container.header_row.descriptor_type = descriptor_type
+                elif descriptor_type == 'option':
+                    csv_container.header_row.descriptor_type = descriptor_type
             return redirect(url_for('bulk_resource.review2'))
         elif form.navigation.data['submit_back']:
             # TODO: Delete all associated CSV objects.

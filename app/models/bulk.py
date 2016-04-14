@@ -25,13 +25,6 @@ class CsvContainer(db.Model):
             raise ValueError('Invalid cell number')
         return '%s' % self.csv_rows[row_num].csv_cells[cell_num].data
 
-    def header_row(self):
-        return self.csv_rows[0]
-
-    def content_rows_iter(self):
-        i = iter(self.csv_rows)
-        return i
-
     def __repr__(self):
         return '<CsvContainer \'%s\'>' % self.file_name
 
@@ -61,7 +54,7 @@ class CsvHeaderRow(CsvRow):
     """
     __tablename__ = 'csv_header_rows'
     id = db.Column(db.Integer, db.ForeignKey('csv_rows.id'), primary_key=True)
-    descriptor_type = db.Column(db.Integer)
+    descriptor_type = db.Column(db.Integer)  # 'option' or 'text'
 
     __mapper_args__ = {
         'polymorphic_identity': 'csv_header_row',
