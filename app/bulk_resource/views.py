@@ -21,7 +21,7 @@ from forms import (
 
 @bulk_resource.route('/upload', methods=['GET', 'POST'])
 @login_required
-def index():
+def upload():
     """Upload new resources in bulk with CSV file."""
     form = UploadForm()
     if form.validate_on_submit():
@@ -81,10 +81,10 @@ def review1():
             return redirect(url_for('bulk_resource.review2'))
         elif form.navigation.data['submit_back']:
             # TODO: Delete all associated CSV objects.
-            return redirect(url_for('bulk_resource.index'))
+            return redirect(url_for('bulk_resource.upload'))
         elif form.navigation.data['submit_cancel']:
             # TODO: Delete all associated CSV objects.
-            return redirect(url_for('bulk_resource.index'))
+            return redirect(url_for('bulk_resource.upload'))
 
     # Add one text/option toggle for each CSV header.
     for i, csv_cell in enumerate(csv_container.csv_header_row.csv_cells):
@@ -102,9 +102,18 @@ def review2():
     csv_container = CsvContainer.query.filter_by(user=current_user).first()
     # TODO: Redirect to 404 if no current CSV is being uploaded.
     form = DetermineOptionsForm()
+    if form.validate_on_submit():
+        if form.navigation.data['submit_next']:
+            return redirect(url_for('bulk_resource.review2'))
+        elif form.navigation.data['submit_back']:
+            # TODO: Delete all associated CSV objects.
+            return redirect(url_for('bulk_resource.review1'))
+        elif form.navigation.data['submit_cancel']:
+            # TODO: Delete all associated CSV objects.
+            return redirect(url_for('bulk_resource.upload'))
 
     # Add one text/option toggle for each CSV header.
-    for i, csv_cell in enumerate(csv_container.header_row().csv_cells):
+    for i, csv_cell in enumerate(csv_container.csv_header_row.csv_cells):
         form.options.append_entry()
         form.options[i].label = csv_cell.data
 
