@@ -127,7 +127,7 @@
                   markersToShow.push(markers[i]);
               }
           }
-          var table = $("<table border=0></table>");
+          var table = document.createElement('table');
           $.each(markersToShow, function(i, markerToShow) {
             tableCell = document.createElement('td');
             $(tableCell).attr({
@@ -150,9 +150,9 @@
             $(tableCell).append(tableCellBoldTitle, tableCellNewline,
                                 markerToShow['infowindow'].content);
             
-            table.append('<br>');
-            table.append('<br>');
-            table.append(tableCell);
+            $(table).append('<br>');
+            $(table).append('<br>');
+            $(table).append(tableCell);
           });
           $("#list").append(table);
       }        
