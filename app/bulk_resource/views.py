@@ -43,8 +43,9 @@ def index():
             db.session.commit()
 
             # TODO: Error catching if CSV is malformed.
+            # TODO: Check that CSV file has "Name" and "Address" headings
 
-        return redirect(url_for('bulk_resource.review'))
+        return redirect(url_for('bulk_resource.review1'))
     return render_template('bulk_resource/upload.html', form=form)
 
 
@@ -87,6 +88,12 @@ def review2():
     csv_container = CsvContainer.query.filter_by(user=current_user).first()
     # TODO: Redirect to 404 if no current CSV is being uploaded.
     form = DetermineOptionsForm()
+
+    # Add one text/option toggle for each CSV header.
+    for i, csv_cell in enumerate(csv_container.header_row().csv_cells):
+        form.options.append_entry()
+        form.options[i].label = csv_cell.data
+
     return render_template('bulk_resource/review2.html',
                            csv_container=csv_container,
                            form=form)

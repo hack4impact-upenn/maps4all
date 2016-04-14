@@ -12,7 +12,11 @@ class CsvContainer(db.Model):
     file_name = db.Column(db.String(64))
     date_uploaded = db.Column(db.DateTime)
     user_id = db.Column(db.Integer, db.ForeignKey('users.id'))
-    csv_rows = db.relationship('CsvRow', backref='csv_container', uselist=True)
+    csv_rows = db.relationship('CsvRow', backref='csv_rows_container',
+                               uselist=True)
+    csv_header_row = db.relationship('CsvHeaderRow',
+                                     backref='csv_header_row_container',
+                                     uselist=False)
 
     def cell_data(self, row_num, cell_num):
         if row_num < 0 or row_num >= len(self.csv_rows):
@@ -43,6 +47,26 @@ class CsvRow(db.Model):
     csv_cells = db.relationship('CsvCell', backref='csv_row', uselist=True)
     csv_container_id = db.Column(db.Integer,
                                  db.ForeignKey('csv_containers.id'))
+    type = db.Column(db.String(50))
+
+    __mapper_args__ = {
+        'polymorphic_identity': 'csv_row',
+        'polymorphic_on': type
+    }
+
+
+class CsvHeaderRow(CsvRow):
+    """
+    Schema for a header row in a CSV file. Cells should be added in the order
+    that they appeared in the original row of the CSV file.
+    """
+    __tablename__ = 'csv_header_rows'
+    id = db.Column(db.Integer, db.ForeignKey('csv_rows.id'), primary_key=True)
+    descriptor_type = db.Column(db.Integer)
+
+    __mapper_args__ = {
+        'polymorphic_identity': 'csv_header_row',
+    }
 
 
 class CsvCell(db.Model):
