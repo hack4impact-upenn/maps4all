@@ -7,7 +7,11 @@ from flask.ext.login import current_user, login_required
 from . import bulk_resource
 from .. import db
 from ..models import CsvCell, CsvContainer, CsvRow
-from forms import DetermineDescriptorTypesForm, UploadForm
+from forms import (
+    DetermineDescriptorTypesForm,
+    DetermineOptionsForm,
+    UploadForm
+)
 
 
 @bulk_resource.route('/upload', methods=['GET', 'POST'])
@@ -44,32 +48,45 @@ def index():
     return render_template('bulk_resource/upload.html', form=form)
 
 
-@bulk_resource.route('/review', methods=['GET', 'POST'])
+@bulk_resource.route('/review1', methods=['GET', 'POST'])
 @login_required
-def review():
+def review1():
     csv_container = CsvContainer.query.filter_by(user=current_user).first()
+    # TODO: Redirect to 404 if no current CSV is being uploaded.
     form = DetermineDescriptorTypesForm()
     if form.validate_on_submit():
         if form.navigation.data['submit_next']:
             for i, data in enumerate(form.descriptor_types.data):
                 if data == 'text':
                     # TODO: Mark column as a text column.
-                    return redirect(url_for('bulk_resource.index'))
+                    print 'hi'
                 elif data == 'option':
                     # TODO: Mark column as an option column.
-                    return redirect(url_for('bulk_resource.index'))
+                    print 'hi'
+            return redirect(url_for('bulk_resource.review2'))
         elif form.navigation.data['submit_back']:
             # TODO: Delete all associated CSV objects.
             return redirect(url_for('bulk_resource.index'))
         elif form.navigation.data['submit_cancel']:
             # TODO: Delete all associated CSV objects.
             return redirect(url_for('bulk_resource.index'))
-    else:
-        # Add one text/option toggle for each CSV header.
-        for i, csv_cell in enumerate(csv_container.header_row().csv_cells):
-            form.descriptor_types.append_entry()
-            form.descriptor_types[i].label = csv_cell.data
 
-    return render_template('bulk_resource/review.html',
+    # Add one text/option toggle for each CSV header.
+    for i, csv_cell in enumerate(csv_container.header_row().csv_cells):
+        form.descriptor_types.append_entry()
+        form.descriptor_types[i].label = csv_cell.data
+
+    return render_template('bulk_resource/review1.html',
+                           csv_container=csv_container,
+                           form=form)
+
+
+@bulk_resource.route('/review2', methods=['GET', 'POST'])
+@login_required
+def review2():
+    csv_container = CsvContainer.query.filter_by(user=current_user).first()
+    # TODO: Redirect to 404 if no current CSV is being uploaded.
+    form = DetermineOptionsForm()
+    return render_template('bulk_resource/review2.html',
                            csv_container=csv_container,
                            form=form)

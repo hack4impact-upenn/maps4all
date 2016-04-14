@@ -1,6 +1,12 @@
 from flask.ext.wtf import Form
 from flask_wtf.file import FileAllowed, FileField, FileRequired, InputRequired
-from wtforms.fields import FieldList, FormField, RadioField, SubmitField
+from wtforms.fields import (
+    FieldList,
+    FormField,
+    RadioField,
+    SubmitField,
+    TextAreaField
+)
 
 
 class UploadForm(Form):
@@ -11,14 +17,7 @@ class UploadForm(Form):
     submit = SubmitField('Upload')
 
 
-class DetermineDescriptorTypeForm(Form):
-    descriptor_type = RadioField('Descriptor Type', choices=[
-        ('text', 'Text Descriptor'),
-        ('option', 'Option Descriptor')
-    ])
-
-
-class ThreeOptionNavigationForm(Form):
+class NavigationForm(Form):
     submit_next = SubmitField('Next')
     submit_cancel = SubmitField('Cancel')
     submit_back = SubmitField('Back')
@@ -29,4 +28,9 @@ class DetermineDescriptorTypesForm(Form):
         ('text', 'Text'),
         ('option', 'Option')
     ], validators=[InputRequired()]))
-    navigation = FormField(ThreeOptionNavigationForm)
+    navigation = FormField(NavigationForm)
+
+
+class DetermineOptionsForm(Form):
+    options = FieldList(TextAreaField())
+    navigation = FormField(NavigationForm)
