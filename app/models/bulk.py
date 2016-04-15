@@ -1,3 +1,5 @@
+from sqlalchemy import desc
+
 from .. import db
 
 
@@ -28,6 +30,12 @@ class CsvContainer(db.Model):
     def __repr__(self):
         return '<CsvContainer \'%s\'>' % self.file_name
 
+    @staticmethod
+    def most_recent(user):
+        return CsvContainer.query.filter_by(user=user).order_by(
+            desc(CsvContainer.date_uploaded)
+        ).limit(1).first()
+
 
 class CsvHeaderRow(db.Model):
     """
@@ -38,8 +46,9 @@ class CsvHeaderRow(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     csv_container_id = db.Column(db.Integer,
                                  db.ForeignKey('csv_containers.id'))
-    csv_cells = db.relationship('CsvHeaderCell', backref='csv_header_row',
-                                uselist=True)
+    csv_header_cells = db.relationship('CsvHeaderCell',
+                                       backref='csv_header_row',
+                                       uselist=True)
 
 
 class CsvBodyRow(db.Model):
@@ -51,8 +60,8 @@ class CsvBodyRow(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     csv_container_id = db.Column(db.Integer,
                                  db.ForeignKey('csv_containers.id'))
-    csv_cells = db.relationship('CsvBodyCell', backref='csv_body_row',
-                                uselist=True)
+    csv_body_cells = db.relationship('CsvBodyCell', backref='csv_body_row',
+                                     uselist=True)
 
 
 class CsvHeaderCell(db.Model):
@@ -77,6 +86,3 @@ class CsvBodyCell(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     csv_row_id = db.Column(db.Integer, db.ForeignKey('csv_body_rows.id'))
     data = db.Column(db.Text)
-
-    # TODO: Should be `CsvHeaderCell` instead of `CsvHeaderRow` (<- should
-    # TODO: still exist but the same class)
