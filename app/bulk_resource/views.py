@@ -7,10 +7,11 @@ from flask.ext.login import current_user, login_required
 from . import bulk_resource
 from .. import db
 from ..models import (
-    CsvCell,
+    CsvBodyCell,
+    CsvBodyRow,
     CsvContainer,
+    CsvHeaderCell,
     CsvHeaderRow,
-    CsvRow
 )
 from forms import (
     DetermineDescriptorTypesForm,
@@ -41,7 +42,8 @@ def upload():
                 csv_header_row_container=csv_container
             )
             for column_name in header_row:
-                csv_cell = CsvCell(data=column_name, csv_row=csv_header_row)
+                csv_cell = CsvHeaderCell(data=column_name,
+                                         csv_header_row=csv_header_row)
                 db.session.add(csv_cell)
             db.session.add(csv_header_row)
 
@@ -49,11 +51,12 @@ def upload():
             # Each cell contains one comma-separated string in a row of a CSV
             # file.
             for row in csv_reader:
-                csv_row = CsvRow(csv_container=csv_container)
+                csv_body_row = CsvBodyRow(csv_container=csv_container)
                 for cell_data in row:
-                    csv_cell = CsvCell(data=cell_data, csv_row=csv_row)
+                    csv_cell = CsvBodyCell(data=cell_data,
+                                           csv_body_row=csv_body_row)
                     db.session.add(csv_cell)
-                db.session.add(csv_row)
+                db.session.add(csv_body_row)
             db.session.add(csv_container)
             db.session.commit()
 
@@ -90,6 +93,10 @@ def review1():
     for i, csv_cell in enumerate(csv_container.csv_header_row.csv_cells):
         form.descriptor_types.append_entry()
         form.descriptor_types[i].label = csv_cell.data
+        # for i, header_cell in enumerate(csv_container.csv_header_row.
+        # csv_cells):
+        #
+        #     form.descriptor_types.data
 
     return render_template('bulk_resource/review1.html',
                            csv_container=csv_container,
