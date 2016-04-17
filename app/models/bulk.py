@@ -27,6 +27,17 @@ class CsvContainer(db.Model):
             raise ValueError('Invalid cell number')
         return '%s' % self.csv_rows[row_num].csv_cells[cell_num].data
 
+    def predict_options(self):
+        for i, column in enumerate(self.csv_header_row.csv_header_cells):
+            if column.descriptor_type == 'option':
+                predicted_options = set()
+                for j in range(len(self.csv_rows)):
+                    predicted_options.add(self.cell_data(j, i))
+                for option in predicted_options:
+                    column.options.add(option)
+                    db.session.add(column)
+        db.session.commit()
+
     def __repr__(self):
         return '<CsvContainer \'%s\'>' % self.file_name
 
@@ -75,6 +86,7 @@ class CsvHeaderCell(db.Model):
                                   db.ForeignKey('csv_header_rows.id'))
     data = db.Column(db.Text)
     descriptor_type = db.Column(db.Integer)  # 'option' or 'text'
+    options = db.Column(db.PickleType)
 
 
 class CsvBodyCell(db.Model):

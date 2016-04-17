@@ -80,8 +80,12 @@ def review1():
             for i, descriptor_type in enumerate(form.descriptor_types.data):
                 csv_container.csv_header_row.csv_header_cells[i]\
                     .descriptor_type = descriptor_type
+                db.session.add(
+                    csv_container.csv_header_row.csv_header_cells[i]
+                )
                 # TODO: Skip the second review step if there are no option
                 # TODO: descriptor types.
+            db.session.commit()
             return redirect(url_for('bulk_resource.review2'))
         elif form.navigation.data['submit_back']:
             # TODO: Delete all associated CSV objects.
