@@ -23,9 +23,10 @@ class CsvContainer(db.Model):
     def cell_data(self, row_num, cell_num):
         if row_num < 0 or row_num >= len(self.csv_rows):
             raise ValueError('Invalid row number')
-        if cell_num < 0 or cell_num >= len(self.csv_rows[row_num].csv_cells):
+        if cell_num < 0 or \
+                cell_num >= len(self.csv_rows[row_num].csv_body_cells):
             raise ValueError('Invalid cell number')
-        return '%s' % self.csv_rows[row_num].csv_cells[cell_num].data
+        return '%s' % self.csv_rows[row_num].csv_body_cells[cell_num].data
 
     def predict_options(self):
         for i, column in enumerate(self.csv_header_row.csv_header_cells):
@@ -33,8 +34,9 @@ class CsvContainer(db.Model):
                 predicted_options = set()
                 for j in range(len(self.csv_rows)):
                     predicted_options.add(self.cell_data(j, i))
-                for option in predicted_options:
-                    column.options.add(option)
+                column.options = []
+                for predicted_option in predicted_options:
+                    column.options.append(predicted_option)
                     db.session.add(column)
         db.session.commit()
 

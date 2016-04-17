@@ -75,7 +75,6 @@ def review1():
     # TODO: Redirect to 404 if no current CSV is being uploaded.
     form = DetermineDescriptorTypesForm()
     if form.validate_on_submit():
-        print form.descriptor_types.data
         if form.navigation.data['submit_next']:
             for i, descriptor_type in enumerate(form.descriptor_types.data):
                 csv_container.csv_header_row.csv_header_cells[i]\
@@ -83,9 +82,10 @@ def review1():
                 db.session.add(
                     csv_container.csv_header_row.csv_header_cells[i]
                 )
-                # TODO: Skip the second review step if there are no option
-                # TODO: descriptor types.
             db.session.commit()
+            csv_container.predict_options()
+            # TODO: Skip the second review step if there are no option
+            # TODO: descriptor types.
             return redirect(url_for('bulk_resource.review2'))
         elif form.navigation.data['submit_back']:
             # TODO: Delete all associated CSV objects.
@@ -99,10 +99,9 @@ def review1():
                                     .csv_header_cells):
         form.descriptor_types.append_entry()
         form.descriptor_types[i].label = header_cell.data
-        if form.descriptor_types.data[i] == 'option' or \
-                form.descriptor_types.data[i] == 'text':
-            form.descriptor_types.data[i] = header_cell.descriptor_type
-    print form.descriptor_types.data
+        if header_cell.descriptor_type == 'option' or \
+                header_cell.descriptor_type == 'text':
+            form.descriptor_types[i].data = header_cell.descriptor_type
 
     return render_template('bulk_resource/review1.html',
                            csv_container=csv_container,
