@@ -93,11 +93,15 @@ class CsvHeaderCell(db.Model):
     new_options = db.Column(db.PickleType)  # Set of options (strings)
 
     def predicted_options_string(self):
+        if self.predicted_options is None:
+            return ''
         l = list(self.predicted_options)
         l.sort()
         return ', '.join(map(str, l))
 
     def new_options_string(self):
+        if self.new_options is None:
+            return ''
         l = list(self.new_options)
         l.sort()
         return ', '.join(map(str, l))
