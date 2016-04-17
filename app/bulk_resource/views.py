@@ -1,7 +1,7 @@
 import csv
 from datetime import datetime
 
-from flask import redirect, render_template, url_for
+from flask import abort, redirect, render_template, url_for
 from flask.ext.login import current_user, login_required
 
 from . import bulk_resource
@@ -65,11 +65,12 @@ def upload():
     return render_template('bulk_resource/upload.html', form=form)
 
 
-@bulk_resource.route('/resview1', methods=['GET', 'POST'])
+@bulk_resource.route('/review1', methods=['GET', 'POST'])
 @login_required
 def review1():
     csv_container = CsvContainer.most_recent(user=current_user)
-    # TODO: Redirect to 404 if no current CSV is being uploaded.
+    if csv_container is None:
+        abort(404)
     form = DetermineDescriptorTypesForm()
     if form.validate_on_submit():
         if form.navigation.data['submit_next']:
@@ -109,7 +110,8 @@ def review1():
 @login_required
 def review2():
     csv_container = CsvContainer.most_recent(user=current_user)
-    # TODO: Redirect to 404 if no current CSV is being uploaded.
+    if csv_container is None:
+        abort(404)
     form = DetermineOptionsForm()
     if form.validate_on_submit():
         if form.navigation.data['submit_next']:
