@@ -1,3 +1,6 @@
+import csv
+import StringIO
+
 from sqlalchemy import desc
 
 from .. import db
@@ -34,11 +37,8 @@ class CsvContainer(db.Model):
                 predicted_options = set()
                 for j in range(len(self.csv_rows)):
                     predicted_options.add(self.cell_data(j, i))
-                column.options = []
-                for predicted_option in predicted_options:
-                    column.options.append(predicted_option)
-                    db.session.add(column)
-                print column.options
+                column.predicted_options = predicted_options
+                db.session.add(column)
         db.session.commit()
 
     def __repr__(self):
@@ -89,14 +89,36 @@ class CsvHeaderCell(db.Model):
                                   db.ForeignKey('csv_header_rows.id'))
     data = db.Column(db.Text)
     descriptor_type = db.Column(db.Integer)  # 'option' or 'text'
-    options = db.Column(db.PickleType)  # List of options (strings)
+    predicted_options = db.Column(db.PickleType)  # Set of options (strings)
+    new_options = db.Column(db.PickleType)  # Set of options (strings)
 
-    def options_string(self):
-        l = []
-        for option in self.options:
-            l.append(option)
+    def predicted_options_string(self):
+        l = list(self.predicted_options)
         l.sort()
         return ', '.join(map(str, l))
+
+    def new_options_string(self):
+        l = list(self.new_options)
+        l.sort()
+        return ', '.join(map(str, l))
+
+    def add_new_options_from_list(self, new_options_list):
+        new_options = set()
+        for new_option in new_options_list:
+            new_options.add(new_option.strip())
+        self.new_options = new_options
+        db.session.add(self)
+        db.session.commit()
+
+    def add_new_options_from_string(self, new_options_string):
+        l = []
+        csv_reader = csv.reader(StringIO.StringIO(new_options_string))
+        for row in csv_reader:
+            for option in row:
+                option = option.strip()
+                if len(option) > 0:
+                    l.append(option)
+        self.add_new_options_from_list(l)
 
 
 class CsvBodyCell(db.Model):

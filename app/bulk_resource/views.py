@@ -116,6 +116,14 @@ def review2():
     form = DetermineOptionsForm()
     if form.validate_on_submit():
         if form.navigation.data['submit_next']:
+            options_indx = 0
+            for i, header_cell in enumerate(csv_container.csv_header_row
+                                            .csv_header_cells):
+                if header_cell.descriptor_type == 'option':
+                    header_cell.add_new_options_from_string(
+                        form.options[options_indx].data
+                    )
+                    options_indx += 1
             return redirect(url_for('bulk_resource.review2'))
         elif form.navigation.data['submit_back']:
             return redirect(url_for('bulk_resource.review1'))
@@ -129,9 +137,11 @@ def review2():
         if header_cell.descriptor_type == 'option':
             form.options.append_entry()
             form.options[j].label = header_cell.data
-            form.options[j].label += ' (' + header_cell.options_string() + ')'
+            form.options[j].label += ' (' + \
+                                     header_cell.predicted_options_string() + \
+                                     ')'
+            form.options[j].data = header_cell.new_options_string()
             j += 1
-
     return render_template('bulk_resource/review2.html',
                            csv_container=csv_container,
                            form=form)
