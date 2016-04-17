@@ -15,10 +15,10 @@ class CsvContainer(db.Model):
     date_uploaded = db.Column(db.DateTime)
     user_id = db.Column(db.Integer, db.ForeignKey('users.id'))
     csv_rows = db.relationship('CsvBodyRow', backref='csv_container',
-                               uselist=True)
+                               uselist=True, cascade='delete')
     csv_header_row = db.relationship('CsvHeaderRow',
                                      backref='csv_header_row_container',
-                                     uselist=False)
+                                     uselist=False, cascade='delete')
 
     def cell_data(self, row_num, cell_num):
         if row_num < 0 or row_num >= len(self.csv_rows):
@@ -38,6 +38,7 @@ class CsvContainer(db.Model):
                 for predicted_option in predicted_options:
                     column.options.append(predicted_option)
                     db.session.add(column)
+                print column.options
         db.session.commit()
 
     def __repr__(self):
@@ -61,7 +62,7 @@ class CsvHeaderRow(db.Model):
                                  db.ForeignKey('csv_containers.id'))
     csv_header_cells = db.relationship('CsvHeaderCell',
                                        backref='csv_header_row',
-                                       uselist=True)
+                                       uselist=True, cascade='delete')
 
 
 class CsvBodyRow(db.Model):
@@ -74,7 +75,7 @@ class CsvBodyRow(db.Model):
     csv_container_id = db.Column(db.Integer,
                                  db.ForeignKey('csv_containers.id'))
     csv_body_cells = db.relationship('CsvBodyCell', backref='csv_body_row',
-                                     uselist=True)
+                                     uselist=True, cascade='delete')
 
 
 class CsvHeaderCell(db.Model):
@@ -88,7 +89,7 @@ class CsvHeaderCell(db.Model):
                                   db.ForeignKey('csv_header_rows.id'))
     data = db.Column(db.Text)
     descriptor_type = db.Column(db.Integer)  # 'option' or 'text'
-    options = db.Column(db.PickleType)
+    options = db.Column(db.PickleType)  # List of options (strings)
 
 
 class CsvBodyCell(db.Model):

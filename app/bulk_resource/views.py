@@ -88,10 +88,10 @@ def review1():
             # TODO: descriptor types.
             return redirect(url_for('bulk_resource.review2'))
         elif form.navigation.data['submit_back']:
-            # TODO: Delete all associated CSV objects.
+            db.session.delete(csv_container)
             return redirect(url_for('bulk_resource.upload'))
         elif form.navigation.data['submit_cancel']:
-            # TODO: Delete all associated CSV objects.
+            db.session.delete(csv_container)
             return redirect(url_for('bulk_resource.upload'))
 
     # Add one text/option toggle for each CSV header.
@@ -118,10 +118,10 @@ def review2():
         if form.navigation.data['submit_next']:
             return redirect(url_for('bulk_resource.review2'))
         elif form.navigation.data['submit_back']:
-            # TODO: Delete all associated CSV objects.
+            db.session.delete(csv_container)
             return redirect(url_for('bulk_resource.review1'))
         elif form.navigation.data['submit_cancel']:
-            # TODO: Delete all associated CSV objects.
+            db.session.delete(csv_container)
             return redirect(url_for('bulk_resource.upload'))
 
     # Add one text/option toggle for each CSV header.
