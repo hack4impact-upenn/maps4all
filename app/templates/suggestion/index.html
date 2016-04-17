@@ -1,7 +1,42 @@
 {% extends 'layouts/base.html' %}
-
+<!--should we have a "mark as read" column in the table -->
 {% block content %}
   <div class="ui text container">
     This is a page for suggestions.
+    <table>
+      <thead>
+        <tr>
+          <th>Timestamp</th>
+          <th>Suggestion</th>
+          <th>Contact Info</th>
+          <th>Action</th>
+        </tr>
+      </thead>
+      <tbody>
+        {% for suggestion in suggestions %}
+          <tr>
+            <td>{{ suggestion['timestamp'] }}</td>
+            <td>{{ suggestion['suggestion_text'] }}</td>
+            <td>{{ suggestion['contact_name'] }}
+              <br>
+              {% if suggestion['contact_email'] == null or suggestion['contact_email'] == ''%}
+                {{ suggestion['contact_number'] }}
+              {% else %}
+                {{ suggestion['contact_email'] }}
+                <br>
+                {{ suggestion['contact_number'] }}
+              {% endif %}
+            </td>
+            <td>
+              {% if suggestion['resource_id'] == -1 %}
+                <a href="{{ url_for('single_resource.create') }}">Insert</a>
+              {% else %}
+                <a href="{{ url_for('single_resource.edit', resource_id=suggestion['resource_id']) }}">Edit</a>
+              {% endif %}
+            </td>
+          </tr>
+        {% endfor %}
+      </tbody>
+    </table>
   </div>
 {% endblock %}
