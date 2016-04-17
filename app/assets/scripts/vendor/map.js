@@ -46,7 +46,7 @@
             map.fitBounds(place.geometry.viewport);
           } else {
             map.setCenter(place.geometry.location);
-            map.setZoom(17);  // Why 17? Because it looks good.
+            map.setZoom(17);
           }
           markerToAdd.setIcon(/** @type {google.maps.Icon} */({
             url: place.icon,
@@ -87,35 +87,69 @@
         setupClickListener('changetype-address', ['address']);
         setupClickListener('changetype-establishment', ['establishment']);
 
+        var marker = new google.maps.Marker({
+          map: map
+        });
         $.ajax({
           type: "GET",
           url: "/get-resource"
         }).done(function(data){
             data = JSON.parse(data)
             for(var i = 0; i < data.length; i++){
-              latLng = new google.maps.LatLng(data[i].latitude, data[i]
-              .longitude)
-              var marker = new google.maps.Marker({
-                position: latLng,
-                map: map,
-                visible: true,
-                title: data[i].name
-              });
+              create_marker(data[i]);
+            }
 
-              var infowindow = new google.maps.InfoWindow({
-                content: 'Have to fix the content with variable shadowing'
-              });
-
-              marker.addListener('mouseover', function() {
-                infowindow.open(map, this);
-              });
-              marker.addListener('mouseout', function() {
-                infowindow.close();
-              });
-              marker.setMap(map);
+             for(var i = 0; i < markers.length; i ++){
+                markers[i].setMap(map);
              }
          })
 
+        function create_marker(data){
+              var markerToAdd = new google.maps.Marker({
+                 map: map
+              })
+              latLng = new google.maps.LatLng(data.Latitude, data
+              .Longitude)
+              markerToAdd.setPosition(latLng);
+              markerToAdd.setVisible(true);
+              markerToAdd.setTitle(data.Name)
+
+              var expandedwindow = new google.maps.InfoWindow({
+                content: '<div id="content">'+
+                  '<p><b>'+ markerToAdd.title +'</b></p>'+
+                  '</div>'
+              });
+
+              markerToAdd.data = data.Name;
+              var json_data = {
+                    csrf_token: $('meta[name="csrf-token"]').prop('content'),
+                    data: markerToAdd.data[0]
+              };
+              markerToAdd.json_data = json_data
+              var values = [];
+              values.push(markerToAdd.json_data);
+              async.each(values,
+                function(value, callback){
+                  markerToAdd.addListener('click', function() {
+                    $.post("/get-info", markerToAdd.json_data)
+                    .done(function(data) {
+                        data = JSON.parse(data)
+                        var addressWindow = new google.maps.InfoWindow({
+                          content: '<div id="content">'+
+                         '<p><b>'+ data.Address +'</b></p>'+
+                         '</div>'
+                         });
+                        addressWindow.open(map, markerToAdd);
+                    }).fail(function() {
+                        console.log('fail');
+                    });
+                  });
+                  callback();
+               }, function(){
+                markers.push(markerToAdd)
+              }
+            );
+        }
         var mapViewButton = document.getElementById("map_view");
         var listViewButton = document.getElementById("list_view");
 
@@ -129,6 +163,7 @@
             populateListDiv();
             $("#list").show();
         });
+
       }
 
       function populateListDiv() {

@@ -19,6 +19,7 @@ vendor_css = Bundle(
 )
 
 vendor_js = Bundle(
+    'vendor/async.js',
     'vendor/address-autocomplete.js',
     'vendor/jquery.min.js',
     'vendor/map.js',
