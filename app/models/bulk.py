@@ -91,6 +91,13 @@ class CsvHeaderCell(db.Model):
     descriptor_type = db.Column(db.Integer)  # 'option' or 'text'
     options = db.Column(db.PickleType)  # List of options (strings)
 
+    def options_string(self):
+        l = []
+        for option in self.options:
+            l.append(option)
+        l.sort()
+        return ', '.join(map(str, l))
+
 
 class CsvBodyCell(db.Model):
     """

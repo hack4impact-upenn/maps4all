@@ -118,7 +118,6 @@ def review2():
         if form.navigation.data['submit_next']:
             return redirect(url_for('bulk_resource.review2'))
         elif form.navigation.data['submit_back']:
-            db.session.delete(csv_container)
             return redirect(url_for('bulk_resource.review1'))
         elif form.navigation.data['submit_cancel']:
             db.session.delete(csv_container)
@@ -130,6 +129,7 @@ def review2():
         if header_cell.descriptor_type == 'option':
             form.options.append_entry()
             form.options[j].label = header_cell.data
+            form.options[j].label += ' (' + header_cell.options_string() + ')'
             j += 1
 
     return render_template('bulk_resource/review2.html',
