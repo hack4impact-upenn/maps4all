@@ -31,9 +31,6 @@
 
         autocomplete.addListener('place_changed', function() {
           infowindow.close();
-          var markerToAdd = new google.maps.Marker({
-            map: map
-          });
 
           var place = autocomplete.getPlace();
           if (!place.geometry) {
@@ -48,18 +45,6 @@
             map.setCenter(place.geometry.location);
             map.setZoom(17);
           }
-          markerToAdd.setIcon(/** @type {google.maps.Icon} */({
-            url: place.icon,
-            size: new google.maps.Size(71, 71),
-            origin: new google.maps.Point(0, 0),
-            anchor: new google.maps.Point(17, 34),
-            scaledSize: new google.maps.Size(35, 35)
-          }));
-          markerToAdd.setPosition(place.geometry.location);
-          markerToAdd.setVisible(true);
-          markerToAdd.setTitle(place.name);
-          markers.push(markerToAdd);
-          marker = markerToAdd;
 
           var address = '';
           if (place.address_components) {
@@ -112,7 +97,7 @@
               .Longitude)
               markerToAdd.setPosition(latLng);
               markerToAdd.setVisible(true);
-              markerToAdd.setTitle(data.Name)
+              markerToAdd.title = data.Name
 
               var expandedwindow = new google.maps.InfoWindow({
                 content: '<div id="content">'+
@@ -121,6 +106,7 @@
               });
 
               markerToAdd.data = data.Name;
+
               var json_data = {
                     csrf_token: $('meta[name="csrf-token"]').prop('content'),
                     data: markerToAdd.data[0]
@@ -166,6 +152,18 @@
 
       }
 
+      function geocodeLatLng(geocoder, input_lat, input_lng) {
+          geocoder.geocode({'location': {lat: input_lat, lng: input_lng}}, function(results, status) {
+            if (status == google.maps.GeocoderStatus.OK) {
+                if (results[1]) {
+                    return results[1].formatted_address;
+                } else {
+                    return "";
+                }
+            }
+          });
+      }
+
       function populateListDiv() {
           var markersToShow = [];
           $("#list").empty();
@@ -175,7 +173,7 @@
                   markersToShow.push(markers[i]);
               }
           }
-          var table = $("<table border=1></table>");
+          var table = document.createElement('table');
           $.each(markersToShow, function(i, markerToShow) {
             tableCell = document.createElement('td');
             $(tableCell).attr({
@@ -183,22 +181,24 @@
             });
             tableCellBoldTitle = document.createElement('strong');
             tableCellNewline = document.createElement('br');
-            $(tableCellBoldTitle).html(markerToShow.getTitle());
-            $(tableCell).append(tableCellBoldTitle, 
-                                tableCellNewline, 
-                                markerToShow.getLabel());
             tableCellInnerDiv = document.createElement('div');
             $(tableCellInnerDiv).attr({
               'style': 'width:50px;height:50px; text-align:right; float: right;'
             });
             tableCellImg = document.createElement('img');
             $(tableCellImg).attr({
-              'src': markerToShow.getIcon().url,
-              'style': 'width:50px;height:50px;'
-            });
-            $(tableCellInnerDiv).append(tableCellImg);
+              'src': 'static/images/red-dot.png',
+              'style': 'width:50%;height:50%;'
+            });      
+            $(tableCellInnerDiv).append(tableCellImg);      
+            $(tableCellBoldTitle).html(markerToShow.getTitle());
             $(tableCell).append(tableCellInnerDiv);
-            table.append(tableCell);
+            $(tableCell).append(tableCellBoldTitle, tableCellNewline,
+                                '<b>' + markerToShow.title + '</b><br>');
+            
+            $(table).append('<br>');
+            $(table).append('<br>');
+            $(table).append(tableCell);
           });
           $("#list").append(table);
       }        
