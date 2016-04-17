@@ -1,7 +1,30 @@
 {% extends 'layouts/base.html' %}
 
 {% block content %}
-  <div class="ui text container">
-    This is a page for resources.
-  </div>
+    <div class="ui text container">
+        <h2 class="ui dividing header">Resources</h2>
+        <a href="{{ url_for('single_resource.create') }}">Add</a>
+        <table>
+            <thead>
+                <tr>
+                    <th>Name</th>
+                    <th>Address</th>
+                    <th>Latitude</th>
+                    <th>Longitude</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for resource in resources %}
+                    <tr>
+                        <td>
+                            <a href="{{ url_for('single_resource.edit', resource_id=resource['id']) }}">{{ resource['name'] }}</a>
+                        </td>
+                        <td>{{ resource['address'] }}</td>
+                        <td>{{ resource['latitude'] | round }}</td>
+                        <td>{{ resource['longitude'] | round }}</td>
+                    </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
 {% endblock %}
