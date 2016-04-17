@@ -6,7 +6,6 @@
 
       var map;
       var markers = [];
-      //var geocoder = new google.maps.Geocoder;
 
       function initMap() {
         map = new google.maps.Map(document.getElementById('map'), {
@@ -98,10 +97,7 @@
               .Longitude)
               markerToAdd.setPosition(latLng);
               markerToAdd.setVisible(true);
-              //console.log(data.Name);
               markerToAdd.title = data.Name
-              //markerToAdd.address = geocodeLatLng(geocoder, data.Latitude, data.Longitude)
-              //markerToAdd.setTitle(data.Name)
 
               var expandedwindow = new google.maps.InfoWindow({
                 content: '<div id="content">'+
@@ -197,8 +193,6 @@
             $(tableCellInnerDiv).append(tableCellImg);      
             $(tableCellBoldTitle).html(markerToShow.getTitle());
             $(tableCell).append(tableCellInnerDiv);
-            //console.log(markerToShow)
-            //console.log(markerToShow.infoWindow)
             $(tableCell).append(tableCellBoldTitle, tableCellNewline,
                                 '<b>' + markerToShow.title + '</b><br>');
             
