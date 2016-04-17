@@ -59,16 +59,13 @@ def upload():
                 db.session.add(csv_body_row)
             db.session.add(csv_container)
             db.session.commit()
-
             # TODO: Error catching if CSV is malformed.
-            # TODO: Check that CSV file has "Name", "Address", "Description"
-            # TODO: headings
-
+            # TODO: Check that CSV file has "Name", "Address" headings
         return redirect(url_for('bulk_resource.review1'))
     return render_template('bulk_resource/upload.html', form=form)
 
 
-@bulk_resource.route('/review1', methods=['GET', 'POST'])
+@bulk_resource.route('/resview1', methods=['GET', 'POST'])
 @login_required
 def review1():
     csv_container = CsvContainer.most_recent(user=current_user)
