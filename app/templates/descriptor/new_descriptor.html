@@ -29,6 +29,8 @@
                     {{ f.render_form_field(form.option_values) }}
                 </div>
 
+                {{ f.render_form_field(form.is_searchable) }}
+
                 {{ f.form_message(flashes['error'], header='Something went wrong.', class='error') }}
                 {{ f.form_message(flashes['warning'], header='Check your email.', class='warning') }}
                 {{ f.form_message(flashes['info'], header='Information', class='info') }}
