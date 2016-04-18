@@ -143,8 +143,18 @@ class Resource(db.Model):
                 db.session.rollback()
 
     @staticmethod
+    def get_resources_as_dicts(resources):
+        resources_as_dicts = [resource.__dict__ for resource in resources]
+        # .__dict__ returns the SQLAlchemy object as a dict, but it also adds a
+        # field '_sa_instance_state' that we don't need, so we delete it.
+        for d in resources_as_dicts:
+            del d['_sa_instance_state']
+        return resources_as_dicts
+
+    @staticmethod
     def print_resources():
-        for resource in db.session.query(Resource).all():
+        resources = Resource.query.all()
+        for resource in resources:
             print resource
             print resource.address
             print '(%s , %s)' % (resource.latitude, resource.longitude)
