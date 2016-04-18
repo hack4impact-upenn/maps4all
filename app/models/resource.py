@@ -52,12 +52,12 @@ class Descriptor(db.Model):
     text_resources = db.relationship(
         'TextAssociation',
         back_populates='descriptor',
-        cascade="save-update, merge, delete, delete-orphan"
+        cascade='save-update, merge, delete, delete-orphan'
     )
     option_resources = db.relationship(
         'OptionAssociation',
         back_populates='descriptor',
-        cascade="save-update, merge, delete, delete-orphan"
+        cascade='save-update, merge, delete, delete-orphan'
     )
 
     def __repr__(self):
@@ -77,12 +77,12 @@ class Resource(db.Model):
     text_descriptors = db.relationship(
         'TextAssociation',
         back_populates='resource',
-        cascade="save-update, merge, delete, delete-orphan"
+        cascade='save-update, merge, delete, delete-orphan'
     )
     option_descriptors = db.relationship(
         'OptionAssociation',
         back_populates='resource',
-        cascade="save-update, merge, delete, delete-orphan"
+        cascade='save-update, merge, delete, delete-orphan'
     )
 
     def __repr__(self):
