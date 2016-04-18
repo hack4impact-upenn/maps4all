@@ -61,13 +61,13 @@ def upload():
             db.session.commit()
             # TODO: Error catching if CSV is malformed.
             # TODO: Check that CSV file has "Name", "Address" headings
-        return redirect(url_for('bulk_resource.review1'))
+        return redirect(url_for('bulk_resource.review_descriptor_types'))
     return render_template('bulk_resource/upload.html', form=form)
 
 
-@bulk_resource.route('/review1', methods=['GET', 'POST'])
+@bulk_resource.route('/review-descriptor-types', methods=['GET', 'POST'])
 @login_required
-def review1():
+def review_descriptor_types():
     csv_container = CsvContainer.most_recent(user=current_user)
     if csv_container is None:
         abort(404)
@@ -84,7 +84,7 @@ def review1():
             csv_container.predict_options()
             # TODO: Skip the second review step if there are no option
             # TODO: descriptor types.
-            return redirect(url_for('bulk_resource.review2'))
+            return redirect(url_for('bulk_resource.review_options'))
         elif form.navigation.data['submit_back']:
             db.session.delete(csv_container)
             return redirect(url_for('bulk_resource.upload'))
@@ -101,14 +101,14 @@ def review1():
                 header_cell.descriptor_type == 'text':
             form.descriptor_types[i].data = header_cell.descriptor_type
 
-    return render_template('bulk_resource/review1.html',
+    return render_template('bulk_resource/review_descriptor_types.html',
                            csv_container=csv_container,
                            form=form)
 
 
-@bulk_resource.route('/review2', methods=['GET', 'POST'])
+@bulk_resource.route('/review-options', methods=['GET', 'POST'])
 @login_required
-def review2():
+def review_options():
     csv_container = CsvContainer.most_recent(user=current_user)
     if csv_container is None:
         abort(404)
@@ -123,9 +123,9 @@ def review2():
                         form.options[options_indx].data
                     )
                     options_indx += 1
-            return redirect(url_for('bulk_resource.review2'))
+            return redirect(url_for('bulk_resource.review_options'))
         elif form.navigation.data['submit_back']:
-            return redirect(url_for('bulk_resource.review1'))
+            return redirect(url_for('bulk_resource.review_descriptor_types'))
         elif form.navigation.data['submit_cancel']:
             db.session.delete(csv_container)
             return redirect(url_for('bulk_resource.upload'))
@@ -141,6 +141,6 @@ def review2():
                                      ')'
             form.options[j].data = header_cell.new_options_string()
             j += 1
-    return render_template('bulk_resource/review2.html',
+    return render_template('bulk_resource/review-options.html',
                            csv_container=csv_container,
                            form=form)
