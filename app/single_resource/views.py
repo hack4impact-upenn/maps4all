@@ -1,9 +1,10 @@
-from flask import flash, redirect, render_template, url_for
+from flask import abort, flash, redirect, render_template, url_for
 from flask.ext.login import login_required
 from sqlalchemy.exc import IntegrityError
+from wtforms.fields import SelectField, TextAreaField
 
 from .. import db
-from ..models import Resource
+from ..models import Descriptor, OptionAssociation, Resource, TextAssociation
 from . import single_resource
 from .forms import SingleResourceForm
 
@@ -20,6 +21,15 @@ def index():
 @login_required
 def create():
     """Add a resource."""
+    descriptors = Descriptor.query.all()
+    for descriptor in descriptors:
+        if descriptor.values:  # Fields for option descriptors.
+            choices = [(str(i), v) for i, v in enumerate(descriptor.values)]
+            setattr(SingleResourceForm,
+                    descriptor.name,
+                    SelectField(choices=choices))
+        else:  # Fields for text descriptors
+            setattr(SingleResourceForm, descriptor.name, TextAreaField())
     form = SingleResourceForm()
     if form.validate_on_submit():
         new_resource = Resource(name=form.name.data,
@@ -27,12 +37,14 @@ def create():
                                 latitude=form.latitude.data,
                                 longitude=form.longitude.data)
         db.session.add(new_resource)
+        save_associations(resource=new_resource,
+                          form=form,
+                          descriptors=descriptors,
+                          resource_existed=False)
         try:
             db.session.commit()
             flash('Resource added', 'form-success')
-            new_resource_id = Resource.query.order_by('-id').first().id
-            return redirect(url_for('single_resource.edit',
-                                    resource_id=new_resource_id))
+            return redirect(url_for('single_resource.index'))
         except IntegrityError:
             db.session.rollback()
             flash('Error: failed to save resource. Please try again.',
@@ -45,24 +57,100 @@ def create():
 def edit(resource_id):
     """Edit a resource."""
     resource = Resource.query.get(resource_id)
-    field_names = Resource.__table__.columns.keys()
+    if resource is None:
+        abort(404)
+    resource_field_names = Resource.__table__.columns.keys()
+    descriptors = Descriptor.query.all()
+    for descriptor in descriptors:
+        if descriptor.values:  # Fields for option descriptors.
+            choices = [(str(i), v) for i, v in enumerate(descriptor.values)]
+            default = None
+            option_association = OptionAssociation.query.filter_by(
+                resource_id=resource_id,
+                descriptor_id=descriptor.id
+            ).first()
+            if option_association is not None:
+                default = option_association.option
+            setattr(SingleResourceForm,
+                    descriptor.name,
+                    SelectField(choices=choices, default=default))
+        else:  # Fields for text descriptors.
+            default = None
+            text_association = TextAssociation.query.filter_by(
+                resource_id=resource_id,
+                descriptor_id=descriptor.id
+            ).first()
+            if text_association is not None:
+                default = text_association.text
+            setattr(SingleResourceForm,
+                    descriptor.name,
+                    TextAreaField(default=default))
     form = SingleResourceForm()
     if form.validate_on_submit():
-        resource.name = form.name.data
-        resource.address = form.address.data
-        resource.latitude = form.latitude.data
-        resource.longitude = form.longitude.data
+        # Field id is not needed for the form, hence omitted with [1:].
+        for field_name in resource_field_names[1:]:
+            setattr(resource, field_name, form[field_name].data)
+        save_associations(resource=resource,
+                          form=form,
+                          descriptors=descriptors,
+                          resource_existed=True)
         try:
             db.session.commit()
             flash('Resource updated', 'form-success')
-            return redirect(url_for('single_resource.edit',
-                                    resource_id=resource_id))
+            return redirect(url_for('single_resource.index'))
         except IntegrityError:
             db.session.rollback()
             flash('Error: failed to save resource. Please try again.',
                   'form-error')
-    for field_name in field_names[1:]:
+    # Field id is not needed for the form, hence omitted with [1:].
+    for field_name in resource_field_names[1:]:
         form[field_name].data = resource.__dict__[field_name]
     return render_template('single_resource/edit.html',
                            form=form,
                            resource_id=resource_id)
+
+
+def save_associations(resource, form, descriptors, resource_existed=True):
+    """Save associations from the forms received by 'create' and 'edit' route
+    handlers to the database."""
+    for descriptor in descriptors:
+        if descriptor.values:
+            AssociationClass = OptionAssociation
+            value = int(form[descriptor.name].data)
+            keyword = 'option'
+        else:
+            AssociationClass = TextAssociation
+            value = form[descriptor.name].data
+            keyword = 'text'
+        association = None
+        if resource_existed:
+            association = AssociationClass.query.filter_by(
+                resource_id=resource.id,
+                descriptor_id=descriptor.id
+            ).first()
+        if association is not None:
+            setattr(association, keyword, value)
+        else:
+            arguments = {'resource_id': resource.id,
+                         'descriptor_id': descriptor.id,
+                         keyword: value,
+                         'resource': resource,
+                         'descriptor': descriptor}
+            new_association = AssociationClass(**arguments)
+            db.session.add(new_association)
+
+
+@single_resource.route('/<int:resource_id>/delete', methods=['POST'])
+@login_required
+def delete(resource_id):
+    """Delete a resource."""
+    resource = Resource.query.get(resource_id)
+    db.session.delete(resource)
+    try:
+        db.session.commit()
+        flash('Resource deleted', 'form-success')
+        return redirect(url_for('single_resource.index'))
+    except IntegrityError:
+        db.session.rollback()
+        flash('Error: failed to delete resource. Please try again.',
+              'form-error')
