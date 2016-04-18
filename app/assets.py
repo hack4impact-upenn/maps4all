@@ -1,8 +1,7 @@
 from flask.ext.assets import Bundle
 
 app_css = Bundle(
-    'app.scss',
-    'map.scss',
+    '*.scss',
     filters='scss',
     output='styles/app.css'
 )
