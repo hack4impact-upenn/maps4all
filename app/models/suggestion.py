@@ -9,15 +9,14 @@ class Suggestion(db.Model):
     """
     __tablename__ = 'suggestions'
     id = db.Column(db.Integer, primary_key=True)
-    # suggestion_type is 0 for insertion, 1 for edit, and 2 for deletion
-    suggestion_type = db.Column(db.Integer)
+    # resource_id is -1 for insertion
     resource_id = db.Column(db.Integer)
-    suggestion_text = db.Column(db.String(150))
+    suggestion_text = db.Column(db.String(250))
     # 0 stands for read, 1 stands for unread
-    read = db.Column(db.Integer, default=0)
+    read = db.Column(db.Boolean, default=False)
     timestamp = db.Column(db.DateTime)
     contact_name = db.Column(db.String(64))
-    contact_email = db.Column(db.String(64), unique=True, index=True)
+    contact_email = db.Column(db.String(64))
     contact_number = db.Column(db.String(64))
 
     def __repr__(self):
@@ -39,7 +38,7 @@ class Suggestion(db.Model):
             s_contact_name = fake.word()
             s_contact_email = fake.word() + "@" + fake.word() + ".com"
             s_contact_number = "123-456-7890"
-            s_insert = Suggestion(suggestion_type=0, resource_id=-1, suggestion_text=s_text,
+            s_insert = Suggestion(resource_id=-1, suggestion_text=s_text,
                                   read=s_read, timestamp=s_timestamp, contact_name=s_contact_name,
                                   contact_email=s_contact_email, contact_number=s_contact_number)
             db.session.add(s_insert)
@@ -74,7 +73,7 @@ class Suggestion(db.Model):
             s_contact_name = fake.word()
             s_contact_email = fake.word() + "@" + fake.word() + ".com"
             s_contact_number = "123-456-7890"
-            s_edit = Suggestion(suggestion_type=1, resource_id=r_added.id, suggestion_text=s_text,
+            s_edit = Suggestion(resource_id=r_added.id, suggestion_text=s_text,
                                 read=s_read, timestamp=s_timestamp, contact_name=s_contact_name,
                                 contact_email=s_contact_email, contact_number=s_contact_number)
             db.session.add(s_edit)
@@ -109,7 +108,7 @@ class Suggestion(db.Model):
             s_contact_name = fake.word()
             s_contact_email = fake.word() + "@" + fake.word() + ".com"
             s_contact_number = "123-456-7890"
-            s_delete = Suggestion(suggestion_type=2, resource_id=r_added.id, suggestion_text=s_text,
+            s_delete = Suggestion(resource_id=r_added.id, suggestion_text=s_text,
                                   read=s_read, timestamp=s_timestamp, contact_name=s_contact_name,
                                   contact_email=s_contact_email, contact_number=s_contact_number)
 

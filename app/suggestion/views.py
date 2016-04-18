@@ -8,7 +8,6 @@ from ..models import Suggestion
 @login_required
 def index():
     suggestions = Suggestion.query.all()
-    print(suggestions)
     return render_template('suggestion/index.html', suggestions=suggestions)
 
 
