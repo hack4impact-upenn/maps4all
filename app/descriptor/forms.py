@@ -2,8 +2,6 @@ from flask.ext.wtf import Form
 from wtforms.fields import (
     BooleanField,
     FieldList,
-    FormField,
-    HiddenField,
     SelectField,
     SubmitField,
     TextField
@@ -33,11 +31,5 @@ class EditDescriptorOptionValueForm(Form):
     submit = SubmitField('Update option value')
 
 
-class FixSingleResourceOptionValueForm(Form):
-    resource_id = HiddenField()
-    option = SelectField('', validators=[InputRequired()])
-
-
 class FixAllResourceOptionValueForm(Form):
-    resources = FieldList(FormField(FixSingleResourceOptionValueForm))
     submit = SubmitField('Update resource option values')

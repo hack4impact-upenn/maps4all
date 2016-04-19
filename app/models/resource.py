@@ -135,7 +135,11 @@ class Resource(db.Model):
             resource.option_descriptors.append(oa)
 
             ta = TextAssociation(text=fake.sentence(nb_words=10))
-            ta.descriptor = Descriptor(name=fake.word(), values=[])
+            ta.descriptor = Descriptor(
+                name=fake.word(),
+                values=[],
+                is_searchable=fake.boolean()
+            )
             resource.text_descriptors.append(ta)
 
             db.session.add(resource)

@@ -12,6 +12,12 @@ app_js = Bundle(
     output='scripts/app.js'
 )
 
+descriptor_js = Bundle(
+    'descriptor.js',
+    filters='jsmin',
+    output='scripts/descriptor.js'
+)
+
 vendor_css = Bundle(
     'vendor/map.css',
     'vendor/semantic.min.css',

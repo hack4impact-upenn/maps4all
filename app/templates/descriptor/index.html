@@ -1,5 +1,9 @@
 {% extends 'layouts/base.html' %}
 
+{% block javascript %}
+    {% assets 'descriptor_js' %}<script type="text/javascript" src="{{ ASSET_URL }}"></script>{% endassets %}
+{% endblock %}
+
 {% block content %}
     <div class="ui stackable grid container">
         <div class="sixteen wide tablet twelve wide computer centered column">
@@ -62,29 +66,4 @@
             </div>
         </div>
     </div>
-
-    <script type="text/javascript">
-        $(document).ready(function () {
-            $('#search-descriptors').keyup(function () {
-                var searchText = $(this).val();
-                if (searchText.length > 0) {
-                    $('tbody td:icontains(' + searchText + ')').addClass('positive');
-                    $('td.positive').not(':icontains(' + searchText + ')').removeClass('positive');
-                    $('tbody td').not(':icontains(' + searchText + ')').closest('tr').addClass('hidden').hide();
-                    $('tr.hidden:icontains(' + searchText + ')').removeClass('hidden').show();
-                } else {
-                    $('td.positive').removeClass('positive');
-                    $('tr.hidden').removeClass('hidden').show();
-                }
-            });
-
-            $('#select-type').dropdown({
-                onChange: function (value, text, $selectedItem) {
-                    console.log(value);
-                    $('td.descriptor.type:contains(' + value + ')').closest('tr').removeClass('hidden').show();
-                    $('td.descriptor.type').not(':contains(' + value + ')').closest('tr').addClass('hidden').hide();
-                }
-            });
-        });
-    </script>
 {% endblock %}

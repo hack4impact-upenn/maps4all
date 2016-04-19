@@ -7,7 +7,7 @@ from flask.ext.assets import Environment
 from flask.ext.wtf import CsrfProtect
 from flask.ext.compress import Compress
 from config import config
-from assets import app_css, app_js, vendor_css, vendor_js
+from assets import app_css, app_js, descriptor_js, vendor_css, vendor_js
 
 basedir = os.path.abspath(os.path.dirname(__file__))
 
@@ -47,6 +47,7 @@ def create_app(config_name):
 
     assets_env.register('app_css', app_css)
     assets_env.register('app_js', app_js)
+    assets_env.register('descriptor_js', descriptor_js)
     assets_env.register('vendor_css', vendor_css)
     assets_env.register('vendor_js', vendor_js)
 
@@ -66,7 +67,8 @@ def create_app(config_name):
     app.register_blueprint(admin_blueprint, url_prefix='/admin')
 
     from bulk_resource import bulk_resource as bulk_resource_blueprint
-    app.register_blueprint(bulk_resource_blueprint, url_prefix='/bulk-resource')
+    app.register_blueprint(bulk_resource_blueprint,
+                           url_prefix='/bulk-resource')
 
     from descriptor import descriptor as descriptor_blueprint
     app.register_blueprint(descriptor_blueprint, url_prefix='/descriptor')
