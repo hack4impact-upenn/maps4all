@@ -116,14 +116,28 @@
               values.push(markerToAdd.json_data);
               async.each(values,
                 function(value, callback){
+                   var nameWindow = new google.maps.InfoWindow({
+                          content: '<div id="content">'+
+                         '<p>'+ json_data.data +'</p>'+
+                         '</div>'
+                         });
+                  markerToAdd.addListener('mouseover', function() {
+                       nameWindow.open(map, markerToAdd);
+                    })
+                  markerToAdd.addListener('mouseout', function() {
+                       nameWindow.close();
+                    })
                   markerToAdd.addListener('click', function() {
                     $.post("/get-info", markerToAdd.json_data)
                     .done(function(data) {
                         data = JSON.parse(data)
                         var addressWindow = new google.maps.InfoWindow({
                           content: '<div id="content">'+
-                         '<p><b>'+ data.Address +'</b></p>'+
-                         '</div>'
+                         '<p><b>'+  json_data.data +'</b></p>'+
+                         '<p>'+ data.Address +'</p>'+
+                         '<p>'+ data.Description +'</p>'+
+                         '</div>',
+                         maxWidth: 400
                          });
                         addressWindow.open(map, markerToAdd);
                     }).fail(function() {
@@ -136,6 +150,7 @@
               }
             );
         }
+
         var mapViewButton = document.getElementById("map_view");
         var listViewButton = document.getElementById("list_view");
 

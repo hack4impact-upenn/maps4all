@@ -28,4 +28,7 @@ def get_resource():
 @main.route('/get-info', methods=['POST'])
 def getInfo():
     pin_info = Resource.query.filter_by(name=request.form['data']).first()
-    return json.dumps({'Address': pin_info.address})
+    print type(pin_info.text_descriptors[0].text) #type: InstrumentedList of
+    # TextAssociations
+    return json.dumps({'Address': pin_info.address,
+                       'Description': pin_info.text_descriptors[0].text})
