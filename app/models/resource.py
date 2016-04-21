@@ -71,6 +71,7 @@ class Resource(db.Model):
     __tablename__ = 'resources'
     id = db.Column(db.Integer, primary_key=True)
     name = db.Column(db.String(64), index=True)
+    suggestions = db.relationship('Suggestion', backref='resource', uselist=True)
     address = db.Column(db.String(64))
     latitude = db.Column(db.Float)
     longitude = db.Column(db.Float)

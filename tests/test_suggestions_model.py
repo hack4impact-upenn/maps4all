@@ -1,6 +1,7 @@
 import unittest
 from app import create_app, db
 from app.models import Resource, Suggestion
+from sqlalchemy.exc import IntegrityError
 from datetime import datetime
 import pytz
 
@@ -43,12 +44,19 @@ class SuggestionsModelTestCase(unittest.TestCase):
     def test_edit_suggestion(self):
         """Test suggestion of an edit"""
         r = Resource(name='test_edit')
+        db.session.add(r)
+        try:
+            db.session.commit()
+        except IntegrityError:
+            db.session.rollback()
+
+        r_added = Resource.query.filter_by(name='test_edit').first()
         s_text = "The phone number of this establishment is incorrect: it should be 212-346-5927"
         s_contact_name = "Anonymous Helper"
         s_contact_email = "anony@mous.com"
         s_contact_number = "000-001-0101"
         s_timestamp = datetime.now(pytz.timezone('US/Eastern'))
-        suggestion = Suggestion(resource_id=r.id, suggestion_text=s_text,
+        suggestion = Suggestion(resource_id=r_added.id, suggestion_text=s_text,
                                 read=1, contact_name=s_contact_name, contact_email=s_contact_email,
                                 contact_number=s_contact_number, timestamp=s_timestamp)
         db.session.add(suggestion)
@@ -57,7 +65,7 @@ class SuggestionsModelTestCase(unittest.TestCase):
         r_in_table = Suggestion.query.filter_by(suggestion_text=s_text).first()
         self.assertTrue(r_in_table is not None)
         self.assertTrue(r_in_table.suggestion_text == s_text)
-        self.assertTrue(r_in_table.resource_id == r.id)
+        self.assertTrue(r_in_table.resource_id == r_added.id)
         self.assertTrue(r_in_table.read == 1)
         self.assertTrue(r_in_table.contact_number == s_contact_number)
         self.assertTrue(r_in_table.timestamp is not None)
@@ -67,12 +75,19 @@ class SuggestionsModelTestCase(unittest.TestCase):
     def test_delete_suggestion(self):
         """Test suggestion of a delete"""
         r = Resource(name='test_delete')
+        db.session.add(r)
+        try:
+            db.session.commit()
+        except IntegrityError:
+            db.session.rollback()
+
+        r_added = Resource.query.filter_by(name='test_delete').first()
         s_text = "TThis location closed last month"
         s_contact_name = "Jane Smith"
         s_contact_email = "jane@smith.com"
         s_contact_number = "121-160-1010"
         s_timestamp = datetime.now(pytz.timezone('US/Eastern'))
-        suggestion = Suggestion(resource_id=r.id, suggestion_text=s_text,
+        suggestion = Suggestion(resource_id=r_added.id, suggestion_text=s_text,
                                 read=1, contact_name=s_contact_name, contact_email=s_contact_email,
                                 contact_number=s_contact_number, timestamp=s_timestamp)
         db.session.add(suggestion)
@@ -81,7 +96,7 @@ class SuggestionsModelTestCase(unittest.TestCase):
         r_in_table = Suggestion.query.filter_by(suggestion_text=s_text).first()
         self.assertTrue(r_in_table is not None)
         self.assertTrue(r_in_table.suggestion_text == s_text)
-        self.assertTrue(r_in_table.resource_id == r.id)
+        self.assertTrue(r_in_table.resource_id == r_added.id)
         self.assertTrue(r_in_table.read == 1)
         self.assertTrue(r_in_table.contact_number == s_contact_number)
         self.assertTrue(r_in_table.timestamp is not None)

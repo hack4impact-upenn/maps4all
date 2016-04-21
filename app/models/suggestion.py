@@ -10,7 +10,7 @@ class Suggestion(db.Model):
     __tablename__ = 'suggestions'
     id = db.Column(db.Integer, primary_key=True)
     # resource_id is -1 for insertion
-    resource_id = db.Column(db.Integer)
+    resource_id = db.Column(db.Integer, db.ForeignKey('resources.id'))
     suggestion_text = db.Column(db.String(250))
     # 0 stands for read, 1 stands for unread
     read = db.Column(db.Boolean, default=False)
