@@ -1,10 +1,6 @@
 {% extends 'layouts/base.html' %}
 {% import 'macros/form_macros.html' as f %}
 
-{% block javascript %}
-    {% assets 'descriptor_js' %}<script type="text/javascript" src="{{ ASSET_URL }}"></script>{% endassets %}
-{% endblock %}
-
 {% block content %}
     <div class="ui stackable centered grid container">
         <div class="twelve wide column">

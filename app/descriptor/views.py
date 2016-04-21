@@ -139,7 +139,7 @@ def edit_searchable(desc_id):
 @descriptor.route('/<int:desc_id>/option-values', methods=['GET', 'POST'])
 @login_required
 def change_option_values_index(desc_id):
-    """Shows the page for changing descriptor's option values."""
+    """Shows the page to add/edit/remove a descriptor's option values."""
     descriptor = Descriptor.query.get(desc_id)
     if descriptor is None:
         abort(404)
@@ -176,7 +176,7 @@ def change_option_values_index(desc_id):
                   methods=['GET', 'POST'])
 @login_required
 def edit_option_value(desc_id, option_index):
-    """Edt a descriptor's selected option value."""
+    """Edit a descriptor's selected option value."""
     descriptor = Descriptor.query.get(desc_id)
     if descriptor is None:
         abort(404)
@@ -295,7 +295,7 @@ def remove_value_from_db(descriptor, values, old_value):
 @descriptor.route('/<int:desc_id>/delete_request')
 @login_required
 def delete_descriptor_request(desc_id):
-    """Request deletion of a user's account."""
+    """Shows the page for deletion of a descriptor."""
     descriptor = Descriptor.query.get(desc_id)
     if descriptor is None:
         abort(404)
