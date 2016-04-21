@@ -25,10 +25,20 @@ class EditDescriptorNameForm(Form):
     submit = SubmitField('Update name')
 
 
+class EditDescriptorSearchableForm(Form):
+    is_searchable = BooleanField('Searchable')
+    submit = SubmitField('Update')
+
+
 class EditDescriptorOptionValueForm(Form):
     value = TextField('Option Value',
                       validators=[InputRequired(), Length(1, 64)])
     submit = SubmitField('Update option value')
+
+
+class AddDescriptorOptionValueForm(Form):
+    value = TextField('', validators=[InputRequired(), Length(1, 64)])
+    submit = SubmitField('Add option')
 
 
 class FixAllResourceOptionValueForm(Form):

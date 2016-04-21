@@ -11,7 +11,7 @@
                 </div>
             </h2>
 
-            <a class="ui basic compact button" href="{{ url_for('descriptor.change_option_values_request', desc_id=desc.id) }}">
+            <a class="ui basic compact button" href="{{ url_for('descriptor.change_option_values_index', desc_id=desc.id) }}">
                 <i class="caret left icon"></i>
                 Back to descriptor
             </a>
@@ -38,7 +38,7 @@
                 {# Use overflow-x: scroll so that mobile views don't freak out
                  # when the table is too wide #}
                 <div style="overflow-x: scroll;">
-                    <table style="border=0" class="ui searchable sortable unstackable celled table">
+                    <table style="border=0" class="ui unstackable celled table">
                         <thead>
                             <tr>
                                 <th class="sorted ascending">Name</th>
@@ -50,7 +50,6 @@
                             <tr>
                                 <td>{{ option_assocs[i].resource.name }}</td>
                                 <td class="descriptor value">
-                                    {# f.render_form_field(form.resources[i]) #}
                                     {{ f.render_form_field(form[option_assocs[i].resource.name])}}
                                 </td>
                             </tr>

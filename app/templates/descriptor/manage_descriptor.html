@@ -2,11 +2,12 @@
 {% import 'macros/form_macros.html' as f %}
 
 {% set deletion_endpoint = 'descriptor.delete_descriptor_request' %}
-{% set change_endpoint = 'descriptor.change_option_values_request' %}
+{% set change_endpoint = 'descriptor.change_option_values_index' %}
 
 {% set endpoints = [
     ('descriptor.descriptor_info', 'Descriptor information'),
     ('descriptor.edit_name', 'Change name'),
+    ('descriptor.edit_searchable', 'Change searchability'),
     (change_endpoint, 'Change option values'),
     (deletion_endpoint, 'Delete descriptor')
 ] %}
@@ -38,25 +39,43 @@
     </table>
 {% endmacro %}
 
-{% macro option_values(desc) %}
-    <h3 class="ui header">Values</h3>
-    <table class="ui basic collapsing table">
-        <tbody>
-        {% for i in range(desc.values|length) %}
-            <tr>
-                <td>{{ desc.values[i] }}</td>
-                <td><a class="ui edit button" 
-                    href="{{ url_for('descriptor.edit_option_value', desc_id=desc.id, option_index=i) }}">
-                    Edit
-                </a></td>
-                <td><a class="ui negative deletion button" 
-                    href="{{ url_for('descriptor.remove_option_value', desc_id=desc.id, option_index=i) }}">
-                    Remove
-                </a></td>
-            </tr>
-        {% endfor %}
-        </tbody>
-    </table>
+{% macro option_values(form, desc) %}
+    {% set flashes = {
+        'error':   get_flashed_messages(category_filter=['form-error']),
+        'warning': get_flashed_messages(category_filter=['form-check-email']),
+        'info':    get_flashed_messages(category_filter=['form-info']),
+        'success': get_flashed_messages(category_filter=['form-success'])
+    } %}
+
+    {{ f.begin_form(form, flashes) }}
+
+        <h3 class="ui header">Values</h3>
+        <table class="ui basic collapsing table">
+            <tbody>
+            {% for i in range(desc.values|length) %}
+                <tr>
+                    <td>{{ desc.values[i] }}</td>
+                    <td><a class="ui edit button" 
+                        href="{{ url_for('descriptor.edit_option_value', desc_id=desc.id, option_index=i) }}">
+                        Edit
+                    </a></td>
+                    <td><a class="ui negative deletion button" 
+                        href="{{ url_for('descriptor.remove_option_value', desc_id=desc.id, option_index=i) }}">
+                        Remove
+                    </a></td>
+                </tr>
+            {% endfor %}
+                <tr>
+                    <td colspan="2">{{ f.render_form_field(form.value) }}</td>
+                    <td>{{ f.render_form_field(form.submit) }}<td>
+            </tbody>
+        </table>
+        {{ f.form_message(flashes['error'], header='Something went wrong.', class='error') }}
+        {{ f.form_message(flashes['warning'], header='Check your email.', class='warning') }}
+        {{ f.form_message(flashes['info'], header='Information', class='info') }}
+        {{ f.form_message(flashes['success'], header='Success!', class='success') }}
+
+    {{ f.end_form() }}
 {% endmacro %}
 
 {% block content %}
@@ -100,12 +119,24 @@
                         </a>
                     </div>
                     </div>
+                {% elif request.endpoint == change_endpoint %}
+                    {{ option_values(form, desc) }}
                 {% elif form %}
                     {{ f.render_form(form) }}
-                {% elif request.endpoint == change_endpoint %}
-                    {{ option_values(desc) }}
                 {% else %}
+                    {% set flashes = {
+                        'error':   get_flashed_messages(category_filter=['form-error']),
+                        'warning': get_flashed_messages(category_filter=['form-check-email']),
+                        'info':    get_flashed_messages(category_filter=['form-info']),
+                        'success': get_flashed_messages(category_filter=['form-success'])
+                    } %}
+
                     {{ descriptor_info(desc) }}
+
+                    {{ f.form_message(flashes['error'], header='Something went wrong.', class='error') }}
+                    {{ f.form_message(flashes['warning'], header='Check your email.', class='warning') }}
+                    {{ f.form_message(flashes['info'], header='Information', class='info') }}
+                    {{ f.form_message(flashes['success'], header='Success!', class='success') }}
                 {% endif %}
             </div>
         </div>

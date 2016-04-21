@@ -22,20 +22,20 @@
 
             {{ f.begin_form(form, flashes) }}
 
-                {{ f.render_form_field(form.desc_type) }}
-
-                {{ f.render_form_field(form.name) }}
-
-                <div id="values-div">
-                    {{ f.render_form_field(form.option_values) }}
-                </div>
-
-                {{ f.render_form_field(form.is_searchable) }}
-
                 {{ f.form_message(flashes['error'], header='Something went wrong.', class='error') }}
                 {{ f.form_message(flashes['warning'], header='Check your email.', class='warning') }}
                 {{ f.form_message(flashes['info'], header='Information', class='info') }}
                 {{ f.form_message(flashes['success'], header='Success!', class='success') }}
+
+                {{ f.render_form_field(form.desc_type) }}
+
+                {{ f.render_form_field(form.name) }}
+
+                <div id="values-div" style="display:none">
+                    {{ f.render_form_field(form.option_values) }}
+                </div>
+
+                {{ f.render_form_field(form.is_searchable) }}
 
                 {{ f.render_form_field(form.submit) }}
 
