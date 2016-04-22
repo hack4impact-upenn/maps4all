@@ -15,6 +15,7 @@ table {
   height: 80%;
   width: 90%;
   left: 50px;
+  display: inline-block;
 }
 
 .controls {
@@ -69,4 +70,12 @@ table {
   font-family: Roboto;
   font-size: 13px;
   font-weight: 300;
-} 
+}
+
+#info-window {
+  font-family: Roboto;
+  font-size: 13px;
+  font-weight: 300;
+  display: inline-block;
+}
+

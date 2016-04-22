@@ -11,7 +11,7 @@ def index():
 
 @main.route('/get-resources')
 def get_resources():
-    resources = Resource.query.all()
+    resources = Resource.query.all() 
     resources_as_dicts = Resource.get_resources_as_dicts(resources)
     return json.dumps(resources_as_dicts)
 
