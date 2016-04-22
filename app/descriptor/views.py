@@ -132,6 +132,7 @@ def edit_searchable(desc_id):
         except IntegrityError:
             db.session.rollback()
             flash('Database error occurred. Please try again.', 'form-error')
+    form.is_searchable.data = old_value
     return render_template('descriptor/manage_descriptor.html',
                            desc=descriptor, form=form, is_option=is_option)
 
@@ -214,12 +215,10 @@ def edit_option_value(desc_id, option_index):
 def remove_option_value(desc_id, option_index):
     """Remove a descriptor's selected option value."""
     descriptor = Descriptor.query.get(desc_id)
-    if descriptor is None:
+    if descriptor is None or len(descriptor.values) == 0:
         abort(404)
     old_value = descriptor.values[option_index]
-    is_option = len(descriptor.values) != 0
-    if not is_option:
-        abort(404)
+
     if len(descriptor.values) == 1:
         flash('Descriptor {} only has one value.'.format(descriptor.name),
               'form-error')
@@ -243,13 +242,15 @@ def remove_option_value(desc_id, option_index):
     for oa in option_assocs:
         setattr(FixAllResourceOptionValueForm, oa.resource.name,
                 SelectField('', coerce=int, choices=choices))
-
     form = FixAllResourceOptionValueForm()
+
+    # Delete the dynamic fields after the form is instantiated
+    for oa in option_assocs:
+        delattr(FixAllResourceOptionValueForm, oa.resource.name)
 
     if form.validate_on_submit():
         for oa in option_assocs:
             choice = form[oa.resource.name].data
-
             # Case for 'Remove this descriptor'
             if choice == -1:
                 db.session.delete(oa)
@@ -268,6 +269,7 @@ def remove_option_value(desc_id, option_index):
 
 
 def generate_option_choices(descriptor, removed_index):
+    """Helper function to generate the option values for a SelectField."""
     choice_names = (['Remove this descriptor'] +
                     descriptor.values[:removed_index] +
                     descriptor.values[removed_index + 1:])
@@ -278,6 +280,7 @@ def generate_option_choices(descriptor, removed_index):
 
 
 def remove_value_from_db(descriptor, values, old_value):
+    """Helper function to update the values an option can take."""
     descriptor.values = values
     db.session.add(descriptor)
     try:
