@@ -8,6 +8,7 @@ app_css = Bundle(
 
 app_js = Bundle(
     'app.js',
+    'descriptor.js',
     filters='jsmin',
     output='scripts/app.js'
 )

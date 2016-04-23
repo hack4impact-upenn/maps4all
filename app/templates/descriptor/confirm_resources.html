@@ -1,0 +1,70 @@
+{% extends 'layouts/base.html' %}
+{% import 'macros/form_macros.html' as f %}
+
+{% block content %}
+    <div class="ui stackable grid container">
+        <div class="sixteen wide tablet twelve wide computer centered column">
+            <h2 class="ui header">
+                {{ desc.name }}
+                <div class="sub header">
+                    Resolve issues with current resources.
+                </div>
+            </h2>
+
+            <a class="ui basic compact button" href="{{ url_for('descriptor.change_option_values_index', desc_id=desc.id) }}">
+                <i class="caret left icon"></i>
+                Back to descriptor
+            </a>
+
+            <h3 class="ui red block header">
+                <i class="warning circle icon"></i>
+                <div class="content">
+                    Action Required
+                    <div class="sub header">
+                        Deleting the value {{ desc.values[option_index] }} from descriptor {{ desc.name }}
+                        will affect these resources. Please select the new value for the resources below.
+                    </div>
+                </div>
+            </h3>
+            {% set flashes = {
+                'error':   get_flashed_messages(category_filter=['form-error']),
+                'warning': get_flashed_messages(category_filter=['form-check-email']),
+                'info':    get_flashed_messages(category_filter=['form-info']),
+                'success': get_flashed_messages(category_filter=['form-success'])
+            } %}
+
+            {{ f.begin_form(form, flashes) }}
+
+                {# Use overflow-x: scroll so that mobile views don't freak out
+                 # when the table is too wide #}
+                <div style="overflow-x: scroll;">
+                    <table style="border=0" class="ui unstackable celled table">
+                        <thead>
+                            <tr>
+                                <th class="sorted ascending">Name</th>
+                                <th class="sorted ascending">{{ desc.name }}</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                        {% for i in range(option_assocs|length) %}
+                            <tr>
+                                <td>{{ option_assocs[i].resource.name }}</td>
+                                <td class="descriptor value">
+                                    {{ f.render_form_field(form[option_assocs[i].resource.name])}}
+                                </td>
+                            </tr>
+                        {% endfor %}
+                        </tbody>
+                    </table>
+                    
+                    {{ f.form_message(flashes['error'], header='Something went wrong.', class='error') }}
+                    {{ f.form_message(flashes['warning'], header='Check your email.', class='warning') }}
+                    {{ f.form_message(flashes['info'], header='Information', class='info') }}
+                    {{ f.form_message(flashes['success'], header='Success!', class='success') }}
+
+                    {{ f.render_form_field(form.submit) }}
+                </div>
+            {{ f.end_form() }}
+        </div>
+    </div>
+{% endblock %}

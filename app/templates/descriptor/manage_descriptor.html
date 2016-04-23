@@ -1,0 +1,145 @@
+{% extends 'layouts/base.html' %}
+{% import 'macros/form_macros.html' as f %}
+
+{% set deletion_endpoint = 'descriptor.delete_descriptor_request' %}
+{% set change_endpoint = 'descriptor.change_option_values_index' %}
+
+{% set endpoints = [
+    ('descriptor.descriptor_info', 'Descriptor information'),
+    ('descriptor.edit_name', 'Change name'),
+    ('descriptor.edit_searchable', 'Change searchability'),
+    (change_endpoint, 'Change option values'),
+    (deletion_endpoint, 'Delete descriptor')
+] %}
+
+{% macro navigation(items) %}
+    <div class="ui vertical fluid secondary menu">
+        {% for route, name in items %}
+            {% if is_option or not route == change_endpoint %}
+                {% set href = url_for(route, desc_id=desc.id) %}
+                <a class="item {% if request.endpoint == route %} active {% endif %}" href="{{ href }}">
+                    {{ name }}
+                </a>
+            {% endif %}
+        {% endfor %}
+    </div>
+{% endmacro %}
+
+{% macro descriptor_info(desc) %}
+    <table class="ui compact definition table">
+        <tr><td>Name</td><td>{{ '%s' % (desc.name) }}</td></tr>
+        <tr><td>Type</td>
+        {% if not desc.values %}
+            <td>Text</td></tr>
+        {% else %}
+            <td>Option</td></tr>
+            <tr><td>Values</td><td>{{ ', '.join(desc.values) }}</td>
+        {% endif %}
+        <tr><td>Searchable</td><td>{{ desc.is_searchable }}</td></tr>
+    </table>
+{% endmacro %}
+
+{% macro option_values(form, desc) %}
+    {% set flashes = {
+        'error':   get_flashed_messages(category_filter=['form-error']),
+        'warning': get_flashed_messages(category_filter=['form-check-email']),
+        'info':    get_flashed_messages(category_filter=['form-info']),
+        'success': get_flashed_messages(category_filter=['form-success'])
+    } %}
+
+    {{ f.begin_form(form, flashes) }}
+
+        <h3 class="ui header">Values</h3>
+        <table class="ui basic collapsing table">
+            <tbody>
+            {% for i in range(desc.values|length) %}
+                <tr>
+                    <td>{{ desc.values[i] }}</td>
+                    <td><a class="ui edit button" 
+                        href="{{ url_for('descriptor.edit_option_value', desc_id=desc.id, option_index=i) }}">
+                        Edit
+                    </a></td>
+                    <td><a class="ui negative deletion button" 
+                        href="{{ url_for('descriptor.remove_option_value', desc_id=desc.id, option_index=i) }}">
+                        Remove
+                    </a></td>
+                </tr>
+            {% endfor %}
+                <tr>
+                    <td colspan="2">{{ f.render_form_field(form.value) }}</td>
+                    <td>{{ f.render_form_field(form.submit) }}<td>
+            </tbody>
+        </table>
+        {{ f.form_message(flashes['error'], header='Something went wrong.', class='error') }}
+        {{ f.form_message(flashes['warning'], header='Check your email.', class='warning') }}
+        {{ f.form_message(flashes['info'], header='Information', class='info') }}
+        {{ f.form_message(flashes['success'], header='Success!', class='success') }}
+
+    {{ f.end_form() }}
+{% endmacro %}
+
+{% block content %}
+    <div class="ui stackable centered grid container">
+        <div class="twelve wide column">
+            <a class="ui basic compact button" href="{{ url_for('descriptor.index') }}">
+                <i class="caret left icon"></i>
+                Back to all descriptors
+            </a>
+            <h2 class="ui header">
+                {{ desc.name }}
+                <div class="sub header">View and manage descriptor {{ desc.name }}.</div>
+            </h2>
+        </div>
+        <div class="stretched divided very relaxed row">
+            <div class="four wide column">
+                {{ navigation(endpoints) }}
+            </div>
+            <div class="eight wide column">
+                {% if request.endpoint == deletion_endpoint %}
+                    <h3 class="ui red block header">
+                        <i class="warning circle icon"></i>
+                        <div class="content">
+                            This action is permanent
+                            <div class="sub header">
+                                Deleting a descriptor is not a reversible change. Any information associated
+                                with this descriptor will be removed, and cannot be recovered.
+                            </div>
+                        </div>
+                    </h3>
+
+                    <div class="ui form">
+                        <div class="inline field">
+                            <div class="ui deletion checkbox">
+                                <input type="checkbox" tabindex="0" class="hidden">
+                                <label>I understand that this action cannot be undone.</label>
+                            </div>
+                        </div>
+                        <a class="ui disabled negative deletion button" href="{{ url_for('descriptor.delete_descriptor', desc_id=desc.id) }}")>
+                            Delete this descriptor
+                        </a>
+                    </div>
+                    </div>
+                {% elif request.endpoint == change_endpoint %}
+                    {{ option_values(form, desc) }}
+                {% elif form %}
+                    {{ f.render_form(form) }}
+                {% else %}
+                    {% set flashes = {
+                        'error':   get_flashed_messages(category_filter=['form-error']),
+                        'warning': get_flashed_messages(category_filter=['form-check-email']),
+                        'info':    get_flashed_messages(category_filter=['form-info']),
+                        'success': get_flashed_messages(category_filter=['form-success'])
+                    } %}
+
+                    {{ descriptor_info(desc) }}
+
+                    {{ f.form_message(flashes['error'], header='Something went wrong.', class='error') }}
+                    {{ f.form_message(flashes['warning'], header='Check your email.', class='warning') }}
+                    {{ f.form_message(flashes['info'], header='Information', class='info') }}
+                    {{ f.form_message(flashes['success'], header='Success!', class='success') }}
+                {% endif %}
+            </div>
+        </div>
+    </div>
+
+{% endblock %}
