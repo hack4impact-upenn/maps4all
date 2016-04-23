@@ -85,6 +85,7 @@ class Resource(db.Model):
         back_populates='resource',
         cascade='save-update, merge, delete, delete-orphan'
     )
+    suggestions = db.relationship('Suggestion', backref='resource', uselist=True)
 
     def __repr__(self):
         return '<Resource \'%s\'>' % self.name
