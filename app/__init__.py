@@ -7,7 +7,7 @@ from flask.ext.assets import Environment
 from flask.ext.wtf import CsrfProtect
 from flask.ext.compress import Compress
 from config import config
-from assets import app_css, app_js, descriptor_js, vendor_css, vendor_js
+from assets import app_css, app_js, vendor_css, vendor_js
 
 basedir = os.path.abspath(os.path.dirname(__file__))
 
@@ -47,7 +47,6 @@ def create_app(config_name):
 
     assets_env.register('app_css', app_css)
     assets_env.register('app_js', app_js)
-    assets_env.register('descriptor_js', descriptor_js)
     assets_env.register('vendor_css', vendor_css)
     assets_env.register('vendor_js', vendor_js)
 

@@ -8,14 +8,9 @@ app_css = Bundle(
 
 app_js = Bundle(
     'app.js',
-    filters='jsmin',
-    output='scripts/app.js'
-)
-
-descriptor_js = Bundle(
     'descriptor.js',
     filters='jsmin',
-    output='scripts/descriptor.js'
+    output='scripts/app.js'
 )
 
 vendor_css = Bundle(
