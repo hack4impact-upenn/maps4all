@@ -49,15 +49,16 @@ class Descriptor(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     name = db.Column(db.String(64), index=True)
     values = db.Column(db.PickleType)
+    is_searchable = db.Column(db.Boolean)
     text_resources = db.relationship(
         'TextAssociation',
         back_populates='descriptor',
-        cascade="save-update, merge, delete, delete-orphan"
+        cascade='save-update, merge, delete, delete-orphan'
     )
     option_resources = db.relationship(
         'OptionAssociation',
         back_populates='descriptor',
-        cascade="save-update, merge, delete, delete-orphan"
+        cascade='save-update, merge, delete, delete-orphan'
     )
 
     def __repr__(self):
@@ -77,12 +78,12 @@ class Resource(db.Model):
     text_descriptors = db.relationship(
         'TextAssociation',
         back_populates='resource',
-        cascade="save-update, merge, delete, delete-orphan"
+        cascade='save-update, merge, delete, delete-orphan'
     )
     option_descriptors = db.relationship(
         'OptionAssociation',
         back_populates='resource',
-        cascade="save-update, merge, delete, delete-orphan"
+        cascade='save-update, merge, delete, delete-orphan'
     )
     suggestions = db.relationship('Suggestion', backref='resource', uselist=True)
 
@@ -106,7 +107,8 @@ class Resource(db.Model):
         for i in range(num_options):
             options.append(Descriptor(
                 name=fake.word(),
-                values=['True', 'False']
+                values=['True', 'False'],
+                is_searchable=fake.boolean()
             ))
 
         for i in range(count):
@@ -134,7 +136,11 @@ class Resource(db.Model):
             resource.option_descriptors.append(oa)
 
             ta = TextAssociation(text=fake.sentence(nb_words=10))
-            ta.descriptor = Descriptor(name=fake.word(), values=[])
+            ta.descriptor = Descriptor(
+                name=fake.word(),
+                values=[],
+                is_searchable=fake.boolean()
+            )
             resource.text_descriptors.append(ta)
 
             db.session.add(resource)
@@ -144,8 +150,18 @@ class Resource(db.Model):
                 db.session.rollback()
 
     @staticmethod
+    def get_resources_as_dicts(resources):
+        resources_as_dicts = [resource.__dict__ for resource in resources]
+        # .__dict__ returns the SQLAlchemy object as a dict, but it also adds a
+        # field '_sa_instance_state' that we don't need, so we delete it.
+        for d in resources_as_dicts:
+            del d['_sa_instance_state']
+        return resources_as_dicts
+
+    @staticmethod
     def print_resources():
-        for resource in db.session.query(Resource).all():
+        resources = Resource.query.all()
+        for resource in resources:
             print resource
             print resource.address
             print '(%s , %s)' % (resource.latitude, resource.longitude)

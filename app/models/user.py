@@ -51,7 +51,7 @@ class User(UserMixin, db.Model):
     role_id = db.Column(db.Integer, db.ForeignKey('roles.id'))
     csv_containers = db.relationship('CsvContainer', backref='user',
                                      uselist=True,
-                                     order_by="CsvContainer.date_uploaded")
+                                     order_by='CsvContainer.date_uploaded')
 
     def __init__(self, **kwargs):
         super(User, self).__init__(**kwargs)

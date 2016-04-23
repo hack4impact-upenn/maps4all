@@ -1,4 +1,3 @@
-<<<<<<< HEAD
 html, body {
   height: 100%;
   margin: 0;
@@ -10,10 +9,6 @@ table {
   font-family: Roboto;
   font-size: 13px;
   font-weight: 300;
-}
-
-td, th {
-  border: solid 1px black;
 }
 
 #map {

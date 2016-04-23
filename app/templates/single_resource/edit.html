@@ -4,7 +4,11 @@
     <div class="ui text container">
         <h2 class="ui dividing header">Edit Resource</h2>
         {% include 'single_resource/resource_form.html' %}
-        <a href=""
-           class="ui negative deletion button">Delete</a>
+        <br>
+        <form action="{{ url_for('single_resource.delete', resource_id=resource_id) }}"
+              method="post">
+            <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+            <button class="negative ui button">Delete Resource</button>
+        </form>
     </div>
 {% endblock %}

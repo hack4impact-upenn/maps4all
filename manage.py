@@ -1,7 +1,16 @@
 #!/usr/bin/env python
 import os
 from app import create_app, db
-from app.models import Resource, Role, User
+from app.models import (
+    CsvBodyCell,
+    CsvBodyRow,
+    CsvContainer,
+    CsvHeaderCell,
+    CsvHeaderRow,
+    Resource,
+    Role,
+    User,
+)
 from config import Config
 from flask.ext.script import Manager, Shell
 from flask.ext.migrate import Migrate, MigrateCommand
@@ -21,7 +30,9 @@ migrate = Migrate(app, db)
 
 
 def make_shell_context():
-    return dict(app=app, db=db, User=User, Role=Role)
+    return dict(app=app, db=db, User=User, Role=Role, CsvBodyCell=CsvBodyCell,
+                CsvBodyRow=CsvBodyRow, CsvContainer=CsvContainer,
+                CsvHeaderCell=CsvHeaderCell, CsvHeaderRow=CsvHeaderRow)
 
 
 manager.add_command('shell', Shell(make_context=make_shell_context))
