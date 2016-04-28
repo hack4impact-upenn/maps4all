@@ -16,8 +16,13 @@ def get_resources():
     return json.dumps(resources_as_dicts)
 
 
+ # TODO: write logic to retrieve and return associations for resource.
 @main.route('/get-associations/<int:resource_id>')
 def get_associations(resource_id):
-    # TODO: write logic to retrieve and return associations for resource.
-    associations = []
-    return json.dumps(associations)
+    pin_info = Resource.query.filter_by(name=request.form['data']).first()
+    for pin in pin_info.text_descriptors:
+        print pin
+    return json.dumps({'Address': pin_info.address,
+                       'Description': pin_info.text_descriptors[0].text})
+    #associations = []
+    #return json.dumps(associations)
