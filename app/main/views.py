@@ -1,4 +1,4 @@
-from flask import render_template
+from flask import render_template, request
 from . import main
 from ..models import Resource
 import json
@@ -16,13 +16,13 @@ def get_resources():
     return json.dumps(resources_as_dicts)
 
 
- # TODO: write logic to retrieve and return associations for resource.
 @main.route('/get-associations/<int:resource_id>')
 def get_associations(resource_id):
-    pin_info = Resource.query.filter_by(name=request.form['data']).first()
+    pin_info = Resource.query.filter_by(id=resource_id).first()
+    associations = {}
     for pin in pin_info.text_descriptors:
-        print pin
-    return json.dumps({'Address': pin_info.address,
-                       'Description': pin_info.text_descriptors[0].text})
-    #associations = []
-    #return json.dumps(associations)
+        associations[pin.descriptor.name] = pin.text
+    for pin in pin_info.option_descriptors:
+        associations[pin.descriptor.name] = pin.descriptor.values[pin.option]
+    return json.dumps(associations)
+
