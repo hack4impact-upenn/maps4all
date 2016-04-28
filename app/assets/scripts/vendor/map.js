@@ -99,15 +99,19 @@ function initMap() {
             content: contentDiv
           });
           infowindow.open(map, markerToAdd);
-          google.maps.event.addListener(infowindow,'closeclick',function(){
+          google.maps.event.addListener(infowindow, 'closeclick', function() {
             $("#more-info").empty();
           });
           $.get('get-associations/' + resource.id).done(function(associations) {
             var associationObject = JSON.parse(associations);
             $("#more-info" ).empty();
-            for(var key in associationObject){
+            for (var key in associationObject) {
+              var p = document.createElement('p');
+              var bolded = document.createElement('strong');
+              $(bolded).append(key);
               var value = associationObject[key];
-              $("#more-info").append("<p>" + key+ ": " + value + "</p>");
+              $(p).append(bolded, ': ', value);
+              $("#more-info").append(p);
             }
           }).fail(function() {});
         });
