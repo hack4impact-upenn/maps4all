@@ -122,11 +122,14 @@ function initMap() {
   mapViewButton.addEventListener('click', function() {
     $("#map").show();
     $("#list").hide();
+    $("#more-info").empty();
+    $("#sidebar").show();
   });
   listViewButton.addEventListener('click', function() {
     $("#map").hide();
     populateListDiv();
     $("#list").show();
+    $("#sidebar").hide();
   });
 }
 
