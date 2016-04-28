@@ -63,11 +63,11 @@
 				        }
 
 				        if (errorList.length > 0) {
+				            $("#errors").empty();
 				            for (var i = 0; i < errorList.length; i++) {
                                 $("#errors").append("<p>" + errorList[i] + "</p>");
 				            }
-
-                            $('.ui.modal').modal('show');
+                            $(".ui.modal").modal("show");
 				        } else {
 				            $.ajax({
                                 url: "{{ url_for('bulk_resource.upload_data') }}",
@@ -85,13 +85,11 @@
 				        }
                     }
 				},
-				before: function(file, inputElem) {
-					console.log("Parsing file...");
-				},
-				error: function(err, file) {
-					console.log("ERROR:", err, file);
-					firstError = firstError || err;
-					errorCount++;
+				before: function(file, inputElem) { },
+				error: function(error, file) {
+				    $("#errors").empty();
+				    $("#errors").append("<p>" + error + "</p>");
+				    $(".ui.modal").modal("show");
 				},
 				complete: function() {
 				    // Redirect to next page.
