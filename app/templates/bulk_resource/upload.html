@@ -7,9 +7,57 @@
             <h2 class="ui header">
                 Upload
             </h2>
-            <div>
-                {{ f.render_form(form) }}
-            </div>
+            <form id="csv-upload-form" class="ui form">
+                <div class="field">
+                    <label for="csv">CSV File</label>
+                    <input id="csv-file" name="csv" placeholder="CSV File" type="file">
+                </div>
+                <button class="ui button" type="submit">Upload</button>
+            </form>
         </div>
     </div>
+
+    <script type="text/javascript">
+
+        $("#csv-upload-form").submit(function(event) {
+
+            event.preventDefault();
+            $("#csv-file").parse({
+				config: {
+				    complete: function(results, file) {
+				        $.ajax({
+                            url: "{{ url_for('bulk_resource.upload_data') }}",
+                            data: JSON.stringify({
+                                data: results.data
+                            }),
+                            dataType: "json",
+                            type: "GET",
+                            mimeType: "application/json",
+                            success: function (msg) {
+                               console.log("success!");
+                            },
+                            error: function (errorMessage) {
+                                console.log(errorMessage);
+                            }
+                        });
+
+	                    console.log(results.data);
+                    }
+				},
+				before: function(file, inputElem) {
+					console.log("Parsing file...");
+				},
+				error: function(err, file) {
+					console.log("ERROR:", err, file);
+					firstError = firstError || err;
+					errorCount++;
+				},
+				complete: function() {
+				    // Redirect to next page.
+					console.log("Done with all files");
+				}
+			});
+        });
+
+    </script>
 {% endblock %}

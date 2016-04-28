@@ -1,7 +1,7 @@
 import csv
 from datetime import datetime
 
-from flask import abort, redirect, render_template, url_for
+from flask import abort, redirect, render_template, request, url_for
 from flask.ext.login import current_user, login_required
 
 from . import bulk_resource
@@ -63,6 +63,14 @@ def upload():
             # TODO: Check that CSV file has "Name", "Address" headings
         return redirect(url_for('bulk_resource.review_descriptor_types'))
     return render_template('bulk_resource/upload.html', form=form)
+
+
+@bulk_resource.route('/_upload', methods=['GET', 'POST'])
+def upload_data():
+    print request.args
+    return 'hello'
+    # print json.loads(request.data)
+    # return redirect(url_for('bulk_resource.review_descriptor_types'))
 
 
 @bulk_resource.route('/review-descriptor-types', methods=['GET', 'POST'])
