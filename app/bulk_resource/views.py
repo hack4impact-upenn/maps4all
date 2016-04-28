@@ -67,7 +67,9 @@ def upload():
 
 @bulk_resource.route('/_upload', methods=['GET', 'POST'])
 def upload_data():
-    print request.args
+    for arg in request.args:
+        print arg
+    print request.get_json()
     return 'hello'
     # print json.loads(request.data)
     # return redirect(url_for('bulk_resource.review_descriptor_types'))

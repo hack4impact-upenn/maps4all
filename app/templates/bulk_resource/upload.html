@@ -17,6 +17,24 @@
         </div>
     </div>
 
+    <div class="ui modal">
+        <i class="close icon"></i>
+        <div class="header">
+            Your CSV file has some errors
+        </div>
+        <div class="image content">
+            <div class="description">
+                <div id="errors">
+                </div>
+            </div>
+        </div>
+        <div class="actions">
+            <div class="ui right labeled button">
+                Thanks
+            </div>
+        </div>
+    </div>
+
     <script type="text/javascript">
 
         $("#csv-upload-form").submit(function(event) {
@@ -25,23 +43,46 @@
             $("#csv-file").parse({
 				config: {
 				    complete: function(results, file) {
-				        $.ajax({
-                            url: "{{ url_for('bulk_resource.upload_data') }}",
-                            data: JSON.stringify({
-                                data: results.data
-                            }),
-                            dataType: "json",
-                            type: "GET",
-                            mimeType: "application/json",
-                            success: function (msg) {
-                               console.log("success!");
-                            },
-                            error: function (errorMessage) {
-                                console.log(errorMessage);
-                            }
-                        });
+				        // Check that CSV data is formatted correctly.
+				        var errorList = [];
+				        var csvData = results.data;
+				        var numColumns = csvData[0].length;
+				        for (var i = 1; i < csvData.length; i++) {
+				            if (csvData[i].length != numColumns) {
+				                errorList.push("Row " + (i + 1) + " has the incorrect number of columns.");
+				            }
+				        }
 
-	                    console.log(results.data);
+				        // Check that CSV data contains the correct headers.
+				        var columnNames = csvData[0];
+				        if (columnNames.indexOf("Name") == -1) {
+				            errorList.push("'Name' is a required column name.");
+				        }
+				        if (columnNames.indexOf("Address") == -1) {
+				            errorList.push("'Address' is a required column name.");
+				        }
+
+				        if (errorList.length > 0) {
+				            for (var i = 0; i < errorList.length; i++) {
+                                $("#errors").append("<p>" + errorList[i] + "</p>");
+				            }
+
+                            $('.ui.modal').modal('show');
+				        } else {
+				            $.ajax({
+                                url: "{{ url_for('bulk_resource.upload_data') }}",
+                                data: JSON.stringify(results.data),
+                                dataType: "json",
+                                type: "GET",
+                                mimeType: "application/json",
+                                success: function (msg) {
+                                   console.log("success!");
+                                },
+                                error: function (errorMessage) {
+                                    console.log(errorMessage);
+                                }
+                            });
+				        }
                     }
 				},
 				before: function(file, inputElem) {
