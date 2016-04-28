@@ -71,8 +71,6 @@ function initMap() {
    })
 
   function create_marker(resource){
-    //console.log(resource); resources dont have associations here
-    //why does .query.all() not return the associations?
     var markerToAdd = new google.maps.Marker({
        map: map
     });
