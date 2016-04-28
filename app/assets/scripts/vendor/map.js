@@ -101,6 +101,9 @@ function initMap() {
             content: contentDiv
           });
           infowindow.open(map, markerToAdd);
+          google.maps.event.addListener(infowindow,'closeclick',function(){
+            $("#more-info").empty();
+          });
           $.get('get-associations/' + resource.id).done(function(associations) {
             var associationObject = JSON.parse(associations);
             $("#more-info" ).empty();
