@@ -12,10 +12,11 @@ table {
 }
 
 #map {
-  height: 80%;
-  width: 90%;
-  left: 50px;
-  display: inline-block;
+  position: absolute;
+  left:150px;
+  top:175px;
+  right:0;
+  bottom:0;
 }
 
 .controls {
@@ -48,16 +49,8 @@ table {
   font-family: Roboto;
 }
 
-#type-selector {
-  color: #fff;
-  background-color: #4d90fe;
-  padding: 5px 11px 0px 11px;
-}
-
-#type-selector label {
-  font-family: Roboto;
-  font-size: 13px;
-  font-weight: 300;
+.ui-container {
+  margin-left:150px;
 }
 
 #view-selector {
@@ -72,10 +65,15 @@ table {
   font-weight: 300;
 }
 
-#info-window {
-  font-family: Roboto;
-  font-size: 13px;
-  font-weight: 300;
-  display: inline-block;
+#sidebar {
+    position:absolute;
+    left:0; top:92px; bottom: 0;
+    width: 178px;
 }
 
+#sidebar {
+    position:absolute;
+    left:0; top:170px; bottom: 0;
+    width: 150px;
+    padding-left: 10px;
+}

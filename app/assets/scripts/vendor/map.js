@@ -103,10 +103,10 @@ function initMap() {
           infowindow.open(map, markerToAdd);
           $.get('get-associations/' + resource.id).done(function(associations) {
             var associationObject = JSON.parse(associations);
+            $("#more-info" ).empty();
             for(var key in associationObject){
               var value = associationObject[key];
-              console.log(key + ": " + value);
-              //display this in the HTML!! :)
+              $("#more-info").append("<p>" + key+ ": " + value + "</p>");
             }
           }).fail(function() {});
         });
