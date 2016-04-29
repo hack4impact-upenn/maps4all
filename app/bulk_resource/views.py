@@ -30,13 +30,16 @@ def upload():
 def upload_data():
     # Extract CSV data from request object.
     for arg in request.form:
-        csv_data = arg
-    csv_data = json.loads(csv_data)
+        post_data = arg
+    post_data = json.loads(post_data)
+    csv_data = post_data['csv_data']
 
     # Create new CSV container object to hold contents of CSV file.
     csv_container = CsvContainer(
         date_uploaded=datetime.now(),
-        user=current_user
+        user=current_user,
+        name_column_index=int(post_data['name_column_index']),
+        address_column_index=int(post_data['address_column_index'])
     )
 
     # The first row of the CSV file contains the names of the columns.
@@ -77,34 +80,49 @@ def review_descriptor_types():
     if csv_container is None:
         abort(404)
     form = DetermineDescriptorTypesForm()
+
     if form.validate_on_submit():
         if form.navigation.data['submit_next']:
-            for i, descriptor_type in enumerate(form.descriptor_types.data):
-                csv_container.csv_header_row.csv_header_cells[i]\
-                    .descriptor_type = descriptor_type
-                db.session.add(
-                    csv_container.csv_header_row.csv_header_cells[i]
-                )
+            contains_options = False
+            descriptor_types_iter = iter(form.descriptor_types.data)
+            for i, header_cell in \
+                    enumerate(csv_container.csv_header_row.csv_header_cells):
+                if i not in csv_container.required_column_indices():
+                    header_cell.descriptor_type = next(descriptor_types_iter)
+                    if header_cell.descriptor_type == 'option':
+                        contains_options = True
+                    db.session.add(header_cell)
             db.session.commit()
             csv_container.predict_options()
+            if contains_options:
+                return redirect(url_for('bulk_resource.review_options'))
             # TODO: Skip the second review step if there are no option
             # TODO: descriptor types.
             return redirect(url_for('bulk_resource.review_options'))
+
         elif form.navigation.data['submit_back']:
             db.session.delete(csv_container)
+            db.session.commit()
             return redirect(url_for('bulk_resource.upload'))
+
         elif form.navigation.data['submit_cancel']:
             db.session.delete(csv_container)
+            db.session.commit()
             return redirect(url_for('bulk_resource.upload'))
 
     # Add one text/option toggle for each CSV header.
+    j = 0
     for i, header_cell in enumerate(csv_container.csv_header_row
                                     .csv_header_cells):
-        form.descriptor_types.append_entry()
-        form.descriptor_types[i].label = header_cell.data
-        if header_cell.descriptor_type == 'option' or \
-                header_cell.descriptor_type == 'text':
-            form.descriptor_types[i].data = header_cell.descriptor_type
+        # Required columns are all 'text' descriptors. Their descriptor
+        # type cannot be changed.
+        if i not in csv_container.required_column_indices():
+            form.descriptor_types.append_entry()
+            form.descriptor_types[j].label = header_cell.data
+            if header_cell.descriptor_type == 'option' or \
+                    header_cell.descriptor_type == 'text':
+                form.descriptor_types[j].data = header_cell.descriptor_type
+            j += 1
 
     return render_template('bulk_resource/review_descriptor_types.html',
                            csv_container=csv_container,

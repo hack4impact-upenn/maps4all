@@ -57,10 +57,12 @@
 
 				        // Check that CSV data contains the correct headers.
 				        var columnNames = csvData[0];
-				        if (columnNames.indexOf("Name") == -1) {
+				        var nameColumnIndex = columnNames.indexOf("Name");
+				        if (nameColumnIndex == -1) {
 				            errorList.push("'Name' is a required column name.");
 				        }
-				        if (columnNames.indexOf("Address") == -1) {
+				        var addressColumnIndex = columnNames.indexOf("Address");
+				        if (addressColumnIndex == -1) {
 				            errorList.push("'Address' is a required column name.");
 				        }
 
@@ -82,7 +84,11 @@
 
 				            $.ajax({
                                 url: "{{ url_for('bulk_resource.upload_data') }}",
-                                data: JSON.stringify(results.data),
+                                data: JSON.stringify({
+                                    name_column_index: nameColumnIndex,
+                                    address_column_index: addressColumnIndex,
+                                    csv_data: results.data
+                                }),
                                 dataType: "json",
                                 type: "POST",
                                 mimeType: "application/json",
