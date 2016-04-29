@@ -12,14 +12,14 @@
                         <div class="description">Upload your CSV file</div>
                     </div>
                 </div>
-                <div class="active step">
+                <div class="completed step">
                     <i class="configure icon"></i>
                     <div class="content">
                         <div class="title">Configure</div>
                         <div class="description">Review your data</div>
                     </div>
                 </div>
-                <div class="disabled step">
+                <div class="active step">
                     <i class="save icon"></i>
                     <div class="content">
                         <div class="title">Save</div>
@@ -30,17 +30,7 @@
         </div>
 
         <div class="twelve wide column">
-            <h2 class="ui header">
-                Review
-            </h2>
-        </div>
-        <div class="twelve wide column">
-            For each of the columns that you marked as options, we have
-            identified the options already present in your CSV file. Any
-            additional options that you add should be comma-separated. If
-            any of the existing options are incorrect, please edit the original
-            CSV file and re-upload it. We will store the options in alphabetical
-            order.
+            {{ f.render_form(form) }}
         </div>
     </div>
 {% endblock %}

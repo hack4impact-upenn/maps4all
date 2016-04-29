@@ -12,10 +12,15 @@ from ..models import (
     CsvContainer,
     CsvHeaderCell,
     CsvHeaderRow,
+    Descriptor,
+    OptionAssociation,
+    Resource,
+    TextAssociation
 )
 from forms import (
     DetermineDescriptorTypesForm,
-    DetermineOptionsForm
+    DetermineOptionsForm,
+    SaveCsvDataForm
 )
 
 
@@ -97,9 +102,7 @@ def review_descriptor_types():
             csv_container.predict_options()
             if contains_options:
                 return redirect(url_for('bulk_resource.review_options'))
-            # TODO: Skip the second review step if there are no option
-            # TODO: descriptor types.
-            return redirect(url_for('bulk_resource.review_options'))
+            return redirect(url_for('bulk_resource.save'))
 
         elif form.navigation.data['submit_back']:
             db.session.delete(csv_container)
@@ -147,7 +150,7 @@ def review_options():
                         form.options[options_indx].data
                     )
                     options_indx += 1
-            return redirect(url_for('bulk_resource.review_options'))
+            return redirect(url_for('bulk_resource.save'))
         elif form.navigation.data['submit_back']:
             return redirect(url_for('bulk_resource.review_descriptor_types'))
         elif form.navigation.data['submit_cancel']:
@@ -168,3 +171,76 @@ def review_options():
     return render_template('bulk_resource/review_options.html',
                            csv_container=csv_container,
                            form=form)
+
+
+@bulk_resource.route('/save', methods=['GET', 'POST'])
+@login_required
+def save():
+    csv_container = CsvContainer.most_recent(user=current_user)
+    if csv_container is None:
+        abort(404)
+    form = SaveCsvDataForm()
+
+    if form.validate_on_submit():
+        # Temporary: Delete all descriptors and resources that are currently
+        # in the database.
+        Descriptor.query.delete()
+        OptionAssociation.query.delete()
+        Resource.query.delete()
+        TextAssociation.query.delete()
+
+        for i, header_cell in enumerate(
+                csv_container.csv_header_row.csv_header_cells):
+            if i not in csv_container.required_column_indices():
+                values = set()
+                if header_cell.descriptor_type == 'option':
+                    for v in header_cell.predicted_options:
+                        values.add(v)
+                    for v in header_cell.new_options:
+                        values.add(v)
+                descriptor = Descriptor(
+                    name=header_cell.data,
+                    values=list(values),
+                    is_searchable=True
+                )
+                db.session.add(descriptor)
+
+        for row in csv_container.csv_rows:
+            name = row.csv_body_cells[csv_container.name_column_index].data
+            address = \
+                row.csv_body_cells[csv_container.address_column_index].data
+            resource = Resource(
+                name=name,
+                address=address,
+                latitude=0,
+                longitude=0
+            )
+            db.session.add(resource)
+            for i, cell in enumerate(row.csv_body_cells):
+                if i not in csv_container.required_column_indices():
+                    descriptor_name = \
+                        csv_container.csv_header_row.csv_header_cells[i].data
+                    descriptor = Descriptor.query.filter_by(
+                        name=descriptor_name
+                    ).first()
+                    values = list(descriptor.values)
+                    if len(descriptor.values) == 0:  # text descriptor
+                        association_class = TextAssociation
+                        value = cell.data
+                        keyword = 'text'
+                    else:  # option descriptor
+                        association_class = OptionAssociation
+                        value = values.index(cell.data)
+                        keyword = 'option'
+                    arguments = {
+                        'resource_id': resource.id,
+                        'descriptor_id': descriptor.id,
+                        keyword: value,
+                        'resource': resource,
+                        'descriptor': descriptor
+                    }
+                    new_association = association_class(**arguments)
+                    db.session.add(new_association)
+        db.session.delete(csv_container)
+        db.session.commit()
+    return render_template('bulk_resource/save.html', form=form)

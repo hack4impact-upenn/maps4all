@@ -28,3 +28,7 @@ class DetermineDescriptorTypesForm(Form):
 class DetermineOptionsForm(Form):
     options = FieldList(TextAreaField())
     navigation = FormField(NavigationForm)
+
+
+class SaveCsvDataForm(Form):
+    submit = SubmitField('Save')
