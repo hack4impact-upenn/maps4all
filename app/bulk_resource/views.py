@@ -243,4 +243,5 @@ def save():
                     db.session.add(new_association)
         db.session.delete(csv_container)
         db.session.commit()
+        return redirect(url_for('single_resource.index'))
     return render_template('bulk_resource/save.html', form=form)
