@@ -1,4 +1,5 @@
 from datetime import datetime
+import json
 
 from flask import abort, jsonify, redirect, render_template, request, url_for
 from flask.ext.login import current_user, login_required
@@ -25,13 +26,12 @@ def upload():
     return render_template('bulk_resource/upload.html')
 
 
-@bulk_resource.route('/_upload', methods=['GET'])
+@bulk_resource.route('/_upload', methods=['POST'])
 def upload_data():
     # Extract CSV data from request object.
-    for arg in request.args:
+    for arg in request.form:
         csv_data = arg
-
-    print csv_data
+    csv_data = json.loads(csv_data)
 
     # Create new CSV container object to hold contents of CSV file.
     csv_container = CsvContainer(
@@ -68,7 +68,6 @@ def upload_data():
     return jsonify(
         redirect=url_for('bulk_resource.review_descriptor_types')
     )
-    # return redirect(url_for('bulk_resource.review_descriptor_types'))
 
 
 @bulk_resource.route('/review-descriptor-types', methods=['GET', 'POST'])

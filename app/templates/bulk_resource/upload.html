@@ -37,6 +37,8 @@
 
     <script type="text/javascript">
 
+        var csrftoken = "{{ csrf_token() }}"
+
         $("#csv-upload-form").submit(function(event) {
 
             event.preventDefault();
@@ -69,11 +71,20 @@
 				            }
                             $(".ui.modal").modal("show");
 				        } else {
+				            // Needed for CSRF protection.
+				            $.ajaxSetup({
+                                beforeSend: function(xhr, settings) {
+                                    if (!/^(GET|HEAD|OPTIONS|TRACE)$/i.test(settings.type) && !this.crossDomain) {
+                                        xhr.setRequestHeader("X-CSRFToken", csrftoken);
+                                    }
+                                }
+                            })
+
 				            $.ajax({
                                 url: "{{ url_for('bulk_resource.upload_data') }}",
                                 data: JSON.stringify(results.data),
                                 dataType: "json",
-                                type: "GET",
+                                type: "POST",
                                 mimeType: "application/json",
                                 success: function (data) {
                                     if (data.redirect) {
@@ -91,10 +102,7 @@
 				    $("#errors").append("<p>" + error + "</p>");
 				    $(".ui.modal").modal("show");
 				},
-				complete: function() {
-				    // Redirect to next page.
-					console.log("Done with all files");
-				}
+				complete: function() { }
 			});
         });
 
