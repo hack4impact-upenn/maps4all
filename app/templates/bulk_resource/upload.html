@@ -35,6 +35,7 @@
         </div>
     </div>
 
+    <script src="http://maps.google.com/maps/api/js?sensor=false" type="text/javascript"></script>
     <script type="text/javascript">
 
         var csrftoken = "{{ csrf_token() }}"
@@ -67,50 +68,79 @@
 				        }
 
 				        if (errorList.length > 0) {
-				            $("#errors").empty();
-				            for (var i = 0; i < errorList.length; i++) {
-                                $("#errors").append("<p>" + errorList[i] + "</p>");
-				            }
-                            $(".ui.modal").modal("show");
-				        } else {
-				            // Needed for CSRF protection.
-				            $.ajaxSetup({
-                                beforeSend: function(xhr, settings) {
-                                    if (!/^(GET|HEAD|OPTIONS|TRACE)$/i.test(settings.type) && !this.crossDomain) {
-                                        xhr.setRequestHeader("X-CSRFToken", csrftoken);
-                                    }
-                                }
-                            })
+				            displayErrors(errorList);
+				            return;
+				        }
 
-				            $.ajax({
-                                url: "{{ url_for('bulk_resource.upload_data') }}",
-                                data: JSON.stringify({
-                                    name_column_index: nameColumnIndex,
-                                    address_column_index: addressColumnIndex,
-                                    csv_data: results.data
-                                }),
-                                dataType: "json",
-                                type: "POST",
-                                mimeType: "application/json",
-                                success: function (data) {
-                                    if (data.redirect) {
-                                        window.location.href = data.redirect;
+				        // Validate addresses.
+				        if (errorList.length == 0) {
+				            var geocoder = new google.maps.Geocoder();
+				            var numAddressesValidated = 0;
+				            for (var i = 1; i < csvData.length; i++) {
+				                address = csvData[i][addressColumnIndex];
+				                address = address.replace(/\n/g, "");
+                                geocoder.geocode({ "address": address }, function (results, status) {
+                                    numAddressesValidated++;
+                                    if (status != google.maps.GeocoderStatus.OK) {
+                                        // TODO: Report the exact address that is invalid.
+                                        errorList.push("Invalid address.");
                                     }
-                                },
-                                error: function (errorMessage) { }
-                            });
+                                    if (numAddressesValidated == csvData.length - 1) {
+                                        if (errorList.length > 0) {
+                                            displayErrors(errorList);
+                                        } else {
+                                            submitCsvData(csvData, nameColumnIndex, addressColumnIndex);
+                                        }
+                                    }
+                                });
+                            }
 				        }
                     }
 				},
 				before: function(file, inputElem) { },
 				error: function(error, file) {
-				    $("#errors").empty();
-				    $("#errors").append("<p>" + error + "</p>");
-				    $(".ui.modal").modal("show");
+				    displayErrors([error]);
 				},
 				complete: function() { }
 			});
         });
+
+        function displayErrors(errorList) {
+            $("#errors").empty();
+            for (var i = 0; i < errorList.length; i++) {
+                $("#errors").append("<p>" + errorList[i] + "</p>");
+            }
+            $(".ui.modal").modal("show");
+        }
+
+        function submitCsvData(data, nameColumnIndex, addressColumnIndex) {
+            // Needed for CSRF protection.
+            $.ajaxSetup({
+                beforeSend: function(xhr, settings) {
+                    if (!/^(GET|HEAD|OPTIONS|TRACE)$/i.test(settings.type) && !this.crossDomain) {
+                        xhr.setRequestHeader("X-CSRFToken", csrftoken);
+                    }
+                }
+            })
+
+            $.ajax({
+                url: "{{ url_for('bulk_resource.upload_data') }}",
+                data: JSON.stringify({
+                    name_column_index: nameColumnIndex,
+                    address_column_index: addressColumnIndex,
+                    csv_data: data
+                }),
+                dataType: "json",
+                type: "POST",
+                mimeType: "application/json",
+                success: function (data) {
+                    if (data.redirect) {
+                        window.location.href = data.redirect;
+                    }
+                },
+                error: function (errorMessage) { }
+            });
+        }
 
     </script>
 {% endblock %}

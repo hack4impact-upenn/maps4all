@@ -59,7 +59,6 @@ def upload_data():
     for row in csv_data[1:]:
         csv_body_row = CsvBodyRow(csv_container=csv_container)
         for cell_data in row:
-            print cell_data
             csv_cell = CsvBodyCell(
                 data=cell_data,
                 csv_body_row=csv_body_row
@@ -68,6 +67,8 @@ def upload_data():
         db.session.add(csv_body_row)
     db.session.add(csv_container)
     db.session.commit()
+    # TODO: If the only descriptors are the required ones, then no need to
+    # TODO: review them.
     return jsonify(
         redirect=url_for('bulk_resource.review_descriptor_types')
     )
@@ -164,6 +165,6 @@ def review_options():
                                      ')'
             form.options[j].data = header_cell.new_options_string()
             j += 1
-    return render_template('bulk_resource/review-options.html',
+    return render_template('bulk_resource/review_options.html',
                            csv_container=csv_container,
                            form=form)
