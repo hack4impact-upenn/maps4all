@@ -2,23 +2,24 @@
 <!--TODO: have a "mark as read" column in the table -->
 {% block content %}
   <div class="ui text container">
-    <table>
+    <table class="ui unstackable celled table">
       <thead>
         <tr>
           <th>Timestamp</th>
           <th>Suggestion</th>
           <th>Contact Info</th>
           <th>Action</th>
+          <th></th>
         </tr>
       </thead>
       <tbody>
         {% for suggestion in suggestions %}
           <tr>
-            <td>{{ suggestion.timestamp }}</td>
+            <td>{{ suggestion.submission_time }}</td>
             <td>{{ suggestion.suggestion_text }}</td>
             <td>{{ suggestion.contact_name }}
               <br>
-              {% if suggestion.contact_email is None or suggestion.contact_email is '' %}
+              {% if not suggestion.contact_email or suggestion.contact_email == '' %}
                 {{ suggestion.contact_number }}
               {% else %}
                 {{ suggestion.contact_email }}
@@ -27,12 +28,24 @@
               {% endif %}
             </td>
             <td>
-              {% if suggestion.resource_id is -1 %}
-                <a href="{{ url_for('single_resource.create') }}">Insert</a>
+              {% if not suggestion.resource_id %}
+                <a href="{{ url_for('single_resource.create') }}">Create</a>
               {% else %}
                 <a href="{{ url_for('single_resource.edit', resource_id=suggestion.resource_id) }}">Edit</a>
               {% endif %}
             </td>
+            <td>
+              <a href="{{ url_for('suggestion.toggle_read', sugg_id=suggestion.id) }}">
+                {% if suggestion.read %} 
+                  Mark as unread
+                {% else %}
+                  Mark as read 
+                {% endif %}
+              </a>
+              <br>
+              <a href="{{ url_for('suggestion.delete', sugg_id=suggestion.id) }}">
+                Delete
+              </a>
           </tr>
         {% endfor %}
       </tbody>
