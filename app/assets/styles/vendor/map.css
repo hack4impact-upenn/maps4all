@@ -68,11 +68,6 @@ table {
   font-weight: 300;
 }
 
-#sidebar {
-    position:absolute;
-    left:0; top:92px; bottom: 0;
-    width: 178px;
-}
 
 #sidebar {
     position:absolute;

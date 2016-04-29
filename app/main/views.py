@@ -11,18 +11,20 @@ def index():
 
 @main.route('/get-resources')
 def get_resources():
-    resources = Resource.query.all() 
+    resources = Resource.query.all()
     resources_as_dicts = Resource.get_resources_as_dicts(resources)
     return json.dumps(resources_as_dicts)
 
 
 @main.route('/get-associations/<int:resource_id>')
 def get_associations(resource_id):
-    pin_info = Resource.query.filter_by(id=resource_id).first()
+    resource = Resource.query.get(resource_id)
     associations = {}
-    for pin in pin_info.text_descriptors:
-        associations[pin.descriptor.name] = pin.text
-    for pin in pin_info.option_descriptors:
-        associations[pin.descriptor.name] = pin.descriptor.values[pin.option]
+    if resource is None: return json.dumps(associations)
+    for descriptor in resource.text_descriptors:
+        associations[descriptor.descriptor.name] = descriptor.text
+    for descriptor in resource.option_descriptors:
+        associations[descriptor.descriptor.name] = descriptor.descriptor.values[
+            descriptor.option]
     return json.dumps(associations)
 
