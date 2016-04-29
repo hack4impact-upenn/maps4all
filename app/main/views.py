@@ -1,4 +1,4 @@
-from flask import render_template, request
+from flask import render_template
 from . import main
 from ..models import Resource
 import json
@@ -20,11 +20,10 @@ def get_resources():
 def get_associations(resource_id):
     resource = Resource.query.get(resource_id)
     associations = {}
-    if resource is None: return json.dumps(associations)
-    for descriptor in resource.text_descriptors:
-        associations[descriptor.descriptor.name] = descriptor.text
-    for descriptor in resource.option_descriptors:
-        associations[descriptor.descriptor.name] = descriptor.descriptor.values[
-            descriptor.option]
+    if resource is None:
+        return json.dumps(associations)
+    for td in resource.text_descriptors:
+        associations[td.descriptor.name] = td.text
+    for od in resource.option_descriptors:
+        associations[od.descriptor.name] = od.descriptor.values[od.option]
     return json.dumps(associations)
-
