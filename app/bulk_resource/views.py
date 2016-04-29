@@ -1,5 +1,6 @@
 from datetime import datetime
 import json
+import geocoder
 
 from flask import abort, jsonify, redirect, render_template, request, url_for
 from flask.ext.login import current_user, login_required
@@ -209,11 +210,12 @@ def save():
             name = row.csv_body_cells[csv_container.name_column_index].data
             address = \
                 row.csv_body_cells[csv_container.address_column_index].data
+            g = geocoder.google(address)
             resource = Resource(
                 name=name,
                 address=address,
-                latitude=0,
-                longitude=0
+                latitude=g.latlng[0],
+                longitude=g.latlng[1]
             )
             db.session.add(resource)
             for i, cell in enumerate(row.csv_body_cells):
