@@ -24,6 +24,7 @@ vendor_js = Bundle(
     'vendor/address-autocomplete.js',
     'vendor/jquery.min.js',
     'vendor/map.js',
+    'vendor/papaparse.min.js',
     'vendor/semantic.min.js',
     'vendor/tablesort.min.js',
     filters='jsmin',

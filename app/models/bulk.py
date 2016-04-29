@@ -14,7 +14,6 @@ class CsvContainer(db.Model):
     """
     __tablename__ = 'csv_containers'
     id = db.Column(db.Integer, primary_key=True)
-    file_name = db.Column(db.String(64))
     date_uploaded = db.Column(db.DateTime)
     user_id = db.Column(db.Integer, db.ForeignKey('users.id'))
     csv_rows = db.relationship('CsvBodyRow', backref='csv_container',
@@ -22,6 +21,8 @@ class CsvContainer(db.Model):
     csv_header_row = db.relationship('CsvHeaderRow',
                                      backref='csv_header_row_container',
                                      uselist=False, cascade='delete')
+    name_column_index = db.Column(db.Integer)  # Required column: 'Name'
+    address_column_index = db.Column(db.Integer)  # Required column: 'Address'
 
     def cell_data(self, row_num, cell_num):
         if row_num < 0 or row_num >= len(self.csv_rows):
@@ -40,6 +41,12 @@ class CsvContainer(db.Model):
                 column.predicted_options = predicted_options
                 db.session.add(column)
         db.session.commit()
+
+    def required_column_indices(self):
+        return [
+            self.name_column_index,
+            self.address_column_index
+        ]
 
     def __repr__(self):
         return '<CsvContainer \'%s\'>' % self.file_name
@@ -88,7 +95,7 @@ class CsvHeaderCell(db.Model):
     csv_header_row_id = db.Column(db.Integer,
                                   db.ForeignKey('csv_header_rows.id'))
     data = db.Column(db.Text)
-    descriptor_type = db.Column(db.Integer)  # 'option' or 'text'
+    descriptor_type = db.Column(db.String, default='text')  # or 'option'
     predicted_options = db.Column(db.PickleType)  # Set of options (strings)
     new_options = db.Column(db.PickleType)  # Set of options (strings)
 

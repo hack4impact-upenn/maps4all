@@ -1,8 +1,5 @@
 from flask.ext.wtf import Form
 from flask_wtf.file import (
-    FileAllowed,
-    FileField,
-    FileRequired,
     InputRequired
 )
 from wtforms.fields import (
@@ -12,14 +9,6 @@ from wtforms.fields import (
     SubmitField,
     TextAreaField
 )
-
-
-class UploadForm(Form):
-    csv = FileField('CSV File', validators=[
-        FileAllowed(['csv'], 'Must be a CSV file'),
-        FileRequired()
-    ])
-    submit = SubmitField('Upload')
 
 
 class NavigationForm(Form):
@@ -39,3 +28,7 @@ class DetermineDescriptorTypesForm(Form):
 class DetermineOptionsForm(Form):
     options = FieldList(TextAreaField())
     navigation = FormField(NavigationForm)
+
+
+class SaveCsvDataForm(Form):
+    submit = SubmitField('Save')
