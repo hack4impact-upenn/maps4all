@@ -21,6 +21,14 @@ $(document).ready(function () {
     // Enable dropdowns
     $('.dropdown').dropdown();
     $('select').dropdown();
+
+    // Generates the icon for unread suggested resources
+    $.get('/suggestion/unread', function (data) {
+        var numUnread = data;
+        if (parseInt(numUnread) > 0) {
+            $("#suggested-resources i").replaceWith('<i class="ui red label">' + numUnread + '</i>');
+        }
+    });
 });
 
 
