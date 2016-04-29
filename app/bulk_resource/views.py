@@ -1,7 +1,6 @@
-import csv
 from datetime import datetime
 
-from flask import abort, redirect, render_template, request, url_for
+from flask import abort, jsonify, redirect, render_template, request, url_for
 from flask.ext.login import current_user, login_required
 
 from . import bulk_resource
@@ -15,8 +14,7 @@ from ..models import (
 )
 from forms import (
     DetermineDescriptorTypesForm,
-    DetermineOptionsForm,
-    UploadForm
+    DetermineOptionsForm
 )
 
 
@@ -24,54 +22,52 @@ from forms import (
 @login_required
 def upload():
     """Upload new resources in bulk with CSV file."""
-    form = UploadForm()
-    if form.validate_on_submit():
-        csv_data = form.csv.data
-        with csv_data.stream as csv_file:
-            # Create new CSV container object to hold contents of CSV file.
-            csv_container = CsvContainer(
-                date_uploaded=datetime.now(),
-                file_name=csv_data.filename,
-                user=current_user
-            )
-            csv_reader = csv.reader(csv_file)
-
-            # The first row of the CSV file contains the names of the columns.
-            header_row = csv_reader.next()
-            csv_header_row = CsvHeaderRow(
-                csv_header_row_container=csv_container
-            )
-            for column_name in header_row:
-                csv_cell = CsvHeaderCell(data=column_name,
-                                         csv_header_row=csv_header_row)
-                db.session.add(csv_cell)
-            db.session.add(csv_header_row)
-
-            # Iterate through the CSV file row-by-row and then cell-by-cell.
-            # Each cell contains one comma-separated string in a row of a CSV
-            # file.
-            for row in csv_reader:
-                csv_body_row = CsvBodyRow(csv_container=csv_container)
-                for cell_data in row:
-                    csv_cell = CsvBodyCell(data=cell_data,
-                                           csv_body_row=csv_body_row)
-                    db.session.add(csv_cell)
-                db.session.add(csv_body_row)
-            db.session.add(csv_container)
-            db.session.commit()
-            # TODO: Error catching if CSV is malformed.
-            # TODO: Check that CSV file has "Name", "Address" headings
-        return redirect(url_for('bulk_resource.review_descriptor_types'))
-    return render_template('bulk_resource/upload.html', form=form)
+    return render_template('bulk_resource/upload.html')
 
 
-@bulk_resource.route('/_upload', methods=['GET', 'POST'])
+@bulk_resource.route('/_upload', methods=['GET'])
 def upload_data():
+    # Extract CSV data from request object.
     for arg in request.args:
-        print arg
-    print request.get_json()
-    return 'hello'
-    # print json.loads(request.data)
+        csv_data = arg
+
+    print csv_data
+
+    # Create new CSV container object to hold contents of CSV file.
+    csv_container = CsvContainer(
+        date_uploaded=datetime.now(),
+        user=current_user
+    )
+
+    # The first row of the CSV file contains the names of the columns.
+    header_row = csv_data[0]
+    csv_header_row = CsvHeaderRow(
+        csv_header_row_container=csv_container
+    )
+    for column_name in header_row:
+        csv_cell = CsvHeaderCell(data=column_name,
+                                 csv_header_row=csv_header_row)
+        db.session.add(csv_cell)
+    db.session.add(csv_header_row)
+
+    # Iterate through the CSV file row-by-row and then cell-by-cell.
+    # Each cell contains one comma-separated string in a row of a CSV
+    # file.
+    for row in csv_data[1:]:
+        csv_body_row = CsvBodyRow(csv_container=csv_container)
+        for cell_data in row:
+            print cell_data
+            csv_cell = CsvBodyCell(
+                data=cell_data,
+                csv_body_row=csv_body_row
+            )
+            db.session.add(csv_cell)
+        db.session.add(csv_body_row)
+    db.session.add(csv_container)
+    db.session.commit()
+    return jsonify(
+        redirect=url_for('bulk_resource.review_descriptor_types')
+    )
     # return redirect(url_for('bulk_resource.review_descriptor_types'))
 
 

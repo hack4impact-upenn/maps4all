@@ -14,7 +14,6 @@ class CsvContainer(db.Model):
     """
     __tablename__ = 'csv_containers'
     id = db.Column(db.Integer, primary_key=True)
-    file_name = db.Column(db.String(64))
     date_uploaded = db.Column(db.DateTime)
     user_id = db.Column(db.Integer, db.ForeignKey('users.id'))
     csv_rows = db.relationship('CsvBodyRow', backref='csv_container',

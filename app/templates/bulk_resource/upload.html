@@ -75,12 +75,12 @@
                                 dataType: "json",
                                 type: "GET",
                                 mimeType: "application/json",
-                                success: function (msg) {
-                                   console.log("success!");
+                                success: function (data) {
+                                    if (data.redirect) {
+                                        window.location.href = data.redirect;
+                                    }
                                 },
-                                error: function (errorMessage) {
-                                    console.log(errorMessage);
-                                }
+                                error: function (errorMessage) { }
                             });
 				        }
                     }
