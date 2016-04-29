@@ -22,8 +22,14 @@ def get_resources():
 
 @main.route('/get-associations/<int:resource_id>')
 def get_associations(resource_id):
-    # TODO: write logic to retrieve and return associations for resource.
-    associations = []
+    resource = Resource.query.get(resource_id)
+    associations = {}
+    if resource is None:
+        return json.dumps(associations)
+    for td in resource.text_descriptors:
+        associations[td.descriptor.name] = td.text
+    for od in resource.option_descriptors:
+        associations[od.descriptor.name] = od.descriptor.values[od.option]
     return json.dumps(associations)
 
 

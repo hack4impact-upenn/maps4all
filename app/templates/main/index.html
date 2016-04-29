@@ -8,9 +8,10 @@
     <meta charset="utf-8">
     <meta name="csrf-token" content="{{ csrf_token() }}">
 
-    <div class="ui container">
-        <h1>Maps4All</h1>
-        <a href="{{ url_for('suggestion.suggest_new') }}">Suggest New</a>
+    <div class="ui-container">
+          <div id="title"><h1>Maps4All</h1></div>
+        <a href="{{ url_for('suggestion.suggest_new') }}">Suggest New
+            Resource</a>
         <input id="pac-input" class="controls" type="text"
                placeholder="Enter a location">
         <div id="view-selector" class="controls">
@@ -20,20 +21,13 @@
           <input type="radio" name="toggle" id="list_view">
           <label for="list_view">List View</label>
         </div>
-
-        <div id="type-selector" class="controls">
-          <input type="radio" name="type" id="changetype-all" checked="checked">
-          <label for="changetype-all">All</label>
-
-          <input type="radio" name="type" id="changetype-establishment">
-          <label for="changetype-establishment">Establishments</label>
-
-          <input type="radio" name="type" id="changetype-address">
-          <label for="changetype-address">Addresses</label>
-        </div>
     </div>
 
     <div id="map"></div>
+    <div id="sidebar">
+        <b>More Information:</b>
+        <div id="more-info"></div>
+    </div>
     <div id="list"></div>
 
 {% endblock %}

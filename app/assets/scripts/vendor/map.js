@@ -56,18 +56,6 @@ function initMap() {
     infowindow.open(map, marker);
   });
 
-  // Sets a listener on a radio button to change the filter type on Places
-  // Autocomplete.
-  function setupClickListener(id, types) {
-    var radioButton = document.getElementById(id);
-    radioButton.addEventListener('click', function() {
-      autocomplete.setTypes(types);
-    });
-  }
-
-  setupClickListener('changetype-all', []);
-  setupClickListener('changetype-address', ['address']);
-  setupClickListener('changetype-establishment', ['establishment']);
   var marker = new google.maps.Marker({
     map: map
   });
@@ -111,8 +99,20 @@ function initMap() {
             content: contentDiv
           });
           infowindow.open(map, markerToAdd);
+          google.maps.event.addListener(infowindow, 'closeclick', function() {
+            $("#more-info").empty();
+          });
           $.get('get-associations/' + resource.id).done(function(associations) {
-            // TODO: write logic to display resource associations.
+            var associationObject = JSON.parse(associations);
+            $("#more-info" ).empty();
+            for (var key in associationObject) {
+              var p = document.createElement('p');
+              var bolded = document.createElement('strong');
+              $(bolded).append(key);
+              var value = associationObject[key];
+              $(p).append(bolded, ': ', value);
+              $("#more-info").append(p);
+            }
           }).fail(function() {});
         });
         callback();
@@ -127,11 +127,14 @@ function initMap() {
   mapViewButton.addEventListener('click', function() {
     $("#map").show();
     $("#list").hide();
+    $("#more-info").empty();
+    $("#sidebar").show();
   });
   listViewButton.addEventListener('click', function() {
     $("#map").hide();
     populateListDiv();
     $("#list").show();
+    $("#sidebar").hide();
   });
 }
 
