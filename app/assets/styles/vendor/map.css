@@ -12,9 +12,11 @@ table {
 }
 
 #map {
-  height: 80%;
-  width: 90%;
-  left: 50px;
+  position: absolute;
+  left:150px;
+  top:175px;
+  right:0;
+  bottom:0;
 }
 
 .controls {
@@ -28,6 +30,9 @@ table {
   box-shadow: 0 2px 6px rgba(0, 0, 0, 0.3);
 }
 
+#list{
+  padding-left: 20px;
+}
 #pac-input {
   background-color: #fff;
   font-family: Roboto;
@@ -47,16 +52,8 @@ table {
   font-family: Roboto;
 }
 
-#type-selector {
-  color: #fff;
-  background-color: #4d90fe;
-  padding: 5px 11px 0px 11px;
-}
-
-#type-selector label {
-  font-family: Roboto;
-  font-size: 13px;
-  font-weight: 300;
+.ui-container {
+  margin-left:150px;
 }
 
 #view-selector {
@@ -69,4 +66,12 @@ table {
   font-family: Roboto;
   font-size: 13px;
   font-weight: 300;
-} 
+}
+
+
+#sidebar {
+    position:absolute;
+    left:0; top:170px; bottom: 0;
+    width: 150px;
+    padding-left: 10px;
+}

@@ -1,4 +1,4 @@
-from flask import render_template
+from flask import render_template, request
 from . import main
 from ..models import Resource
 import json
@@ -18,6 +18,13 @@ def get_resources():
 
 @main.route('/get-associations/<int:resource_id>')
 def get_associations(resource_id):
-    # TODO: write logic to retrieve and return associations for resource.
-    associations = []
+    resource = Resource.query.get(resource_id)
+    associations = {}
+    if resource is None: return json.dumps(associations)
+    for descriptor in resource.text_descriptors:
+        associations[descriptor.descriptor.name] = descriptor.text
+    for descriptor in resource.option_descriptors:
+        associations[descriptor.descriptor.name] = descriptor.descriptor.values[
+            descriptor.option]
     return json.dumps(associations)
+
