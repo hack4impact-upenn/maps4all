@@ -1,12 +1,13 @@
-from datetime import datetime
-from flask import abort, flash, render_template, redirect, url_for
-from flask.ext.login import login_required
 import pytz
+
+from datetime import datetime
+from flask import abort, flash, redirect, render_template, url_for
+from flask.ext.login import login_required
 from sqlalchemy.exc import IntegrityError
+
 from . import suggestion
 from .. import db
 from ..models import Resource, Suggestion
-
 from forms import SuggestionForm
 
 
@@ -25,7 +26,6 @@ def unread():
     num_unread = Suggestion.query.filter(
         Suggestion.read == False  # noqa
         ).count()
-    print num_unread
     return "%d" % num_unread
 
 
