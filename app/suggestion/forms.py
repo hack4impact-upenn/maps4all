@@ -10,11 +10,11 @@ class SuggestionForm(Form):
     )
     contact_name = TextField(
         'Contact Name',
-        validators=[InputRequired(), Length(1, 64)]
+        validators=[InputRequired(), Length(1, 512)]
     )
     contact_email = TextField(
         'Email',
-        validators=[InputRequired(), Length(1, 64), Email()]
+        validators=[InputRequired(), Length(1, 512), Email()]
     )
     contact_phone_number = TextField(
         'Phone Number',

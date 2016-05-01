@@ -26,7 +26,9 @@ $(document).ready(function () {
     $.get('/suggestion/unread', function (data) {
         var numUnread = data;
         if (parseInt(numUnread) > 0) {
-            $("#suggested-resources i").replaceWith('<i class="ui red label">' + numUnread + '</i>');
+            var icon = document.createElement("i");
+            $(icon).addClass('ui red label').html(numUnread);
+            $("#suggested-resources i").replaceWith(icon);
         }
     });
 });
