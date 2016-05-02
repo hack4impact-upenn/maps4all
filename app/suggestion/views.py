@@ -63,41 +63,27 @@ def delete(sugg_id):
     return redirect(url_for('suggestion.index'))
 
 
-@suggestion.route('/create',  methods=['GET', 'POST'])
-def create():
-    """Create a suggestion for a new resource."""
+@suggestion.route('/new', defaults={'resource_id': None},
+                  methods=['GET', 'POST'])
+@suggestion.route('/<int:resource_id>',  methods=['GET', 'POST'])
+def suggest(resource_id):
+    """Create a suggestion for a resource."""
     form = SuggestionForm()
+    if resource_id is None:
+        name = None
+    else:
+        resource = Resource.query.get(resource_id)
+        if resource is None:
+            abort(404)
+        name = resource.name
     if form.validate_on_submit():
-        suggestion = Suggestion(
-            suggestion_text=form.suggestion_text.data,
-            contact_name=form.contact_name.data,
-            contact_email=form.contact_email.data,
-            contact_phone_number=form.contact_phone_number.data,
-            submission_time=datetime.now(pytz.timezone('US/Eastern'))
-        )
-        db.session.add(suggestion)
-        try:
-            db.session.commit()
-            flash('Thanks for the suggestion!', 'success')
-            return redirect(url_for('main.index'))
-        except IntegrityError:
-            db.session.rollback()
-            flash('Database error occurred. Please try again.', 'error')
-    return render_template('suggestion/suggest.html', form=form,
-                           existing=False)
-
-
-@suggestion.route('/edit/<int:resource_id>',  methods=['GET', 'POST'])
-def edit(resource_id):
-    """Create a suggestion for an existing resource."""
-    form = SuggestionForm()
-    resource = Resource.query.get(resource_id)
-    if resource is None:
-        abort(404)
-    if form.validate_on_submit():
+        if name is None:
+            suggestion_text = form.suggestion_text.data
+        else:
+            suggestion_text = name + ': ' + form.suggestion_text.data
         suggestion = Suggestion(
             resource_id=resource_id,
-            suggestion_text=form.suggestion_text.data,
+            suggestion_text=suggestion_text,
             contact_name=form.contact_name.data,
             contact_email=form.contact_email.data,
             contact_phone_number=form.contact_phone_number.data,
@@ -111,5 +97,4 @@ def edit(resource_id):
         except IntegrityError:
             db.session.rollback()
             flash('Database error occurred. Please try again.', 'error')
-    return render_template('suggestion/suggest.html', form=form,
-                           existing=True, name=resource.name)
+    return render_template('suggestion/suggest.html', form=form, name=name)

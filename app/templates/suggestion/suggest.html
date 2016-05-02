@@ -4,14 +4,14 @@
 {% block content %}
   <div class="ui text container">
     <a class="ui basic compact button" href="{{ url_for('main.index') }}">
-	  <i class="caret left icon"></i>
-	  Back
-	</a>
+      <i class="caret left icon"></i>
+      Back
+    </a>
     <h1>
-      {% if existing %}
-    	Suggestion for {{ name }}
+      {% if name %}
+        Suggestion for {{ name }}
       {% else %}
-    	Suggest New Resource
+        Suggest New Resource
       {% endif %}
     </h1>
     {{ f.render_form(form) }}

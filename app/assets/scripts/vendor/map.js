@@ -100,19 +100,23 @@ function initMap() {
           });
           infowindow.open(map, markerToAdd);
           google.maps.event.addListener(infowindow, 'closeclick', function() {
-            $("#more-info").empty();
+            $('#more-info').empty();
           });
           $.get('get-associations/' + resource.id).done(function(associations) {
             var associationObject = JSON.parse(associations);
-            $("#more-info" ).empty();
+            $('#more-info').empty();
             for (var key in associationObject) {
               var p = document.createElement('p');
               var bolded = document.createElement('strong');
               $(bolded).append(key);
               var value = associationObject[key];
               $(p).append(bolded, ': ', value);
-              $("#more-info").append(p);
+              $('#more-info').append(p);
             }
+            var a = document.createElement('a');
+            $(a).attr('href', 'suggestion/' + resource.id);
+            $(a).html('Suggest an edit for this resource');
+            $('#more-info').append(a);
           }).fail(function() {});
         });
         callback();
