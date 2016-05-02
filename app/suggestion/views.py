@@ -71,19 +71,16 @@ def suggest(resource_id):
     form = SuggestionForm()
     if resource_id is None:
         name = None
+        resource = None
     else:
         resource = Resource.query.get(resource_id)
         if resource is None:
             abort(404)
         name = resource.name
     if form.validate_on_submit():
-        if name is None:
-            suggestion_text = form.suggestion_text.data
-        else:
-            suggestion_text = name + ': ' + form.suggestion_text.data
         suggestion = Suggestion(
             resource_id=resource_id,
-            suggestion_text=suggestion_text,
+            suggestion_text=form.suggestion_text.data,
             contact_name=form.contact_name.data,
             contact_email=form.contact_email.data,
             contact_phone_number=form.contact_phone_number.data,

@@ -31,7 +31,9 @@
               {% if not suggestion.resource_id %}
                 <a href="{{ url_for('single_resource.create') }}">Create</a>
               {% else %}
-                <a href="{{ url_for('single_resource.edit', resource_id=suggestion.resource_id) }}">Edit</a>
+                <a href="{{ url_for('single_resource.edit', resource_id=suggestion.resource_id) }}">
+                  Edit {{ suggestion.resource.name }}
+                </a>
               {% endif %}
             </td>
             <td>
