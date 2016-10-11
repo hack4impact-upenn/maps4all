@@ -8,6 +8,7 @@
 - Veronica Wharton
 - Daniel Zhang
 - Annie Meng
+- Stephanie Shi
 
 ## Synopsis
 
