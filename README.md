@@ -9,6 +9,7 @@
 - Daniel Zhang
 - Annie Meng
 - Stephanie Shi
+- Sanjay Subramanian
 
 ## Synopsis
 
