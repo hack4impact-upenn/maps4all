@@ -7,6 +7,7 @@
 - Arman Tokanov
 - Veronica Wharton
 - Daniel Zhang
+- Annie Meng
 
 ## Synopsis
 
