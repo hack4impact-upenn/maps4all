@@ -11,6 +11,7 @@
 - Stephanie Shi
 - Sanjay Subramanian
 - Ben Sandler
+- Kyle Rosenbluth
 
 ## Synopsis
 
