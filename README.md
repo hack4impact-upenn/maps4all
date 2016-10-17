@@ -12,6 +12,7 @@
 - Sanjay Subramanian
 - Ben Sandler
 - Brandon Obas
+- Kyle Rosenbluth
 
 ## Synopsis
 
