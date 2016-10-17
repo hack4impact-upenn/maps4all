@@ -1,3 +1,4 @@
+from __future__ import print_function
 import json
 
 from flask import render_template, request
@@ -6,6 +7,8 @@ from flask.ext.login import login_required
 from .. import db
 from ..models import EditableHTML, Resource
 from . import main
+import sys
+import logging
 
 
 @main.route('/')
@@ -19,6 +22,13 @@ def get_resources():
     resources_as_dicts = Resource.get_resources_as_dicts(resources)
     return json.dumps(resources_as_dicts)
 
+@main.route('/search-resources/<query_name>')
+def search_resources(query_name):
+    print('hello')
+    sys.stderr.write(query_name)
+    resources = Resource.query.filter(Resource.name.contains(query_name))
+    resources_as_dicts = Resource.get_resources_as_dicts(resources)
+    return json.dumps(resources_as_dicts)
 
 @main.route('/get-associations/<int:resource_id>')
 def get_associations(resource_id):

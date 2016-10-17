@@ -10,9 +10,16 @@
 
     <div class="ui container">
         <h1>Maps4All</h1>
-        <a href="{{ url_for('suggestion.suggest') }}">Suggest New Resource</a>
+        <div>
+            <a href="{{ url_for('suggestion.suggest') }}">Suggest New Resource</a>
+            <form id="resources-form">
+                <input type="text" id="resources-input" class="controls"
+                       placeholder="Enter a resource keyword">
+            </form>
+        </div>
         <input id="pac-input" class="controls" type="text"
                placeholder="Enter a location">
+
         <div id="view-selector" class="controls">
           <input type="radio" name="toggle" id="map_view" checked="checked">
           <label for="map_view">Map View</label>

@@ -5,6 +5,7 @@
 
 var map;
 var markers = [];
+var infowindow;
 
 function initMap() {
   map = new google.maps.Map(document.getElementById('map'), {
@@ -17,7 +18,7 @@ function initMap() {
   map.controls[google.maps.ControlPosition.TOP_LEFT].push(types);
   var autocomplete = new google.maps.places.Autocomplete(input);
   autocomplete.bindTo('bounds', map);
-  var infowindow = new google.maps.InfoWindow();
+  infowindow = new google.maps.InfoWindow();
   var marker = new google.maps.Marker({
     map: map,
     anchorPoint: new google.maps.Point(0, -29)
@@ -70,62 +71,6 @@ function initMap() {
     }
    })
 
-  function create_marker(resource){
-    var markerToAdd = new google.maps.Marker({
-       map: map
-    });
-    latLng = new google.maps.LatLng(resource.latitude, resource.longitude);
-    markerToAdd.setPosition(latLng);
-    markerToAdd.setVisible(true);
-    markerToAdd.title = resource.name;
-    markerToAdd.json_data = {
-      csrf_token: $('meta[name="csrf-token"]').prop('content'),
-      data: resource.name
-    };
-    var values = [];
-    values.push(markerToAdd.json_data);
-    async.each(values,
-      function(value, callback){
-        markerToAdd.addListener('click', function() {
-          var contentDiv = document.createElement('div');
-          var strong = document.createElement('strong');
-          var br = document.createElement('br');
-          $(strong).html(resource.name);
-          $(contentDiv).append(strong, br, resource.address);
-          if (infowindow) {
-            infowindow.close();
-          }
-          infowindow = new google.maps.InfoWindow({
-            content: contentDiv
-          });
-          infowindow.open(map, markerToAdd);
-          google.maps.event.addListener(infowindow, 'closeclick', function() {
-            $('#more-info').empty();
-          });
-          $.get('get-associations/' + resource.id).done(function(associations) {
-            var associationObject = JSON.parse(associations);
-            $('#more-info').empty();
-            for (var key in associationObject) {
-              var p = document.createElement('p');
-              var bolded = document.createElement('strong');
-              $(bolded).append(key);
-              var value = associationObject[key];
-              $(p).append(bolded, ': ', value);
-              $('#more-info').append(p);
-            }
-            var a = document.createElement('a');
-            $(a).attr('href', 'suggestion/' + resource.id);
-            $(a).html('Suggest an edit for this resource');
-            $('#more-info').append(a);
-          }).fail(function() {});
-        });
-        callback();
-      }, function() {
-        markers.push(markerToAdd)
-      }
-    );
-  }
-
   var mapViewButton = document.getElementById("map_view");
   var listViewButton = document.getElementById("list_view");
   mapViewButton.addEventListener('click', function() {
@@ -141,6 +86,84 @@ function initMap() {
     $("#sidebar").hide();
   });
 }
+
+function create_marker(resource){
+  var markerToAdd = new google.maps.Marker({
+    map: map
+  });
+  latLng = new google.maps.LatLng(resource.latitude, resource.longitude);
+  markerToAdd.setPosition(latLng);
+  markerToAdd.setVisible(true);
+  markerToAdd.title = resource.name;
+  markerToAdd.json_data = {
+    csrf_token: $('meta[name="csrf-token"]').prop('content'),
+    data: resource.name
+  };
+  var values = [];
+  values.push(markerToAdd.json_data);
+  async.each(values,
+    function(value, callback){
+      markerToAdd.addListener('click', function() {
+        var contentDiv = document.createElement('div');
+        var strong = document.createElement('strong');
+        var br = document.createElement('br');
+        $(strong).html(resource.name);
+        $(contentDiv).append(strong, br, resource.address);
+        if (infowindow) {
+          infowindow.close();
+        }
+        infowindow = new google.maps.InfoWindow({
+          content: contentDiv
+        });
+        infowindow.open(map, markerToAdd);
+        google.maps.event.addListener(infowindow, 'closeclick', function() {
+          $('#more-info').empty();
+        });
+        $.get('get-associations/' + resource.id).done(function(associations) {
+          var associationObject = JSON.parse(associations);
+          $('#more-info').empty();
+          for (var key in associationObject) {
+            var p = document.createElement('p');
+            var bolded = document.createElement('strong');
+            $(bolded).append(key);
+            var value = associationObject[key];
+            $(p).append(bolded, ': ', value);
+            $('#more-info').append(p);
+          }
+          var a = document.createElement('a');
+          $(a).attr('href', 'suggestion/' + resource.id);
+          $(a).html('Suggest an edit for this resource');
+          $('#more-info').append(a);
+        }).fail(function() {});
+      });
+      callback();
+    }, function() {
+         markers.push(markerToAdd)
+    }
+  );
+}
+
+$(document).ready(function() {
+  $('#resources-form').submit(function(e) {
+    console.log('here');
+    e.preventDefault();
+    var query = document.getElementById('resources-input').value;
+    console.log(query);
+    $.get('/search-resources/'+query).done(function(resourcesString) {
+      for (var i=0; i < markers.length; i++) {
+        markers[i].setMap(null);
+      }
+      markers = [];
+      var resources = JSON.parse(resourcesString);
+      for (var i=0; i < resources.length; i++) {
+        create_marker(resources[i]);
+      }
+      for (var i=0; i < markers.length; i++) {
+        markers[i].setMap(map);
+      }
+    });
+  });
+});
 
 function geocodeLatLng(geocoder, input_lat, input_lng) {
   geocoder.geocode({'location': {lat: input_lat, lng: input_lng}}, function(results, status) {
