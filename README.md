@@ -13,7 +13,6 @@
 - Ben Sandler
 - Brandon Obas
 
-
 ## Synopsis
 
 A Flask application template with the boilerplate code already done for you.
