@@ -145,10 +145,8 @@ function create_marker(resource){
 
 $(document).ready(function() {
   $('#resources-form').submit(function(e) {
-    console.log('here');
     e.preventDefault();
     var query = document.getElementById('resources-input').value;
-    console.log(query);
     $.get('/search-resources/'+query).done(function(resourcesString) {
       for (var i=0; i < markers.length; i++) {
         markers[i].setMap(null);
@@ -161,6 +159,7 @@ $(document).ready(function() {
       for (var i=0; i < markers.length; i++) {
         markers[i].setMap(map);
       }
+      populateListDiv();
     });
   });
 });
