@@ -44,7 +44,11 @@ A Flask application template with the boilerplate code already done for you.
     $ virtualenv env
     $ source env/bin/activate
     ```
-
+2.5 (If you're on a mac) Make sure xcode tools are installed
+    ```
+    $ xcode-select --install
+    ```
+    
 3. Install the dependencies
 
     ```
