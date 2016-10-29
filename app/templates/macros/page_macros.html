@@ -2,30 +2,37 @@
     <div id="editor-{{ editable_html_obj.editor_name }}" contenteditable="false">
         {{ editable_html_obj.value|safe }}
     </div>
-
     {% if current_user.is_admin() %}
-       <button class="ui button start-edit">
+        <button class="ui button start-edit">
         Edit
-       </button>
-       <button class="ui primary button end-edit">
+        </button>
+        <p class= "updated_alert">Updated successfully</p>
+        <button class="ui primary button end-edit">
         Save
-       </button>
+        </button>
+        <button class="ui primary button cancel-edit">
+        Cancel
+        </button>
     {% endif %}
-
     <script>
     var editorIDName = "editor-{{ editable_html_obj.editor_name }}";
+    var original_data;
     $(document).ready(function() {
         {% if current_user.is_admin() %}
             $(".end-edit").hide();
+            $(".cancel-edit").hide();
+            $(".updated_alert").hide();
         {% endif %}
         $(".start-edit").click(function() {
             CKEDITOR.disableAutoInline = true;
-            var editor = CKEDITOR.inline(editorIDName, {
+            var editor = CKEDITOR.replace(editorIDName, {
                 startupFocus: true,
                 autoGrow_onStartup: true
             });
+            original_data = CKEDITOR.instances[editorIDName].getData();
             $(".start-edit").hide();
             $(".end-edit").show();
+            $(".cancel-edit").show();
             $("#" + editorIDName).attr("contenteditable","true");
         });
         $(".end-edit").click(function() {
@@ -39,8 +46,22 @@
                 CKEDITOR.instances[editorIDName].destroy();
             }
             $(".end-edit").hide();
+            $(".cancel-edit").hide();
             $(".start-edit").show();
+            $(".updated_alert").show();
             $("#" + editorIDName).attr("contenteditable","false");
+        });
+        $(".cancel-edit").click(function() {
+            if ( CKEDITOR.instances[editorIDName] ) {
+                if(original_data !== null) {
+                    CKEDITOR.instances[editorIDName].setData(original_data);
+                }
+                CKEDITOR.instances[editorIDName].destroy();
+            }
+            $(".cancel-edit").hide();
+            $(".end-edit").hide();
+            $(".start-edit").show();
+            $(".updated_alert").hide();
         });
     });
     </script>
