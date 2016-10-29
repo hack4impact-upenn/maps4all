@@ -43,7 +43,6 @@
                             <th class="sorted ascending">Name</th>
                             <th class="sorted ascending">Type</th>
                             <th>Values</th>
-                            <th>Searchable</th>
                         </tr>
                     </thead>
                     <tbody>
@@ -57,7 +56,6 @@
                                 <td class="descriptor type">Option</td>
                                 <td>{{ ', '.join(d.values) }}</td>
                             {% endif %}
-                            <td>{{ d.is_searchable }}</td>
                         </tr>
                     {% endfor %}
                     </tbody>
