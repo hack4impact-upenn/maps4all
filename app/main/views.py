@@ -7,9 +7,6 @@ from flask.ext.login import login_required
 from .. import db
 from ..models import EditableHTML, Resource
 from . import main
-import sys
-import logging
-
 
 @main.route('/')
 def index():
