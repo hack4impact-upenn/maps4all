@@ -24,7 +24,6 @@ def get_resources():
 
 @main.route('/search-resources/<query_name>')
 def search_resources(query_name):
-    sys.stderr.write(query_name)
     resources = Resource.query.filter(Resource.name.contains(query_name))
     resources_as_dicts = Resource.get_resources_as_dicts(resources)
     return json.dumps(resources_as_dicts)
