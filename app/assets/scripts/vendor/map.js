@@ -6,6 +6,7 @@
 var map;
 var markers = [];
 var infowindow;
+var inMapView = true;
 
 function initMap() {
   map = new google.maps.Map(document.getElementById('map'), {
@@ -78,12 +79,14 @@ function initMap() {
     $("#list").hide();
     $("#more-info").empty();
     $("#sidebar").show();
+    inMapView = true;
   });
   listViewButton.addEventListener('click', function() {
     $("#map").hide();
     populateListDiv();
     $("#list").show();
     $("#sidebar").hide();
+    inMapView = false;
   });
 }
 
@@ -147,7 +150,11 @@ $(document).ready(function() {
   $('#resources-form').submit(function(e) {
     e.preventDefault();
     var query = document.getElementById('resources-input').value;
-    $.get('/search-resources/'+query).done(function(resourcesString) {
+    var endpoint = '/search-resources/'+query;
+    if (query.length == 0) {
+        endpoint = '/get-resources';
+    }
+    $.get(endpoint).done(function(resourcesString) {
       for (var i=0; i < markers.length; i++) {
         markers[i].setMap(null);
       }
@@ -159,7 +166,9 @@ $(document).ready(function() {
       for (var i=0; i < markers.length; i++) {
         markers[i].setMap(map);
       }
-      populateListDiv();
+      if (!inMapView) {
+        populateListDiv();
+      }
     });
   });
 });
