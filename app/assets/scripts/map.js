@@ -168,7 +168,6 @@ function populateListDiv() {
 
     var placeTitle = document.createElement('div');
     placeTitle.setAttribute('class', 'list-item-title');
-    console.log(markerToShow.title);
     $(placeTitle).html(markerToShow.title);
 
     mainContent.appendChild(placeTitle);
