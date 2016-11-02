@@ -1,30 +1,60 @@
 {% extends 'layouts/base.html' %}
 
+{# {% block javascript %}
+    {% single_resource 'views_js' %}<script type="text/javascript" src="{{ ASSET_URL }}"></script>{% endassets %}
+{% endblock %} #}
+
 {% block content %}
-    <div class="ui text container">
-        <h2 class="ui dividing header">Resources</h2>
-        <a href="{{ url_for('single_resource.create') }}">Add</a>
-        <table>
-            <thead>
-                <tr>
-                    <th>Name</th>
-                    <th>Address</th>
-                    <th>Latitude</th>
-                    <th>Longitude</th>
-                </tr>
-            </thead>
-            <tbody>
-                {% for resource in resources %}
-                    <tr>
-                        <td>
-                            <a href="{{ url_for('single_resource.edit', resource_id=resource['id']) }}">{{ resource['name'] }}</a>
-                        </td>
-                        <td>{{ resource['address'] }}</td>
-                        <td>{{ resource['latitude'] | round }}</td>
-                        <td>{{ resource['longitude'] | round }}</td>
-                    </tr>
-                {% endfor %}
-            </tbody>
-        </table>
+    <div class="ui stackable grid container">
+        <div class="sixteen wide tablet twelve wide computer centered column">
+            <h2 class="centered ui header">
+                Resources
+                <div class="sub header">
+                    View and edit current resources.
+                </div>
+            </h2>
+
+            <div class="ui right action left icon input menu">
+                <i class="search icon"></i>
+                    <input type="text" placeholder="Search resources">
+                    <div class="ui basic floating dropdown button">
+                        <div class="text">All Resources</div>
+                        <i class="dropdown icon"></i>
+                        <div class="menu">
+                            <div class="item" data-value="All Resources">All Resources</div>
+                            <div class="item" data-value="Address">Address</div>
+                            <div class="item" data-value="Latitude">Latitude</div>
+                            <div class="item" data-value="Longitude">Longitude</div>
+                        </div>
+                    </div>
+            </div>
+
+            {# Use overflow-x: scroll so that mobile views don't freak out
+             # when the table is too wide #}
+            <div style="overflow-x: scroll;">
+                <table class="ui sortable unstackable selectable celled striped table">
+                    <thead>
+                        <tr>
+                            <th class="three wide sorted ascending">Name</th>
+                            <th class="five wide sorted ascending">Address</th>
+                            <th class="one wide sorted ascending">Latitude</th>
+                            <th class="one wide sorted ascending">Longitude</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                    {% for resource in resources | sort(attribute='name') %}
+                        <tr>
+                            <td>
+                                <a href="{{ url_for('single_resource.edit', resource_id=resource['id']) }}">{{ resource['name'] }}</a>
+                            <td>{{ resource['address'] }}</td>
+                            <td>{{ resource['latitude'] | round }}</td>
+                            <td>{{ resource['longitude'] | round }}</td>
+                            </td>
+                        </tr>
+                    {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
     </div>
 {% endblock %}
