@@ -8,13 +8,10 @@ var markers = [];
 
 function initMap() {
   map = new google.maps.Map(document.getElementById('map'), {
-    center: {lat: 39.949, lng: -75.181},
+    center: {lat: 39.949, lng: -75.181}, // TODO(#52): Do not hardcode this.
     zoom: 13
   });
   var input = document.getElementById('pac-input');
-  var types = document.getElementById('type-selector');
-  map.controls[google.maps.ControlPosition.TOP_LEFT].push(input);
-  map.controls[google.maps.ControlPosition.TOP_LEFT].push(types);
   var autocomplete = new google.maps.places.Autocomplete(input);
   autocomplete.bindTo('bounds', map);
   var infowindow = new google.maps.InfoWindow();
@@ -62,10 +59,10 @@ function initMap() {
 
   $.get('/get-resources').done(function(resourcesString){
     var resources = JSON.parse(resourcesString);
-    for (var i=0; i < resources.length; i++){
+    for (var i = 0; i < resources.length; i++) {
       create_marker(resources[i]);
     }
-    for (var i=0; i < markers.length; i++){
+    for (var i = 0; i < markers.length; i++) {
       markers[i].setMap(map);
     }
    })
@@ -121,24 +118,13 @@ function initMap() {
         });
         callback();
       }, function() {
-        markers.push(markerToAdd)
+        markers.push(markerToAdd);
       }
     );
   }
 
-  var mapViewButton = document.getElementById("map_view");
-  var listViewButton = document.getElementById("list_view");
-  mapViewButton.addEventListener('click', function() {
-    $("#map").show();
-    $("#list").hide();
-    $("#more-info").empty();
-    $("#sidebar").show();
-  });
-  listViewButton.addEventListener('click', function() {
-    $("#map").hide();
+  google.maps.event.addListenerOnce(map, 'idle', function(){
     populateListDiv();
-    $("#list").show();
-    $("#sidebar").hide();
   });
 }
 
@@ -163,32 +149,34 @@ function populateListDiv() {
       markersToShow.push(markers[i]);
     }
   }
-  var table = document.createElement('table');
+  var list = document.getElementById('list');
   $.each(markersToShow, function(i, markerToShow) {
-    var tableCell = document.createElement('td');
-    $(tableCell).attr({
-      'style': 'overflow:hidden;width:100%;height:100%;position:absolute'
-    });
-    var tableCellBoldTitle = document.createElement('strong');
-    var tableCellNewline = document.createElement('br');
-    var tableCellInnerDiv = document.createElement('div');
-    $(tableCellInnerDiv).attr({
-      'style': 'width:50px;height:50px; text-align:right; float: right;'
-    });
-    var tableCellImg = document.createElement('img');
-    $(tableCellImg).attr({
-      'src': 'static/images/red-dot.png',
-      'style': 'width:50%;height:50%;'
-    });
-    $(tableCellInnerDiv).append(tableCellImg);
-    $(tableCellBoldTitle).html(markerToShow.getTitle());
-    $(tableCell).append(tableCellInnerDiv);
-    $(tableCell).append(tableCellBoldTitle, tableCellNewline,
-                        '<b>' + markerToShow.title + '</b><br>');
+    var listElement = document.createElement('a');
+    listElement.setAttribute('class', 'item');
 
-    $(table).append('<br>');
-    $(table).append('<br>');
-    $(table).append(tableCell);
+    var rightArrowElement = document.createElement('div');
+    rightArrowElement.setAttribute('class', 'right floated content');
+
+    var rightArrowImage = document.createElement('i');
+    rightArrowImage.setAttribute('class', 'right chevron icon');
+
+    rightArrowElement.appendChild(rightArrowImage);
+    listElement.appendChild(rightArrowElement);
+
+    var mainContent = document.createElement('div');
+    mainContent.setAttribute('class', 'content');
+
+    var placeTitle = document.createElement('div');
+    placeTitle.setAttribute('class', 'list-item-title');
+    $(placeTitle).html(markerToShow.title);
+
+    mainContent.appendChild(placeTitle);
+    listElement.appendChild(mainContent);
+
+    list.appendChild(listElement);
+
+    listElement.addEventListener('click', function() {
+      google.maps.event.trigger(markerToShow, 'click');
+    });
   });
-  $("#list").append(table);
 }
