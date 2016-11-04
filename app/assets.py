@@ -11,6 +11,7 @@ app_js = Bundle(
     'app.js',
     'descriptor.js',
     'map.js',
+    'resources.js',
     filters='jsmin',
     output='scripts/app.js'
 )
