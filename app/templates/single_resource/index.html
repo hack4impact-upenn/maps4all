@@ -11,7 +11,7 @@
             <div class="ui search item">
                 <div class="ui transparent icon input">
                     <form id="search-resources">
-                        <input id="search-resources-text" type="text" value="{{ query }}" placeholder="Search resources...">
+                        <input id="search-resources-text" type="text" value="{{ query|default('') }}" placeholder="Search resources...">
                         <i class="search icon"></i>
                     </form>
                 </div>

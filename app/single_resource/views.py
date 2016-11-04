@@ -14,7 +14,7 @@ from .forms import SingleResourceForm
 def index():
     """View resources in a list."""
     resources = Resource.query.all()
-    return render_template('single_resource/index.html', resources=resources, query="")
+    return render_template('single_resource/index.html', resources=resources)
 
 @single_resource.route('/<query_name>')
 @login_required
