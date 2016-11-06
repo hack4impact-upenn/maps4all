@@ -25,7 +25,7 @@
         {% endif %}
         $(".start-edit").click(function() {
             CKEDITOR.disableAutoInline = true;
-            var editor = CKEDITOR.replace(editorIDName, {
+            var editor = CKEDITOR.inline(editorIDName, {
                 startupFocus: true,
                 autoGrow_onStartup: true
             });
@@ -53,7 +53,7 @@
         });
         $(".cancel-edit").click(function() {
             if ( CKEDITOR.instances[editorIDName] ) {
-                if(original_data !== null) {
+                if ( original_data !== null) {
                     CKEDITOR.instances[editorIDName].setData(original_data);
                 }
                 CKEDITOR.instances[editorIDName].destroy();
