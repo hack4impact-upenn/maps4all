@@ -52,6 +52,28 @@ table {
   font-family: Roboto;
 }
 
+#resources-form {
+  display: inline;
+  margin-left: 12px;
+  padding: 0 11px 0 13px;
+  text-overflow: ellipsis;
+  width: 300px;
+  height: 20px;
+}
+
+#resources-input {
+  margin-top: 0px;
+  background-color: #fff;
+  font-family: Roboto;
+  font-size: 15px;
+  font-weight: 300;
+  margin-left: 12px;
+  padding: 0 11px 0 13px;
+  text-overflow: ellipsis;
+  width: 300px;
+  height: 20px;
+}
+
 .ui-container {
   margin-left:150px;
 }

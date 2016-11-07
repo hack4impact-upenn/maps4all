@@ -1,4 +1,4 @@
-# Maps4All [![Circle CI](https://circleci.com/gh/hack4impact/flask-base.svg?style=svg)](https://circleci.com/gh/hack4impact/flask-base) [![Stories in Ready](https://badge.waffle.io/hack4impact/flask-base.png?label=ready&title=Ready)](https://waffle.io/hack4impact/flask-base)
+﻿# Maps4All [![Circle CI](https://circleci.com/gh/hack4impact/flask-base.svg?style=svg)](https://circleci.com/gh/hack4impact/flask-base) [![Stories in Ready](https://badge.waffle.io/hack4impact/flask-base.png?label=ready&title=Ready)](https://waffle.io/hack4impact/flask-base)
 
 ## Team Members
 
@@ -9,6 +9,10 @@
 - Daniel Zhang
 - Annie Meng
 - Stephanie Shi
+- Sanjay Subramanian
+- Ben Sandler
+- Brandon Obas
+- Kyle Rosenbluth
 
 ## Synopsis
 
@@ -40,7 +44,11 @@ A Flask application template with the boilerplate code already done for you.
     $ virtualenv env
     $ source env/bin/activate
     ```
-
+2.5 (If you're on a mac) Make sure xcode tools are installed
+    ```
+    $ xcode-select --install
+    ```
+    
 3. Install the dependencies
 
     ```
