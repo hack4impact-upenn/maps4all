@@ -1,3 +1,6 @@
+$accent-color: #2C9FA3;
+$font-choice: Roboto;
+
 #map {
   height: 100%;
   width: 100%;
@@ -18,12 +21,12 @@
 }
 
 #search {
-  padding: 10px;
+  margin: 10px;
 }
 
 #pac-input, #resources-input {
   background-color: #fff;
-  font-family: Roboto;
+  font-family: $font-choice;
   font-size: 15px;
   font-weight: 300;
   text-overflow: ellipsis;
@@ -31,16 +34,21 @@
 }
 
 #pac-input:focus, #resources-input:focus {
-  border-color: #2C9FA3;
+  border-color: $accent-color;
 }
 
 #resources-form, #location-search {
   margin: 0 0 5px 0;
 }
 
-.descriptor-field {
-  margin: 0 3px 3px 3px;
-  font-family: Roboto;
+.descriptor-group {
+  margin: 3px;
+  font-family: $font-choice;
+
+  h5 {
+    margin: 0 0 5px 0;
+    font-family: $font-choice;
+  }
 }
 
 .option-group, .option-group-advanced {
@@ -49,6 +57,8 @@
 }
 
 #advanced-filters-showhide a:link {
-  text-decoration: underline;
-  font-family: Roboto;
+  text-decoration: none!important;
+  font-family: $font-choice;
+  font-weight: 100;
+  color: $accent-color!important;
 }
