@@ -96,3 +96,8 @@ table.selectable tr:hover {
   font-weight: 100;
   color: #2C9FA3 !important;
 }
+
+@media -sass-debug-info{filename{}line{font-family:\0000366}}
+.checkbox-option {
+  margin-right: 5px;
+}
