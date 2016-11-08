@@ -4,26 +4,86 @@
     <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyAhkKJDnPxq0_xvF6pLAFcKfVAL6GbARBs&libraries=places&callback=initMap"
             async defer>
     </script>
+
+    <script type="text/javascript">
+      function showhide(id) {
+        var e = document.getElementById(id);
+        e.style.display = (e.style.display == 'block') ? 'none' : 'block';
+      }
+    </script>
+
+</body>
+
     <meta name="viewport" content="initial-scale=1.0, user-scalable=no">
     <meta charset="utf-8">
     <meta name="csrf-token" content="{{ csrf_token() }}">
 
     <div id="map-list-grid" class="ui two column horizontally padded grid">
       <div class="four wide column">
-        <div class="ui icon input">
-          <i class = "search icon"></i>
-          <form id="resources-form">
-              <input type="text" id="resources-input" class="controls"
-                     placeholder="Enter a resource keyword">
-          </form>
+        <div id="search">
+            <form id="resources-form">
+               <div class="ui fluid icon input">
+                <i class="search icon"></i>
+                <input type="text" id="resources-input" class="controls"
+                       placeholder="Enter a resource keyword">
+                </div>
+            </form>
+
+          <div class="ui fluid icon input" id="location-search">
+            <i class="search icon"></i>
+            <input type="text" id="pac-input" class="controls"
+                   placeholder="Enter a location">
+          </div>
+
+          <div id="default-search" class="option-group">
+            <div class="descriptor-field">
+              <h5>DESCRIPTOR #1</h5>
+                    <div class="ui checkbox field">
+                      <input type="checkbox" name="option-1">
+                        <label>Option</label>
+                    </div>
+                    <div class="ui checkbox field">
+                      <input type="checkbox" name="option-2">
+                        <label>Option</label>
+                    </div>
+                    <div class="ui checkbox field">
+                      <input type="checkbox" name="option-3">
+                        <label>Option</label>
+                    </div>
+            </div>
+          </div>
+
+          <div id="advanced-filters-showhide">
+            <a href="javascript:showhide('advanced-search')">
+              Advanced Filters
+            </a>
+          </div>
+
+          <div id="advanced-search" class="option-group-advanced" style="display:none;">
+            <div class="descriptor-field">
+              <h5>DESCRIPTOR #2</h5>
+                <div class="ui checkbox field">
+                  <input type="checkbox" name="option-1">
+                    <label>Option</label>
+                </div>
+                <div class="ui checkbox field">
+                  <input type="checkbox" name="option-2">
+                    <label>Option</label>
+                </div>
+                <div class="ui checkbox field">
+                  <input type="checkbox" name="option-3">
+                    <label>Option</label>
+                </div>
+            </div>
+          </div>
+
         </div>
-        <div class="ui icon input">
-          <i class = "search icon"></i>
-          <input id="pac-input" class="controls" type="text"
-                 placeholder="Enter a location">
-        </div>
+
+        <div class="ui divider"></div>
+
         <div id="list" class="ui middle aligned divided list"></div>
       </div>
+
       <div class="twelve wide column">
         <div id="map"></div>
       </div>
