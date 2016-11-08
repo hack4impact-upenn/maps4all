@@ -39,23 +39,26 @@ table.selectable tr:hover {
 @media -sass-debug-info{filename{}line{font-family:\0000311}}
 #map-list-grid {
   height: 95%;
+  background-color: #eee;
 }
 
-@media -sass-debug-info{filename{}line{font-family:\0000315}}
+@media -sass-debug-info{filename{}line{font-family:\0000316}}
 #map-list-grid.column {
   padding: 0;
 }
 
-@media -sass-debug-info{filename{}line{font-family:\0000319}}
-#pac-input {
+@media -sass-debug-info{filename{}line{font-family:\0000320}}
+#pac-input, #resources-input {
   background-color: #fff;
   font-family: Roboto;
   font-size: 15px;
   font-weight: 300;
   text-overflow: ellipsis;
+  width: 200%;
+  height: 100%;
 }
 
-@media -sass-debug-info{filename{}line{font-family:\0000327}}
-#pac-input:focus {
+@media -sass-debug-info{filename{}line{font-family:\0000330}}
+#pac-input:focus, #resources-input:focus {
   border-color: #4d90fe;
 }

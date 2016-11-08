@@ -10,14 +10,19 @@
 
     <div id="map-list-grid" class="ui two column horizontally padded grid">
       <div class="four wide column">
-        <form id="resources-form">
-            <input type="text" id="resources-input" class="controls"
-                   placeholder="Enter a resource keyword">
-        </form>
-        <input id="pac-input" class="controls" type="text"
-               placeholder="Enter a location">
-        <div id="list" class="ui middle aligned divided list">
+        <div class="ui icon input">
+          <i class = "search icon"></i>
+          <form id="resources-form">
+              <input type="text" id="resources-input" class="controls"
+                     placeholder="Enter a resource keyword">
+          </form>
         </div>
+        <div class="ui icon input">
+          <i class = "search icon"></i>
+          <input id="pac-input" class="controls" type="text"
+                 placeholder="Enter a location">
+        </div>
+        <div id="list" class="ui middle aligned divided list"></div>
       </div>
       <div class="twelve wide column">
         <div id="map"></div>
