@@ -8,3 +8,4 @@ from editable import *  # flake8: noqa
 from resource import * # flake8: noqa
 from suggestion import * # flake8: noqa
 from user import *  # flake8: noqa
+from rating import * # flake8: noqa

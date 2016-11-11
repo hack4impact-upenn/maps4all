@@ -167,3 +167,16 @@ class Resource(db.Model):
             print '(%s , %s)' % (resource.latitude, resource.longitude)
             print resource.text_descriptors
             print resource.option_descriptors
+
+    def get_avg_ratings():
+        ratings = Rating.query.filter_by(resource_id=self.id).all()
+        if not ratings:
+            return -1.0
+
+        total_sum = float(sum(r for r.rating in ratings))
+        return '%.1f' % total_sum / len(ratings)
+
+    def get_all_ratings():
+        ratings = Rating.query.filter_by(resource_id=self.id).all()
+        sorted_ratings = ratings.order_by(desc(Rating.submission_time))
+        return sorted_ratings
