@@ -69,3 +69,7 @@ def update_editor_contents():
     db.session.commit()
 
     return 'OK', 200
+
+@main.route('/resource-view')
+def resource():
+    return render_template('main/resource.html')
