@@ -7,8 +7,9 @@ from sqlalchemy.exc import IntegrityError
 
 from . import suggestion
 from .. import db
-from ..models import Resource, Suggestion
-from forms import SuggestionForm
+from ..models import Resource, Suggestion, Descriptor
+from forms import SuggestionContactForm, SuggestionBasicForm, SuggestionAdvancedForm
+from wtforms.fields import TextAreaField, SelectField
 
 
 @suggestion.route('/')
@@ -68,7 +69,8 @@ def delete(sugg_id):
 @suggestion.route('/<int:resource_id>',  methods=['GET', 'POST'])
 def suggest(resource_id):
     """Create a suggestion for a resource."""
-    form = SuggestionForm()
+    contact_form = SuggestionContactForm()
+    basic_form = SuggestionBasicForm()
     if resource_id is None:
         name = None
         resource = None
@@ -77,21 +79,32 @@ def suggest(resource_id):
         if resource is None:
             abort(404)
         name = resource.name
-    if form.validate_on_submit():
-        suggestion = Suggestion(
-            resource_id=resource_id,
-            suggestion_text=form.suggestion_text.data,
-            contact_name=form.contact_name.data,
-            contact_email=form.contact_email.data,
-            contact_phone_number=form.contact_phone_number.data,
-            submission_time=datetime.now(pytz.timezone('US/Eastern'))
-        )
-        db.session.add(suggestion)
-        try:
-            db.session.commit()
-            flash('Thanks for the suggestion!', 'success')
-            return redirect(url_for('main.index'))
-        except IntegrityError:
-            db.session.rollback()
-            flash('Database error occurred. Please try again.', 'error')
-    return render_template('suggestion/suggest.html', form=form, name=name)
+    descriptors = Descriptor.query.all()
+    for descriptor in descriptors:
+        if descriptor.values:
+            choices = [(str(i), v) for i, v in enumerate(descriptor.values)]
+            setattr(SuggestionAdvancedForm,
+                    descriptor.name,
+                    SelectField(choices=choices))
+        else:
+            setattr(SuggestionAdvancedForm, descriptor.name, TextAreaField())
+    advanced_form = SuggestionAdvancedForm()
+    # if form.validate_on_submit():
+    #     suggestion = Suggestion(
+    #         resource_id=resource_id,
+    #         suggestion_text=form.suggestion_text.data,
+    #         contact_name=form.contact_name.data,
+    #         contact_email=form.contact_email.data,
+    #         contact_phone_number=form.contact_phone_number.data,
+    #         submission_time=datetime.now(pytz.timezone('US/Eastern'))
+    #     )
+    #     db.session.add(suggestion)
+    #     try:
+    #         db.session.commit()
+    #         flash('Thanks for the suggestion!', 'success')
+    #         return redirect(url_for('main.index'))
+    #     except IntegrityError:
+    #         db.session.rollback()
+    #         flash('Database error occurred. Please try again.', 'error')
+    return render_template('suggestion/suggest.html', contact_form=contact_form, name=name, basic_form=basic_form,
+                            advanced_form=advanced_form)
