@@ -78,7 +78,7 @@ function initLocationSearch(map) {
 function initResourceSearch() {
   $('#resources-form').submit(function(e) {
     e.preventDefault();
-    var query = ('#resources-input').val();
+    var query = $('#resources-input').val();
     var endpoint = '/search-resources/'+query;
     if (query.length == 0) {
         endpoint = '/get-resources';
