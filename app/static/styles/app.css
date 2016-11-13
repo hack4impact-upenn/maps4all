@@ -10,8 +10,8 @@ nav {
 
 @media -sass-debug-info{filename{}line{font-family:\0000318}}
 nav .mobile.only.row .ui.vertical.menu {
-  margin-top: 40px;
   display: none;
+  margin-top: 40px;
 }
 
 @media -sass-debug-info{filename{}line{font-family:\0000325}}
@@ -46,7 +46,7 @@ table.selectable tr:hover {
   padding: 0;
 }
 
-@media -sass-debug-info{filename{}line{font-family:\0000319}}
+@media -sass-debug-info{filename{}line{font-family:\0000320}}
 #pac-input {
   background-color: #fff;
   font-family: Roboto;
@@ -55,7 +55,23 @@ table.selectable tr:hover {
   text-overflow: ellipsis;
 }
 
-@media -sass-debug-info{filename{}line{font-family:\0000327}}
+@media -sass-debug-info{filename{}line{font-family:\0000328}}
 #pac-input:focus {
   border-color: #4d90fe;
+}
+
+@media -sass-debug-info{filename{}line{font-family:\0000333}}
+#resources-form {
+  display: inline;
+  text-overflow: ellipsis;
+}
+
+@media -sass-debug-info{filename{}line{font-family:\0000338}}
+#resources-input {
+  background-color: #fff;
+  font-family: Roboto;
+  font-size: 15px;
+  font-weight: 300;
+  margin-top: 0px;
+  text-overflow: ellipsis;
 }
