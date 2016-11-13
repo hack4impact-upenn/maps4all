@@ -1,10 +1,26 @@
-{% import 'macros/page_macros.html' as page %}
 {% extends 'layouts/base.html' %}
+{% import 'macros/page_macros.html' as page %}
+{% import 'macros/form_macros.html' as f %}
 
 {% block content %}
     <div class="ui text container">
         <h1>Contact Us</h1>
         {{ page.render_inline_editor(editable_html_obj, current_user) }}
+        {% set flashes = {
+            'error': get_flashed_messages(category_filter=['form-error']),
+            'warning': get_flashed_messages(category_filter=['form-check-email']),
+            'info': get_flashed_messages(category_filter=['form-info']),
+            'success': get_flashed_messages(category_filter=['form-success'])
+        } %}
+        {{ f.begin_form(form, flashes) }}
+        {{ f.render_form_field(form.name) }}
+        {{ f.render_form_field(form.email) }}
+        {{ f.render_form_field(form.category) }}
+        {{ f.render_form_field(form.message) }}
+        {% for field in form | selectattr('type', 'equalto', 'SubmitField') %}
+            {{ f.render_form_field(field) }}
+        {% endfor %}
+        {{ f.end_form(form) }}
     </div>
 
     <script src="{{ url_for('static', filename='ckeditor/ckeditor.js') }}"></script>

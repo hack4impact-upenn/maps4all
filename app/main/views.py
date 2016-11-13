@@ -1,11 +1,14 @@
 import json
 
-from flask import render_template, request
+from flask import render_template, redirect, request
 from flask.ext.login import login_required
+from flask.ext.rq import get_queue
 
 from .. import db
 from ..models import EditableHTML, Resource
 from . import main
+from forms import ContactForm
+from ..email import send_email
 
 @main.route('/')
 def index():
@@ -44,11 +47,27 @@ def about():
                            editable_html_obj=editable_html_obj)
 
 
-@main.route('/contact')
+@main.route('/contact', methods=['GET', 'POST'])
 def contact():
     editable_html_obj = EditableHTML.get_editable_html('contact')
+    form = ContactForm()
+    contact_email = 'maps4all.team@gmail.com'
+    if form.validate_on_submit():
+        print('sending email')
+        get_queue().enqueue(
+            send_email,
+            to=contact_email,
+            subject=form.category.data,
+            template='email/contact',
+            name=form.name.data,
+            email=form.email.data,
+            message=form.message.data
+        )
+        return redirect(url_for('main.index'))
+
     return render_template('main/contact.html',
-                           editable_html_obj=editable_html_obj)
+                           editable_html_obj=editable_html_obj,
+                           form=form)
 
 
 @main.route('/update-editor-contents', methods=['POST'])
