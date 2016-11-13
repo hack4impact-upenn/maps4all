@@ -59,3 +59,15 @@ table.selectable tr:hover {
 #pac-input:focus {
   border-color: #4d90fe;
 }
+
+@media -sass-debug-info{filename{}line{font-family:\0000331}}
+.more-info {
+  color: blue;
+  cursor: pointer;
+  text-decoration: underline;
+}
+
+@media -sass-debug-info{filename{}line{font-family:\0000337}}
+.descriptor {
+  display: block;
+}
