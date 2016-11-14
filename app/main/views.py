@@ -4,7 +4,7 @@ from flask import render_template, request
 from flask.ext.login import login_required
 
 from .. import db
-from ..models import EditableHTML, Resource
+from ..models import EditableHTML, Resource, Rating
 from . import main
 
 @main.route('/')
@@ -70,6 +70,23 @@ def update_editor_contents():
 
     return 'OK', 200
 
-@main.route('/resource-view')
+@main.route('/resource-view', methods =['POST', 'GET'])
 def resource():
+    if request is None:
+        print "is none!"
+        return render_template('main/resource.html')
+    else:
+        '''print request'''
+        print "is not none??"
+        star_rating = request.json['rating']
+        comment = request.json['review']
+        if comment and star_rating:
+            rating = Rating(rating = star_rating,
+                            review = comment)
+            db.session.add(rating)
+            db.session.commit()
+        elif star_rating:
+            rating = Rating(rating = star_rating)
+            db.session.add(rating)
+            db.session.commit()
     return render_template('main/resource.html')

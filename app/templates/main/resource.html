@@ -48,6 +48,26 @@
     console.log(rating);
     var review = $('#review').val();
     console.log(review);
+    ratingRequest(rating, review)
   });
+
+  function ratingRequest(rating, review) {
+     var ratingReview = {
+        'rating': rating,
+        'review': review
+     };
+     $.ajax({
+         url: '/resource-view',
+         contentType: "application/json",
+         dataType: "json",
+         data: JSON.stringify(ratingReview, null, '\t'),
+         success: function(data) {
+                        console.log(data);
+                    },
+                    method: 'POST'
+                });
+            }
+  }
+
 </script>
 {% endblock %}
