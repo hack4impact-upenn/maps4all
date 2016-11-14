@@ -1,13 +1,13 @@
 import json
 
-from flask import render_template, redirect, request
+from flask import render_template, redirect, url_for, request
 from flask.ext.login import login_required
 from flask.ext.rq import get_queue
 
 from .. import db
-from ..models import EditableHTML, Resource
+from ..models import EditableHTML, Resource, ContactCategory
 from . import main
-from forms import ContactForm
+from forms import ContactForm, ContactCategoryForm
 from ..email import send_email
 
 @main.route('/')
@@ -53,9 +53,7 @@ def contact():
     form = ContactForm()
     contact_email = 'maps4all.team@gmail.com'
     if form.validate_on_submit():
-        print('sending email')
-        get_queue().enqueue(
-            send_email,
+        send_email(
             to=contact_email,
             subject=form.category.data,
             template='email/contact',
@@ -64,10 +62,15 @@ def contact():
             message=form.message.data
         )
         return redirect(url_for('main.index'))
-
+    category_form = ContactCategoryForm()
+    if category_form.validate_on_submit():
+        new_category = ContactCategory(name=category_form.name.data)
+        db.session.add(new_category)
+        db.session.commit()
     return render_template('main/contact.html',
                            editable_html_obj=editable_html_obj,
-                           form=form)
+                           form=form,
+                           category_form=category_form)
 
 
 @main.route('/update-editor-contents', methods=['POST'])
