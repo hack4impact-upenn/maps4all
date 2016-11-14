@@ -1,0 +1,39 @@
+{% extends 'layouts/base.html' %}
+
+{% block content %}
+    <div class="ui text container">
+        <h2 class="ui dividing header">Add Resource</h2>
+        <div class="ui text container">
+			<table class="ui unstackable celled table">
+		    	<thead>
+			        <tr>
+						<th>Timestamp</th>
+						<th>Resource Name</th>
+						<th>Resource Address</th>
+						<th>Suggestion</th>
+						<th>Contact Info</th>
+			        </tr>
+			  	</thead>
+	      		<tbody>
+					<tr>
+						<td>{{ suggestion.submission_time }}</td>
+						<td>{{ suggestion.resource_name }}</td>
+						<td>{{ suggestion.resource_address }}</td>
+						<td>{{ suggestion.suggestion_text }}</td>
+						<td>{{ suggestion.contact_name }}
+						  <br>
+						  {% if not suggestion.contact_email or suggestion.contact_email == '' %}
+						    {{ suggestion.contact_number }}
+						  {% else %}
+						    {{ suggestion.contact_email }}
+						    <br>
+						    {{ suggestion.contact_number }}
+						  {% endif %}
+						</td>
+	        		</tr>
+	      		</tbody>
+		    </table>
+  		</div>
+      {% include 'single_resource/resource_form.html' %}
+    </div>
+{% endblock %}

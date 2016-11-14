@@ -3,7 +3,7 @@ from wtforms.fields import SubmitField, TextField, StringField
 from wtforms.validators import Email, InputRequired, Length
 
 
-class SuggestionContactForm(Form):
+class SuggestionBasicForm(Form):
     contact_name = TextField(
         'Contact Name',
         validators=[InputRequired(), Length(1, 512)]
@@ -16,13 +16,11 @@ class SuggestionContactForm(Form):
         'Phone Number',
         validators=[InputRequired(), Length(1, 64)]
     )
-
-class SuggestionBasicForm(Form):
-    name = StringField('Name', validators=[
+    name = StringField('Resource Name', validators=[
         InputRequired(),
         Length(1, 512)
     ])
-    address = StringField('Address', validators=[
+    address = StringField('Resource Address', validators=[
         InputRequired(),
         Length(1, 512)
     ])
@@ -32,11 +30,23 @@ class SuggestionBasicForm(Form):
     submit = SubmitField('Submit')
 
 class SuggestionAdvancedForm(Form):
-    name = StringField('Name', validators=[
+    contact_name = TextField(
+        'Contact Name',
+        validators=[InputRequired(), Length(1, 512)]
+    )
+    contact_email = TextField(
+        'Email',
+        validators=[InputRequired(), Length(1, 512), Email()]
+    )
+    contact_phone_number = TextField(
+        'Phone Number',
+        validators=[InputRequired(), Length(1, 64)]
+    )
+    name = StringField('Resource Name', validators=[
         InputRequired(),
         Length(1, 512)
     ])
-    address = StringField('Address', validators=[
+    address = StringField('Resource Address', validators=[
         InputRequired(),
         Length(1, 512)
     ])

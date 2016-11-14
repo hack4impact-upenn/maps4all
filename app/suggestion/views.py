@@ -8,8 +8,10 @@ from sqlalchemy.exc import IntegrityError
 from . import suggestion
 from .. import db
 from ..models import Resource, Suggestion, Descriptor
-from forms import SuggestionContactForm, SuggestionBasicForm, SuggestionAdvancedForm
+from forms import SuggestionBasicForm, SuggestionAdvancedForm
 from wtforms.fields import TextAreaField, SelectField
+from ..single_resource.views import save_associations
+from ..single_resource.forms import SingleResourceForm
 
 
 @suggestion.route('/')
@@ -69,7 +71,6 @@ def delete(sugg_id):
 @suggestion.route('/<int:resource_id>',  methods=['GET', 'POST'])
 def suggest(resource_id):
     """Create a suggestion for a resource."""
-    contact_form = SuggestionContactForm()
     basic_form = SuggestionBasicForm()
     if resource_id is None:
         name = None
@@ -79,32 +80,63 @@ def suggest(resource_id):
         if resource is None:
             abort(404)
         name = resource.name
+    advanced_form = SuggestionAdvancedForm()
+    create_descriptor_form(advanced_form)
+    if basic_form.validate_on_submit():
+        suggestion = Suggestion(
+            resource_id=resource_id,
+            suggestion_text=basic_form.suggestion_text.data,
+            contact_name=basic_form.contact_name.data,
+            contact_email=basic_form.contact_email.data,
+            contact_phone_number=basic_form.contact_phone_number.data,
+            resource_name=basic_form.name.data,
+            resource_address=basic_form.address.data,
+            submission_time=datetime.now(pytz.timezone('US/Eastern'))
+        )
+        db.session.add(suggestion)
+        try:
+            db.session.commit()
+            flash('Thanks for the suggestion!', 'success')
+            return redirect(url_for('main.index'))
+        except IntegrityError:
+            db.session.rollback()
+            flash('Database error occurred. Please try again.', 'error')
+    return render_template('suggestion/suggest.html', name=name, basic_form=basic_form,
+                            advanced_form=advanced_form)
+
+
+@suggestion.route('/create/<int:sugg_id>', methods=['GET', 'POST'])
+@login_required
+def create(sugg_id):
+    suggestion = Suggestion.query.get(sugg_id)
+    if suggestion is None:
+        abort(404)
     descriptors = Descriptor.query.all()
     for descriptor in descriptors:
-        if descriptor.values:
+        if descriptor.values:  # Fields for option descriptors.
             choices = [(str(i), v) for i, v in enumerate(descriptor.values)]
-            setattr(SuggestionAdvancedForm,
+            setattr(SingleResourceForm,
                     descriptor.name,
                     SelectField(choices=choices))
-        else:
-            setattr(SuggestionAdvancedForm, descriptor.name, TextAreaField())
-    advanced_form = SuggestionAdvancedForm()
-    # if form.validate_on_submit():
-    #     suggestion = Suggestion(
-    #         resource_id=resource_id,
-    #         suggestion_text=form.suggestion_text.data,
-    #         contact_name=form.contact_name.data,
-    #         contact_email=form.contact_email.data,
-    #         contact_phone_number=form.contact_phone_number.data,
-    #         submission_time=datetime.now(pytz.timezone('US/Eastern'))
-    #     )
-    #     db.session.add(suggestion)
-    #     try:
-    #         db.session.commit()
-    #         flash('Thanks for the suggestion!', 'success')
-    #         return redirect(url_for('main.index'))
-    #     except IntegrityError:
-    #         db.session.rollback()
-    #         flash('Database error occurred. Please try again.', 'error')
-    return render_template('suggestion/suggest.html', contact_form=contact_form, name=name, basic_form=basic_form,
-                            advanced_form=advanced_form)
+        else:  # Fields for text descriptors
+            setattr(SingleResourceForm, descriptor.name, TextAreaField())
+    form = SingleResourceForm()
+    if form.validate_on_submit():
+        new_resource = Resource(name=form.name.data,
+                                address=form.address.data,
+                                latitude=form.latitude.data,
+                                longitude=form.longitude.data)
+        db.session.add(new_resource)
+        save_associations(resource=new_resource,
+                          form=form,
+                          descriptors=descriptors,
+                          resource_existed=False)
+        try:
+            db.session.commit()
+            flash('Resource added', 'form-success')
+            return redirect(url_for('suggestion.index'))
+        except IntegrityError:
+            db.session.rollback()
+            flash('Error: failed to save resource. Please try again.',
+                  'form-error')
+    return render_template('suggestion/create.html', form=form, suggestion=suggestion)
