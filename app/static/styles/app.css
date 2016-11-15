@@ -10,8 +10,8 @@ nav {
 
 @media -sass-debug-info{filename{}line{font-family:\0000318}}
 nav .mobile.only.row .ui.vertical.menu {
-  margin-top: 40px;
   display: none;
+  margin-top: 40px;
 }
 
 @media -sass-debug-info{filename{}line{font-family:\0000325}}
@@ -47,6 +47,7 @@ table.selectable tr:hover {
   padding: 0;
 }
 
+<<<<<<< HEAD
 @media -sass-debug-info{filename{}line{font-family:\0000323}}
 #search {
   margin: 10px;
@@ -54,6 +55,10 @@ table.selectable tr:hover {
 
 @media -sass-debug-info{filename{}line{font-family:\0000327}}
 #pac-input, #resources-input {
+=======
+@media -sass-debug-info{filename{}line{font-family:\0000320}}
+#pac-input {
+>>>>>>> c8188d2c155ecbfc2802cae3ff85e61e36638ee8
   background-color: #fff;
   font-family: Roboto;
   font-size: 15px;
@@ -62,6 +67,7 @@ table.selectable tr:hover {
   float: left;
 }
 
+<<<<<<< HEAD
 @media -sass-debug-info{filename{}line{font-family:\0000336}}
 #pac-input:focus, #resources-input:focus {
   border-color: #2C9FA3;
@@ -100,4 +106,25 @@ table.selectable tr:hover {
 @media -sass-debug-info{filename{}line{font-family:\0000366}}
 .checkbox-option {
   margin-right: 5px;
+=======
+@media -sass-debug-info{filename{}line{font-family:\0000328}}
+#pac-input:focus {
+  border-color: #4d90fe;
+>>>>>>> c8188d2c155ecbfc2802cae3ff85e61e36638ee8
+}
+
+@media -sass-debug-info{filename{}line{font-family:\0000333}}
+#resources-form {
+  display: inline;
+  text-overflow: ellipsis;
+}
+
+@media -sass-debug-info{filename{}line{font-family:\0000338}}
+#resources-input {
+  background-color: #fff;
+  font-family: Roboto;
+  font-size: 15px;
+  font-weight: 300;
+  margin-top: 0px;
+  text-overflow: ellipsis;
 }

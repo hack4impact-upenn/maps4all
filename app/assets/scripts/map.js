@@ -174,14 +174,10 @@ function geocodeLatLng(geocoder, input_lat, input_lng) {
 }
 
 function populateListDiv() {
-  var markersToShow = [];
+  // Right now, all markers are shown. Filtering can be done here.
+  var markersToShow = markers;
   $("#list").empty();
-  var bounds = map.getBounds();
-  for (var i = 0; i < markers.length; i++) {
-    if (bounds.contains(markers[i].getPosition())) {
-      markersToShow.push(markers[i]);
-    }
-  }
+
   var list = document.getElementById('list');
   $.each(markersToShow, function(i, markerToShow) {
     var listElement = document.createElement('a');
