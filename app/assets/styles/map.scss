@@ -24,9 +24,8 @@ $font-choice: Roboto;
   margin: 10px;
 }
 
-#pac-input, #resources-input {
 // Location search
-#pac-input {
+#pac-input, #resources-input {
   background-color: #fff;
   font-family: $font-choice;
   font-size: 15px;
@@ -38,7 +37,6 @@ $font-choice: Roboto;
 #pac-input:focus, #resources-input:focus {
   border-color: $accent-color;
 }
-
 
 #resources-form, #location-search {
   margin: 0 0 5px 0;
