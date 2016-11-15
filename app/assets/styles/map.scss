@@ -16,6 +16,7 @@
   padding: 0;
 }
 
+// Location search
 #pac-input {
   background-color: #fff;
   font-family: Roboto;
@@ -36,4 +37,19 @@
 
 .descriptor {
   display: block;
+}
+
+// Resource name search
+#resources-form {
+  display: inline;
+  text-overflow: ellipsis;
+}
+
+#resources-input {
+  background-color: #fff;
+  font-family: Roboto;
+  font-size: 15px;
+  font-weight: 300;
+  margin-top: 0px;
+  text-overflow: ellipsis;
 }
