@@ -9,6 +9,11 @@
       function showhide(id) {
         var e = document.getElementById(id);
         e.style.display = (e.style.display == 'block') ? 'none' : 'block';
+        if (e.style.display == 'block') {
+          document.getElementById("advanced-filters-showhide-link").innerHTML = "Close Advanced Filters";
+        } else {
+          document.getElementById("advanced-filters-showhide-link").innerHTML = "Advanced Filters";
+        }
       }
     </script>
 
@@ -104,7 +109,7 @@
           </div>
 
           <div id="advanced-filters-showhide">
-            <a href="javascript:showhide('advanced-search')">
+            <a href="javascript:showhide('advanced-search')" id="advanced-filters-showhide-link">
               Advanced Filters
             </a>
           </div>
