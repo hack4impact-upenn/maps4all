@@ -1,14 +1,11 @@
 import json
 
-from flask import render_template, redirect, url_for, request
+from flask import render_template, url_for, request
 from flask.ext.login import login_required
-from flask.ext.rq import get_queue
 
 from .. import db
-from ..models import EditableHTML, Resource, ContactCategory
+from ..models import EditableHTML
 from . import main
-from forms import ContactForm, ContactCategoryForm
-from ..email import send_email
 
 @main.route('/')
 def index():
@@ -45,33 +42,6 @@ def about():
     editable_html_obj = EditableHTML.get_editable_html('about')
     return render_template('main/about.html',
                            editable_html_obj=editable_html_obj)
-
-
-@main.route('/contact', methods=['GET', 'POST'])
-def contact():
-    editable_html_obj = EditableHTML.get_editable_html('contact')
-    form = ContactForm()
-    contact_email = 'maps4all.team@gmail.com'
-    if form.validate_on_submit():
-        send_email(
-            to=contact_email,
-            subject=form.category.data,
-            template='email/contact',
-            name=form.name.data,
-            email=form.email.data,
-            message=form.message.data
-        )
-        return redirect(url_for('main.index'))
-    category_form = ContactCategoryForm()
-    if category_form.validate_on_submit():
-        new_category = ContactCategory(name=category_form.name.data)
-        db.session.add(new_category)
-        db.session.commit()
-    return render_template('main/contact.html',
-                           editable_html_obj=editable_html_obj,
-                           form=form,
-                           category_form=category_form)
-
 
 @main.route('/update-editor-contents', methods=['POST'])
 @login_required

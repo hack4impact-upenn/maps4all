@@ -35,6 +35,25 @@
                 {{ f.render_form_field(field) }}
             {% endfor %}
             {{ f.end_form(form) }}
+            <h3>Current Categories</h3>
+            <div style="overflow-x: scroll;">
+                <table class="ui searchable sortable unstackable selectable celled table">
+                    <thead>
+                        <tr>
+                            <th>Category</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for category in categories %}
+                            <tr>
+                                <td>
+                                    <a href="{{ url_for('contact.edit_category_name', category_id=category.id) }}">{{ category['name'] }}</a>
+                                </td>
+                            </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
         {% endif %}
     </div>
 
