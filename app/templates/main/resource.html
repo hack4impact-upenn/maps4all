@@ -1,5 +1,4 @@
 {% extends 'layouts/base.html' %}
-
 {% block content %}
 <div class="ui grid">
   <div class="resource block" style="margin: 20px">
@@ -57,16 +56,14 @@
         'review': review
      };
      $.ajax({
-         url: '/resource-view',
-         contentType: "application/json",
-         dataType: "json",
-         data: JSON.stringify(ratingReview, null, '\t'),
+         url: '/resource-view/',
+         data: JSON.stringify(ratingReview),
+         contentType: 'application/json',
+         dataType: 'json',
          success: function(data) {
-                        console.log(data);
-                    },
-                    method: 'POST'
-                });
-            }
+            console.log(ratingReview)},
+         method: 'POST'
+         });
   }
 
 </script>

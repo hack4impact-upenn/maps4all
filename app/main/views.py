@@ -1,6 +1,6 @@
 import json
 
-from flask import render_template, request
+from flask import render_template, request,jsonify
 from flask.ext.login import login_required
 
 from .. import db
@@ -70,23 +70,27 @@ def update_editor_contents():
 
     return 'OK', 200
 
-@main.route('/resource-view', methods =['POST', 'GET'])
+@main.route('/resource-view', methods =['POST'])
+def post_rating():
+    if request is not None:
+            print request.json
+            print request.form
+            print "im here!"
+            star_rating = request.form['rating']
+            comment = request.form['review']
+            if comment and star_rating:
+                rating = Rating(rating = star_rating,
+                                review = comment)
+                print rating
+                db.session.add(rating)
+                db.session.commit()
+            elif star_rating:
+                rating = Rating(rating = star_rating)
+                db.session.add(rating)
+                db.session.commit()
+    return jsonify(status='success')
+
+@main.route('/resource-view', methods =['GET'])
 def resource():
-    if request is None:
         print "is none!"
         return render_template('main/resource.html')
-    else:
-        '''print request'''
-        print "is not none??"
-        star_rating = request.json['rating']
-        comment = request.json['review']
-        if comment and star_rating:
-            rating = Rating(rating = star_rating,
-                            review = comment)
-            db.session.add(rating)
-            db.session.commit()
-        elif star_rating:
-            rating = Rating(rating = star_rating)
-            db.session.add(rating)
-            db.session.commit()
-    return render_template('main/resource.html')
