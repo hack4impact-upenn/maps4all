@@ -5,6 +5,13 @@
             async defer>
     </script>
 
+    <script type="text/javascript">
+      function showhide(id) {
+        var e = document.getElementById(id);
+        e.style.display = (e.style.display == 'block') ? 'none' : 'block';
+      }
+    </script>
+
     <meta name="viewport" content="initial-scale=1.0, user-scalable=no">
     <meta charset="utf-8">
     <meta name="csrf-token" content="{{ csrf_token() }}">
@@ -102,6 +109,7 @@
             </a>
           </div>
 
+        </div>
         <div class="ui divider"></div>
 
         <div id="list" class="ui middle aligned divided list"></div>
@@ -111,6 +119,5 @@
         <div id="map"></div>
       </div>
     </div>
-  </div>
 
 {% endblock %}
