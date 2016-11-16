@@ -3,6 +3,7 @@ import json
 from flask import render_template, request,jsonify
 from flask.ext.login import login_required
 
+from app import csrf
 from .. import db
 from ..models import EditableHTML, Resource, Rating
 from . import main
@@ -70,14 +71,16 @@ def update_editor_contents():
 
     return 'OK', 200
 
+@csrf.exempt
 @main.route('/resource-view', methods =['POST'])
 def post_rating():
+
     if request is not None:
             print request.json
             print request.form
             print "im here!"
-            star_rating = request.form['rating']
-            comment = request.form['review']
+            star_rating = request.json['rating']
+            comment = request.json['review']
             if comment and star_rating:
                 rating = Rating(rating = star_rating,
                                 review = comment)
@@ -92,5 +95,5 @@ def post_rating():
 
 @main.route('/resource-view', methods =['GET'])
 def resource():
-        print "is none!"
+
         return render_template('main/resource.html')
