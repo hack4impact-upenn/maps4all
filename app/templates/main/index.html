@@ -5,18 +5,6 @@
             async defer>
     </script>
 
-    <script type="text/javascript">
-      function showhide(id) {
-        var e = document.getElementById(id);
-        e.style.display = (e.style.display == 'block') ? 'none' : 'block';
-        if (e.style.display == 'block') {
-          document.getElementById("advanced-filters-showhide-link").innerHTML = "Close Advanced Filters";
-        } else {
-          document.getElementById("advanced-filters-showhide-link").innerHTML = "Advanced Filters";
-        }
-      }
-    </script>
-
     <meta name="viewport" content="initial-scale=1.0, user-scalable=no">
     <meta charset="utf-8">
     <meta name="csrf-token" content="{{ csrf_token() }}">
@@ -24,13 +12,13 @@
     <div id="map-list-grid" class="ui two column horizontally padded grid">
       <div class="four wide column">
         <div id="search">
-            <form id="resources-form">
-               <div class="ui fluid icon input">
-                <i class="search icon"></i>
+          <form id="resources-form">
+            <div class="ui fluid icon input">
+              <i class="search icon"></i>
                 <input type="text" id="resources-input" class="controls"
                        placeholder="Enter a resource keyword">
-                </div>
-            </form>
+            </div>
+          </form>
 
           <div class="ui fluid icon input" id="location-search">
             <i class="search icon"></i>
@@ -41,82 +29,87 @@
           <div id="default-search" class="option-group">
             <div class="descriptor-group">
               <h5>DESCRIPTOR #1</h5>
-                    <div class="ui checkbox field one wide column">
-                      <input type="checkbox" name="option" class="checkbox-option">
-                        <label>Option ekkeke</label>
-                    </div>
-                    <div class="ui checkbox field one wide column">
-                      <input type="checkbox" name="option">
-                        <label>Option</label>
-                    </div>
-                    <div class="ui checkbox field one wide column">
-                      <input type="checkbox" name="option">
-                        <label>Option</label>
-                    </div>
-
-                    <div class="ui checkbox field one wide column">
-                      <input type="checkbox" name="option">
-                        <label>Option</label>
-                    </div>
-
-                    <div class="ui checkbox field one wide column">
-                      <input type="checkbox" name="option">
-                        <label>Option</label>
-                    </div>
-                    <div class="ui checkbox field one wide column">
-                      <input type="checkbox" name="option">
-                        <label>Option</label>
-                    </div>
-                    <div class="ui checkbox field one wide column">
-                      <input type="checkbox" name="option">
-                        <label>Option</label>
-                    </div>
+              <div class="ui checkbox field one wide column">
+                <input type="checkbox" name="option" class="checkbox-option">
+                <label>Option ekkeke</label>
+              </div>
+              <div class="ui checkbox field one wide column">
+                <input type="checkbox" name="option">
+                <label>Option</label>
+              </div>
+              <div class="ui checkbox field one wide column">
+                <input type="checkbox" name="option">
+                <label>Option</label>
+              </div>
+              <div class="ui checkbox field one wide column">
+                <input type="checkbox" name="option">
+                <label>Option</label>
+              </div>
+              <div class="ui checkbox field one wide column">
+                <input type="checkbox" name="option">
+                <label>Option</label>
+              </div>
+              <div class="ui checkbox field one wide column">
+                <input type="checkbox" name="option">
+                <label>Option</label>
+              </div>
+              <div class="ui checkbox field one wide column">
+                <input type="checkbox" name="option">
+                <label>Option</label>
+              </div>
+              <div class="ui checkbox field one wide column">
+                <input type="checkbox" name="option">
+                <label>Option</label>
+              </div>
+              <div class="ui checkbox field one wide column">
+                <input type="checkbox" name="option">
+                <label>Option</label>
+              </div>
             </div>
           </div>
 
-          <div id="advanced-search" class="option-group-advanced" style="display:none;">
+          <div id="advanced-search" class="option-group-advanced">
             <div class="descriptor-group">
               <h5>DESCRIPTOR #2</h5>
-                <div class="ui checkbox field">
-                      <input type="checkbox" name="option">
-                        <label>Option</label>
-                    </div>
-                    <div class="ui checkbox field">
-                      <input type="checkbox" name="option">
-                        <label>Option</label>
-                    </div>
-                    <div class="ui checkbox field">
-                      <input type="checkbox" name="option">
-                        <label>Option</label>
-                    </div>
+              <div class="ui checkbox field one wide column">
+                <input type="checkbox" name="option">
+                <label>Option</label>
+              </div>
+              <div class="ui checkbox field one wide column">
+                <input type="checkbox" name="option">
+                <label>Option</label>
+              </div>
+              <div class="ui checkbox field one wide column">
+                <input type="checkbox" name="option">
+                <label>Option</label>
+              </div>
             </div>
 
             <div class="descriptor-group">
               <h5>DESCRIPTOR #3</h5>
-                <div class="ui checkbox field">
-                      <input type="checkbox" name="option">
-                        <label>Option</label>
-                    </div>
-                    <div class="ui checkbox field">
-                      <input type="checkbox" name="option">
-                        <label>Option</label>
-                    </div>
-                    <div class="ui checkbox field">
-                      <input type="checkbox" name="option">
-                        <label>Option</label>
-                    </div>
+              <div class="ui checkbox field one wide column">
+                <input type="checkbox" name="option">
+                <label>Option</label>
+              </div>
+              <div class="ui checkbox field one wide column">
+                <input type="checkbox" name="option">
+                <label>Option</label>
+              </div>
+              <div class="ui checkbox field one wide column">
+                <input type="checkbox" name="option">
+                <label>Option</label>
+              </div>
             </div>
           </div>
 
           <div id="advanced-filters-showhide">
-            <a href="javascript:showhide('advanced-search')" id="advanced-filters-showhide-link">
+            <a id="advanced-filters-showhide-link">
               Advanced Filters
             </a>
           </div>
-
         </div>
-        <div class="ui divider"></div>
 
+        <div class="ui divider"></div>
         <div id="list" class="ui middle aligned divided list"></div>
       </div>
 
@@ -124,5 +117,23 @@
         <div id="map"></div>
       </div>
     </div>
+
+      
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.1.1/jquery.min.js">
+      $(document).ready(function(){
+        $("#advanced-filters-showhide").click(function() {
+          $("#advanced-search").hide();
+        })
+      });
+      /*function showhide(id) {
+        var e = document.getElementById(id);
+        e.style.display = (e.style.display == 'block') ? 'none' : 'block';
+        if (e.style.display == 'block') {
+          document.getElementById("advanced-filters-showhide-link").innerHTML = "Close Advanced Filters";
+        } else {
+          document.getElementById("advanced-filters-showhide-link").innerHTML = "Advanced Filters";
+        }
+      }*/
+    </script>
 
 {% endblock %}

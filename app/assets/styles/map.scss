@@ -27,11 +27,11 @@ $font-choice: Roboto;
 // Location search
 #pac-input, #resources-input {
   background-color: #fff;
+  float: left;
   font-family: $font-choice;
   font-size: 15px;
   font-weight: 300;
   text-overflow: ellipsis;
-  float: left;
 }
 
 #pac-input:focus, #resources-input:focus {
@@ -43,12 +43,12 @@ $font-choice: Roboto;
 }
 
 .descriptor-group {
-  margin: 3px;
   font-family: $font-choice;
+  margin: 3px;
 
   h5 {
-    margin: 0 0 5px 0;
     font-family: $font-choice;
+    margin: 0 0 5px 0;
   }
 }
 
@@ -58,10 +58,10 @@ $font-choice: Roboto;
 }
 
 #advanced-filters-showhide a:link {
-  text-decoration: none!important;
+  color: $accent-color;
   font-family: $font-choice;
   font-weight: 100;
-  color: $accent-color!important;
+  text-decoration: none;
 }
 
 .checkbox-option {
