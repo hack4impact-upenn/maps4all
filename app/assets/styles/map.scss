@@ -57,8 +57,13 @@ $font-choice: Roboto;
   margin-top: 10px;
 }
 
-#advanced-filters-showhide a:link {
+.option-group-advanced {
+  display: none; // hide initially
+}
+
+#advanced-filters-showhide {
   color: $accent-color;
+  cursor:pointer;
   font-family: $font-choice;
   font-weight: 100;
   text-decoration: none;

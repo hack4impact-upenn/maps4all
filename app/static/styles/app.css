@@ -90,25 +90,31 @@ table.selectable tr:hover {
 }
 
 @media -sass-debug-info{filename{}line{font-family:\0000360}}
-#advanced-filters-showhide a:link {
+.option-group-advanced {
+  display: none;
+}
+
+@media -sass-debug-info{filename{}line{font-family:\0000364}}
+#advanced-filters-showhide {
   color: #2C9FA3;
+  cursor: pointer;
   font-family: Roboto;
   font-weight: 100;
   text-decoration: none;
 }
 
-@media -sass-debug-info{filename{}line{font-family:\0000367}}
+@media -sass-debug-info{filename{}line{font-family:\0000372}}
 .checkbox-option {
   margin-right: 5px;
 }
 
-@media -sass-debug-info{filename{}line{font-family:\0000372}}
+@media -sass-debug-info{filename{}line{font-family:\0000377}}
 #resources-form {
   display: inline;
   text-overflow: ellipsis;
 }
 
-@media -sass-debug-info{filename{}line{font-family:\0000377}}
+@media -sass-debug-info{filename{}line{font-family:\0000382}}
 #resources-input {
   background-color: #fff;
   font-family: Roboto;
