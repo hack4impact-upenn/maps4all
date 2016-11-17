@@ -57,12 +57,27 @@ $font-choice: Roboto;
 }
 
 #advanced-filters-showhide a:link {
-  text-decoration: none!important;
+  text-decoration: none;
   font-family: $font-choice;
   font-weight: 100;
-  color: $accent-color!important;
+  color: $accent-color;
 }
 
 .checkbox-option {
   margin-right: 5px;
+}
+
+// Resource name search
+#resources-form {
+  display: inline;
+  text-overflow: ellipsis;
+}
+
+#resources-input {
+  background-color: #fff;
+  font-family: Roboto;
+  font-size: 15px;
+  font-weight: 300;
+  margin-top: 0px;
+  text-overflow: ellipsis;
 }

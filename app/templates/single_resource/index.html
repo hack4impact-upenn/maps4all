@@ -1,8 +1,8 @@
 {% extends 'layouts/base.html' %}
 
-{# {% block javascript %}
-    {% single_resource 'views_js' %}<script type="text/javascript" src="{{ ASSET_URL }}"></script>{% endassets %}
-{% endblock %} #}
+{% block javascript %}
+    {% assets 'resources_js' %}<script type="text/javascript" src="{{ ASSET_URL }}"></script>{% endassets %}
+{% endblock %}
 
 {% block content %}
     <div class="ui stackable grid container">
@@ -14,10 +14,21 @@
                 </div>
             </h2>
 
+        <!--<div class="ui menu">
+            <div class="ui search item">
+                <div class="ui transparent icon input">
+                    <form id="search-resources">
+                        <input id="search-resources-text" type="text" value="{{ query|default('') }}" placeholder="Search resources...">
+                        <i class="search icon"></i>
+                    </form>
+                </div>
+            </div>
+        </div>-->
+            <!--waiting for functionality-->
             <div class="ui right action left icon input menu">
                 <i class="search icon"></i>
                     <input type="text" placeholder="Search resources">
-                    <div class="ui basic floating dropdown button">
+                    <!--<div class="ui basic floating dropdown button">
                         <div class="text">All Resources</div>
                         <i class="dropdown icon"></i>
                         <div class="menu">
@@ -26,7 +37,7 @@
                             <div class="item" data-value="Latitude">Latitude</div>
                             <div class="item" data-value="Longitude">Longitude</div>
                         </div>
-                    </div>
+                    </div>-->
             </div>
 
             {# Use overflow-x: scroll so that mobile views don't freak out

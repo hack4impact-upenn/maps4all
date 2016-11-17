@@ -17,7 +17,7 @@
             <div class="ui right action left icon input menu">
                 <i class="search icon"></i>
                     <input id="search-descriptors" type="text" placeholder="Search descriptors">
-                    <div class="ui basic floating dropdown button">
+                    <!--<div class="ui basic floating dropdown button">
                         <div class="text">All Descriptors</div>
                         <i class="dropdown icon"></i>
                         <div class="menu">
@@ -25,13 +25,13 @@
                             <div class="item" data-value="Text">Type</div>
                             <div class="item" data-value="Option">Values</div>
                         </div>
-                    </div>
+                    </div>-->
             </div>
 
             {# Use overflow-x: scroll so that mobile views don't freak out
              # when the table is too wide #}
             <div style="overflow-x: scroll;">
-                <table class="ui sortable unstackable selectable celled striped table">
+                <table class="ui searchable sortable unstackable selectable celled striped table">
                     <thead>
                         <tr>
                             <th class="six wide sorted ascending">Name</th>
