@@ -2,12 +2,12 @@
 {% block content %}
   <div class="resource block" style="margin: 20px">
     <h1 class="ui header">Resource Name</h1>
-    <div class="ui horizontal label">Category</div>
+    <div class="ui horizontal label">Category</div><div class="ui star rating" id="rating-avg"></div>
       Address 2304 Irving Street Philadelphia, PA <!-- This does not have an element put this in a div class that lines up with categories-->
     <h5 class="ui header">Info</h5>
     <div class="text descriptor"><b>descriptor text</b> text text</div>
     <div class="option descriptor"><b> option texts</b>
-      <div class="ui labels"> 
+      <div class="ui labels">
         <div class="ui horizontal label"> Option 1 </div>
         <div class="ui horizontal label"> Option 2 </div>
       </div>
@@ -45,6 +45,15 @@
           $('#submit').removeClass('disabled').addClass('active');
       }
     });
+
+  $('#rating-avg')
+    .rating({
+      initialRating: 3, // replace with resource avg rating
+      maxRating: 5
+    });
+    
+  $('#rating-avg')
+    .rating('disable');
 
   $('#submit').click(function() {
     var rating = $('.ui.rating').rating('get rating');
