@@ -67,53 +67,48 @@ table.selectable tr:hover {
   border-color: #2C9FA3;
 }
 
-@media -sass-debug-info{filename{}line{font-family:\0000340}}
+@media -sass-debug-info{filename{}line{font-family:\0000341}}
 #resources-form, #location-search {
   margin: 0 0 5px 0;
 }
 
-@media -sass-debug-info{filename{}line{font-family:\0000344}}
+@media -sass-debug-info{filename{}line{font-family:\0000345}}
 .descriptor-group {
   margin: 3px;
   font-family: Roboto;
 }
-@media -sass-debug-info{filename{}line{font-family:\0000348}}
+@media -sass-debug-info{filename{}line{font-family:\0000349}}
 .descriptor-group h5 {
   margin: 0 0 5px 0;
   font-family: Roboto;
 }
 
-@media -sass-debug-info{filename{}line{font-family:\0000354}}
+@media -sass-debug-info{filename{}line{font-family:\0000355}}
 .option-group, .option-group-advanced {
   margin-bottom: 10px;
   margin-top: 10px;
 }
 
-@media -sass-debug-info{filename{}line{font-family:\0000359}}
+@media -sass-debug-info{filename{}line{font-family:\0000360}}
 #advanced-filters-showhide a:link {
-  text-decoration: none !important;
+  text-decoration: none;
   font-family: Roboto;
   font-weight: 100;
-  color: #2C9FA3 !important;
+  color: #2C9FA3;
 }
 
-@media -sass-debug-info{filename{}line{font-family:\0000366}}
+@media -sass-debug-info{filename{}line{font-family:\0000367}}
 .checkbox-option {
   margin-right: 5px;
 }
 
-@media -sass-debug-info{filename{}line{font-family:\0000328}}
-#pac-input:focus {
-  border-color: #4d90fe;
-}
-
-@media -sass-debug-info{filename{}line{font-family:\0000333}}
+@media -sass-debug-info{filename{}line{font-family:\0000371}}
 #resources-form {
   display: inline;
   text-overflow: ellipsis;
 }
 
-@media -sass-debug-info{filename{}line{font-family:\0000338}}
+@media -sass-debug-info{filename{}line{font-family:\0000376}}
 #resources-input {
   background-color: #fff;
   font-family: Roboto;
