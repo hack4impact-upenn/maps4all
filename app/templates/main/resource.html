@@ -1,7 +1,5 @@
 {% extends 'layouts/base.html' %}
-
 {% block content %}
-<div class="ui grid">
   <div class="resource block" style="margin: 20px">
     <h1 class="ui header">Resource Name</h1>
     <div class="ui horizontal label">Category</div>
@@ -30,6 +28,11 @@
       </div>
     </div>
   </div>
+    <div class="successMessage" style="display:none">
+        <div class="ui positive message">
+          Thanks, your rating has been posted!
+        </div>
+    </div>
 </div>
 
 <script type="text/javascript">
@@ -48,6 +51,26 @@
     console.log(rating);
     var review = $('#review').val();
     console.log(review);
+    ratingRequest(rating, review);
+    $(".rating").hide();
+    $(".successMessage").show();
   });
+
+  function ratingRequest(rating, review) {
+     var ratingReview = {
+        'rating': rating,
+        'review': review
+     };
+     $.ajax({
+         url: '/resource-view',
+         data: JSON.stringify(ratingReview),
+         contentType: 'application/json',
+         dataType: 'json',
+         success: function(data) {
+            console.log(ratingReview)},
+         method: 'POST'
+         });
+  }
+
 </script>
 {% endblock %}
