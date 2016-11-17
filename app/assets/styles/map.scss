@@ -25,6 +25,13 @@ $font-choice: Roboto;
 }
 
 #pac-input, #resources-input {
+<<<<<<< HEAD
+=======
+// Location search
+#pac-input {
+>>>>>>> c8188d2c155ecbfc2802cae3ff85e61e36638ee8
+=======
+>>>>>>> a03d9ec90c5478abd0b72c52a99d49d23504bb76
   background-color: #fff;
   font-family: $font-choice;
   font-size: 15px;
@@ -36,6 +43,7 @@ $font-choice: Roboto;
 #pac-input:focus, #resources-input:focus {
   border-color: $accent-color;
 }
+
 
 #resources-form, #location-search {
   margin: 0 0 5px 0;
@@ -66,7 +74,6 @@ $font-choice: Roboto;
 .checkbox-option {
   margin-right: 5px;
 }
-
 // Resource name search
 #resources-form {
   display: inline;
@@ -80,4 +87,5 @@ $font-choice: Roboto;
   font-weight: 300;
   margin-top: 0px;
   text-overflow: ellipsis;
+
 }
