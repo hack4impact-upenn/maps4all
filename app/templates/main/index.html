@@ -4,6 +4,8 @@
     <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyAhkKJDnPxq0_xvF6pLAFcKfVAL6GbARBs&libraries=places&callback=initMap"
             async defer>
     </script>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.1.1/jquery.min.js">
+    </script>
 
     <meta name="viewport" content="initial-scale=1.0, user-scalable=no">
     <meta charset="utf-8">
@@ -15,7 +17,7 @@
           <form id="resources-form">
             <div class="ui fluid icon input">
               <i class="search icon"></i>
-                <input type="text" id="resources-input" class="controls"
+              <input type="text" id="resources-input" class="controls"
                        placeholder="Enter a resource keyword">
             </div>
           </form>
@@ -116,12 +118,10 @@
       </div>
     </div>
 
-    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.1.1/jquery.min.js">
-    </script>
     <script>
       $(document).ready(function(){
         $('#advanced-filters-showhide').click(function() {
-          if($(this).text() === 'Close Advanced Filters'){
+          if ($(this).text() === 'Close Advanced Filters') {
             $(this).text('Show Advanced Filters');
           } else {
             $(this).text('Close Advanced Filters');
