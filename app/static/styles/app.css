@@ -52,14 +52,14 @@ table.selectable tr:hover {
   margin: 10px;
 }
 
-@media -sass-debug-info{filename{}line{font-family:\0000327}}
+@media -sass-debug-info{filename{}line{font-family:\0000328}}
 #pac-input, #resources-input {
   background-color: #fff;
+  float: left;
   font-family: Roboto;
   font-size: 15px;
   font-weight: 300;
   text-overflow: ellipsis;
-  float: left;
 }
 
 @media -sass-debug-info{filename{}line{font-family:\0000336}}
@@ -74,13 +74,13 @@ table.selectable tr:hover {
 
 @media -sass-debug-info{filename{}line{font-family:\0000345}}
 .descriptor-group {
-  margin: 3px;
   font-family: Roboto;
+  margin: 3px;
 }
 @media -sass-debug-info{filename{}line{font-family:\0000349}}
 .descriptor-group h5 {
-  margin: 0 0 5px 0;
   font-family: Roboto;
+  margin: 0 0 5px 0;
 }
 
 @media -sass-debug-info{filename{}line{font-family:\0000355}}
@@ -89,15 +89,21 @@ table.selectable tr:hover {
   margin-top: 10px;
 }
 
-@media -sass-debug-info{filename{}line{font-family:\0000360}}
-#advanced-filters-showhide a:link {
-  text-decoration: none;
-  font-family: Roboto;
-  font-weight: 100;
-  color: #2C9FA3;
+@media -sass-debug-info{filename{}line{font-family:\0000367}}
+.option-group-advanced {
+  display: none;
 }
 
-@media -sass-debug-info{filename{}line{font-family:\0000367}}
+@media -sass-debug-info{filename{}line{font-family:\0000364}}
+#advanced-filters-showhide {
+  color: #2C9FA3;
+  cursor: pointer;
+  font-family: Roboto;
+  font-weight: 100;
+  text-decoration: none;
+}
+
+@media -sass-debug-info{filename{}line{font-family:\0000372}}
 .checkbox-option {
   margin-right: 5px;
 }

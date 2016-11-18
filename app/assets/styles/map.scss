@@ -24,31 +24,31 @@ $font-choice: Roboto;
   margin: 10px;
 }
 
+// Location search
 #pac-input, #resources-input {
   background-color: #fff;
+  float: left;
   font-family: $font-choice;
   font-size: 15px;
   font-weight: 300;
   text-overflow: ellipsis;
-  float: left;
 }
 
 #pac-input:focus, #resources-input:focus {
   border-color: $accent-color;
 }
 
-
 #resources-form, #location-search {
   margin: 0 0 5px 0;
 }
 
 .descriptor-group {
-  margin: 3px;
   font-family: $font-choice;
+  margin: 3px;
 
   h5 {
-    margin: 0 0 5px 0;
     font-family: $font-choice;
+    margin: 0 0 5px 0;
   }
 }
 
@@ -57,16 +57,22 @@ $font-choice: Roboto;
   margin-top: 10px;
 }
 
-#advanced-filters-showhide a:link {
-  text-decoration: none;
+.option-group-advanced {
+  display: none; // hide initially
+}
+
+#advanced-filters-showhide {
+  color: $accent-color;
+  cursor: pointer;
   font-family: $font-choice;
   font-weight: 100;
-  color: $accent-color;
+  text-decoration: none;
 }
 
 .checkbox-option {
   margin-right: 5px;
 }
+
 // Resource name search
 #resources-form {
   display: inline;
@@ -80,5 +86,4 @@ $font-choice: Roboto;
   font-weight: 300;
   margin-top: 0px;
   text-overflow: ellipsis;
-
 }
