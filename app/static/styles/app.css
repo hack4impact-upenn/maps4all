@@ -24,61 +24,109 @@ table.selectable tr:hover {
   cursor: pointer !important;
 }
 
-@media -sass-debug-info{filename{}line{font-family:\000031}}
+@media -sass-debug-info{filename{}line{font-family:\000034}}
 #map {
   height: 100%;
   width: 100%;
 }
 
-@media -sass-debug-info{filename{}line{font-family:\000036}}
+@media -sass-debug-info{filename{}line{font-family:\000039}}
 #list {
   height: 95%;
   overflow-y: auto;
+  padding: 10px;
 }
 
-@media -sass-debug-info{filename{}line{font-family:\0000311}}
+@media -sass-debug-info{filename{}line{font-family:\0000315}}
 #map-list-grid {
   height: 95%;
 }
 
-@media -sass-debug-info{filename{}line{font-family:\0000315}}
+@media -sass-debug-info{filename{}line{font-family:\0000319}}
 #map-list-grid.column {
   padding: 0;
 }
 
-@media -sass-debug-info{filename{}line{font-family:\0000320}}
-#pac-input {
+@media -sass-debug-info{filename{}line{font-family:\0000323}}
+#search {
+  margin: 10px;
+}
+
+@media -sass-debug-info{filename{}line{font-family:\0000328}}
+#pac-input, #resources-input {
   background-color: #fff;
+  float: left;
   font-family: Roboto;
   font-size: 15px;
   font-weight: 300;
   text-overflow: ellipsis;
 }
 
-@media -sass-debug-info{filename{}line{font-family:\0000328}}
-#pac-input:focus {
-  border-color: #4d90fe;
+@media -sass-debug-info{filename{}line{font-family:\0000337}}
+#pac-input:focus, #resources-input:focus {
+  border-color: #2C9FA3;
 }
 
-@media -sass-debug-info{filename{}line{font-family:\0000332}}
+@media -sass-debug-info{filename{}line{font-family:\0000341}}
+#resources-form, #location-search {
+  margin: 0 0 5px 0;
+}
+
+@media -sass-debug-info{filename{}line{font-family:\0000345}}
+.descriptor-group {
+  font-family: Roboto;
+  margin: 3px;
+}
+@media -sass-debug-info{filename{}line{font-family:\0000349}}
+.descriptor-group h5 {
+  font-family: Roboto;
+  margin: 0 0 5px 0;
+}
+
+@media -sass-debug-info{filename{}line{font-family:\0000355}}
+.option-group, .option-group-advanced {
+  margin-bottom: 10px;
+  margin-top: 10px;
+}
+
+@media -sass-debug-info{filename{}line{font-family:\0000360}}
+.option-group-advanced {
+  display: none;
+}
+
+@media -sass-debug-info{filename{}line{font-family:\0000364}}
+#advanced-filters-showhide {
+  color: #2C9FA3;
+  cursor: pointer;
+  font-family: Roboto;
+  font-weight: 100;
+  text-decoration: none;
+}
+
+@media -sass-debug-info{filename{}line{font-family:\0000372}}
+.checkbox-option {
+  margin-right: 5px;
+}
+
+@media -sass-debug-info{filename{}line{font-family:\0000376}}
 .more-info {
   color: blue;
   cursor: pointer;
   text-decoration: underline;
 }
 
-@media -sass-debug-info{filename{}line{font-family:\0000338}}
+@media -sass-debug-info{filename{}line{font-family:\0000382}}
 .descriptor {
   display: block;
 }
 
-@media -sass-debug-info{filename{}line{font-family:\0000343}}
+@media -sass-debug-info{filename{}line{font-family:\0000387}}
 #resources-form {
   display: inline;
   text-overflow: ellipsis;
 }
 
-@media -sass-debug-info{filename{}line{font-family:\0000348}}
+@media -sass-debug-info{filename{}line{font-family:\0000392}}
 #resources-input {
   background-color: #fff;
   font-family: Roboto;

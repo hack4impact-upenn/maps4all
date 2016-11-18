@@ -7,6 +7,10 @@ var map;
 var markers = [];
 var infowindow;
 
+/*
+ * Initializes the map, the corresponding list of resources and search
+ * functionality on the resources
+ */
 function initMap() {
   map = new google.maps.Map(document.getElementById('map'), {
     center: {lat: 39.949, lng: -75.181}, // TODO(#52): Do not hardcode this.
@@ -27,6 +31,11 @@ function initMap() {
   });
 }
 
+/*
+ * Initialize searching on the map by location input.
+ * When entering a new location, re-center and zoom the map onto that location
+ * and create a custom location marker.
+ */
 function initLocationSearch(map) {
   var input = document.getElementById('pac-input');
   var autocomplete = new google.maps.places.Autocomplete(input);
@@ -54,11 +63,9 @@ function initLocationSearch(map) {
       ].join(' ');
     }
 
-    // create custom location marker
     var marker = new google.maps.Marker({
       map: map,
       position: place.geometry.location,
-      anchorPoint: new google.maps.Point(0, -29),
       icon: {
         path: google.maps.SymbolPath.CIRCLE,
         scale: 8,
@@ -75,6 +82,9 @@ function initLocationSearch(map) {
   });
 }
 
+/*
+ * Initialize searching on the map by resource name input
+ */
 function initResourceSearch() {
   $('#resources-form').submit(function(e) {
     e.preventDefault();
@@ -84,7 +94,7 @@ function initResourceSearch() {
         endpoint = '/get-resources';
     }
     $.get(endpoint).done(function(resourcesString) {
-      for (var i=0; i < markers.length; i++) {
+      for (var i = 0; i < markers.length; i++) {
         markers[i].setMap(null);
       }
       markers = [];
@@ -97,6 +107,10 @@ function initResourceSearch() {
   });
 }
 
+/*
+ * Create markers for each resource and add them to the map
+ * Expand the map to show all resources
+ */
 function populateMarkers(resources) {
   for (var i = 0; i < resources.length; i++) {
     create_marker(resources[i]);
@@ -108,11 +122,14 @@ function populateMarkers(resources) {
     bounds.extend(markers[i].getPosition());
   }
 
-  // show all markers on the map
   map.fitBounds(bounds);
   map.setCenter(bounds.getCenter());
 }
 
+/*
+ * Create a marker for each resource and handle clicking on a marker.
+ * Handle clicking on more information for a resource
+ */
 function create_marker(resource){
   var markerToAdd = new google.maps.Marker({
     map: map
@@ -194,6 +211,9 @@ function create_marker(resource){
   );
 }
 
+/*
+ * Show a corresponding list of resources adjacent to the map
+ */
 function populateListDiv() {
   var markersToShow = markers;
   $("#list").empty();
