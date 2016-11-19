@@ -73,6 +73,16 @@ $font-choice: Roboto;
   margin-right: 5px;
 }
 
+.more-info {
+  color: blue;
+  cursor: pointer;
+  text-decoration: underline;
+}
+
+.descriptor {
+  display: block;
+}
+
 // Resource name search
 #resources-form {
   display: inline;
