@@ -18,7 +18,7 @@
         <h1 class="ui header">Submit a Review</h1>
         <div class="field">
           <label>Rating (Required)</label>
-          <div class="ui star rating"></div>
+          <div class="ui star rating" id="rating-input"></div>
         </div>
           <div class="field">
             <label>Review (Optional)</label>
@@ -56,7 +56,7 @@
     .rating('disable');
 
   $('#submit').click(function() {
-    var rating = $('.ui.rating').rating('get rating');
+    var rating = $('#rating-input').rating('get rating');
     console.log(rating);
     var review = $('#review').val();
     console.log(review);
@@ -66,9 +66,11 @@
   });
 
   function ratingRequest(rating, review) {
+     var time = new Date()
      var ratingReview = {
         'rating': rating,
-        'review': review
+        'review': review,
+        'time': time
      };
      $.ajax({
          url: '/resource-view',

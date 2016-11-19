@@ -7,6 +7,7 @@ from app import csrf
 from .. import db
 from ..models import EditableHTML, Resource, Rating
 from . import main
+from datetime import datetime
 
 @main.route('/')
 def index():
@@ -79,12 +80,15 @@ def post_rating():
             print request.json
             print request.form
             print "im here!"
+            time = datetime.now()
             star_rating = request.json['rating']
             comment = request.json['review']
             if comment and star_rating:
-                rating = Rating(rating = star_rating,
+                rating = Rating(submission_time = time,
+                                rating = star_rating,
                                 review = comment)
                 print rating
+                print time
                 db.session.add(rating)
                 db.session.commit()
             elif star_rating:

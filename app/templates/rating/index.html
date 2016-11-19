@@ -1,0 +1,71 @@
+{% extends 'layouts/base.html' %}
+
+{% block javascript %}
+    {% assets 'resources_js' %}<script type="text/javascript" src="{{ ASSET_URL }}"></script>{% endassets %}
+{% endblock %}
+
+{% block content %}
+    <div class="ui stackable grid container">
+        <div class="sixteen wide tablet twelve wide computer centered column">
+            <h2 class="centered ui header">
+                Ratings and Reviews
+                <div class="sub header">
+                    View current ratings and reviews
+                </div>
+            </h2>
+
+
+        <!--<div class="ui menu">
+            <div class="ui search item">
+                <div class="ui transparent icon input">
+                    <form id="search-resources">
+                        <input id="search-resources-text" type="text" value="{{ query|default('') }}" placeholder="Search resources...">
+                        <i class="search icon"></i>
+                    </form>
+                </div>
+            </div>
+        </div>-->
+
+            <!--waiting for functionality-->
+            <!--<div class="ui right action left icon input menu">
+                <i class="search icon"></i>
+                    <input type="text" placeholder="Search resources">
+                    <div class="ui basic floating dropdown button">
+                        <div class="text">All Resources</div>
+                        <i class="dropdown icon"></i>
+                        <div class="menu">
+                            <div class="item" data-value="All Resources">All Resources</div>
+                            <div class="item" data-value="Address">Address</div>
+                            <div class="item" data-value="Latitude">Latitude</div>
+                            <div class="item" data-value="Longitude">Longitude</div>
+                        </div>
+                    </div>
+            </div>-->
+
+            {# Use overflow-x: scroll so that mobile views don't freak out
+             # when the table is too wide #}
+            <div style="overflow-x: scroll;">
+                <table class="ui searchable sortable unstackable selectable celled striped table">
+                    <thead>
+                        <tr>
+                            <th class="three wide sorted ascending">Time Stamp</th>
+                            <th class="three wide sorted ascending">Resource Name</th>
+                            <th class="one wide sorted ascending">Rating</th>
+                            <th class="four wide sorted ascending">Review</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                    {% for rating in ratings %}
+                        <tr>
+                            <td>{{ rating['submission_time'] }}</td>
+                            <td>{{ rating['resource_name'] }}</td>
+                            <td>{{ rating['rating'] }}</td>
+                            <td>{{ rating['review'] }}</td>
+                        </tr>
+                    {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+{% endblock %}

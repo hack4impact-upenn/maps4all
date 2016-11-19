@@ -62,7 +62,7 @@ table.selectable tr:hover {
   text-overflow: ellipsis;
 }
 
-@media -sass-debug-info{filename{}line{font-family:\0000336}}
+@media -sass-debug-info{filename{}line{font-family:\0000337}}
 #pac-input:focus, #resources-input:focus {
   border-color: #2C9FA3;
 }
@@ -89,7 +89,7 @@ table.selectable tr:hover {
   margin-top: 10px;
 }
 
-@media -sass-debug-info{filename{}line{font-family:\0000367}}
+@media -sass-debug-info{filename{}line{font-family:\0000360}}
 .option-group-advanced {
   display: none;
 }
