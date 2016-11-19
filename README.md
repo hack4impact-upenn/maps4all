@@ -30,57 +30,75 @@ A Flask application template with the boilerplate code already done for you.
 
 ## Setting up
 
-1. Clone the repo
+##### Clone the repo
 
-    ```
-    $ git clone https://github.com/hack4impact/maps4all.git
-    $ cd maps4all
-    ```
+```
+$ git clone https://github.com/hack4impact/maps4all.git
+$ cd maps4all
+```
 
-2. Initialize a virtualenv
+##### Initialize a virtualenv
 
-    ```
-    $ pip install virtualenv
-    $ virtualenv env
-    $ source env/bin/activate
-    ```
-2.5 (If you're on a mac) Make sure xcode tools are installed
-    ```
-    $ xcode-select --install
-    ```
-    
-3. Install the dependencies
+```
+$ pip install virtualenv
+$ virtualenv env
+$ source env/bin/activate
+```
+(If you're on a mac) Make sure xcode tools are installed
+```
+$ xcode-select --install
+```
 
-    ```
-    $ pip install -r requirements/common.txt
-    $ pip install -r requirements/dev.txt
-    ```
+##### Install the dependencies
 
-4. Create the database
+```
+$ pip install -r requirements/common.txt
+$ pip install -r requirements/dev.txt
+```
 
-    ```
-    $ python manage.py recreate_db
-    ```
+##### Other dependencies for running locally
 
-5. Other setup (e.g. creating roles in database)
+You need to install [Foreman](https://ddollar.github.io/foreman/) and [Redis](http://redis.io/). Chances are, these commands will work:
 
-    ```
-    $ python manage.py setup_dev
-    ```
+```
+$ gem install foreman
+```
 
-6. [Optional] Add fake data to the database
+Mac (using [homebrew](http://brew.sh/)):
 
-    ```
-    $ python manage.py add_fake_data
-    ```
+```
+$ brew install redis
+```
+
+Linux:
+
+```
+$ sudo apt-get install redis-server
+```
+
+##### Create the database
+
+```
+$ python manage.py recreate_db
+```
+
+##### Other setup (e.g. creating roles in database)
+
+```
+$ python manage.py setup_dev
+```
+
+##### [Optional] Add fake data to the database
+
+```
+$ python manage.py add_fake_data
+```
 
 ## Running the app
 
 ```
 $ source env/bin/activate
-$ python manage.py runserver
- * Running on http://127.0.0.1:5000/ (Press CTRL+C to quit)
- * Restarting with stat
+$ foreman start -f Local
 ```
 
 ## Project Structure

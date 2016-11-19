@@ -10,6 +10,7 @@
             <form id="csv-upload-form" class="ui form">
                 <div class="field">
                     <label for="csv">CSV File</label>
+                    <p>this will be the instructions</p>
                     <input id="csv-file" name="csv" placeholder="CSV File" type="file">
                 </div>
                 <button class="ui button" type="submit">Upload</button>
@@ -18,7 +19,6 @@
     </div>
 
     <div class="ui modal">
-        <i class="close icon"></i>
         <div class="header">
             Your CSV file has some errors
         </div>
@@ -29,14 +29,17 @@
             </div>
         </div>
         <div class="actions">
-            <div class="ui right labeled button">
-                Thanks
+            <div class="ui right labeled button" id="close-button">
+                Got it!
             </div>
         </div>
     </div>
 
     <script src="http://maps.google.com/maps/api/js?sensor=false" type="text/javascript"></script>
     <script type="text/javascript">
+        $("#close-button").click(function() {
+            $('.ui.modal').modal('hide');
+        });
 
         var csrftoken = "{{ csrf_token() }}"
 

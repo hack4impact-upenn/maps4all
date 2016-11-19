@@ -7,7 +7,6 @@ from .. import db
 from ..models import EditableHTML, Resource
 from . import main
 
-
 @main.route('/')
 def index():
     return render_template('main/index.html')
@@ -19,6 +18,11 @@ def get_resources():
     resources_as_dicts = Resource.get_resources_as_dicts(resources)
     return json.dumps(resources_as_dicts)
 
+@main.route('/search-resources/<query_name>')
+def search_resources(query_name):
+    resources = Resource.query.filter(Resource.name.contains(query_name))
+    resources_as_dicts = Resource.get_resources_as_dicts(resources)
+    return json.dumps(resources_as_dicts)
 
 @main.route('/get-associations/<int:resource_id>')
 def get_associations(resource_id):
@@ -65,3 +69,7 @@ def update_editor_contents():
     db.session.commit()
 
     return 'OK', 200
+
+@main.route('/resource-view')
+def resource():
+    return render_template('main/resource.html')
