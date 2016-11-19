@@ -13,6 +13,10 @@
                     <p>this will be the instructions</p>
                     <input id="csv-file" name="csv" placeholder="CSV File" type="file">
                 </div>
+                <h3 class="ui header">Required Option Descriptor</h3>
+                <div class="ui input">
+                    <input id="req-opt-desc" type="text" value="{{ req_opt_desc }}">
+                </div>
                 <button class="ui button" type="submit">Upload</button>
             </form>
         </div>
@@ -70,18 +74,27 @@
 				            errorList.push("'Address' is a required column name.");
 				        }
 
+                        var reqOptDescIndex = columnNames.indexOf($("#req-opt-desc").val());
+                        if (reqOptDescIndex == -1) {
+                            errorList.push("The Specified required option descriptor is a required column name.");
+                        }
+
 				        if (errorList.length > 0) {
 				            displayErrors(errorList);
 				            return;
 				        }
 
-				        // Validate addresses.
+				        // Validate addresses and populate array of resources missing required option descriptor.
 				        if (errorList.length == 0) {
 				            var geocoder = new google.maps.Geocoder();
 				            var numAddressesValidated = 0;
+                            var missingResources = [];
 				            for (var i = 1; i < csvData.length; i++) {
 				                address = csvData[i][addressColumnIndex];
 				                address = address.replace(/\n/g, "");
+                                if csvData[i][reqOptDescIndex].length == 0 {
+                                    missingResources.push(csvData[i][nameColumnIndex]);
+                                }
                                 geocoder.geocode({ "address": address }, function (results, status) {
                                     numAddressesValidated++;
                                     if (status != google.maps.GeocoderStatus.OK) {
@@ -131,6 +144,7 @@
                 data: JSON.stringify({
                     name_column_index: nameColumnIndex,
                     address_column_index: addressColumnIndex,
+                    missing_resources: missingResources,
                     csv_data: data
                 }),
                 dataType: "json",

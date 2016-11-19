@@ -23,6 +23,7 @@ class CsvContainer(db.Model):
                                      uselist=False, cascade='delete')
     name_column_index = db.Column(db.Integer)  # Required column: 'Name'
     address_column_index = db.Column(db.Integer)  # Required column: 'Address'
+    required_option_descriptor_column_index = db.Column(db.Integer)
 
     def cell_data(self, row_num, cell_num):
         if row_num < 0 or row_num >= len(self.csv_rows):
@@ -45,7 +46,8 @@ class CsvContainer(db.Model):
     def required_column_indices(self):
         return [
             self.name_column_index,
-            self.address_column_index
+            self.address_column_index,
+            self.required_option_descriptor_column_index
         ]
 
     def __repr__(self):

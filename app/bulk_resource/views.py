@@ -2,7 +2,7 @@ from datetime import datetime
 import json
 import geocoder
 
-from flask import abort, jsonify, redirect, render_template, request, url_for
+from flask import abort, jsonify, redirect, render_template, request, url_for, flash
 from flask.ext.login import current_user, login_required
 
 from . import bulk_resource
@@ -16,9 +16,11 @@ from ..models import (
     Descriptor,
     OptionAssociation,
     Resource,
+    RequiredOptionDescriptor,
     TextAssociation
 )
 from forms import (
+    DetermineRequiredOptionDescriptorForm,
     DetermineDescriptorTypesForm,
     DetermineOptionsForm,
     SaveCsvDataForm
@@ -29,7 +31,15 @@ from forms import (
 @login_required
 def upload():
     """Upload new resources in bulk with CSV file."""
-    return render_template('bulk_resource/upload.html')
+    req_opt_desc = RequiredOptionDescriptor.query.all()[0]
+    desc_name = ""
+    if req_opt_desc.id != -1:
+        descriptor = Descriptor.query.filter_by(
+            id=req_opt_desc.id
+        ).first()
+        if descriptor is not None:
+            desc_name = descriptor.name
+    return render_template('bulk_resource/upload.html', req_opt_desc=desc_name)
 
 
 @bulk_resource.route('/_upload', methods=['POST'])
@@ -76,9 +86,31 @@ def upload_data():
     # TODO: If the only descriptors are the required ones, then no need to
     # TODO: review them.
     return jsonify(
-        redirect=url_for('bulk_resource.review_descriptor_types')
+        redirect=url_for('bulk_resource.review_required_option_descriptor')
     )
 
+@bulk_resource.route('/review-required-option-descriptor', methods=['GET', 'POST'])
+@login_required
+def review_required_option_descriptor():
+    form = DetermineRequiredOptionDescriptorForm()
+    if form.validate_on_submit() or form.navigation.data['submit_back'] or form.navigation.data['submit_cancel']:
+        if form.navigation.data['submit_back'] or form.navigation.data['submit_cancel']:
+            return redirect(url_for('bulk_resource.upload'))
+        descriptor = Descriptor.query.filter_by(
+            name = form.required_option_descriptor.data
+        ).first()
+        prev_id = RequiredOptionDescriptor.query.all()[0].id
+        if descriptor.id != prev_id and prev_id != -1:
+            resources = Resources.query.all()
+            missing_resources = []
+            for r in resources:
+                option_association = OptionAssociation.query.filter_by(
+                    resource_id = r.id,
+                    descriptor_id=descriptor_id
+                ).first()
+                if option_association is None:
+                    missing_resources.append(r)
+            
 
 @bulk_resource.route('/review-descriptor-types', methods=['GET', 'POST'])
 @login_required
@@ -108,7 +140,7 @@ def review_descriptor_types():
         elif form.navigation.data['submit_back']:
             db.session.delete(csv_container)
             db.session.commit()
-            return redirect(url_for('bulk_resource.upload'))
+            return redirect(url_for('bulk_resource.review_required_option_descriptor'))
 
         elif form.navigation.data['submit_cancel']:
             db.session.delete(csv_container)

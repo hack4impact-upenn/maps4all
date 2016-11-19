@@ -10,6 +10,7 @@ from app.models import (
     Resource,
     Role,
     User,
+    RequiredOptionDescriptor,
 )
 from config import Config
 from flask.ext.script import Manager, Shell
@@ -95,6 +96,7 @@ def setup_prod():
 def setup_general():
     """Runs the set-up needed for both local development and production."""
     Role.insert_roles()
+    RequiredOptionDescriptor.insert_required_option_descriptor()
 
 if __name__ == '__main__':
     manager.run()

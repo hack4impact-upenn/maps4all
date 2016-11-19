@@ -7,7 +7,8 @@ from wtforms.fields import (
     FormField,
     RadioField,
     SubmitField,
-    TextAreaField
+    TextAreaField,
+    StringField
 )
 
 
@@ -16,6 +17,9 @@ class NavigationForm(Form):
     submit_cancel = SubmitField('Cancel')
     submit_back = SubmitField('Back')
 
+class DetermineRequiredOptionDescriptorForm(Form):
+    required_option_descriptor = StringField('Required Option Descriptor', validators=[InputRequired()])
+    navigation = FormField(NavigationForm)
 
 class DetermineDescriptorTypesForm(Form):
     descriptor_types = FieldList(RadioField(choices=[
@@ -23,7 +27,6 @@ class DetermineDescriptorTypesForm(Form):
         ('option', 'Option')
     ], validators=[InputRequired()]))
     navigation = FormField(NavigationForm)
-
 
 class DetermineOptionsForm(Form):
     options = FieldList(TextAreaField())
