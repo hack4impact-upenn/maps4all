@@ -7,19 +7,39 @@ var map;
 var markers = [];
 var infowindow;
 
+/*
+ * Initializes the map, the corresponding list of resources and search
+ * functionality on the resources
+ */
 function initMap() {
   map = new google.maps.Map(document.getElementById('map'), {
     center: {lat: 39.949, lng: -75.181}, // TODO(#52): Do not hardcode this.
     zoom: 13
   });
+
+  infowindow = new google.maps.InfoWindow();
+  initLocationSearch(map);
+  initResourceSearch();
+
+  $.get('/get-resources').done(function(resourcesString) {
+    var resources = JSON.parse(resourcesString);
+    populateMarkers(resources);
+  });
+
+  google.maps.event.addListenerOnce(map, 'idle', function() {
+    populateListDiv();
+  });
+}
+
+/*
+ * Initialize searching on the map by location input.
+ * When entering a new location, re-center and zoom the map onto that location
+ * and create a custom location marker.
+ */
+function initLocationSearch(map) {
   var input = document.getElementById('pac-input');
   var autocomplete = new google.maps.places.Autocomplete(input);
   autocomplete.bindTo('bounds', map);
-  infowindow = new google.maps.InfoWindow();
-  var marker = new google.maps.Marker({
-    map: map,
-    anchorPoint: new google.maps.Point(0, -29)
-  });
 
   autocomplete.addListener('place_changed', function() {
     infowindow.close();
@@ -28,13 +48,9 @@ function initMap() {
       window.alert("Autocomplete's returned place contains no geometry");
       return;
     }
-    // If the place has a geometry, then present it on a map.
-    if (place.geometry.viewport) {
-      map.fitBounds(place.geometry.viewport);
-    } else {
-      map.setCenter(place.geometry.location);
-      map.setZoom(17);
-    }
+    map.setCenter(place.geometry.location);
+    map.setZoom(17);
+
     var address = '';
     if (place.address_components) {
       address = [
@@ -46,40 +62,74 @@ function initMap() {
           place.address_components[2].short_name) || '')
       ].join(' ');
     }
-    marker.setLabel(address);
+
+    var marker = new google.maps.Marker({
+      map: map,
+      position: place.geometry.location,
+      icon: {
+        path: google.maps.SymbolPath.CIRCLE,
+        scale: 8,
+        strokeColor: 'grey',
+        fillColor: 'black',
+        fillOpacity: 1,
+      },
+    });
     var placeDiv = document.createElement('div');
     var br = document.createElement('br');
     $(placeDiv).append(place.name, br, address);
     infowindow.setContent(placeDiv);
     infowindow.open(map, marker);
   });
+}
 
-  var marker = new google.maps.Marker({
-    map: map
-  });
-
-  $.get('/get-resources').done(function(resourcesString){
-    var resources = JSON.parse(resourcesString);
-    for (var i = 0; i < resources.length; i++) {
-      create_marker(resources[i]);
+/*
+ * Initialize searching on the map by resource name input
+ */
+function initResourceSearch() {
+  $('#resources-form').submit(function(e) {
+    e.preventDefault();
+    var query = $('#resources-input').val();
+    var endpoint = '/search-resources/'+query;
+    if (query.length == 0) {
+        endpoint = '/get-resources';
     }
-    for (var i = 0; i < markers.length; i++) {
-      markers[i].setMap(map);
-    }
-   })
-
-  google.maps.event.addListenerOnce(map, 'idle', function(){
-    populateListDiv();
-  });
-  var mapViewButton = document.getElementById("map_view");
-  mapViewButton.addEventListener('click', function() {
-    $("#map").show();
-    $("#list").hide();
-    $("#more-info").empty();
-    $("#sidebar").show();
+    $.get(endpoint).done(function(resourcesString) {
+      for (var i = 0; i < markers.length; i++) {
+        markers[i].setMap(null);
+      }
+      markers = [];
+      var resources = JSON.parse(resourcesString);
+      if (resources.length != 0) {
+        populateMarkers(resources);
+      }
+      populateListDiv();
+    });
   });
 }
 
+/*
+ * Create markers for each resource and add them to the map
+ * Expand the map to show all resources
+ */
+function populateMarkers(resources) {
+  for (var i = 0; i < resources.length; i++) {
+    create_marker(resources[i]);
+  }
+
+  var bounds = new google.maps.LatLngBounds();
+  for (var i = 0; i < markers.length; i++) {
+    markers[i].setMap(map);
+    bounds.extend(markers[i].getPosition());
+  }
+
+  map.fitBounds(bounds);
+  map.setCenter(bounds.getCenter());
+}
+
+/*
+ * Create a marker for each resource and handle clicking on a marker.
+ * Handle clicking on more information for a resource
+ */
 function create_marker(resource){
   var markerToAdd = new google.maps.Marker({
     map: map
@@ -97,11 +147,53 @@ function create_marker(resource){
   async.each(values,
     function(value, callback){
       markerToAdd.addListener('click', function() {
+        $("#map").show();
+        $("#resource-info").hide();
+
         var contentDiv = document.createElement('div');
-        var strong = document.createElement('strong');
+        var resName = document.createElement('strong');
+        $(resName).html(resource.name);
         var br = document.createElement('br');
-        $(strong).html(resource.name);
-        $(contentDiv).append(strong, br, resource.address);
+
+        // information pane to replace map
+        // TODO: refactor how the page elements are generated
+        var moreLink = document.createElement('p');
+        moreLink.innerHTML = 'More Info';
+        moreLink.setAttribute('class', 'more-info')
+        moreLink.addEventListener('click', function() {
+          // get descriptor information
+          $.get('get-associations/' + resource.id).done(function(associations) {
+            $("#map").hide();
+            $("#resource-info").empty();
+            $("#resource-info").show();
+
+            var backButton = document.createElement('button');
+            backButton.innerHTML = 'Back';
+            backButton.setAttribute('class', 'ui button');
+            backButton.addEventListener('click', function() {
+              $("#map").show();
+              $("#resource-info").hide();
+            });
+            $("#resource-info").append(backButton);
+
+            var associationObject = JSON.parse(associations);
+            for (var key in associationObject) {
+              var descriptor = document.createElement('span');
+              descriptor.setAttribute('class', 'descriptor');
+              var name = document.createElement('strong');
+              $(name).append(key);
+              var value = associationObject[key];
+              $(descriptor).append(name, ': ', value);
+              $("#resource-info").append(descriptor);
+            }
+            var a = document.createElement('a');
+            $(a).attr('href', 'suggestion/' + resource.id);
+            $(a).html('Suggest an edit for this resource');
+            $("#resource-info").append(a);
+          }).fail(function() {});
+        });
+        $(contentDiv).append(resName, br, resource.address, moreLink);
+
         if (infowindow) {
           infowindow.close();
         }
@@ -109,25 +201,8 @@ function create_marker(resource){
           content: contentDiv
         });
         infowindow.open(map, markerToAdd);
-        google.maps.event.addListener(infowindow, 'closeclick', function() {
-          $('#more-info').empty();
-        });
-        $.get('get-associations/' + resource.id).done(function(associations) {
-          var associationObject = JSON.parse(associations);
-          $('#more-info').empty();
-          for (var key in associationObject) {
-            var p = document.createElement('p');
-            var bolded = document.createElement('strong');
-            $(bolded).append(key);
-            var value = associationObject[key];
-            $(p).append(bolded, ': ', value);
-            $('#more-info').append(p);
-          }
-          var a = document.createElement('a');
-          $(a).attr('href', 'suggestion/' + resource.id);
-          $(a).html('Suggest an edit for this resource');
-          $('#more-info').append(a);
-        }).fail(function() {});
+        map.setCenter(markerToAdd.getPosition());
+        map.setZoom(17);
       });
       callback();
     }, function() {
@@ -136,45 +211,10 @@ function create_marker(resource){
   );
 }
 
-$(document).ready(function() {
-  $('#resources-form').submit(function(e) {
-    e.preventDefault();
-    var query = document.getElementById('resources-input').value;
-    var endpoint = '/search-resources/'+query;
-    if (query.length == 0) {
-        endpoint = '/get-resources';
-    }
-    $.get(endpoint).done(function(resourcesString) {
-      for (var i=0; i < markers.length; i++) {
-        markers[i].setMap(null);
-      }
-      markers = [];
-      var resources = JSON.parse(resourcesString);
-      for (var i=0; i < resources.length; i++) {
-        create_marker(resources[i]);
-      }
-      for (var i=0; i < markers.length; i++) {
-        markers[i].setMap(map);
-      }
-    populateListDiv();
-    });
-  });
-});
-
-function geocodeLatLng(geocoder, input_lat, input_lng) {
-  geocoder.geocode({'location': {lat: input_lat, lng: input_lng}}, function(results, status) {
-    if (status == google.maps.GeocoderStatus.OK) {
-      if (results[1]) {
-        return results[1].formatted_address;
-      } else {
-        return "";
-      }
-    }
-  });
-}
-
+/*
+ * Show a corresponding list of resources adjacent to the map
+ */
 function populateListDiv() {
-  // Right now, all markers are shown. Filtering can be done here.
   var markersToShow = markers;
   $("#list").empty();
 

@@ -108,13 +108,25 @@ table.selectable tr:hover {
   margin-right: 5px;
 }
 
-@media -sass-debug-info{filename{}line{font-family:\0000371}}
+@media -sass-debug-info{filename{}line{font-family:\0000376}}
+.more-info {
+  color: blue;
+  cursor: pointer;
+  text-decoration: underline;
+}
+
+@media -sass-debug-info{filename{}line{font-family:\0000382}}
+.descriptor {
+  display: block;
+}
+
+@media -sass-debug-info{filename{}line{font-family:\0000387}}
 #resources-form {
   display: inline;
   text-overflow: ellipsis;
 }
 
-@media -sass-debug-info{filename{}line{font-family:\0000376}}
+@media -sass-debug-info{filename{}line{font-family:\0000392}}
 #resources-input {
   background-color: #fff;
   font-family: Roboto;
