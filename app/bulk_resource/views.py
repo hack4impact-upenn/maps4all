@@ -35,10 +35,12 @@ def upload():
 @bulk_resource.route('/_upload', methods=['POST'])
 def upload_data():
     # Extract CSV data from request object.
+    print "Upload data"
     for arg in request.form:
         post_data = arg
     post_data = json.loads(post_data)
     csv_data = post_data['csv_data']
+    print "MADE IT HERE"
 
     # Create new CSV container object to hold contents of CSV file.
     csv_container = CsvContainer(
@@ -83,6 +85,7 @@ def upload_data():
 @bulk_resource.route('/review-descriptor-types', methods=['GET', 'POST'])
 @login_required
 def review_descriptor_types():
+    print "Review descriptor types"
     csv_container = CsvContainer.most_recent(user=current_user)
     if csv_container is None:
         abort(404)
@@ -146,7 +149,9 @@ def review_options():
             options_indx = 0
             for i, header_cell in enumerate(csv_container.csv_header_row
                                             .csv_header_cells):
+                print header_cell
                 if header_cell.descriptor_type == 'option':
+                    print form.options
                     header_cell.add_new_options_from_string(
                         form.options[options_indx].data
                     )
@@ -177,6 +182,7 @@ def review_options():
 @bulk_resource.route('/save', methods=['GET', 'POST'])
 @login_required
 def save():
+    print "Save"
     csv_container = CsvContainer.most_recent(user=current_user)
     if csv_container is None:
         abort(404)
@@ -226,24 +232,28 @@ def save():
                         name=descriptor_name
                     ).first()
                     values = list(descriptor.values)
+                    assocValues = []
                     if len(descriptor.values) == 0:  # text descriptor
                         association_class = TextAssociation
-                        value = cell.data
+                        assocValues.append(cell.data)
                         keyword = 'text'
                     else:  # option descriptor
                     # TODO: MODIFY THIS FOR CSV INPUT
+                        print cell.data
                         association_class = OptionAssociation
-                        value = values.index(cell.data)
+                        for s in cell.data.split(';'):
+                            assocValues.append(values.index(s))
                         keyword = 'option'
-                    arguments = {
-                        'resource_id': resource.id,
-                        'descriptor_id': descriptor.id,
-                        keyword: value,
-                        'resource': resource,
-                        'descriptor': descriptor
-                    }
-                    new_association = association_class(**arguments)
-                    db.session.add(new_association)
+                    for value in assocValues:
+                        arguments = {
+                            'resource_id': resource.id,
+                            'descriptor_id': descriptor.id,
+                            keyword: value,
+                            'resource': resource,
+                            'descriptor': descriptor
+                        }
+                        new_association = association_class(**arguments)
+                        db.session.add(new_association)
         db.session.delete(csv_container)
         db.session.commit()
         return redirect(url_for('single_resource.index'))
