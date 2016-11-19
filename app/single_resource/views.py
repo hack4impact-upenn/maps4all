@@ -24,7 +24,6 @@ def create():
     descriptors = Descriptor.query.all()
     for descriptor in descriptors:
         if descriptor.values:  # Fields for option descriptors.
-            print(descriptor.values)
             choices = [(str(i), v) for i, v in enumerate(descriptor.values)]
             setattr(SingleResourceForm,
                     descriptor.name,
@@ -116,7 +115,6 @@ def save_associations(resource, form, descriptors, resource_existed=True):
     """Save associations from the forms received by 'create' and 'edit' route
     handlers to the database."""
     for descriptor in descriptors:
-        print(form[descriptor.name].data)
         if descriptor.values:
             AssociationClass = OptionAssociation
             values = [int(i) for i in form[descriptor.name].data]
@@ -126,28 +124,22 @@ def save_associations(resource, form, descriptors, resource_existed=True):
             values = [form[descriptor.name].data]
             keyword = 'text'
         for value in values:
-            print(value)
             association = None
             if resource_existed:
-                print("A")
                 association = AssociationClass.query.filter_by(
                     resource_id=resource.id,
                     descriptor_id=descriptor.id
                 ).first()
             if association is not None:
-                print("B")
                 setattr(association, keyword, value)
             else:
-                print("C")
                 arguments = {'resource_id': resource.id,
                              'descriptor_id': descriptor.id,
                              keyword: value,
                              'resource': resource,
                              'descriptor': descriptor}
                 new_association = AssociationClass(**arguments)
-                print("D")
                 db.session.add(new_association)
-                print("E")
 
 
 @single_resource.route('/<int:resource_id>/delete', methods=['POST'])
