@@ -231,6 +231,7 @@ def save():
                         value = cell.data
                         keyword = 'text'
                     else:  # option descriptor
+                    # TODO: MODIFY THIS FOR CSV INPUT
                         association_class = OptionAssociation
                         value = values.index(cell.data)
                         keyword = 'option'
