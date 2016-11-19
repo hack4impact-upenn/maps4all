@@ -13,7 +13,7 @@
       </div>
     </div>
     <div class="ui divider"></div>
-    <div class="rating">
+    <div class="user-rating">
       <div class="ui form">
         <h1 class="ui header">Submit a Review</h1>
         <div class="field">
@@ -51,7 +51,7 @@
       initialRating: 3, // replace with resource avg rating
       maxRating: 5
     });
-    
+
   $('#rating-avg')
     .rating('disable');
 
@@ -61,7 +61,7 @@
     var review = $('#review').val();
     console.log(review);
     ratingRequest(rating, review);
-    $(".rating").hide();
+    $(".user-rating").hide();
     $(".successMessage").show();
   });
 
