@@ -58,7 +58,6 @@ def create():
 @single_resource.route('/<int:resource_id>', methods=['GET', 'POST'])
 @login_required
 def edit(resource_id):
-    # NOTE: Handle case of multiple options
     """Edit a resource."""
     resource = Resource.query.get(resource_id)
     if resource is None:
@@ -69,12 +68,12 @@ def edit(resource_id):
         if descriptor.values:  # Fields for option descriptors.
             choices = [(str(i), v) for i, v in enumerate(descriptor.values)]
             default = None
-            option_association = OptionAssociation.query.filter_by(
+            option_associations = OptionAssociation.query.filter_by(
                 resource_id=resource_id,
                 descriptor_id=descriptor.id
-            ).first()
-            if option_association is not None:
-                default = option_association.option
+            )
+            if option_associations is not None:
+                default = [assoc.option for assoc in option_associations]
             setattr(SingleResourceForm,
                     descriptor.name,
                     SelectMultipleField(choices=choices, default=default))
