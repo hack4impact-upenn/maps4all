@@ -11,3 +11,10 @@
 
 
 {{ f.render_form(form) }}
+
+<script>
+$(document).ready(function() {
+    console.log($(".ui.dropdown.text"));
+    $(".ui.dropdown>.text").text("Click to choose an option");
+});
+</script>

@@ -21,7 +21,6 @@ def index():
 @login_required
 def create():
     """Add a resource."""
-    print("This happens here")
     descriptors = Descriptor.query.all()
     for descriptor in descriptors:
         if descriptor.values:  # Fields for option descriptors.
