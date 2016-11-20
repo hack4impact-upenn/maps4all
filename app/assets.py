@@ -23,6 +23,7 @@ vendor_css = Bundle(
 
 vendor_js = Bundle(
     'vendor/jquery.min.js',
+    'vendor/handlebars-v4.0.5.js',
     'vendor/async.js',
     'vendor/address-autocomplete.js',
     'vendor/papaparse.min.js',

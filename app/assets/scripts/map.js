@@ -167,29 +167,34 @@ function create_marker(resource){
             $("#resource-info").empty();
             $("#resource-info").show();
 
-            var backButton = document.createElement('button');
-            backButton.innerHTML = 'Back';
-            backButton.setAttribute('class', 'ui button');
-            backButton.addEventListener('click', function() {
+            var associationObject = JSON.parse(associations);
+            var descriptors = [];
+            for (var key in associationObject) {
+              var descriptor = {
+                key: key,
+                value: associationObject[key],
+              };
+              descriptors.push(descriptor);
+            }
+
+            // render resource info with handlebars
+            var resourceTemplate = $("#resource-template").html();
+            var compiledTemplate = Handlebars.compile(resourceTemplate);
+            var context = {
+              name: resource.name,
+              address: resource.address,
+              suggestionUrl: 'suggestion/' + resource.id,
+              descriptors: descriptors,
+            };
+            var resourceInfo = compiledTemplate(context);
+            $("#resource-info").html(resourceInfo);
+
+            // need to set click handlers on handlebars template after rendering
+            // the template
+            $('#back-button').click(function() {
               $("#map").show();
               $("#resource-info").hide();
             });
-            $("#resource-info").append(backButton);
-
-            var associationObject = JSON.parse(associations);
-            for (var key in associationObject) {
-              var descriptor = document.createElement('span');
-              descriptor.setAttribute('class', 'descriptor');
-              var name = document.createElement('strong');
-              $(name).append(key);
-              var value = associationObject[key];
-              $(descriptor).append(name, ': ', value);
-              $("#resource-info").append(descriptor);
-            }
-            var a = document.createElement('a');
-            $(a).attr('href', 'suggestion/' + resource.id);
-            $(a).html('Suggest an edit for this resource');
-            $("#resource-info").append(a);
           }).fail(function() {});
         });
         $(contentDiv).append(resName, br, resource.address, moreLink);

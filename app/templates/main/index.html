@@ -119,6 +119,26 @@
       </div>
     </div>
 
+    <script id="resource-template" type="text/x-handlebars-template">
+        <button class="ui button" id="back-button">Back</button>
+        <h1 class="ui header">
+          {% raw %}{{ name }}{% endraw %}
+          <div class="sub header">
+            <span class="ui horizontal label">Category</span>
+            {% raw %}{{ address }}{% endraw %}
+          </div>
+        </h1>
+        <div class="descriptors">
+          {% raw %}{{#each descriptors}}{% endraw %}
+            <div class="descriptor">
+              <strong>{% raw %}{{ key }}{% endraw %}</strong>
+              <p>{% raw %}{{ value }}{% endraw %}</p>
+            </div>
+          {% raw %}{{/each}}{% endraw %}
+        </div>
+        <a href="{% raw %}{{ suggestionUrl }}{% endraw %}">Suggest an edit for this resource</a>
+    </script>
+
     <script>
       $(document).ready(function(){
         $('#advanced-filters-showhide').click(function() {
@@ -128,7 +148,7 @@
             $(this).text('Close Advanced Filters');
           }
           $('.option-group-advanced').toggle();
-        })
+        });
       });
     </script>
 
