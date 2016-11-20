@@ -7,7 +7,7 @@ from sqlalchemy.exc import IntegrityError
 
 from . import suggestion
 from .. import db
-from ..models import Resource, Suggestion, Descriptor
+from ..models import Resource, Suggestion, Descriptor, TextAssociation, OptionAssociation
 from forms import SuggestionBasicForm, SuggestionAdvancedForm
 from wtforms.fields import TextAreaField, SelectField
 from ..single_resource.views import save_associations
@@ -80,8 +80,18 @@ def suggest(resource_id):
         if resource is None:
             abort(404)
         name = resource.name
+        basic_form.name.data = resource.name
+        basic_form.address.data = resource.address
     advanced_form = SuggestionAdvancedForm()
-    create_descriptor_form(advanced_form)
+    descriptors = Descriptor.query.all()
+    for descriptor in descriptors:
+        if descriptor.values:  # Fields for option descriptors.
+            choices = [(str(i), v) for i, v in enumerate(descriptor.values)]
+            setattr(SuggestionAdvancedForm,
+                    descriptor.name,
+                    SelectField(choices=choices))
+        else:  # Fields for text descriptors
+            setattr(SuggestionAdvancedForm, descriptor.name, TextAreaField())
     if basic_form.validate_on_submit():
         suggestion = Suggestion(
             resource_id=resource_id,
@@ -121,6 +131,8 @@ def create(sugg_id):
         else:  # Fields for text descriptors
             setattr(SingleResourceForm, descriptor.name, TextAreaField())
     form = SingleResourceForm()
+    form.name.data = suggestion.resource_name
+    form.address.data = suggestion.resource_address
     if form.validate_on_submit():
         new_resource = Resource(name=form.name.data,
                                 address=form.address.data,
@@ -140,3 +152,62 @@ def create(sugg_id):
             flash('Error: failed to save resource. Please try again.',
                   'form-error')
     return render_template('suggestion/create.html', form=form, suggestion=suggestion)
+
+@suggestion.route('/edit/<int:sugg_id>', methods=['GET', 'POST'])
+@login_required
+def edit(sugg_id):
+    suggestion = Suggestion.query.get(sugg_id)
+    if suggestion is None:
+        abort(404)
+    resource = Resource.query.get(suggestion.resource_id)
+    if resource is None:
+        abort(404)
+    resource_id = suggestion.resource_id
+    resource_field_names = Resource.__table__.columns.keys()
+    descriptors = Descriptor.query.all()
+    for descriptor in descriptors:
+        if descriptor.values:  # Fields for option descriptors.
+            choices = [(str(i), v) for i, v in enumerate(descriptor.values)]
+            default = None
+            option_association = OptionAssociation.query.filter_by(
+                resource_id=resource_id,
+                descriptor_id=descriptor.id
+            ).first()
+            if option_association is not None:
+                default = option_association.option
+            setattr(SingleResourceForm,
+                    descriptor.name,
+                    SelectField(choices=choices, default=default))
+        else:  # Fields for text descriptors.
+            default = None
+            text_association = TextAssociation.query.filter_by(
+                resource_id=resource_id,
+                descriptor_id=descriptor.id
+            ).first()
+            if text_association is not None:
+                default = text_association.text
+            setattr(SingleResourceForm,
+                    descriptor.name,
+                    TextAreaField(default=default))
+    form = SingleResourceForm()
+    if form.validate_on_submit():
+        # Field id is not needed for the form, hence omitted with [1:].
+        for field_name in resource_field_names[1:]:
+            setattr(resource, field_name, form[field_name].data)
+        save_associations(resource=resource,
+                          form=form,
+                          descriptors=descriptors,
+                          resource_existed=True)
+        try:
+            db.session.commit()
+            flash('Resource updated', 'form-success')
+            return redirect(url_for('single_resource.index'))
+        except IntegrityError:
+            db.session.rollback()
+            flash('Error: failed to save resource. Please try again.',
+                  'form-error')
+    # Field id is not needed for the form, hence omitted with [1:].
+    for field_name in resource_field_names[1:]:
+        form[field_name].data = resource.__dict__[field_name]
+
+    return render_template('suggestion/edit.html', form=form, suggestion=suggestion, resource_id=resource_id)

@@ -14,18 +14,18 @@
         Suggest New Resource
       {% endif %}
     </h1>
-    <p>How much information do you know about this resource? </p>
-    <button class="ui button basic-button">Basic</button>
-    <button class="ui button advanced-button">Advanced</button>
+  <!-- <p>How much information do you know about this resource? </p> -->
+  <!--   <button class="ui button basic-button">Basic</button>
+    <button class="ui button advanced-button">Advanced</button> -->
     <div class="basic-form">
       {{ f.render_form(basic_form) }}
     </div>
-    <div class="advanced-form">
+    <!-- <div class="advanced-form">
       {{ f.render_form(advanced_form) }} 
-    </div>
+    </div> -->
   </div>
 
-<script>
+<!-- <script>
   $(".basic-form").hide();
   $(".basic-button").click(function() {
     $(".basic-form").show();
@@ -41,5 +41,5 @@
     $(".basic-form").hide();
     $(".basic-button").prop("disabled", false);
   });
-</script>
+</script> -->
 {% endblock %}
