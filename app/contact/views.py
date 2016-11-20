@@ -19,8 +19,9 @@ def index():
     form = ContactForm()
     contact_email = 'maps4all.team@gmail.com'
     if form.validate_on_submit():
-        send_email(
-            to=contact_email,
+        get_queue().enqueue(
+            send_email,
+            recipient=contact_email,
             subject=form.category.data,
             template='contact/email/contact',
             name=form.name.data,
