@@ -23,7 +23,6 @@ class CsvContainer(db.Model):
                                      uselist=False, cascade='delete')
     name_column_index = db.Column(db.Integer)  # Required column: 'Name'
     address_column_index = db.Column(db.Integer)  # Required column: 'Address'
-    required_option_descriptor_column_index = db.Column(db.Integer)
 
     def cell_data(self, row_num, cell_num):
         if row_num < 0 or row_num >= len(self.csv_rows):
@@ -47,7 +46,6 @@ class CsvContainer(db.Model):
         return [
             self.name_column_index,
             self.address_column_index,
-            self.required_option_descriptor_column_index
         ]
 
     def __repr__(self):
@@ -143,3 +141,10 @@ class CsvBodyCell(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     csv_row_id = db.Column(db.Integer, db.ForeignKey('csv_body_rows.id'))
     data = db.Column(db.Text)
+
+class RequiredOptionDescriptorConstructor(db.Model):
+    __tablename__ = 'required_option_descriptor_constructor'
+    id = db.Column(db.Integer, primary_key=True)
+    name = db.Column(db.String(64), index=True)
+    values = db.Column(db.PickleType)
+    missing_dict = db.Column(db.PickleType)

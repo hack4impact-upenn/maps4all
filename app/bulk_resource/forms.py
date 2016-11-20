@@ -28,10 +28,13 @@ class DetermineDescriptorTypesForm(Form):
     ], validators=[InputRequired()]))
     navigation = FormField(NavigationForm)
 
+class RequiredOptionDescriptorMissingForm(Form):
+    resources = FieldList(RadioField(choices=[], validators=[InputRequired()]))
+    navigation = FormField(NavigationForm)
+
 class DetermineOptionsForm(Form):
     options = FieldList(TextAreaField())
     navigation = FormField(NavigationForm)
-
 
 class SaveCsvDataForm(Form):
     submit = SubmitField('Save')
