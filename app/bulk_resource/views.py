@@ -202,7 +202,7 @@ def get_required_option_descriptor():
         ).first()
         RequiredOptionDescriptorConstructor.query.delete()
         db.session.commit()
-        if descriptor is not None and not descriptor.values:
+        if descriptor is not None and descriptor.values:
             req_opt_desc_const = RequiredOptionDescriptorConstructor(name=descriptor.name, values=descriptor.values)
             db.session.add(req_opt_desc_const)
             db.session.commit()
@@ -237,7 +237,7 @@ def get_required_option_descriptor():
 def review_required_option_descriptor():
     csv_container = CsvContainer.most_recent(user=current_user)
     req_opt_desc_const = RequiredOptionDescriptorConstructor.query.all()[0]
-    setattr(RequiredOptionDescriptorMissingForm, 'resources', FieldList(RadioField(choices=[(v, v) for v in req_opt_desc_const.values], validators=[InputRequired()])))
+    # setattr(RequiredOptionDescriptorMissingForm, 'resources', FieldList(RadioField(choices=[(v, v) for v in req_opt_desc_const.values], validators=[InputRequired()])))
     form = RequiredOptionDescriptorMissingForm()
     missing_resources = []
     resources = Resource.query.all()
@@ -276,6 +276,7 @@ def review_required_option_descriptor():
     for j, r_name in enumerate(missing_resources):
         form.resources.append_entry()
         form.resources[j].label = r_name
+        form.resources[j].choices = [(v, v) for v in req_opt_desc_const.values]
     return render_template('bulk_resource/review_required_option_descriptor.html', form=form)
 
 @bulk_resource.route('/save', methods=['GET', 'POST'])
