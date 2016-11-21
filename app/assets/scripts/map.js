@@ -189,11 +189,23 @@ function create_marker(resource){
             var resourceInfo = compiledTemplate(context);
             $("#resource-info").html(resourceInfo);
 
-            // need to set click handlers on handlebars template after rendering
-            // the template
+            // can only reference elements in template after compilation
             $('#back-button').click(function() {
               $("#map").show();
               $("#resource-info").hide();
+            });
+
+            // map for single resource
+            var singleMap = new google.maps.Map(
+              document.getElementById('single-map'),
+              {
+                center: markerToAdd.getPosition(),
+                zoom: 17,
+              }
+            );
+            var singleMarker = new google.maps.Marker({
+              position: markerToAdd.getPosition(),
+              map: singleMap
             });
           }).fail(function() {});
         });

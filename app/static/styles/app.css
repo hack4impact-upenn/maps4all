@@ -135,3 +135,9 @@ table.selectable tr:hover {
   margin-top: 0px;
   text-overflow: ellipsis;
 }
+
+@media -sass-debug-info{filename{}line{font-family:\00003102}}
+#single-map {
+  width: 500px;
+  height: 300px;
+}
