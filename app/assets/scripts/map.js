@@ -6,6 +6,7 @@
 var map;
 var markers = [];
 var infowindow;
+var focusZoom = 17;
 
 /*
  * Initializes the map, the corresponding list of resources and search
@@ -14,7 +15,7 @@ var infowindow;
 function initMap() {
   map = new google.maps.Map(document.getElementById('map'), {
     center: {lat: 39.949, lng: -75.181}, // TODO(#52): Do not hardcode this.
-    zoom: 13
+    zoom: focusZoom,
   });
 
   infowindow = new google.maps.InfoWindow();
@@ -49,7 +50,7 @@ function initLocationSearch(map) {
       return;
     }
     map.setCenter(place.geometry.location);
-    map.setZoom(17);
+    map.setZoom(focusZoom);
 
     var address = '';
     if (place.address_components) {
@@ -74,10 +75,17 @@ function initLocationSearch(map) {
         fillOpacity: 1,
       },
     });
-    var placeDiv = document.createElement('div');
-    var br = document.createElement('br');
-    $(placeDiv).append(place.name, br, address);
-    infowindow.setContent(placeDiv);
+
+    // Show marker info bubble for searched location
+    var locationMarkerTemplate = $("#locationmarker-template").html();
+    var compiledLocMarkerTemplate = Handlebars.compile(locationMarkerTemplate);
+    var context = {
+      name: place.name,
+      address: address,
+    };
+    var locationMarkerInfo = compiledLocMarkerTemplate(context);
+
+    infowindow.setContent(locationMarkerInfo);
     infowindow.open(map, marker);
   });
 }
@@ -138,6 +146,7 @@ function create_marker(resource){
   markerToAdd.setPosition(latLng);
   markerToAdd.setVisible(true);
   markerToAdd.title = resource.name;
+  markerToAdd.address = resource.address;
   markerToAdd.json_data = {
     csrf_token: $('meta[name="csrf-token"]').prop('content'),
     data: resource.name
@@ -150,17 +159,27 @@ function create_marker(resource){
         $("#map").show();
         $("#resource-info").hide();
 
-        var contentDiv = document.createElement('div');
-        var resName = document.createElement('strong');
-        $(resName).html(resource.name);
-        var br = document.createElement('br');
+        // Show marker info bubble for clicked marker
+        var markerTemplate = $("#marker-template").html();
+        var compiledMarkerTemplate = Handlebars.compile(markerTemplate);
+        var context = {
+          name: resource.name,
+          address: resource.address,
+        };
+        var markerInfo = compiledMarkerTemplate(context);
 
-        // information pane to replace map
-        // TODO: refactor how the page elements are generated
-        var moreLink = document.createElement('p');
-        moreLink.innerHTML = 'More Info';
-        moreLink.setAttribute('class', 'more-info')
-        moreLink.addEventListener('click', function() {
+        if (infowindow) {
+          infowindow.close();
+        }
+        infowindow = new google.maps.InfoWindow({
+          content: markerInfo
+        });
+        infowindow.open(map, markerToAdd);
+        map.setCenter(markerToAdd.getPosition());
+        map.setZoom(focusZoom);
+
+        // Marker to detailed resource information view
+        $(".more-info").click(function() {
           // get descriptor information
           $.get('get-associations/' + resource.id).done(function(associations) {
             $("#map").hide();
@@ -177,49 +196,39 @@ function create_marker(resource){
               descriptors.push(descriptor);
             }
 
-            // render resource info with handlebars
+            // Detailed resource information view
             var resourceTemplate = $("#resource-template").html();
-            var compiledTemplate = Handlebars.compile(resourceTemplate);
+            var compiledResourceTemplate = Handlebars.compile(resourceTemplate);
             var context = {
               name: resource.name,
               address: resource.address,
               suggestionUrl: 'suggestion/' + resource.id,
               descriptors: descriptors,
             };
-            var resourceInfo = compiledTemplate(context);
+            var resourceInfo = compiledResourceTemplate(context);
             $("#resource-info").html(resourceInfo);
 
-            // can only reference elements in template after compilation
+            // Set handlers and populate DOM elements from resource template
+            // Can only reference elements in template after compilation
             $('#back-button').click(function() {
               $("#map").show();
               $("#resource-info").hide();
             });
 
-            // map for single resource
+            // Map for single resource on detailed resource info page
             var singleMap = new google.maps.Map(
               document.getElementById('single-map'),
               {
                 center: markerToAdd.getPosition(),
-                zoom: 17,
+                zoom: focusZoom,
               }
             );
             var singleMarker = new google.maps.Marker({
               position: markerToAdd.getPosition(),
-              map: singleMap
+              map: singleMap,
             });
           }).fail(function() {});
         });
-        $(contentDiv).append(resName, br, resource.address, moreLink);
-
-        if (infowindow) {
-          infowindow.close();
-        }
-        infowindow = new google.maps.InfoWindow({
-          content: contentDiv
-        });
-        infowindow.open(map, markerToAdd);
-        map.setCenter(markerToAdd.getPosition());
-        map.setZoom(17);
       });
       callback();
     }, function() {
@@ -235,34 +244,27 @@ function populateListDiv() {
   var markersToShow = markers;
   $("#list").empty();
 
-  var list = document.getElementById('list');
+  var listResources = [];
   $.each(markersToShow, function(i, markerToShow) {
-    var listElement = document.createElement('a');
-    listElement.setAttribute('class', 'item');
+    var listResource = {
+      name: markerToShow.title,
+      address: markerToShow.address,
+    };
+    listResources.push(listResource);
+  });
 
-    var rightArrowElement = document.createElement('div');
-    rightArrowElement.setAttribute('class', 'right floated content');
+  var listTemplate = $("#listview-template").html();
+  var compiledListTemplate = Handlebars.compile(listTemplate);
+  var context = {
+    resource: listResources,
+  };
+  var listView = compiledListTemplate(context);
+  $("#list").html(listView);
 
-    var rightArrowImage = document.createElement('i');
-    rightArrowImage.setAttribute('class', 'right chevron icon');
-
-    rightArrowElement.appendChild(rightArrowImage);
-    listElement.appendChild(rightArrowElement);
-
-    var mainContent = document.createElement('div');
-    mainContent.setAttribute('class', 'content');
-
-    var placeTitle = document.createElement('div');
-    placeTitle.setAttribute('class', 'list-item-title');
-    $(placeTitle).html(markerToShow.title);
-
-    mainContent.appendChild(placeTitle);
-    listElement.appendChild(mainContent);
-
-    list.appendChild(listElement);
-
-    listElement.addEventListener('click', function() {
-      google.maps.event.trigger(markerToShow, 'click');
+  // Can only add handlers to elements in template after compilation
+  $(".list-resource").each(function(i, element) {
+    element.addEventListener('click', function() {
+      google.maps.event.trigger(markersToShow[i], 'click');
     });
   });
 }

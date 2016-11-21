@@ -110,7 +110,7 @@
         </div>
 
         <div class="ui divider"></div>
-        <div id="list" class="ui middle aligned divided list"></div>
+        <div class="ui middle aligned divided list" id="list"></div>
       </div>
 
       <div class="twelve wide column right-pane">
@@ -119,8 +119,35 @@
       </div>
     </div>
 
+    <!-- HANDLEBARS.JS TEMPLATES COMPILED IN MAP.JS -->
+    <!-- Populate location search marker info-->
+    <script id="locationmarker-template" type="text/x-handlebars-template">
+      <div class="loc-marker-info">
+          <h3 class="ui header">
+              {% raw %}{{ name }}{% endraw %}
+              <div class="sub header">
+                {% raw %}{{ address }}{% endraw %}
+              </div>
+          </h3>
+      </div>
+    </script>
+
+    <!-- Populate resource marker info-->
+    <script id="marker-template" type="text/x-handlebars-template">
+      <div class="marker-info">
+          <h3 class="ui header">
+              {% raw %}{{ name }}{% endraw %}
+              <div class="sub header">
+                <div>{% raw %}{{ address }}{% endraw %}</div>
+                <a class="more-info">More Information</a>
+              </div>
+          </h3>
+      </div>
+    </script>
+
+    <!-- Populate resource information view-->
     <script id="resource-template" type="text/x-handlebars-template">
-        <button class="ui button" id="back-button">Back</button>
+        <button class="ui button right" id="back-button">Back</button>
         <h1 class="ui header">
           {% raw %}{{ name }}{% endraw %}
           <div class="sub header">
@@ -129,15 +156,45 @@
           </div>
         </h1>
         <div id="single-map"></div>
+        <div class="ui hidden divider"></div>
         <div class="descriptors">
-          {% raw %}{{#each descriptors}}{% endraw %}
-            <div class="descriptor">
-              <strong>{% raw %}{{ key }}{% endraw %}</strong>
-              <p>{% raw %}{{ value }}{% endraw %}</p>
-            </div>
-          {% raw %}{{/each}}{% endraw %}
+          <h2 class="ui dividing header">Information</h2>
+          <div class="ui list">
+            {% raw %}{{#each descriptors}}{% endraw %}
+              <div class="item descriptor">
+                <div class="header">{% raw %}{{ key }}{% endraw %}</div>
+                {% raw %}{{ value }}{% endraw %}
+              </div>
+            {% raw %}{{/each}}{% endraw %}
+          </div>
         </div>
-        <a href="{% raw %}{{ suggestionUrl }}{% endraw %}">Suggest an edit for this resource</a>
+        <div class="ui hidden divider"></div>
+        <div class="actions">
+          <h2 class="ui dividing header">Actions</h2>
+          <a href="{% raw %}{{ suggestionUrl }}{% endraw %}">
+            Suggest an edit for this resource
+          </a>
+        </div>
+    </script>
+
+    <!-- Populate list view-->
+    <script id="listview-template" type="text/x-handlebars-template">
+      {% raw %}{{#each resource}}{% endraw %}
+        <div class="item list-resource">
+          <h3 class="ui header">
+            <a>
+              {% raw %}{{ name }}{% endraw %}
+              <div class="right floated content">
+                <i class="right chevron icon"></i>
+              </div>
+            </a>
+            <div class="sub header">
+              <div>{% raw %}{{ address }}{% endraw %}</div>
+              <div class="ui small label">Category</div>
+            </div>
+          </h3>
+        </div>
+      {% raw %}{{/each}}{% endraw %}
     </script>
 
     <script>
