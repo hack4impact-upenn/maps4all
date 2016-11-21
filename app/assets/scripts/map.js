@@ -4,6 +4,7 @@
 // <script src="https://maps.googleapis.com/maps/api/js?key=YOUR_API_KEY&libraries=places">
 
 var map;
+var oms;
 var markers = [];
 var infowindow;
 
@@ -75,7 +76,7 @@ function initMap() {
     zoom: 13
   });
 
-  var oms = new OverlappingMarkerSpiderfier(map, {keepSpiderfied: true, nearbyDistance: 10});
+  oms = new OverlappingMarkerSpiderfier(map, {keepSpiderfied: true, nearbyDistance: 10});
 
   // Add click listener to marker for displaying infoWindow
   oms.addListener('click', markerListener);
@@ -86,7 +87,7 @@ function initMap() {
 
   $.get('/get-resources').done(function(resourcesString) {
     var resources = JSON.parse(resourcesString);
-    populateMarkers(resources, oms);
+    populateMarkers(resources);
   });
 
   google.maps.event.addListenerOnce(map, 'idle', function() {
@@ -174,7 +175,7 @@ function initResourceSearch() {
  * Create markers for each resource and add them to the map
  * Expand the map to show all resources
  */
-function populateMarkers(resources, oms) {
+function populateMarkers(resources) {
   for (var i = 0; i < resources.length; i++) {
     createMarker(resources[i]);
   }
