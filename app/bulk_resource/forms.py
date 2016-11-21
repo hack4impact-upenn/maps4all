@@ -8,7 +8,8 @@ from wtforms.fields import (
     RadioField,
     SubmitField,
     TextAreaField,
-    StringField
+    StringField,
+    SelectMultipleField
 )
 
 
@@ -29,7 +30,7 @@ class DetermineDescriptorTypesForm(Form):
     navigation = FormField(NavigationForm)
 
 class RequiredOptionDescriptorMissingForm(Form):
-    resources = FieldList(RadioField(choices=[], validators=[InputRequired()]))
+    resources = FieldList(SelectMultipleField(validators=[InputRequired()]))
     navigation = FormField(NavigationForm)
 
 class DetermineOptionsForm(Form):

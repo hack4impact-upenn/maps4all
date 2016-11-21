@@ -11,7 +11,8 @@ from flask_wtf.file import (
 from wtforms.fields import (
     FieldList,
     RadioField,
-    FormField
+    FormField,
+    SelectMultipleField
 )
 from flask.ext.wtf import Form
 
@@ -237,7 +238,6 @@ def get_required_option_descriptor():
 def review_required_option_descriptor():
     csv_container = CsvContainer.most_recent(user=current_user)
     req_opt_desc_const = RequiredOptionDescriptorConstructor.query.all()[0]
-    # setattr(RequiredOptionDescriptorMissingForm, 'resources', FieldList(RadioField(choices=[(v, v) for v in req_opt_desc_const.values], validators=[InputRequired()])))
     form = RequiredOptionDescriptorMissingForm()
     missing_resources = []
     resources = Resource.query.all()
@@ -262,21 +262,25 @@ def review_required_option_descriptor():
     for row in csv_container.csv_rows:
         if req_opt_desc_index == -1 or len(row.csv_body_cells[req_opt_desc_index].data) == 0:
             missing_resources.append(row.csv_body_cells[csv_container.name_column_index].data)
-    if form.validate_on_submit():
+
+    if request.method == 'POST':
         if form.navigation.data['submit_back']:
             return redirect(url_for('bulk_resource.get_required_option_descriptor'))
         elif form.navigation.data['submit_cancel']:
             return redirect(url_for('bulk_resource.upload'))
         req_opt_desc_const.missing_dict = {}
-        resources_values_iter = iter(form.resources.data)
-        for j, r_name in enumerate(missing_resources):
-            req_opt_desc_const.missing_dict[r_name] = next(resources_values_iter)
-        db.session.commit()
-        return redirect(url_for('bulk_resource.save'))
+        if len(form.resources.data) < len(missing_resources):
+            flash('Error: You must choose an option for each resource. Please try again.', 'form-error')
+        else:
+            for j, r_name in enumerate(missing_resources):
+                req_opt_desc_const.missing_dict[r_name] = form.resources.data[j]
+            db.session.commit()
+            return redirect(url_for('bulk_resource.save'))
     for j, r_name in enumerate(missing_resources):
         form.resources.append_entry()
         form.resources[j].label = r_name
         form.resources[j].choices = [(v, v) for v in req_opt_desc_const.values]
+
     return render_template('bulk_resource/review_required_option_descriptor.html', form=form)
 
 @bulk_resource.route('/save', methods=['GET', 'POST'])
@@ -360,7 +364,7 @@ def save():
             resource = Resource.query.filter_by(
                 name=r_name
             ).first()
-            if resources is not None:
+            if resource is not None:
                 new_association = OptionAssociation(resource_id=resource.id, descriptor_id=required_option_descriptor.id, option=required_option_descriptor.values.index(req_opt_desc_const.missing_dict[r_name]), resource=resource, descriptor=descriptor)
                 db.session.add(new_association)
         db.session.delete(req_opt_desc_const)
