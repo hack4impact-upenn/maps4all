@@ -112,6 +112,7 @@ class User(UserMixin, db.Model):
             return False
         self.confirmed = True
         db.session.add(self)
+        db.session.commit()
         return True
 
     def change_email(self, token):
@@ -130,6 +131,7 @@ class User(UserMixin, db.Model):
             return False
         self.email = new_email
         db.session.add(self)
+        db.session.commit()
         return True
 
     def reset_password(self, token, new_password):
@@ -143,6 +145,7 @@ class User(UserMixin, db.Model):
             return False
         self.password = new_password
         db.session.add(self)
+        db.session.commit()
         return True
 
     @staticmethod
