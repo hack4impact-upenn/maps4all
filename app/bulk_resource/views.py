@@ -295,10 +295,10 @@ def save():
     if form.validate_on_submit():
         # Temporary: Delete all descriptors and resources that are currently
         # in the database.
-        Descriptor.query.delete()
-        OptionAssociation.query.delete()
-        Resource.query.delete()
-        TextAssociation.query.delete()
+        # Descriptor.query.delete()
+        # OptionAssociation.query.delete()
+        # Resource.query.delete()
+        # TextAssociation.query.delete()
 
         for i, header_cell in enumerate(
                 csv_container.csv_header_row.csv_header_cells):
@@ -365,8 +365,9 @@ def save():
                 name=r_name
             ).first()
             if resource is not None:
-                new_association = OptionAssociation(resource_id=resource.id, descriptor_id=required_option_descriptor.id, option=required_option_descriptor.values.index(req_opt_desc_const.missing_dict[r_name]), resource=resource, descriptor=descriptor)
-                db.session.add(new_association)
+                for val in req_opt_desc_const.missing_dict[r_name]:
+                    new_association = OptionAssociation(resource_id=resource.id, descriptor_id=required_option_descriptor.id, option=required_option_descriptor.values.index(val), resource=resource, descriptor=descriptor)
+                    db.session.add(new_association)
         db.session.delete(req_opt_desc_const)
         db.session.delete(csv_container)
         db.session.commit()
