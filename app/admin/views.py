@@ -154,6 +154,7 @@ def delete_user(user_id):
         flash('Successfully deleted user %s.' % user.full_name(), 'success')
     return redirect(url_for('admin.registered_users'))
 
+
 @admin.route('/ratings-table')
 @login_required
 def ratings_table():

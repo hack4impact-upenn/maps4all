@@ -57,9 +57,7 @@
 
   $('#submit').click(function() {
     var rating = $('#rating-input').rating('get rating');
-    console.log(rating);
     var review = $('#review').val();
-    console.log(review);
     ratingRequest(rating, review);
     $(".user-rating").hide();
     $(".successMessage").show();
@@ -77,10 +75,8 @@
          data: JSON.stringify(ratingReview),
          contentType: 'application/json',
          dataType: 'json',
-         success: function(data) {
-            console.log(ratingReview)},
          method: 'POST'
-         });
+      });
   }
 
 </script>

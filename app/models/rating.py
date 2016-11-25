@@ -3,7 +3,6 @@ from .. import db
 
 
 class Rating(db.Model):
-
 	__tablename__ = 'ratings'
 	id = db.Column(db.Integer, primary_key=True)
 	resource_id = db.Column(db.Integer, db.ForeignKey('resources.id'))
