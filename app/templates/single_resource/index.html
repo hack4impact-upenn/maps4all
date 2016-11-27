@@ -7,21 +7,20 @@
     <div class="ui text container">
         <h2 class="ui dividing header">Resources</h2>
         <a href="{{ url_for('single_resource.create') }}">Add</a>
-        <div class="ui menu">
-            <div class="ui search item">
-                <div class="ui transparent icon input">
-                    <form id="search-resources">
+        <form id="search-resources">
+            <div class="ui menu">
+                <div class="ui search item">
+                    <div class="ui transparent icon input">
                         <input id="search-resources-text" type="text" value="{{ query|default('') }}" placeholder="Search resources...">
                         <i class="search icon"></i>
-                        <select id="search-resources-options" multiple="" class="ui fluid dropdown">
-                        {% for option in options %}
-                            <option value="{{ option }}">{{ option }}</option>
-                        {% endfor %}
-                        </select>
-                    </form>
+                    </div>
                 </div>
+                <select id="search-resources-options" multiple="" class="ui fluid dropdown" placeholder="Select">
+                    {% for option in options %}
+                        <option value="{{ option }}">{{ option }}</option>
+                    {% endfor %}
+                </select>
             </div>
-        </div>
         <div style="overflow-x: scroll;">
             <table class="ui searchable sortable unstackable selectable celled table">
                 <thead>
