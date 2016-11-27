@@ -193,37 +193,40 @@ def review_options():
 def get_required_option_descriptor():
     csv_container = CsvContainer.most_recent(user=current_user)
     form = DetermineRequiredOptionDescriptorForm()
-    if form.validate_on_submit():
+    if request.method == 'POST':
         if form.navigation.data['submit_back']:
             return redirect(url_for('bulk_resource.review_options'))
         elif form.navigation.data['submit_cancel']:
             return redirect(url_for('bulk_resource.upload'))
-        descriptor = Descriptor.query.filter_by(
-            name=form.required_option_descriptor.data
-        ).first()
-        RequiredOptionDescriptorConstructor.query.delete()
-        db.session.commit()
-        if descriptor is not None and descriptor.values:
-            req_opt_desc_const = RequiredOptionDescriptorConstructor(name=descriptor.name, values=descriptor.values)
-            db.session.add(req_opt_desc_const)
+        elif form.required_option_descriptor.data == "":
+            flash('Error: You must select a required option descriptor. Please try again.', 'form-error')
+        else:
+            descriptor = Descriptor.query.filter_by(
+                name=form.required_option_descriptor.data
+            ).first()
+            RequiredOptionDescriptorConstructor.query.delete()
             db.session.commit()
-            return redirect(url_for('bulk_resource.review_required_option_descriptor'))
-        for header_cell in csv_container.csv_header_row.csv_header_cells:
-            if header_cell.data == form.required_option_descriptor.data and header_cell.descriptor_type == 'option':
-                values = []
-                for v in header_cell.predicted_options:
-                    values.append(v)
-                for v in header_cell.new_options:
-                    values.append(v)
-                req_opt_desc_const = RequiredOptionDescriptorConstructor(name=header_cell.data, values=values)
+            if descriptor is not None and descriptor.values:
+                req_opt_desc_const = RequiredOptionDescriptorConstructor(name=descriptor.name, values=descriptor.values)
                 db.session.add(req_opt_desc_const)
+                db.session.commit()
                 return redirect(url_for('bulk_resource.review_required_option_descriptor'))
-        flash('Error: no such option descriptor. Please try again.', 'form-error')
+            for header_cell in csv_container.csv_header_row.csv_header_cells:
+                if header_cell.data == form.required_option_descriptor.data and header_cell.descriptor_type == 'option':
+                    values = []
+                    for v in header_cell.predicted_options:
+                        values.append(v)
+                    for v in header_cell.new_options:
+                        values.append(v)
+                    req_opt_desc_const = RequiredOptionDescriptorConstructor(name=header_cell.data, values=values)
+                    db.session.add(req_opt_desc_const)
+                    return redirect(url_for('bulk_resource.review_required_option_descriptor'))
+            flash('Error: no such option descriptor. Please try again.', 'form-error')
     req_opt_desc = RequiredOptionDescriptor.query.all()[0]
     desc_name = ""
-    if req_opt_desc.id != -1:
+    if req_opt_desc.descriptor_id != -1:
         descriptor = Descriptor.query.filter_by(
-            id=req_opt_desc.id
+            id=req_opt_desc.descriptor_id
         ).first()
         if descriptor is not None:
             desc_name = descriptor.name
@@ -233,7 +236,7 @@ def get_required_option_descriptor():
                 form=form
     )
 
-@bulk_resource.route('/review_required_option_descriptor', methods=['GET', 'POST'])
+@bulk_resource.route('/review-required-option-descriptor', methods=['GET', 'POST'])
 @login_required
 def review_required_option_descriptor():
     csv_container = CsvContainer.most_recent(user=current_user)
@@ -366,10 +369,14 @@ def save():
             ).first()
             if resource is not None:
                 for val in req_opt_desc_const.missing_dict[r_name]:
-                    new_association = OptionAssociation(resource_id=resource.id, descriptor_id=required_option_descriptor.id, option=required_option_descriptor.values.index(val), resource=resource, descriptor=descriptor)
+                    new_association = OptionAssociation(resource_id=resource.id, descriptor_id=required_option_descriptor.id, option=required_option_descriptor.values.index(val), resource=resource, descriptor=required_option_descriptor)
                     db.session.add(new_association)
         db.session.delete(req_opt_desc_const)
         db.session.delete(csv_container)
+        RequiredOptionDescriptor.query.delete()
+        db.session.commit()
+        req_opt_desc = RequiredOptionDescriptor(descriptor_id=required_option_descriptor.id)
+        db.session.add(req_opt_desc)
         db.session.commit()
         return redirect(url_for('single_resource.index'))
     return render_template('bulk_resource/save.html', form=form)

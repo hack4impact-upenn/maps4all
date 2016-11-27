@@ -1,0 +1,9 @@
+{% extends 'layouts/base.html' %}
+{% import 'macros/form_macros.html' as f %}
+
+{% block content %}
+    <div class="ui text container">
+        <h2 class="ui dividing header">Review Required Option Descriptor</h2>
+        {{ f.render_form(form) }}
+    </div>
+{% endblock %}

@@ -66,6 +66,7 @@ def edit(resource_id):
         abort(404)
     resource_field_names = Resource.__table__.columns.keys()
     descriptors = Descriptor.query.all()
+    req_opt_desc = RequiredOptionDescriptor.query.all()[0]
     for descriptor in descriptors:
         if descriptor.values:  # Fields for option descriptors.
             choices = [(str(i), v) for i, v in enumerate(descriptor.values)]
@@ -76,9 +77,15 @@ def edit(resource_id):
             ).first()
             if option_association is not None:
                 default = option_association.option
-            setattr(SingleResourceForm,
-                    descriptor.name,
-                    SelectField(choices=choices, default=default))
+            if descriptor.id == req_opt_desc.descriptor_id:
+                setattr(SingleResourceForm,
+                        descriptor.name,
+                        SelectField(choices=choices, default=default,
+                                    validators=[InputRequired()]))
+            else:
+                setattr(SingleResourceForm,
+                        descriptor.name,
+                        SelectField(choices=choices, default=default))
         else:  # Fields for text descriptors.
             default = None
             text_association = TextAssociation.query.filter_by(
