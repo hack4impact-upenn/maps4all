@@ -21,4 +21,12 @@
             </div>
         {% endif %}
     </body>
+<script>
+        $(document).ready(function(){
+            $('.message.close.icon')
+                .click(function(){
+              $(this).parent().hide();
+            });
+        });
+</script>
 </html>

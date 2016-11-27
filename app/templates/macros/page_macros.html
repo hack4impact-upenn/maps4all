@@ -7,13 +7,13 @@
        <button class="ui button start-edit">
         Edit
        </button>
-       <p class= "updated_alert">Updated successfully</p>
-       <button class="ui primary button end-edit">
+       <button class="ui primary button end-edit" style="display:none">
         Save
        </button>
-       <button class="ui primary button cancel-edit">
+       <button class="ui primary button cancel-edit" style="display:none">
         Cancel
        </button>
+       <div class="ui positive message updated-alert" style="display:none">Updated successfully</div>
     {% endif %}
 
     <script>
@@ -23,7 +23,7 @@
         {% if current_user.is_admin() %}
             $(".end-edit").hide();
             $(".cancel-edit").hide();
-            $(".updated_alert").hide();
+            $(".updated-alert").hide();
         {% endif %}
         $(".start-edit").click(function() {
             CKEDITOR.disableAutoInline = true;
@@ -35,6 +35,7 @@
             $(".start-edit").hide();
             $(".end-edit").show();
             $(".cancel-edit").show();
+            $(".updated-alert").hide();
             $("#" + editorIDName).attr("contenteditable","true");
         });
         $(".end-edit").click(function() {
@@ -50,7 +51,7 @@
             $(".end-edit").hide();
             $(".cancel-edit").hide();
             $(".start-edit").show();
-            $(".updated_alert").show();
+            $(".updated-alert").show();
             $("#" + editorIDName).attr("contenteditable","false");
         });
         $(".cancel-edit").click(function() {
@@ -63,7 +64,7 @@
             $(".cancel-edit").hide();
             $(".end-edit").hide();
             $(".start-edit").show();
-            $(".updated_alert").hide();
+            $(".updated-alert").hide();
         });
     });
     </script>
