@@ -13,6 +13,11 @@
                     <form id="search-resources">
                         <input id="search-resources-text" type="text" value="{{ query|default('') }}" placeholder="Search resources...">
                         <i class="search icon"></i>
+                        <select id="search-resources-options" multiple="" class="ui fluid dropdown">
+                        {% for option in options %}
+                            <option value="{{ option }}">{{ option }}</option>
+                        {% endfor %}
+                        </select>
                     </form>
                 </div>
             </div>

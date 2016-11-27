@@ -1,10 +1,11 @@
-from flask import abort, flash, redirect, render_template, url_for
+from flask import abort, flash, redirect, render_template, url_for, request
 from flask.ext.login import login_required
 from sqlalchemy.exc import IntegrityError
 from wtforms.fields import SelectField, TextAreaField
+from flask_wtf.file import InputRequired
 
 from .. import db
-from ..models import Descriptor, OptionAssociation, Resource, TextAssociation
+from ..models import Descriptor, OptionAssociation, Resource, TextAssociation, RequiredOptionDescriptor
 from . import single_resource
 from .forms import SingleResourceForm
 
@@ -14,25 +15,46 @@ from .forms import SingleResourceForm
 def index():
     """View resources in a list."""
     resources = Resource.query.all()
-    return render_template('single_resource/index.html', resources=resources)
+    req_opt_desc = RequiredOptionDescriptor.query.all()[0]
+    req_opt_desc = Descriptor.query.filter_by(
+        id=req_opt_desc.descriptor_id
+    ).first()
+    options = []
+    if req_opt_desc is not None:
+        options = req_opt_desc.values
+    return render_template('single_resource/index.html', resources=resources, options=options)
 
-@single_resource.route('/<query_name>')
+@single_resource.route('/<query>')
 @login_required
-def search_resources(query_name):
-    resources = Resource.query.filter(Resource.name.contains(query_name))
-    return render_template('single_resource/index.html', resources=resources, query=query_name)
+def search_resources(query):
+    name = request.args.get('name')
+    options = request.args.get('option')
+    resource_pool = Resource.query.filter(Resource.name.contains(name))
+    req_opt_desc = RequiredOptionDescriptor.query.all()[0]
+    for resource in resource_pool:
+        associations = OptionAssociation.query.filter_by(
+            resource_id=resource.id,
+            descriptor_id=req_opt_desc.id
+        )
+    return render_template('single_resource/index.html', resources=resources, query_name=query_name, query_option=query_option)
 
 @single_resource.route('/create', methods=['GET', 'POST'])
 @login_required
 def create():
     """Add a resource."""
     descriptors = Descriptor.query.all()
+    req_opt_desc = RequiredOptionDescriptor.query.all()[0]
     for descriptor in descriptors:
         if descriptor.values:  # Fields for option descriptors.
             choices = [(str(i), v) for i, v in enumerate(descriptor.values)]
-            setattr(SingleResourceForm,
-                    descriptor.name,
-                    SelectField(choices=choices))
+            if descriptor.id == req_opt_desc.descriptor_id:
+                setattr(SingleResourceForm,
+                        descriptor.name,
+                        SelectField(choices=choices, validators=[InputRequired()]))
+            else:
+                setattr(SingleResourceForm,
+                        descriptor.name,
+                        SelectField(choices=choices))
         else:  # Fields for text descriptors
             setattr(SingleResourceForm, descriptor.name, TextAreaField())
     form = SingleResourceForm()
