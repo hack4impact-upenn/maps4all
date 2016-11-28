@@ -248,7 +248,7 @@ function populateListDiv() {
     list.appendChild(listElement);
 
     listElement.addEventListener('click', function() {
-      markerListener(markerToShow, null);
+      markerListener(markerToShow, 'click');
     });
   });
 }
