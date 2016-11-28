@@ -86,24 +86,36 @@ function initLocationSearch(map) {
  * Initialize searching on the map by resource name input
  */
 function initResourceSearch() {
-  $('#resources-form').submit(function(e) {
-    e.preventDefault();
+  // Click 'Search' on resource name input
+  $('#search-user-resources').click(function() {
     var query = $('#resources-input').val();
     var endpoint = '/search-resources/'+query;
     if (query.length == 0) {
         endpoint = '/get-resources';
     }
-    $.get(endpoint).done(function(resourcesString) {
-      for (var i = 0; i < markers.length; i++) {
-        markers[i].setMap(null);
-      }
-      markers = [];
-      var resources = JSON.parse(resourcesString);
-      if (resources.length != 0) {
-        populateMarkers(resources);
-      }
-      populateListDiv();
-    });
+    resourceSearchRequest(endpoint);
+  });
+
+  // Remove query from resource name input displays
+  // all resources again
+  $('#resources-input').keyup(function() {
+    if ($(this).val().length === 0) {
+      resourceSearchRequest('/get-resources');
+    }
+  });
+}
+
+function resourceSearchRequest(endpoint) {
+  $.get(endpoint).done(function(resourcesString) {
+    for (var i = 0; i < markers.length; i++) {
+      markers[i].setMap(null);
+    }
+    markers = [];
+    var resources = JSON.parse(resourcesString);
+    if (resources.length != 0) {
+      populateMarkers(resources);
+    }
+    populateListDiv();
   });
 }
 

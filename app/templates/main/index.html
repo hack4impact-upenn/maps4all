@@ -14,18 +14,16 @@
     <div id="map-list-grid" class="ui two column horizontally padded grid">
       <div class="four wide column">
         <div id="search">
-          <form id="resources-form">
-            <div class="ui fluid icon input">
-              <i class="search icon"></i>
-              <input type="text" id="resources-input" class="controls"
-                       placeholder="Enter a resource keyword">
-            </div>
-          </form>
-
           <div class="ui fluid icon input" id="location-search">
             <i class="search icon"></i>
             <input type="text" id="pac-input" class="controls"
-                   placeholder="Enter a location">
+                   placeholder="Search by location">
+          </div>
+          <div class="ui horizontal divider">Or</div>
+          <div class="ui fluid icon input">
+            <i class="search icon"></i>
+            <input type="text" id="resources-input" class="controls"
+                     placeholder="Enter resource name">
           </div>
 
           <div id="default-search" class="option-group">
@@ -107,9 +105,10 @@
           <div id="advanced-filters-showhide">
               Show Advanced Filters
           </div>
+          <button class="ui fluid button" id="search-user-resources">Search</button>
         </div>
 
-        <div class="ui divider"></div>
+        <div class="ui horizontal divider">Results</div>
         <div id="list" class="ui middle aligned divided list"></div>
       </div>
 
