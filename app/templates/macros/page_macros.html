@@ -1,19 +1,21 @@
 {% macro render_inline_editor(editable_html_obj, current_user) %}
-    <div id="editor-{{ editable_html_obj.editor_name }}" contenteditable="false">
-        {{ editable_html_obj.value|safe }}
+    <div class="ui segment">
+        <div id="editor-{{ editable_html_obj.editor_name }}" contenteditable="false">
+            {{ editable_html_obj.value|safe }}
+        </div>
     </div>
 
     {% if current_user.is_admin() %}
        <button class="ui button start-edit">
         Edit
        </button>
-       <button class="ui primary button end-edit" style="display:none">
+       <button class="ui primary button end-edit">
         Save
        </button>
-       <button class="ui primary button cancel-edit" style="display:none">
+       <button class="ui primary button cancel-edit">
         Cancel
        </button>
-       <div class="ui positive message updated-alert" style="display:none">Updated successfully</div>
+       <div class="ui positive message updated_alert">Updated successfully</div>
     {% endif %}
 
     <script>
@@ -28,9 +30,10 @@
             });
             original_data = CKEDITOR.instances[editorIDName].getData();
             $(".start-edit").hide();
+            $(".updated_alert").hide();
             $(".end-edit").show();
             $(".cancel-edit").show();
-            $(".updated-alert").hide();
+            $(".updated_alert").hide();
             $("#" + editorIDName).attr("contenteditable","true");
         });
         $(".end-edit").click(function() {
@@ -46,11 +49,12 @@
             $(".end-edit").hide();
             $(".cancel-edit").hide();
             $(".start-edit").show();
-            $(".updated-alert").show();
+            $(".updated_alert").show();
             $("#" + editorIDName).attr("contenteditable","false");
         });
-        $(".cancel-edit").click(function() {
-            if ( CKEDITOR.instances[editorIDName] ) {
+
+        function cancelEdit(){
+          if ( CKEDITOR.instances[editorIDName] ) {
                 if ( original_data !== null) {
                     CKEDITOR.instances[editorIDName].setData(original_data);
                 }
@@ -59,7 +63,16 @@
             $(".cancel-edit").hide();
             $(".end-edit").hide();
             $(".start-edit").show();
-            $(".updated-alert").hide();
+            $(".updated_alert").hide();
+            $("#" + editorIDName).attr("contenteditable","false");
+        }
+
+        $(".cancel-edit").click(function() {
+            cancelEdit();
+        });
+
+        $("#" + editorIDName).focusout(function() {
+            cancelEdit();
         });
     });
     </script>
