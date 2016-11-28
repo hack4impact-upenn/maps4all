@@ -249,3 +249,22 @@ function populateListDiv() {
     });
   });
 }
+
+// Resize area
+// Set height to fit screen
+function resizeMapListGrid() {
+  var navHeight = $('.ui.navigation.grid').height();
+  $('#map-list-grid').height($('body').height() - navHeight - 40);
+}
+
+$(document).ready(function(){
+  initMap();
+  resizeMapListGrid();
+
+  $(window).resize(function() {
+    resizeMapListGrid();
+    var center = map.getCenter();
+    google.maps.event.trigger(map, "resize");
+    map.setCenter(center);
+  });
+});
