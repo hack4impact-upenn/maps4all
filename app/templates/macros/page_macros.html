@@ -1,6 +1,8 @@
 {% macro render_inline_editor(editable_html_obj, current_user) %}
-    <div id="editor-{{ editable_html_obj.editor_name }}" contenteditable="false">
-        {{ editable_html_obj.value|safe }}
+    <div class="ui segment">
+        <div id="editor-{{ editable_html_obj.editor_name }}" contenteditable="false">
+            {{ editable_html_obj.value|safe }}
+        </div>
     </div>
 
     {% if current_user.is_admin() %}
@@ -20,11 +22,6 @@
     var editorIDName = "editor-{{ editable_html_obj.editor_name }}";
     var original_data;
     $(document).ready(function() {
-        {% if current_user.is_admin() %}
-            $(".end-edit").hide();
-            $(".cancel-edit").hide();
-            $(".updated_alert").hide();
-        {% endif %}
         $(".start-edit").click(function() {
             CKEDITOR.disableAutoInline = true;
             var editor = CKEDITOR.inline(editorIDName, {
@@ -33,6 +30,7 @@
             });
             original_data = CKEDITOR.instances[editorIDName].getData();
             $(".start-edit").hide();
+            $(".updated_alert").hide();
             $(".end-edit").show();
             $(".cancel-edit").show();
             $("#" + editorIDName).attr("contenteditable","true");
@@ -53,8 +51,9 @@
             $(".updated_alert").show();
             $("#" + editorIDName).attr("contenteditable","false");
         });
-        $(".cancel-edit").click(function() {
-            if ( CKEDITOR.instances[editorIDName] ) {
+
+        function cancelEdit(){
+          if ( CKEDITOR.instances[editorIDName] ) {
                 if ( original_data !== null) {
                     CKEDITOR.instances[editorIDName].setData(original_data);
                 }
@@ -64,6 +63,15 @@
             $(".end-edit").hide();
             $(".start-edit").show();
             $(".updated_alert").hide();
+            $("#" + editorIDName).attr("contenteditable","false");
+        }
+
+        $(".cancel-edit").click(function() {
+            cancelEdit();
+        });
+
+        $("#" + editorIDName).focusout(function() {
+            cancelEdit();
         });
     });
     </script>

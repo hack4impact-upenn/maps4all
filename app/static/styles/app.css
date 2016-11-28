@@ -1,3 +1,21 @@
+@media -sass-debug-info{filename{}line{font-family:\000032}}
+.updated_alert, .ui.button.cancel-edit, .ui.button.end-edit {
+  display: none;
+}
+
+@media -sass-debug-info{filename{}line{font-family:\000036}}
+.cke_editable {
+  padding: .5em;
+}
+
+@media -sass-debug-info{filename{}line{font-family:\0000310}}
+#editor-about, #editor-contact {
+  max-height: 300px;
+  min-height: 100px;
+  overflow-y: scroll;
+  word-wrap: break-word;
+}
+
 @media -sass-debug-info{filename{}line{font-family:\000037}}
 nav {
   margin-bottom: 40px !important;
