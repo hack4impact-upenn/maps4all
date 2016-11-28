@@ -158,7 +158,7 @@ table.selectable tr:hover {
 }
 
 @media -sass-debug-info{filename{}line{font-family:\00003121}}
-#single-map {
+#single-resource-map {
   width: 100%;
   height: 300px;
 }

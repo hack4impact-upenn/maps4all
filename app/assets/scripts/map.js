@@ -7,6 +7,7 @@ var map;
 var markers = [];
 var infowindow;
 var focusZoom = 17;
+var locationMarker;
 
 /*
  * Initializes the map, the corresponding list of resources and search
@@ -49,8 +50,6 @@ function initLocationSearch(map) {
       window.alert("Autocomplete's returned place contains no geometry");
       return;
     }
-    map.setCenter(place.geometry.location);
-    map.setZoom(focusZoom);
 
     var address = '';
     if (place.address_components) {
@@ -64,29 +63,43 @@ function initLocationSearch(map) {
       ].join(' ');
     }
 
-    var marker = new google.maps.Marker({
-      map: map,
-      position: place.geometry.location,
-      icon: {
-        path: google.maps.SymbolPath.CIRCLE,
-        scale: 8,
-        strokeColor: 'grey',
-        fillColor: 'black',
-        fillOpacity: 1,
-      },
-    });
+    if (!locationMarker) {
+      locationMarker = new google.maps.Marker({
+        map: map,
+        position: place.geometry.location,
+        icon: {
+          path: google.maps.SymbolPath.CIRCLE,
+          scale: 8,
+          strokeColor: 'grey',
+          fillColor: 'black',
+          fillOpacity: 1,
+        },
+      });
+    } else {
+      locationMarker.setPosition(place.geometry.location);
+    }
 
-    // Show marker info bubble for searched location
-    var locationMarkerTemplate = $("#locationmarker-template").html();
-    var compiledLocMarkerTemplate = Handlebars.compile(locationMarkerTemplate);
+    // Marker info window for searched location
+    var searchedLocationInfoWindowTemplate =
+      $("#searched-location-info-window-template").html();
+    var compiledLocInfoWindowTemplate =
+      Handlebars.compile(searchedLocationInfoWindowTemplate);
     var context = {
       name: place.name,
       address: address,
     };
-    var locationMarkerInfo = compiledLocMarkerTemplate(context);
+    var locationMarkerInfo = compiledLocInfoWindowTemplate(context);
 
     infowindow.setContent(locationMarkerInfo);
-    infowindow.open(map, marker);
+    infowindow.open(map, locationMarker);
+  });
+
+  // Delete location marker when deleting location query
+  $('#pac-input').keyup(function() {
+    if ($(this).val() === "") {
+      locationMarker.setMap(null);
+      locationMarker = null;
+    }
   });
 }
 
@@ -160,13 +173,14 @@ function create_marker(resource){
         $("#resource-info").hide();
 
         // Show marker info bubble for clicked marker
-        var markerTemplate = $("#marker-template").html();
-        var compiledMarkerTemplate = Handlebars.compile(markerTemplate);
+        var markerInfoWindowTemplate = $("#marker-info-window-template").html();
+        var compiledMarkerInfoWindowTemplate =
+          Handlebars.compile(markerInfoWindowTemplate);
         var context = {
           name: resource.name,
           address: resource.address,
         };
-        var markerInfo = compiledMarkerTemplate(context);
+        var markerInfo = compiledMarkerInfoWindowTemplate(context);
 
         if (infowindow) {
           infowindow.close();
@@ -175,59 +189,10 @@ function create_marker(resource){
           content: markerInfo
         });
         infowindow.open(map, markerToAdd);
-        map.setCenter(markerToAdd.getPosition());
-        map.setZoom(focusZoom);
 
         // Marker to detailed resource information view
         $(".more-info").click(function() {
-          // get descriptor information
-          $.get('get-associations/' + resource.id).done(function(associations) {
-            $("#map").hide();
-            $("#resource-info").empty();
-            $("#resource-info").show();
-
-            var associationObject = JSON.parse(associations);
-            var descriptors = [];
-            for (var key in associationObject) {
-              var descriptor = {
-                key: key,
-                value: associationObject[key],
-              };
-              descriptors.push(descriptor);
-            }
-
-            // Detailed resource information view
-            var resourceTemplate = $("#resource-template").html();
-            var compiledResourceTemplate = Handlebars.compile(resourceTemplate);
-            var context = {
-              name: resource.name,
-              address: resource.address,
-              suggestionUrl: 'suggestion/' + resource.id,
-              descriptors: descriptors,
-            };
-            var resourceInfo = compiledResourceTemplate(context);
-            $("#resource-info").html(resourceInfo);
-
-            // Set handlers and populate DOM elements from resource template
-            // Can only reference elements in template after compilation
-            $('#back-button').click(function() {
-              $("#map").show();
-              $("#resource-info").hide();
-            });
-
-            // Map for single resource on detailed resource info page
-            var singleMap = new google.maps.Map(
-              document.getElementById('single-map'),
-              {
-                center: markerToAdd.getPosition(),
-                zoom: focusZoom,
-              }
-            );
-            var singleMarker = new google.maps.Marker({
-              position: markerToAdd.getPosition(),
-              map: singleMap,
-            });
-          }).fail(function() {});
+          displayDetailedResourceView(resource, markerToAdd);
         });
       });
       callback();
@@ -235,6 +200,59 @@ function create_marker(resource){
          markers.push(markerToAdd)
     }
   );
+}
+
+// Generate the detailed resource page after clicking "more information"
+// on a marker
+function displayDetailedResourceView(resource, markerToAdd) {
+  // get descriptor information as associations
+  $.get('get-associations/' + resource.id).done(function(associations) {
+    $("#map").hide();
+    $("#resource-info").empty();
+    $("#resource-info").show();
+
+    var associationObject = JSON.parse(associations);
+    var descriptors = [];
+    for (var key in associationObject) {
+      var descriptor = {
+        key: key,
+        value: associationObject[key],
+      };
+      descriptors.push(descriptor);
+    }
+
+    // Detailed resource information template generation
+    var resourceTemplate = $("#resource-template").html();
+    var compiledResourceTemplate = Handlebars.compile(resourceTemplate);
+    var context = {
+      name: resource.name,
+      address: resource.address,
+      suggestionUrl: 'suggestion/' + resource.id,
+      descriptors: descriptors,
+    };
+    var resourceInfo = compiledResourceTemplate(context);
+    $("#resource-info").html(resourceInfo);
+
+    // Set handlers and populate DOM elements from resource template
+    // Can only reference elements in template after compilation
+    $('#back-button').click(function() {
+      $("#map").show();
+      $("#resource-info").hide();
+    });
+
+    // Map for single resource on detailed resource info page
+    var singleResourceMap = new google.maps.Map(
+      document.getElementById('single-resource-map'),
+      {
+        center: markerToAdd.getPosition(),
+        zoom: focusZoom,
+      }
+    );
+    var singleMarker = new google.maps.Marker({
+      position: markerToAdd.getPosition(),
+      map: singleResourceMap,
+    });
+  });
 }
 
 /*

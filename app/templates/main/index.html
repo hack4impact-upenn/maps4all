@@ -121,7 +121,7 @@
 
     <!-- HANDLEBARS.JS TEMPLATES COMPILED IN MAP.JS -->
     <!-- Populate location search marker info-->
-    <script id="locationmarker-template" type="text/x-handlebars-template">
+    <script id="searched-location-info-window-template" type="text/x-handlebars-template">
       <div class="loc-marker-info">
           <h3 class="ui header">
               {% raw %}{{ name }}{% endraw %}
@@ -133,7 +133,7 @@
     </script>
 
     <!-- Populate resource marker info-->
-    <script id="marker-template" type="text/x-handlebars-template">
+    <script id="marker-info-window-template" type="text/x-handlebars-template">
       <div class="marker-info">
           <h3 class="ui header">
               {% raw %}{{ name }}{% endraw %}
@@ -155,7 +155,7 @@
             {% raw %}{{ address }}{% endraw %}
           </div>
         </h1>
-        <div id="single-map"></div>
+        <div id="single-resource-map"></div>
         <div class="ui hidden divider"></div>
         <div class="descriptors">
           <h2 class="ui dividing header">Information</h2>
