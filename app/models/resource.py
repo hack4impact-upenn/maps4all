@@ -7,7 +7,6 @@ class OptionAssociation(db.Model):
     value of the option.
     """
     __tablename__ = 'option_associations'
-
     resource_id = db.Column(db.Integer, db.ForeignKey('resources.id'),
                             primary_key=True)
     descriptor_id = db.Column(db.Integer, db.ForeignKey('descriptors.id'),

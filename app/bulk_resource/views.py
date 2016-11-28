@@ -234,7 +234,8 @@ def save():
                     else:  # option descriptor
                         association_class = OptionAssociation
                         for s in cell.data.split(';'):
-                            assocValues.append(values.index(s))
+                            if s in values:
+                                assocValues.append(values.index(s))
                         keyword = 'option'
                     for value in assocValues:
                         arguments = {

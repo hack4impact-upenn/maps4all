@@ -38,7 +38,8 @@ class CsvContainer(db.Model):
                 predicted_options = set()
                 for j in range(len(self.csv_rows)):
                     for s in self.cell_data(j, i).split(';'):
-                        predicted_options.add(s)
+                        if s:
+                            predicted_options.add(s)
                 column.predicted_options = predicted_options
                 db.session.add(column)
         db.session.commit()
