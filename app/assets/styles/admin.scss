@@ -1,15 +1,15 @@
 // About page 
 .updated_alert, .ui.button.cancel-edit, .ui.button.end-edit {
-	display: none;
+  display: none;
 }
 
 .cke_editable {
-	padding: .5em;
+  padding: .5em;
 }
 
 #editor-about, #editor-contact {
-	max-height: 300px;
-	min-height: 100px;
-	overflow-y: scroll;
-	word-wrap: break-word;
+  max-height: 300px;
+  min-height: 100px;
+  overflow-y: scroll;
+  word-wrap: break-word;
 }
