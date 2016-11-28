@@ -16,10 +16,13 @@ nav .mobile.only.row .ui.vertical.menu {
 
 @media -sass-debug-info{filename{}line{font-family:\0000325}}
 .flashes > .ui.message:last-of-type {
-    margin-bottom: 2rem;
+  float: right;
+  overflow: visible;
+  position: absolute;
+  z-index: 1000;
 }
 
-@media -sass-debug-info{filename{}line{font-family:\0000330}}
+@media -sass-debug-info{filename{}line{font-family:\0000333}}
 table.selectable tr:hover {
   cursor: pointer !important;
 }
