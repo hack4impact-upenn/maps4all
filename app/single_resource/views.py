@@ -50,8 +50,7 @@ def create():
             db.session.commit()
             flash('Resource added', 'form-success')
             return redirect(url_for('single_resource.index'))
-        except IntegrityError, e:
-            print(e)
+        except IntegrityError:
             db.session.rollback()
             flash('Error: failed to save resource. Please try again.',
                   'form-error')
