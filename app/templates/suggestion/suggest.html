@@ -14,6 +14,32 @@
         Suggest New Resource
       {% endif %}
     </h1>
-    {{ f.render_form(form) }}
+  <!-- <p>How much information do you know about this resource? </p> -->
+  <!--   <button class="ui button basic-button">Basic</button>
+    <button class="ui button advanced-button">Advanced</button> -->
+    <div class="basic-form">
+      {{ f.render_form(basic_form) }}
+    </div>
+    <!-- <div class="advanced-form">
+      {{ f.render_form(advanced_form) }} 
+    </div> -->
   </div>
+
+<!-- <script>
+  $(".basic-form").hide();
+  $(".basic-button").click(function() {
+    $(".basic-form").show();
+    $(".basic-button").prop("disabled", true);
+    $(".advanced-form").hide();
+    $(".advanced-button").prop("disabled", false);
+  });
+
+  $(".advanced-form").hide();
+  $(".advanced-button").click(function() {
+    $(".advanced-form").show();
+    $(".advanced-button").prop("disabled", true);
+    $(".basic-form").hide();
+    $(".basic-button").prop("disabled", false);
+  });
+</script> -->
 {% endblock %}
