@@ -1,4 +1,5 @@
 import os
+import urlparse
 
 basedir = os.path.abspath(os.path.dirname(__file__))
 
@@ -8,7 +9,6 @@ class Config:
     SECRET_KEY = os.environ.get('SECRET_KEY') or \
         'SjefBOa$1FgGco0SkfPO392qqH9%a492'
     SQLALCHEMY_COMMIT_ON_TEARDOWN = True
-    SSL_DISABLE = True
 
     MAIL_SERVER = 'smtp.gmail.com'
     MAIL_PORT = 587
@@ -20,6 +20,17 @@ class Config:
     EMAIL_SUBJECT_PREFIX = '[{}]'.format(APP_NAME)
     EMAIL_SENDER = '{app_name} Admin <{email}>'.format(app_name=APP_NAME,
                                                        email=MAIL_USERNAME)
+
+    REDIS_URL = os.getenv('REDISTOGO_URL') or 'http://localhost:6379'
+
+    # Parse the REDIS_URL to set RQ config variables
+    urlparse.uses_netloc.append('redis')
+    url = urlparse.urlparse(REDIS_URL)
+
+    RQ_DEFAULT_HOST = url.hostname
+    RQ_DEFAULT_PORT = url.port
+    RQ_DEFAULT_PASSWORD = url.password
+    RQ_DEFAULT_DB = 0
 
     @staticmethod
     def init_app(app):
@@ -43,6 +54,7 @@ class TestingConfig(Config):
 class ProductionConfig(Config):
     SQLALCHEMY_DATABASE_URI = os.environ.get('DATABASE_URL') or \
         'sqlite:///' + os.path.join(basedir, 'data.sqlite')
+    SSL_DISABLE = (os.environ.get('SSL_DISABLE') or 'True') == 'True'
 
     @classmethod
     def init_app(cls, app):
@@ -70,8 +82,6 @@ class ProductionConfig(Config):
 
 
 class HerokuConfig(ProductionConfig):
-    SSL_DISABLE = bool(os.environ.get('SSL_DISABLE'))
-
     @classmethod
     def init_app(cls, app):
         ProductionConfig.init_app(app)
