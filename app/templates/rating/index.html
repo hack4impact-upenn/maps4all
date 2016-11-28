@@ -1,0 +1,39 @@
+{% extends 'layouts/base.html' %}
+
+{% block content %}
+    <div class="ui stackable grid container">
+        <div class="sixteen wide tablet twelve wide computer centered column">
+            <h2 class="centered ui header">
+                Ratings and Reviews
+                <div class="sub header">
+                    View current ratings and reviews
+                </div>
+            </h2>
+
+            {# Use overflow-x: scroll so that mobile views don't freak out
+             # when the table is too wide #}
+            <div style="overflow-x: scroll;">
+                <table class="ui searchable sortable unstackable selectable celled striped table">
+                    <thead>
+                        <tr>
+                            <th class="three wide sorted ascending">Time Stamp</th>
+                            <th class="three wide sorted ascending">Resource Name</th>
+                            <th class="one wide sorted ascending">Rating</th>
+                            <th class="four wide sorted ascending">Review</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                    {% for rating in ratings %}
+                        <tr>
+                            <td>{{ rating['submission_time'] }}</td>
+                            <td>{{ rating['resource_name'] }}</td>
+                            <td>{{ rating['rating'] }}</td>
+                            <td>{{ rating['review'] }}</td>
+                        </tr>
+                    {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+{% endblock %}

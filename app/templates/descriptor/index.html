@@ -1,10 +1,5 @@
 {% extends 'layouts/base.html' %}
 
-<!-- TODO: This shouldn't be necessary. Remove if possible. -->
-{% block javascript %}
-    {% assets 'descriptor_js' %}<script type="text/javascript" src="{{ ASSET_URL }}"></script>{% endassets %}
-{% endblock %}
-
 {% block content %}
     <div class="ui stackable grid container">
         <div class="sixteen wide tablet twelve wide computer centered column">
