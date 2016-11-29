@@ -9,13 +9,13 @@
        <button class="ui button start-edit">
         Edit
        </button>
-       <p class= "updated_alert">Updated successfully</p>
        <button class="ui primary button end-edit">
         Save
        </button>
        <button class="ui primary button cancel-edit">
         Cancel
        </button>
+       <div class="ui positive message updated-alert">Updated successfully</div>
     {% endif %}
 
     <script>
@@ -30,9 +30,9 @@
             });
             original_data = CKEDITOR.instances[editorIDName].getData();
             $(".start-edit").hide();
-            $(".updated_alert").hide();
             $(".end-edit").show();
             $(".cancel-edit").show();
+            $(".updated-alert").hide();
             $("#" + editorIDName).attr("contenteditable","true");
         });
         $(".end-edit").click(function() {
@@ -48,7 +48,7 @@
             $(".end-edit").hide();
             $(".cancel-edit").hide();
             $(".start-edit").show();
-            $(".updated_alert").show();
+            $(".updated-alert").show();
             $("#" + editorIDName).attr("contenteditable","false");
         });
 
@@ -62,7 +62,7 @@
             $(".cancel-edit").hide();
             $(".end-edit").hide();
             $(".start-edit").show();
-            $(".updated_alert").hide();
+            $(".updated-alert").hide();
             $("#" + editorIDName).attr("contenteditable","false");
         }
 
@@ -70,9 +70,9 @@
             cancelEdit();
         });
 
-        $("#" + editorIDName).focusout(function() {
+        /*$("#" + editorIDName).focusout(function() {
             cancelEdit();
-        });
+        });*/
     });
     </script>
 
