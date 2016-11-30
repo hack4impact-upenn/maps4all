@@ -290,6 +290,3 @@ function populateListDiv() {
     });
   });
 }
-
-// When the DOM is ready, init the map.
-$(document).ready(initMap);
