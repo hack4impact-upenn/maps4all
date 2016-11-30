@@ -15,9 +15,6 @@ $(document).ready(function () {
         $('.mobile.only .vertical.menu').transition('slide down');
     });
 
-    // Enable sortable tables
-    $('table.ui.sortable').tablesort();
-
     // Enable dropdowns
     $('.dropdown').dropdown();
     $('select').dropdown();
