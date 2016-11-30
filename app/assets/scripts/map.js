@@ -294,6 +294,7 @@ function populateListDiv() {
 // Resize map/list area - set height to fit screen
 function resizeMapListGrid() {
   var navHeight = $('.ui.navigation.grid').height();
+  // TODO: remove hack of subtracting 40
   $('#map-list-grid').height($('body').height() - navHeight - 40);
 }
 
@@ -302,9 +303,11 @@ $(document).ready(function(){
   initMap();
   resizeMapListGrid();
 
+  // Adjust height of map/list grid when resize browser to fit in screen
   $(window).resize(function() {
     resizeMapListGrid();
     var center = map.getCenter();
+    // Need to call resize event on map or creates dead grey area on map
     google.maps.event.trigger(map, "resize");
     map.setCenter(center);
   });
