@@ -7,63 +7,90 @@ var map;
 var oms;
 var markers = [];
 var infowindow;
+var focusZoom = 17;
+var locationMarker;
 
 // Click listener for a marker.
 function markerListener(marker, event) {
   $("#map").show();
   $("#resource-info").hide();
 
-  var contentDiv = document.createElement('div');
-  var resName = document.createElement('strong');
-  $(resName).html(marker.title);
-  var br = document.createElement('br');
-
-  // information pane to replace map
-  // TODO: refactor how the page elements are generated
-  var moreLink = document.createElement('p');
-  moreLink.innerHTML = 'More Info';
-  moreLink.setAttribute('class', 'more-info')
-  moreLink.addEventListener('click', function() {
-    // get descriptor information
-    $.get('get-associations/' + marker.resourceID).done(function(associations) {
-      $("#map").hide();
-      $("#resource-info").empty();
-      $("#resource-info").show();
-
-      var backButton = document.createElement('button');
-      backButton.innerHTML = 'Back';
-      backButton.setAttribute('class', 'ui button');
-      backButton.addEventListener('click', function() {
-        $("#map").show();
-        $("#resource-info").hide();
-      });
-      $("#resource-info").append(backButton);
-
-      var associationObject = JSON.parse(associations);
-      for (var key in associationObject) {
-        var descriptor = document.createElement('span');
-        descriptor.setAttribute('class', 'descriptor');
-        var name = document.createElement('strong');
-        $(name).append(key);
-        var value = associationObject[key];
-        $(descriptor).append(name, ': ', value);
-        $("#resource-info").append(descriptor);
-      }
-      var a = document.createElement('a');
-      $(a).attr('href', 'suggestion/' + marker.resourceID);
-      $(a).html('Suggest an edit for this resource');
-      $("#resource-info").append(a);
-    }).fail(function() {});
-  });
-  $(contentDiv).append(resName, br, marker.address, moreLink);
+  // Show marker info bubble
+  var markerInfoWindowTemplate = $("#marker-info-window-template").html();
+  var compiledMarkerInfoWindowTemplate =
+    Handlebars.compile(markerInfoWindowTemplate);
+  var context = {
+    name: marker.title,
+    address: marker.address,
+  };
+  var markerInfo = compiledMarkerInfoWindowTemplate(context);
 
   if (infowindow) {
     infowindow.close();
   }
   infowindow = new google.maps.InfoWindow({
-    content: contentDiv
+    content: markerInfo,
+    maxWidth: 300,
   });
   infowindow.open(map, marker);
+
+  // Marker "more information" link to detailed resource information view
+  $(".more-info").click(function() {
+    displayDetailedResourceView(marker);
+  });
+}
+
+// Generate the detailed resource page view after clicking "more information"
+// on a marker
+function displayDetailedResourceView(marker) {
+  // get descriptor information as associations
+  $.get('get-associations/' + marker.resourceID).done(function(associations) {
+    $("#map").hide();
+    $("#resource-info").empty();
+    $("#resource-info").show();
+
+    var associationObject = JSON.parse(associations);
+    var descriptors = [];
+    for (var key in associationObject) {
+      var descriptor = {
+        key: key,
+        value: associationObject[key],
+      };
+      descriptors.push(descriptor);
+    }
+
+    // Detailed resource information template generation
+    var resourceTemplate = $("#resource-template").html();
+    var compiledResourceTemplate = Handlebars.compile(resourceTemplate);
+    var context = {
+      name: marker.title,
+      address: marker.address,
+      suggestionUrl: 'suggestion/' + marker.resourceID,
+      descriptors: descriptors,
+    };
+    var resourceInfo = compiledResourceTemplate(context);
+    $("#resource-info").html(resourceInfo);
+
+    // Set handlers and populate DOM elements from resource template
+    // Can only reference elements in template after compilation
+    $('#back-button').click(function() {
+      $("#map").show();
+      $("#resource-info").hide();
+    });
+
+    // Map for single resource on detailed resource info page
+    var singleResourceMap = new google.maps.Map(
+      document.getElementById('single-resource-map'),
+      {
+        center: marker.getPosition(),
+        zoom: focusZoom,
+      }
+    );
+    var singleMarker = new google.maps.Marker({
+      position: marker.getPosition(),
+      map: singleResourceMap,
+    });
+  });
 }
 
 /*
@@ -73,7 +100,7 @@ function markerListener(marker, event) {
 function initMap() {
   map = new google.maps.Map(document.getElementById('map'), {
     center: {lat: 39.949, lng: -75.181}, // TODO(#52): Do not hardcode this.
-    zoom: 13
+    zoom: focusZoom,
   });
 
   oms = new OverlappingMarkerSpiderfier(map, {keepSpiderfied: true, nearbyDistance: 10});
@@ -112,8 +139,6 @@ function initLocationSearch(map) {
       window.alert("Autocomplete's returned place contains no geometry");
       return;
     }
-    map.setCenter(place.geometry.location);
-    map.setZoom(17);
 
     var address = '';
     if (place.address_components) {
@@ -127,22 +152,43 @@ function initLocationSearch(map) {
       ].join(' ');
     }
 
-    var marker = new google.maps.Marker({
-      map: map,
-      position: place.geometry.location,
-      icon: {
-        path: google.maps.SymbolPath.CIRCLE,
-        scale: 8,
-        strokeColor: 'grey',
-        fillColor: 'black',
-        fillOpacity: 1,
-      },
-    });
-    var placeDiv = document.createElement('div');
-    var br = document.createElement('br');
-    $(placeDiv).append(place.name, br, address);
-    infowindow.setContent(placeDiv);
-    infowindow.open(map, marker);
+    if (!locationMarker) {
+      locationMarker = new google.maps.Marker({
+        map: map,
+        position: place.geometry.location,
+        icon: {
+          path: google.maps.SymbolPath.CIRCLE,
+          scale: 8,
+          strokeColor: 'grey',
+          fillColor: 'black',
+          fillOpacity: 1,
+        },
+      });
+    } else {
+      locationMarker.setPosition(place.geometry.location);
+    }
+
+    // Marker info window for searched location
+    var searchedLocationInfoWindowTemplate =
+      $("#searched-location-info-window-template").html();
+    var compiledLocInfoWindowTemplate =
+      Handlebars.compile(searchedLocationInfoWindowTemplate);
+    var context = {
+      name: place.name,
+      address: address,
+    };
+    var locationMarkerInfo = compiledLocInfoWindowTemplate(context);
+
+    infowindow.setContent(locationMarkerInfo);
+    infowindow.open(map, locationMarker);
+  });
+
+  // Delete location marker when deleting location query
+  $('#pac-input').keyup(function() {
+    if ($(this).val() === "") {
+      locationMarker.setMap(null);
+      locationMarker = null;
+    }
   });
 }
 
@@ -211,7 +257,6 @@ function createMarker(resource) {
   markerToAdd.address = resource.address;
 
   markers.push(markerToAdd);
-
 }
 
 /*
@@ -221,34 +266,27 @@ function populateListDiv() {
   var markersToShow = markers;
   $("#list").empty();
 
-  var list = document.getElementById('list');
+  var listResources = [];
   $.each(markersToShow, function(i, markerToShow) {
-    var listElement = document.createElement('a');
-    listElement.setAttribute('class', 'item');
+    var listResource = {
+      name: markerToShow.title,
+      address: markerToShow.address,
+    };
+    listResources.push(listResource);
+  });
 
-    var rightArrowElement = document.createElement('div');
-    rightArrowElement.setAttribute('class', 'right floated content');
+  var listTemplate = $("#listview-template").html();
+  var compiledListTemplate = Handlebars.compile(listTemplate);
+  var context = {
+    resource: listResources,
+  };
+  var listView = compiledListTemplate(context);
+  $("#list").html(listView);
 
-    var rightArrowImage = document.createElement('i');
-    rightArrowImage.setAttribute('class', 'right chevron icon');
-
-    rightArrowElement.appendChild(rightArrowImage);
-    listElement.appendChild(rightArrowElement);
-
-    var mainContent = document.createElement('div');
-    mainContent.setAttribute('class', 'content');
-
-    var placeTitle = document.createElement('div');
-    placeTitle.setAttribute('class', 'list-item-title');
-    $(placeTitle).html(markerToShow.title);
-
-    mainContent.appendChild(placeTitle);
-    listElement.appendChild(mainContent);
-
-    list.appendChild(listElement);
-
-    listElement.addEventListener('click', function() {
-      markerListener(markerToShow, 'click');
+  // Can only add handlers to elements in template after compilation
+  $(".list-resource").each(function(i, element) {
+    element.addEventListener('click', function() {
+      markerListener(markersToShow[i], 'click');
     });
   });
 }
