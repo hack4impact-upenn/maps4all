@@ -7,7 +7,7 @@ $(document).ready(function () {
 
     // Enable dismissable flash messages
     $('.message .close').on('click', function () {
-        $(this).closest('.message').transition('fade');
+        $(this).parent().fadeOut();
     });
 
     // Enable mobile navigation

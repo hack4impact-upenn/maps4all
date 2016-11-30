@@ -26,13 +26,25 @@
             <h2 class="ui header">
                 Administrator Dashboard
             </h2>
-            <div class="ui two column stackable grid">
+            <div class="ui three column stackable grid">
                 {{ dashboard_option('Registered Users', 'admin.registered_users',
                                     description='View and manage user accounts', icon='users icon') }}
                 {{ dashboard_option('Add New User', 'admin.new_user',
                                     description='Create a new user account', icon='add user icon') }}
                 {{ dashboard_option('Invite New User', 'admin.invite_user',
                                     description='Invites a new user to create their own account', icon='add user icon') }}
+                {{ dashboard_option('All Resources', 'single_resource.index',
+                                    description='View and manage resources', icon='book icon') }}
+                {{ dashboard_option('Add New Resource', 'single_resource.create',
+                                    description='Create a new resource', icon='add circle icon') }}
+                {{ dashboard_option('Suggested Resources', 'suggestion.index',
+                                    description='View and manage suggested resources', icon='checkmark box icon') }}
+                {{ dashboard_option('All Descriptors', 'descriptor.index',
+                                    description='View and manage descriptors', icon='tags icon') }}
+                {{ dashboard_option('Add New Descriptor', 'descriptor.new_descriptor',
+                                    description='Create a new descriptor', icon='add circle icon') }}
+                {{ dashboard_option('Upload Resources', 'bulk_resource.upload',
+                                    description='Upload a list of resources', icon='upload icon') }}
             </div>
         </div>
     </div>

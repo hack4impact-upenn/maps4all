@@ -4,10 +4,94 @@
 // <script src="https://maps.googleapis.com/maps/api/js?key=YOUR_API_KEY&libraries=places">
 
 var map;
+var oms;
 var markers = [];
 var infowindow;
 var focusZoom = 17;
 var locationMarker;
+
+// Click listener for a marker.
+function markerListener(marker, event) {
+  $("#map").show();
+  $("#resource-info").hide();
+
+  // Show marker info bubble
+  var markerInfoWindowTemplate = $("#marker-info-window-template").html();
+  var compiledMarkerInfoWindowTemplate =
+    Handlebars.compile(markerInfoWindowTemplate);
+  var context = {
+    name: marker.title,
+    address: marker.address,
+  };
+  var markerInfo = compiledMarkerInfoWindowTemplate(context);
+
+  if (infowindow) {
+    infowindow.close();
+  }
+  infowindow = new google.maps.InfoWindow({
+    content: markerInfo,
+    maxWidth: 300,
+  });
+  infowindow.open(map, marker);
+
+  // Marker "more information" link to detailed resource information view
+  $(".more-info").click(function() {
+    displayDetailedResourceView(marker);
+  });
+}
+
+// Generate the detailed resource page view after clicking "more information"
+// on a marker
+function displayDetailedResourceView(marker) {
+  // get descriptor information as associations
+  $.get('get-associations/' + marker.resourceID).done(function(associations) {
+    $("#map").hide();
+    $("#resource-info").empty();
+    $("#resource-info").show();
+
+    var associationObject = JSON.parse(associations);
+    var descriptors = [];
+    for (var key in associationObject) {
+      var descriptor = {
+        key: key,
+        value: associationObject[key],
+      };
+      descriptors.push(descriptor);
+    }
+
+    // Detailed resource information template generation
+    var resourceTemplate = $("#resource-template").html();
+    var compiledResourceTemplate = Handlebars.compile(resourceTemplate);
+    var context = {
+      name: marker.title,
+      address: marker.address,
+      suggestionUrl: 'suggestion/' + marker.resourceID,
+      descriptors: descriptors,
+    };
+    var resourceInfo = compiledResourceTemplate(context);
+    $("#resource-info").html(resourceInfo);
+
+    // Set handlers and populate DOM elements from resource template
+    // Can only reference elements in template after compilation
+    $('#back-button').click(function() {
+      $("#map").show();
+      $("#resource-info").hide();
+    });
+
+    // Map for single resource on detailed resource info page
+    var singleResourceMap = new google.maps.Map(
+      document.getElementById('single-resource-map'),
+      {
+        center: marker.getPosition(),
+        zoom: focusZoom,
+      }
+    );
+    var singleMarker = new google.maps.Marker({
+      position: marker.getPosition(),
+      map: singleResourceMap,
+    });
+  });
+}
 
 /*
  * Initializes the map, the corresponding list of resources and search
@@ -18,6 +102,11 @@ function initMap() {
     center: {lat: 39.949, lng: -75.181}, // TODO(#52): Do not hardcode this.
     zoom: focusZoom,
   });
+
+  oms = new OverlappingMarkerSpiderfier(map, {keepSpiderfied: true, nearbyDistance: 10});
+
+  // Add click listener to marker for displaying infoWindow
+  oms.addListener('click', markerListener);
 
   infowindow = new google.maps.InfoWindow();
   initLocationSearch(map);
@@ -134,12 +223,13 @@ function initResourceSearch() {
  */
 function populateMarkers(resources) {
   for (var i = 0; i < resources.length; i++) {
-    create_marker(resources[i]);
+    createMarker(resources[i]);
   }
 
   var bounds = new google.maps.LatLngBounds();
   for (var i = 0; i < markers.length; i++) {
     markers[i].setMap(map);
+    oms.addMarker(markers[i]);
     bounds.extend(markers[i].getPosition());
   }
 
@@ -151,7 +241,7 @@ function populateMarkers(resources) {
  * Create a marker for each resource and handle clicking on a marker.
  * Handle clicking on more information for a resource
  */
-function create_marker(resource){
+function createMarker(resource) {
   var markerToAdd = new google.maps.Marker({
     map: map
   });
@@ -164,95 +254,9 @@ function create_marker(resource){
     csrf_token: $('meta[name="csrf-token"]').prop('content'),
     data: resource.name
   };
-  var values = [];
-  values.push(markerToAdd.json_data);
-  async.each(values,
-    function(value, callback){
-      markerToAdd.addListener('click', function() {
-        $("#map").show();
-        $("#resource-info").hide();
+  markerToAdd.resourceID = resource.id;
 
-        // Show marker info bubble for clicked marker
-        var markerInfoWindowTemplate = $("#marker-info-window-template").html();
-        var compiledMarkerInfoWindowTemplate =
-          Handlebars.compile(markerInfoWindowTemplate);
-        var context = {
-          name: resource.name,
-          address: resource.address,
-        };
-        var markerInfo = compiledMarkerInfoWindowTemplate(context);
-
-        if (infowindow) {
-          infowindow.close();
-        }
-        infowindow = new google.maps.InfoWindow({
-          content: markerInfo
-        });
-        infowindow.open(map, markerToAdd);
-
-        // Marker to detailed resource information view
-        $(".more-info").click(function() {
-          displayDetailedResourceView(resource, markerToAdd);
-        });
-      });
-      callback();
-    }, function() {
-         markers.push(markerToAdd)
-    }
-  );
-}
-
-// Generate the detailed resource page after clicking "more information"
-// on a marker
-function displayDetailedResourceView(resource, markerToAdd) {
-  // get descriptor information as associations
-  $.get('get-associations/' + resource.id).done(function(associations) {
-    $("#map").hide();
-    $("#resource-info").empty();
-    $("#resource-info").show();
-
-    var associationObject = JSON.parse(associations);
-    var descriptors = [];
-    for (var key in associationObject) {
-      var descriptor = {
-        key: key,
-        value: associationObject[key],
-      };
-      descriptors.push(descriptor);
-    }
-
-    // Detailed resource information template generation
-    var resourceTemplate = $("#resource-template").html();
-    var compiledResourceTemplate = Handlebars.compile(resourceTemplate);
-    var context = {
-      name: resource.name,
-      address: resource.address,
-      suggestionUrl: 'suggestion/' + resource.id,
-      descriptors: descriptors,
-    };
-    var resourceInfo = compiledResourceTemplate(context);
-    $("#resource-info").html(resourceInfo);
-
-    // Set handlers and populate DOM elements from resource template
-    // Can only reference elements in template after compilation
-    $('#back-button').click(function() {
-      $("#map").show();
-      $("#resource-info").hide();
-    });
-
-    // Map for single resource on detailed resource info page
-    var singleResourceMap = new google.maps.Map(
-      document.getElementById('single-resource-map'),
-      {
-        center: markerToAdd.getPosition(),
-        zoom: focusZoom,
-      }
-    );
-    var singleMarker = new google.maps.Marker({
-      position: markerToAdd.getPosition(),
-      map: singleResourceMap,
-    });
-  });
+  markers.push(markerToAdd);
 }
 
 /*
@@ -282,7 +286,10 @@ function populateListDiv() {
   // Can only add handlers to elements in template after compilation
   $(".list-resource").each(function(i, element) {
     element.addEventListener('click', function() {
-      google.maps.event.trigger(markersToShow[i], 'click');
+      markerListener(markersToShow[i], 'click');
     });
   });
 }
+
+// When the DOM is ready, init the map.
+$(document).ready(initMap);

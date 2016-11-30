@@ -1,3 +1,21 @@
+@media -sass-debug-info{filename{}line{font-family:\000032}}
+.updated-alert, .ui.button.cancel-edit, .ui.button.end-edit {
+  display: none;
+}
+
+@media -sass-debug-info{filename{}line{font-family:\000036}}
+.cke_editable {
+  padding: .5em;
+}
+
+@media -sass-debug-info{filename{}line{font-family:\0000310}}
+#editor-about, #editor-contact {
+  max-height: 300px;
+  min-height: 100px;
+  overflow-y: scroll;
+  word-wrap: break-word;
+}
+
 @media -sass-debug-info{filename{}line{font-family:\000037}}
 nav {
   margin-bottom: 40px !important;
@@ -16,10 +34,13 @@ nav .mobile.only.row .ui.vertical.menu {
 
 @media -sass-debug-info{filename{}line{font-family:\0000325}}
 .flashes > .ui.message:last-of-type {
-  margin-bottom: 2rem;
+  float: right;
+  overflow: visible;
+  position: absolute;
+  z-index: 1000;
 }
 
-@media -sass-debug-info{filename{}line{font-family:\0000330}}
+@media -sass-debug-info{filename{}line{font-family:\0000333}}
 table.selectable tr:hover {
   cursor: pointer !important;
 }
@@ -125,24 +146,17 @@ table.selectable tr:hover {
 }
 
 @media -sass-debug-info{filename{}line{font-family:\0000391}}
-.more-info {
-  color: blue;
-  cursor: pointer;
-  text-decoration: underline;
-}
-
-@media -sass-debug-info{filename{}line{font-family:\0000397}}
 .descriptor {
   display: block;
 }
 
-@media -sass-debug-info{filename{}line{font-family:\00003102}}
+@media -sass-debug-info{filename{}line{font-family:\0000396}}
 #resources-form {
   display: inline;
   text-overflow: ellipsis;
 }
 
-@media -sass-debug-info{filename{}line{font-family:\00003107}}
+@media -sass-debug-info{filename{}line{font-family:\00003101}}
 #resources-input {
   background-color: #fff;
   font-family: Roboto;
@@ -152,13 +166,20 @@ table.selectable tr:hover {
   text-overflow: ellipsis;
 }
 
-@media -sass-debug-info{filename{}line{font-family:\00003117}}
+@media -sass-debug-info{filename{}line{font-family:\00003111}}
 #resource-info > .ui.header > .sub.header > .ui.label {
   margin-left: 0px;
 }
 
-@media -sass-debug-info{filename{}line{font-family:\00003121}}
+@media -sass-debug-info{filename{}line{font-family:\00003115}}
 #single-resource-map {
   width: 100%;
   height: 300px;
+}
+
+@media -sass-debug-info{filename{}line{font-family:\00003121}}
+.more-info {
+  color: blue;
+  cursor: pointer;
+  text-decoration: underline;
 }

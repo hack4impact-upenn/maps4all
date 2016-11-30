@@ -88,12 +88,6 @@ $font-choice: Roboto;
   margin-right: 5px;
 }
 
-.more-info {
-  color: blue;
-  cursor: pointer;
-  text-decoration: underline;
-}
-
 .descriptor {
   display: block;
 }
@@ -106,7 +100,7 @@ $font-choice: Roboto;
 
 #resources-input {
   background-color: #fff;
-  font-family: Roboto;
+  font-family: $font-choice;
   font-size: 15px;
   font-weight: 300;
   margin-top: 0px;
@@ -121,4 +115,11 @@ $font-choice: Roboto;
 #single-resource-map {
   width: 100%;
   height: 300px;
+}
+
+// Resource marker
+.more-info {
+  color: blue;
+  cursor: pointer;
+  text-decoration: underline;
 }
