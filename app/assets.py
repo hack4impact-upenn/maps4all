@@ -18,6 +18,7 @@ vendor_css = Bundle(
 )
 
 vendor_js = Bundle(
+    'vendor/jquery.min.js',
     'vendor/*.js',
     filters='jsmin',
     output='scripts/vendor.js'
