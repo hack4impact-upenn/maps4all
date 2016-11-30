@@ -23,7 +23,24 @@ $font-choice: Roboto;
 }
 
 #list {
-  padding: 10px;
+  height: 100%;
+  margin-top: 0px;
+  overflow-y: auto;
+  padding: 0 0.5em 0 0.5em;
+}
+
+#list > .item.list-resource {
+  padding-bottom: 0.5em;
+  padding-top: 0.5em;
+
+  .sub.header {
+    font-weight: normal;
+  }
+
+  .ui.label {
+    margin-left: 0;
+    margin-top: 0.5em;
+  }
 }
 
 /**** SEARCH ****/
@@ -80,12 +97,6 @@ $font-choice: Roboto;
   margin-right: 5px;
 }
 
-.more-info {
-  color: blue;
-  cursor: pointer;
-  text-decoration: underline;
-}
-
 .descriptor {
   display: block;
 }
@@ -103,4 +114,21 @@ $font-choice: Roboto;
   font-weight: 300;
   margin-top: 0px;
   text-overflow: ellipsis;
+}
+
+// Resource info
+#resource-info > .ui.header > .sub.header > .ui.label {
+  margin-left: 0px;
+}
+
+#single-resource-map {
+  width: 100%;
+  height: 300px;
+}
+
+// Resource marker
+.more-info {
+  color: blue;
+  cursor: pointer;
+  text-decoration: underline;
 }
