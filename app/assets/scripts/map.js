@@ -249,12 +249,12 @@ function createMarker(resource) {
   markerToAdd.setPosition(latLng);
   markerToAdd.setVisible(true);
   markerToAdd.title = resource.name;
-  markerToAdd.address = resource.address;
   markerToAdd.json_data = {
     csrf_token: $('meta[name="csrf-token"]').prop('content'),
     data: resource.name
   };
   markerToAdd.resourceID = resource.id;
+  markerToAdd.address = resource.address;
 
   markers.push(markerToAdd);
 }
