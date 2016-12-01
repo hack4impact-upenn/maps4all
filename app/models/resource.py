@@ -176,10 +176,10 @@ class Resource(db.Model):
         if not ratings:
             return -1.0
 
-        total_sum = float(sum(r for r.rating in ratings))
+        total_sum = float(sum(r.rating for r in ratings))
         return '%.1f' % total_sum / len(ratings)
 
     def get_all_ratings(self):
         ratings = Rating.query.filter_by(resource_id=self.id).all()
-        sorted_ratings = ratings.order_by(desc(Rating.submission_time))
-        return sorted_ratings
+        ratings.sort(key=lambda r: r.submission_time, reverse=True)
+        return ratings
