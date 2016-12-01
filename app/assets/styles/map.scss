@@ -1,44 +1,29 @@
 $accent-color: #2C9FA3;
 $font-choice: Roboto;
 
-#map {
-  height: 100%;
-  width: 100%;
-}
-
-#list {
-  height: 95%;
-  margin-top: 0px;
-  overflow-y: auto;
-  padding: 0 0.5em 0 0.5em;
-}
-
-#list > .item.list-resource {
-  padding-bottom: 0.5em;
-  padding-top: 0.5em;
-
-  .sub.header {
-    font-weight: normal;
-  }
-
-  .ui.label {
-    margin-left: 0;
-    margin-top: 0.5em;
-  }
-}
-
+/******** GENERAL MAP/LIST GRID STYLES *************/
 #map-list-grid {
-  height: 95%;
+  padding: 1em;
+  position: absolute;
+  width: 100%;
+
+  #left-column {
+    background-color: #B8B8B8; // TODO: change
+    height: 100%;
+    overflow-y: scroll;
+    padding: 1em;
+  }
+
+  #right-column {
+    padding: 0;
+  }
 }
 
-#map-list-grid.column {
-  padding: 0;
+#left-column-divider {
+  margin-bottom: 0;
 }
 
-#search {
-  margin: 10px;
-}
-
+/*************** SEARCH STYLES ****************/
 // Location search
 #pac-input, #resources-input {
   background-color: #fff;
@@ -107,14 +92,31 @@ $font-choice: Roboto;
   text-overflow: ellipsis;
 }
 
-// Resource info
-#resource-info > .ui.header > .sub.header > .ui.label {
-  margin-left: 0px;
+/*************** LIST STYLES ****************/
+#list {
+  height: 100%;
+  margin-top: 0px;
 }
 
-#single-resource-map {
+// Resource list item
+#list > .item.list-resource {
+  padding-bottom: 1em;
+  padding-top: 0.5em;
+
+  .sub.header {
+    font-weight: normal;
+  }
+
+  .ui.label {
+    margin-left: 0;
+    margin-top: 0.5em;
+  }
+}
+
+/*************** MAP STYLES ****************/
+#map {
+  height: 100%;
   width: 100%;
-  height: 300px;
 }
 
 // Resource marker
@@ -122,4 +124,20 @@ $font-choice: Roboto;
   color: blue;
   cursor: pointer;
   text-decoration: underline;
+}
+
+/*************** RESOURCE VIEW SPECIFIC STYLES ****************/
+// Resource detailed information view
+#resource-info {
+  padding-left: 1em;
+
+  // Specificity to override default styles
+  > .ui.header > .sub.header > .ui.label {
+    margin-left: 0px;
+  }
+}
+
+#single-resource-map {
+  height: 300px;
+  width: 100%;
 }

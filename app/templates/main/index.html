@@ -6,7 +6,7 @@
     <meta name="csrf-token" content="{{ csrf_token() }}">
 
     <div id="map-list-grid" class="ui two column horizontally padded grid">
-      <div class="four wide column">
+      <div class="four wide column" id="left-column">
         <div id="search">
           <form id="resources-form">
             <div class="ui fluid icon input">
@@ -103,11 +103,11 @@
           </div>
         </div>
 
-        <div class="ui divider"></div>
+        <div class="ui divider" id="left-column-divider"></div>
         <div class="ui middle aligned divided list" id="list"></div>
       </div>
 
-      <div class="twelve wide column right-pane">
+      <div class="twelve wide column" id="right-column">
         <div id="map"></div>
         <div id="resource-info"></div>
       </div>
@@ -193,7 +193,15 @@
 
     <script>
       $(document).ready(function(){
+        // defined in map.js
         initMap();
+        resizeMapListGrid();
+
+        // Adjust height of map/list grid when resize browser to fit in screen
+        $(window).resize(function() {
+          resizeMapListGrid();
+        });
+
         $('#advanced-filters-showhide').click(function() {
           if ($(this).text() === 'Close Advanced Filters') {
             $(this).text('Show Advanced Filters');
