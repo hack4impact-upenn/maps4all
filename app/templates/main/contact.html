@@ -3,12 +3,14 @@
 
 {% block content %}
     <div class="ui text container">
-        <h1>Contact Us</h1>
-        {% if current_user.is_admin() %}
-        	<p1>This is the information the user will see about your page</p1>
-        {% endif %}
+        <h1 class="ui header">
+        	Contact Us
+        	{% if current_user.is_admin() %}
+        	<div class="sub header">This is what the user will see on the Contact page</div>
+        	{% endif %}
+        </h1>
         {{ page.render_inline_editor(editable_html_obj, current_user) }}
     </div>
-
+    
     <script src="{{ url_for('static', filename='ckeditor/ckeditor.js') }}"></script>
 {% endblock %}

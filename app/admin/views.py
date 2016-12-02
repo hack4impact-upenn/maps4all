@@ -4,7 +4,7 @@ from flask.ext.rq import get_queue
 
 from . import admin
 from .. import db
-from ..models import Role, User
+from ..models import Role, User, Rating, Resource
 from forms import (
     ChangeAccountTypeForm,
     ChangeUserEmailForm,
@@ -153,3 +153,16 @@ def delete_user(user_id):
         db.session.commit()
         flash('Successfully deleted user %s.' % user.full_name(), 'success')
     return redirect(url_for('admin.registered_users'))
+
+
+@admin.route('/ratings-table')
+@login_required
+def ratings_table():
+    """Ratings and Reviews Table."""
+    ratings = Rating.query.all()
+    for rating in ratings:
+        if rating.resource_id is not None:
+            temp = Resource.query.filter_by(id=rating.resource_id)
+            if temp is not None:
+                rating.resource_name = temp.first().name
+    return render_template('rating/index.html', ratings=ratings)

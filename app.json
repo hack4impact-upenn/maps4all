@@ -2,7 +2,7 @@
   "name": "maps4all",
   "description": "Generalized application for displaying location-based resources on a map",
   "scripts": {
-    "postdeploy": "python manage.py recreate_db && python manage.py setup_prod && python manage.py add_fake_data"
+    "postdeploy": "python manage.py recreate_db && python manage.py setup_dev && python manage.py add_fake_data"
   },
   "env": {
     "FLASK_CONFIG": {
@@ -16,15 +16,13 @@
     },
     "MAIL_PASSWORD": {
       "required": true
-    },
-    "REDIS_URL": {
-      "required": true
     }
   },
   "formation": {
   },
   "addons": [
-
+    "heroku-postgresql",
+    "redistogo"
   ],
   "buildpacks": [
 
