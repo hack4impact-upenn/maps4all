@@ -1,11 +1,10 @@
 {% macro render_inline_editor(editable_html_obj, current_user) %}
-    <div class="ui segment">
-        <div id="editor-{{ editable_html_obj.editor_name }}" contenteditable="false">
-            {{ editable_html_obj.value|safe }}
-        </div>
-    </div>
-
     {% if current_user.is_admin() %}
+        <div class="ui segment">
+            <div id="editor-{{ editable_html_obj.editor_name }}" contenteditable="false">
+            {{ editable_html_obj.value|safe }}
+            </div>
+        </div>
        <button class="ui button start-edit">
         Edit
        </button>
@@ -16,6 +15,10 @@
         Cancel
        </button>
        <div class="ui positive message updated-alert">Updated successfully</div>
+       {% else %}
+            <div id="editor-{{ editable_html_obj.editor_name }}" contenteditable="false">
+            {{ editable_html_obj.value|safe }}
+            </div>
     {% endif %}
 
     <script>
@@ -27,6 +30,9 @@
             var editor = CKEDITOR.inline(editorIDName, {
                 startupFocus: true,
                 autoGrow_onStartup: true
+            });
+            editor.on('blur',function(e){
+                return false;    
             });
             original_data = CKEDITOR.instances[editorIDName].getData();
             $(".start-edit").hide();
@@ -70,9 +76,9 @@
             cancelEdit();
         });
 
-        /*$("#" + editorIDName).focusout(function() {
-            cancelEdit();
-        });*/
+        $("#" + editorIDName).focusout(function() {
+            this.focus();
+        });
     });
     </script>
 
