@@ -3,7 +3,10 @@
 
 {% block content %}
     <div class="ui text container">
-        <h1>About</h1>
+        <h1 class="ui header">
+        	About
+        	<div class="sub header">This is what the user will see on the About page</div>
+        </h1>
         {{ page.render_inline_editor(editable_html_obj, current_user) }}
     </div>
 
