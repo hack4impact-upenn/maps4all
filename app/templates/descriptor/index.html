@@ -1,9 +1,5 @@
 {% extends 'layouts/base.html' %}
 
-{% block javascript %}
-    {% assets 'descriptor_js' %}<script type="text/javascript" src="{{ ASSET_URL }}"></script>{% endassets %}
-{% endblock %}
-
 {% block content %}
     <div class="ui stackable grid container">
         <div class="sixteen wide tablet twelve wide computer centered column">
@@ -16,16 +12,7 @@
 
             <div class="ui right action left icon input menu">
                 <i class="search icon"></i>
-                    <input id="search-descriptors" type="text" placeholder="Search descriptors">
-                    <!--<div class="ui basic floating dropdown button">
-                        <div class="text">All Descriptors</div>
-                        <i class="dropdown icon"></i>
-                        <div class="menu">
-                            <div class="item" data-value="">All Descriptors</div>
-                            <div class="item" data-value="Text">Type</div>
-                            <div class="item" data-value="Option">Values</div>
-                        </div>
-                    </div>-->
+                <input id="search-descriptors" type="text" placeholder="Search descriptors by name">
             </div>
 
             {# Use overflow-x: scroll so that mobile views don't freak out
@@ -42,7 +29,7 @@
                     <tbody>
                     {% for d in descriptors | sort(attribute='name') %}
                         <tr>
-                            <td><a href="{{ url_for('descriptor.descriptor_info', desc_id=d.id) }}">{{ d.name }}</a></td>
+                            <td class="descriptor-name"><a href="{{ url_for('descriptor.descriptor_info', desc_id=d.id) }}">{{ d.name }}</a></td>
                             {% if not d.values %}
                                 <td class="descriptor type">Text</td>
                                 <td></td>

@@ -6,6 +6,8 @@
       <thead>
         <tr>
           <th>Timestamp</th>
+          <th>Resource Name</th>
+          <th>Resource Address</th>
           <th>Suggestion</th>
           <th>Contact Info</th>
           <th>Action</th>
@@ -16,6 +18,8 @@
         {% for suggestion in suggestions %}
           <tr>
             <td>{{ suggestion.submission_time }}</td>
+            <td>{{ suggestion.resource_name }}</td>
+            <td>{{ suggestion.resource_address }}</td>
             <td>{{ suggestion.suggestion_text }}</td>
             <td>{{ suggestion.contact_name }}
               <br>
@@ -29,9 +33,9 @@
             </td>
             <td>
               {% if not suggestion.resource_id %}
-                <a href="{{ url_for('single_resource.create') }}">Create</a>
+                <a href="{{ url_for('suggestion.create', sugg_id=suggestion.id) }}">Create</a>
               {% else %}
-                <a href="{{ url_for('single_resource.edit', resource_id=suggestion.resource_id) }}">
+                <a href="{{ url_for('suggestion.edit', sugg_id=suggestion.id) }}">
                   Edit {{ suggestion.resource.name }}
                 </a>
               {% endif %}

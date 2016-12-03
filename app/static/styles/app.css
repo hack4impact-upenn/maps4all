@@ -1,3 +1,21 @@
+@media -sass-debug-info{filename{}line{font-family:\000032}}
+.updated-alert, .ui.button.cancel-edit, .ui.button.end-edit {
+  display: none;
+}
+
+@media -sass-debug-info{filename{}line{font-family:\000036}}
+.cke_editable {
+  padding: .5em;
+}
+
+@media -sass-debug-info{filename{}line{font-family:\0000310}}
+#editor-about, #editor-contact {
+  max-height: 300px;
+  min-height: 100px;
+  overflow-y: scroll;
+  word-wrap: break-word;
+}
+
 @media -sass-debug-info{filename{}line{font-family:\000037}}
 nav {
   margin-bottom: 40px !important;
@@ -16,47 +34,47 @@ nav .mobile.only.row .ui.vertical.menu {
 
 @media -sass-debug-info{filename{}line{font-family:\0000325}}
 .flashes > .ui.message:last-of-type {
-  margin-bottom: 2rem;
+  float: right;
+  overflow: visible;
+  position: absolute;
+  z-index: 1000;
 }
 
-@media -sass-debug-info{filename{}line{font-family:\0000330}}
+@media -sass-debug-info{filename{}line{font-family:\0000333}}
 table.selectable tr:hover {
   cursor: pointer !important;
 }
 
-@media -sass-debug-info{filename{}line{font-family:\0000335}}
+@media -sass-debug-info{filename{}line{font-family:\0000338}}
 .ui.dropdown > .text {
   color: gray;
 }
 
-@media -sass-debug-info{filename{}line{font-family:\000034}}
-#map {
-  height: 100%;
+/******** GENERAL MAP/LIST GRID STYLES *************/
+@media -sass-debug-info{filename{}line{font-family:\000035}}
+#map-list-grid {
+  padding: 1em;
+  position: absolute;
   width: 100%;
 }
-
-@media -sass-debug-info{filename{}line{font-family:\000039}}
-#list {
-  height: 95%;
-  overflow-y: auto;
-  padding: 10px;
+@media -sass-debug-info{filename{}line{font-family:\0000310}}
+#map-list-grid #left-column {
+  background-color: #B8B8B8;
+  height: 100%;
+  overflow-y: scroll;
+  padding: 1em;
 }
-
-@media -sass-debug-info{filename{}line{font-family:\0000315}}
-#map-list-grid {
-  height: 95%;
-}
-
-@media -sass-debug-info{filename{}line{font-family:\0000319}}
-#map-list-grid.column {
+@media -sass-debug-info{filename{}line{font-family:\0000317}}
+#map-list-grid #right-column {
   padding: 0;
 }
 
-@media -sass-debug-info{filename{}line{font-family:\0000323}}
-#search {
-  margin: 10px;
+@media -sass-debug-info{filename{}line{font-family:\0000322}}
+#left-column-divider {
+  margin-bottom: 0;
 }
 
+/*************** SEARCH STYLES ****************/
 @media -sass-debug-info{filename{}line{font-family:\0000328}}
 #pac-input, #resources-input {
   background-color: #fff;
@@ -114,24 +132,17 @@ table.selectable tr:hover {
 }
 
 @media -sass-debug-info{filename{}line{font-family:\0000376}}
-.more-info {
-  color: blue;
-  cursor: pointer;
-  text-decoration: underline;
-}
-
-@media -sass-debug-info{filename{}line{font-family:\0000382}}
 .descriptor {
   display: block;
 }
 
-@media -sass-debug-info{filename{}line{font-family:\0000387}}
+@media -sass-debug-info{filename{}line{font-family:\0000381}}
 #resources-form {
   display: inline;
   text-overflow: ellipsis;
 }
 
-@media -sass-debug-info{filename{}line{font-family:\0000392}}
+@media -sass-debug-info{filename{}line{font-family:\0000386}}
 #resources-input {
   background-color: #fff;
   font-family: Roboto;
@@ -139,4 +150,56 @@ table.selectable tr:hover {
   font-weight: 300;
   margin-top: 0px;
   text-overflow: ellipsis;
+}
+
+/*************** LIST STYLES ****************/
+@media -sass-debug-info{filename{}line{font-family:\0000396}}
+#list {
+  height: 100%;
+  margin-top: 0px;
+}
+
+@media -sass-debug-info{filename{}line{font-family:\00003102}}
+#list > .item.list-resource {
+  padding-bottom: 1em;
+  padding-top: 0.5em;
+}
+@media -sass-debug-info{filename{}line{font-family:\00003106}}
+#list > .item.list-resource .sub.header {
+  font-weight: normal;
+}
+@media -sass-debug-info{filename{}line{font-family:\00003110}}
+#list > .item.list-resource .ui.label {
+  margin-left: 0;
+  margin-top: 0.5em;
+}
+
+/*************** MAP STYLES ****************/
+@media -sass-debug-info{filename{}line{font-family:\00003117}}
+#map {
+  height: 100%;
+  width: 100%;
+}
+
+@media -sass-debug-info{filename{}line{font-family:\00003123}}
+.more-info {
+  color: blue;
+  cursor: pointer;
+  text-decoration: underline;
+}
+
+/*************** RESOURCE VIEW SPECIFIC STYLES ****************/
+@media -sass-debug-info{filename{}line{font-family:\00003131}}
+#resource-info {
+  padding-left: 1em;
+}
+@media -sass-debug-info{filename{}line{font-family:\00003135}}
+#resource-info > .ui.header > .sub.header > .ui.label {
+  margin-left: 0px;
+}
+
+@media -sass-debug-info{filename{}line{font-family:\00003140}}
+#single-resource-map {
+  height: 300px;
+  width: 100%;
 }
