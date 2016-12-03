@@ -10,9 +10,7 @@
 
 @media -sass-debug-info{filename{}line{font-family:\0000310}}
 #editor-about, #editor-contact {
-  max-height: 300px;
   min-height: 100px;
-  overflow-y: scroll;
   word-wrap: break-word;
 }
 
