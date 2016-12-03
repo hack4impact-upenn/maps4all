@@ -48,6 +48,8 @@
             event.preventDefault();
             $("#csv-file").parse({
 				config: {
+                    delimiter: ",",
+                    skipEmptyLines: true,
 				    complete: function(results, file) {
 				        // Check that CSV data is formatted correctly.
 				        var errorList = [];

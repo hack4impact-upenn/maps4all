@@ -11,7 +11,7 @@ class OptionAssociation(db.Model):
                             primary_key=True)
     descriptor_id = db.Column(db.Integer, db.ForeignKey('descriptors.id'),
                               primary_key=True)
-    option = db.Column(db.Integer)
+    option = db.Column(db.Integer, primary_key=True)
     resource = db.relationship('Resource',
                                back_populates='option_descriptors')
     descriptor = db.relationship('Descriptor',

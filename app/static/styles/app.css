@@ -45,6 +45,11 @@ table.selectable tr:hover {
   cursor: pointer !important;
 }
 
+@media -sass-debug-info{filename{}line{font-family:\0000338}}
+.ui.dropdown > .text {
+  color: gray;
+}
+
 /******** GENERAL MAP/LIST GRID STYLES *************/
 @media -sass-debug-info{filename{}line{font-family:\000035}}
 #map-list-grid {
@@ -195,6 +200,6 @@ table.selectable tr:hover {
 
 @media -sass-debug-info{filename{}line{font-family:\00003140}}
 #single-resource-map {
-  width: 100%;
   height: 300px;
+  width: 100%;
 }

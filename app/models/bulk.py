@@ -37,7 +37,9 @@ class CsvContainer(db.Model):
             if column.descriptor_type == 'option':
                 predicted_options = set()
                 for j in range(len(self.csv_rows)):
-                    predicted_options.add(self.cell_data(j, i))
+                    for s in self.cell_data(j, i).split(';'):
+                        if s:
+                            predicted_options.add(s)
                 column.predicted_options = predicted_options
                 db.session.add(column)
         db.session.commit()

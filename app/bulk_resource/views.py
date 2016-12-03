@@ -226,23 +226,27 @@ def save():
                         name=descriptor_name
                     ).first()
                     values = list(descriptor.values)
+                    assocValues = []
                     if len(descriptor.values) == 0:  # text descriptor
                         association_class = TextAssociation
-                        value = cell.data
+                        assocValues.append(cell.data)
                         keyword = 'text'
                     else:  # option descriptor
                         association_class = OptionAssociation
-                        value = values.index(cell.data)
+                        for s in cell.data.split(';'):
+                            if s in values:
+                                assocValues.append(values.index(s))
                         keyword = 'option'
-                    arguments = {
-                        'resource_id': resource.id,
-                        'descriptor_id': descriptor.id,
-                        keyword: value,
-                        'resource': resource,
-                        'descriptor': descriptor
-                    }
-                    new_association = association_class(**arguments)
-                    db.session.add(new_association)
+                    for value in assocValues:
+                        arguments = {
+                            'resource_id': resource.id,
+                            'descriptor_id': descriptor.id,
+                            keyword: value,
+                            'resource': resource,
+                            'descriptor': descriptor
+                        }
+                        new_association = association_class(**arguments)
+                        db.session.add(new_association)
         db.session.delete(csv_container)
         db.session.commit()
         return redirect(url_for('single_resource.index'))
