@@ -65,7 +65,7 @@ def edit_category_name(category_id):
         db.session.add(category)
         try:
             db.session.commit()
-            flash('Name for category {} successfully changed to {},'
+            flash('Name for category \"{}\" successfully changed to \"{}\".'
                 .format(old_name, category.name),
                 'form-success')
         except IntegrityError:
