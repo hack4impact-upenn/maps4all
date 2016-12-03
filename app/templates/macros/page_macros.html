@@ -34,8 +34,8 @@
 
             //Disables the automatic blur function of ckeditor.
             editor.on('blur', function(e) {
-                return false;    
-            }); '''Disables the automatic blur function of ckeditor'''
+                return false;
+            });
             original_data = CKEDITOR.instances[editorIDName].getData();
             $(".start-edit").hide();
             $(".end-edit").show();
