@@ -5,13 +5,26 @@ from flask.ext.login import login_required
 
 from app import csrf
 from .. import db
-from ..models import EditableHTML, Resource, Rating
+from ..models import EditableHTML, Resource, Descriptor
 from . import main
+from wtforms.fields import SelectMultipleField, TextAreaField
+from ..single_resource.forms import SingleResourceForm
+
 from datetime import datetime
 
 @main.route('/')
 def index():
-    return render_template('main/index.html')
+    setattr(SingleResourceForm,
+            "Color",
+            SelectMultipleField(choices=[("0", "Red"), ("1", "Brown"), ("2", "Green")], default="Red"))
+    form = SingleResourceForm()
+    options = Descriptor.query.all()
+    options = [o for o in options if len(o.text_resources) == 0]
+    options_dict = {}
+    for o in options:
+        options_dict[o.name] = o.values
+    # options_dict = [{o.name: o.values} for o in options]
+    return render_template('main/index.html', options=options_dict)
 
 @main.route('/get-resources')
 def get_resources():
@@ -21,7 +34,11 @@ def get_resources():
 
 @main.route('/search-resources/<query_name>')
 def search_resources(query_name):
-    resources = Resource.query.filter(Resource.name.contains(query_name))
+    def orMultipleQueries(R, queries):
+        return reduce(lambda acc, q: acc or R.name.contains(q), queries)
+
+    resources = Resource.query.filter(orMultipleQueries(Resource, queries))
+    # resources = Resource.query.filter(Resource.name.contains(query_name))
     resources_as_dicts = Resource.get_resources_as_dicts(resources)
     return json.dumps(resources_as_dicts)
 

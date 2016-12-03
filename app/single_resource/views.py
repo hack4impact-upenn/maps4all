@@ -128,6 +128,7 @@ def save_associations(resource, form, descriptors, resource_existed=True):
             values = [form[descriptor.name].data]
             keyword = 'text'
         for value in values:
+            # print value
             association = None
             if resource_existed:
                 association = AssociationClass.query.filter_by(
