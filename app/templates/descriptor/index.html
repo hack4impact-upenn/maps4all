@@ -1,55 +1,35 @@
 {% extends 'layouts/base.html' %}
 
-{% block javascript %}
-    {% assets 'descriptor_js' %}<script type="text/javascript" src="{{ ASSET_URL }}"></script>{% endassets %}
-{% endblock %}
-
 {% block content %}
     <div class="ui stackable grid container">
         <div class="sixteen wide tablet twelve wide computer centered column">
-            <h2 class="ui header">
+            <h2 class="centered ui header">
                 Descriptors
                 <div class="sub header">
                     View and edit current resource descriptors.
                 </div>
             </h2>
 
-            <div class="ui menu">
-                <div id="select-type" class="ui dropdown item">
-                    <div class="text">
-                        All descriptors
-                    </div>
-                    <i class="dropdown icon"></i>
-                    <div class="menu">
-                        <div class="item" data-value="">All Descriptors</div>
-                        <div class="item" data-value="Text">Text</div>
-                        <div class="item" data-value="Option">Options</div>
-                    </div>
-                </div>
-                <div class="ui right search item">
-                    <div class="ui transparent icon input">
-                        <input id="search-descriptors" type="text" placeholder="Search descriptors…">
-                        <i class="search icon"></i>
-                    </div>
-                </div>
+            <div class="ui right action left icon input menu">
+                <i class="search icon"></i>
+                <input id="search-descriptors" type="text" placeholder="Search descriptors by name">
             </div>
 
             {# Use overflow-x: scroll so that mobile views don't freak out
              # when the table is too wide #}
             <div style="overflow-x: scroll;">
-                <table class="ui searchable sortable unstackable selectable celled table">
+                <table class="ui searchable sortable unstackable selectable celled striped table">
                     <thead>
                         <tr>
-                            <th class="sorted ascending">Name</th>
-                            <th class="sorted ascending">Type</th>
-                            <th>Values</th>
-                            <th>Searchable</th>
+                            <th class="six wide sorted ascending">Name</th>
+                            <th class="five wide sorted ascending">Type</th>
+                            <th class="five wide">Values</th>
                         </tr>
                     </thead>
                     <tbody>
                     {% for d in descriptors | sort(attribute='name') %}
                         <tr>
-                            <td><a href="{{ url_for('descriptor.descriptor_info', desc_id=d.id) }}">{{ d.name }}</a></td>
+                            <td class="descriptor-name"><a href="{{ url_for('descriptor.descriptor_info', desc_id=d.id) }}">{{ d.name }}</a></td>
                             {% if not d.values %}
                                 <td class="descriptor type">Text</td>
                                 <td></td>
@@ -57,7 +37,6 @@
                                 <td class="descriptor type">Option</td>
                                 <td>{{ ', '.join(d.values) }}</td>
                             {% endif %}
-                            <td>{{ d.is_searchable }}</td>
                         </tr>
                     {% endfor %}
                     </tbody>

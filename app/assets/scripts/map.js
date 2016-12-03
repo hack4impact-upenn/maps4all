@@ -4,22 +4,133 @@
 // <script src="https://maps.googleapis.com/maps/api/js?key=YOUR_API_KEY&libraries=places">
 
 var map;
+var oms;
 var markers = [];
 var infowindow;
+var focusZoom = 17;
+var locationMarker;
 
+// Click listener for a marker.
+function markerListener(marker, event) {
+  $("#map").show();
+  $("#resource-info").hide();
+
+  // Show marker info bubble
+  var markerInfoWindowTemplate = $("#marker-info-window-template").html();
+  var compiledMarkerInfoWindowTemplate =
+    Handlebars.compile(markerInfoWindowTemplate);
+  var context = {
+    name: marker.title,
+    address: marker.address,
+  };
+  var markerInfo = compiledMarkerInfoWindowTemplate(context);
+
+  if (infowindow) {
+    infowindow.close();
+  }
+  infowindow = new google.maps.InfoWindow({
+    content: markerInfo,
+    maxWidth: 300,
+  });
+  infowindow.open(map, marker);
+
+  // Marker "more information" link to detailed resource information view
+  $(".more-info").click(function() {
+    displayDetailedResourceView(marker);
+  });
+}
+
+// Generate the detailed resource page view after clicking "more information"
+// on a marker
+function displayDetailedResourceView(marker) {
+  // get descriptor information as associations
+  $.get('get-associations/' + marker.resourceID).done(function(associations) {
+    $("#map").hide();
+    $("#resource-info").empty();
+    $("#resource-info").show();
+
+    var associationObject = JSON.parse(associations);
+    var descriptors = [];
+    for (var key in associationObject) {
+      var descriptor = {
+        key: key,
+        value: associationObject[key],
+      };
+      descriptors.push(descriptor);
+    }
+
+    // Detailed resource information template generation
+    var resourceTemplate = $("#resource-template").html();
+    var compiledResourceTemplate = Handlebars.compile(resourceTemplate);
+    var context = {
+      name: marker.title,
+      address: marker.address,
+      suggestionUrl: 'suggestion/' + marker.resourceID,
+      descriptors: descriptors,
+    };
+    var resourceInfo = compiledResourceTemplate(context);
+    $("#resource-info").html(resourceInfo);
+
+    // Set handlers and populate DOM elements from resource template
+    // Can only reference elements in template after compilation
+    $('#back-button').click(function() {
+      $("#map").show();
+      $("#resource-info").hide();
+    });
+
+    // Map for single resource on detailed resource info page
+    var singleResourceMap = new google.maps.Map(
+      document.getElementById('single-resource-map'),
+      {
+        center: marker.getPosition(),
+        zoom: focusZoom,
+      }
+    );
+    var singleMarker = new google.maps.Marker({
+      position: marker.getPosition(),
+      map: singleResourceMap,
+    });
+  });
+}
+
+/*
+ * Initializes the map, the corresponding list of resources and search
+ * functionality on the resources
+ */
 function initMap() {
   map = new google.maps.Map(document.getElementById('map'), {
     center: {lat: 39.949, lng: -75.181}, // TODO(#52): Do not hardcode this.
-    zoom: 13
+    zoom: focusZoom,
   });
+
+  oms = new OverlappingMarkerSpiderfier(map, {keepSpiderfied: true, nearbyDistance: 10});
+
+  // Add click listener to marker for displaying infoWindow
+  oms.addListener('click', markerListener);
+
+  infowindow = new google.maps.InfoWindow();
+  initLocationSearch(map);
+  initResourceSearch();
+
+  $.get('/get-resources').done(function(resourcesString) {
+    var resources = JSON.parse(resourcesString);
+    populateMarkers(resources);
+  });
+
+  google.maps.event.addListenerOnce(map, 'idle', function() {
+    populateListDiv();
+  });
+}
+
+/*
+ * Initialize searching on the map by location input.
+ * When entering a new location, re-center and zoom the map onto that location
+ * and create a custom location marker.
+ */
+function initLocationSearch(map) {
   var input = document.getElementById('pac-input');
   var autocomplete = new google.maps.places.Autocomplete(input);
   autocomplete.bindTo('bounds', map);
-  infowindow = new google.maps.InfoWindow();
-  var marker = new google.maps.Marker({
-    map: map,
-    anchorPoint: new google.maps.Point(0, -29)
-  });
 
   autocomplete.addListener('place_changed', function() {
     infowindow.close();
@@ -28,13 +139,7 @@ function initMap() {
       window.alert("Autocomplete's returned place contains no geometry");
       return;
     }
-    // If the place has a geometry, then present it on a map.
-    if (place.geometry.viewport) {
-      map.fitBounds(place.geometry.viewport);
-    } else {
-      map.setCenter(place.geometry.location);
-      map.setZoom(17);
-    }
+
     var address = '';
     if (place.address_components) {
       address = [
@@ -46,41 +151,97 @@ function initMap() {
           place.address_components[2].short_name) || '')
       ].join(' ');
     }
-    marker.setLabel(address);
-    var placeDiv = document.createElement('div');
-    var br = document.createElement('br');
-    $(placeDiv).append(place.name, br, address);
-    infowindow.setContent(placeDiv);
-    infowindow.open(map, marker);
-  });
 
-  var marker = new google.maps.Marker({
-    map: map
-  });
-
-  $.get('/get-resources').done(function(resourcesString){
-    var resources = JSON.parse(resourcesString);
-    for (var i = 0; i < resources.length; i++) {
-      create_marker(resources[i]);
+    if (!locationMarker) {
+      locationMarker = new google.maps.Marker({
+        map: map,
+        position: place.geometry.location,
+        icon: {
+          path: google.maps.SymbolPath.CIRCLE,
+          scale: 8,
+          strokeColor: 'grey',
+          fillColor: 'black',
+          fillOpacity: 1,
+        },
+      });
+    } else {
+      locationMarker.setPosition(place.geometry.location);
     }
-    for (var i = 0; i < markers.length; i++) {
-      markers[i].setMap(map);
-    }
-   })
 
-  google.maps.event.addListenerOnce(map, 'idle', function(){
-    populateListDiv();
+    // Marker info window for searched location
+    var searchedLocationInfoWindowTemplate =
+      $("#searched-location-info-window-template").html();
+    var compiledLocInfoWindowTemplate =
+      Handlebars.compile(searchedLocationInfoWindowTemplate);
+    var context = {
+      name: place.name,
+      address: address,
+    };
+    var locationMarkerInfo = compiledLocInfoWindowTemplate(context);
+
+    infowindow.setContent(locationMarkerInfo);
+    infowindow.open(map, locationMarker);
   });
-  var mapViewButton = document.getElementById("map_view");
-  mapViewButton.addEventListener('click', function() {
-    $("#map").show();
-    $("#list").hide();
-    $("#more-info").empty();
-    $("#sidebar").show();
+
+  // Delete location marker when deleting location query
+  $('#pac-input').keyup(function() {
+    if ($(this).val() === "") {
+      locationMarker.setMap(null);
+      locationMarker = null;
+    }
   });
 }
 
-function create_marker(resource){
+/*
+ * Initialize searching on the map by resource name input
+ */
+function initResourceSearch() {
+  $('#resources-form').submit(function(e) {
+    e.preventDefault();
+    var query = $('#resources-input').val();
+    var endpoint = '/search-resources/'+query;
+    if (query.length == 0) {
+        endpoint = '/get-resources';
+    }
+    $.get(endpoint).done(function(resourcesString) {
+      for (var i = 0; i < markers.length; i++) {
+        markers[i].setMap(null);
+      }
+      markers = [];
+      var resources = JSON.parse(resourcesString);
+      if (resources.length != 0) {
+        populateMarkers(resources);
+      }
+      populateListDiv();
+    });
+  });
+}
+
+/*
+ * Create markers for each resource and add them to the map
+ * Expand the map to show all resources
+ */
+function populateMarkers(resources) {
+  for (var i = 0; i < resources.length; i++) {
+    createMarker(resources[i]);
+  }
+
+  var bounds = new google.maps.LatLngBounds();
+  for (var i = 0; i < markers.length; i++) {
+    markers[i].setMap(map);
+    oms.addMarker(markers[i]);
+    bounds.extend(markers[i].getPosition());
+  }
+
+  map.fitBounds(bounds);
+  map.setCenter(bounds.getCenter());
+}
+
+/*
+ * Create a marker for each resource and handle clicking on a marker.
+ * Handle clicking on more information for a resource
+ */
+function createMarker(resource) {
   var markerToAdd = new google.maps.Marker({
     map: map
   });
@@ -92,124 +253,52 @@ function create_marker(resource){
     csrf_token: $('meta[name="csrf-token"]').prop('content'),
     data: resource.name
   };
-  var values = [];
-  values.push(markerToAdd.json_data);
-  async.each(values,
-    function(value, callback){
-      markerToAdd.addListener('click', function() {
-        var contentDiv = document.createElement('div');
-        var strong = document.createElement('strong');
-        var br = document.createElement('br');
-        $(strong).html(resource.name);
-        $(contentDiv).append(strong, br, resource.address);
-        if (infowindow) {
-          infowindow.close();
-        }
-        infowindow = new google.maps.InfoWindow({
-          content: contentDiv
-        });
-        infowindow.open(map, markerToAdd);
-        google.maps.event.addListener(infowindow, 'closeclick', function() {
-          $('#more-info').empty();
-        });
-        $.get('get-associations/' + resource.id).done(function(associations) {
-          var associationObject = JSON.parse(associations);
-          $('#more-info').empty();
-          for (var key in associationObject) {
-            var p = document.createElement('p');
-            var bolded = document.createElement('strong');
-            $(bolded).append(key);
-            var value = associationObject[key];
-            $(p).append(bolded, ': ', value);
-            $('#more-info').append(p);
-          }
-          var a = document.createElement('a');
-          $(a).attr('href', 'suggestion/' + resource.id);
-          $(a).html('Suggest an edit for this resource');
-          $('#more-info').append(a);
-        }).fail(function() {});
-      });
-      callback();
-    }, function() {
-         markers.push(markerToAdd)
-    }
-  );
+  markerToAdd.resourceID = resource.id;
+  markerToAdd.address = resource.address;
+
+  markers.push(markerToAdd);
 }
 
-$(document).ready(function() {
-  $('#resources-form').submit(function(e) {
-    e.preventDefault();
-    var query = document.getElementById('resources-input').value;
-    var endpoint = '/search-resources/'+query;
-    if (query.length == 0) {
-        endpoint = '/get-resources';
-    }
-    $.get(endpoint).done(function(resourcesString) {
-      for (var i=0; i < markers.length; i++) {
-        markers[i].setMap(null);
-      }
-      markers = [];
-      var resources = JSON.parse(resourcesString);
-      for (var i=0; i < resources.length; i++) {
-        create_marker(resources[i]);
-      }
-      for (var i=0; i < markers.length; i++) {
-        markers[i].setMap(map);
-      }
-    populateListDiv();
-    });
-  });
-});
-
-function geocodeLatLng(geocoder, input_lat, input_lng) {
-  geocoder.geocode({'location': {lat: input_lat, lng: input_lng}}, function(results, status) {
-    if (status == google.maps.GeocoderStatus.OK) {
-      if (results[1]) {
-        return results[1].formatted_address;
-      } else {
-        return "";
-      }
-    }
-  });
-}
-
+/*
+ * Show a corresponding list of resources adjacent to the map
+ */
 function populateListDiv() {
-  var markersToShow = [];
+  var markersToShow = markers;
   $("#list").empty();
-  var bounds = map.getBounds();
-  for (var i = 0; i < markers.length; i++) {
-    if (bounds.contains(markers[i].getPosition())) {
-      markersToShow.push(markers[i]);
-    }
-  }
-  var list = document.getElementById('list');
+
+  var listResources = [];
   $.each(markersToShow, function(i, markerToShow) {
-    var listElement = document.createElement('a');
-    listElement.setAttribute('class', 'item');
+    var listResource = {
+      name: markerToShow.title,
+      address: markerToShow.address,
+    };
+    listResources.push(listResource);
+  });
 
-    var rightArrowElement = document.createElement('div');
-    rightArrowElement.setAttribute('class', 'right floated content');
+  var listTemplate = $("#listview-template").html();
+  var compiledListTemplate = Handlebars.compile(listTemplate);
+  var context = {
+    resource: listResources,
+  };
+  var listView = compiledListTemplate(context);
+  $("#list").html(listView);
 
-    var rightArrowImage = document.createElement('i');
-    rightArrowImage.setAttribute('class', 'right chevron icon');
-
-    rightArrowElement.appendChild(rightArrowImage);
-    listElement.appendChild(rightArrowElement);
-
-    var mainContent = document.createElement('div');
-    mainContent.setAttribute('class', 'content');
-
-    var placeTitle = document.createElement('div');
-    placeTitle.setAttribute('class', 'list-item-title');
-    $(placeTitle).html(markerToShow.title);
-
-    mainContent.appendChild(placeTitle);
-    listElement.appendChild(mainContent);
-
-    list.appendChild(listElement);
-
-    listElement.addEventListener('click', function() {
-      google.maps.event.trigger(markerToShow, 'click');
+  // Can only add handlers to elements in template after compilation
+  $(".list-resource").each(function(i, element) {
+    element.addEventListener('click', function() {
+      markerListener(markersToShow[i], 'click');
     });
   });
+}
+
+// Resize map/list area - set height to fit screen
+function resizeMapListGrid() {
+  var navHeight = $('.ui.navigation.grid').height();
+  // TODO: remove hack of subtracting 40
+  $('#map-list-grid').height($('body').height() - navHeight - 40);
+
+  var center = map.getCenter();
+  // Need to call resize event on map or creates dead grey area on map
+  google.maps.event.trigger(map, "resize");
+  map.setCenter(center);
 }

@@ -1,29 +1,143 @@
-#map {
-  height: 100%;
-  width: 100%;
-}
+$accent-color: #2C9FA3;
+$font-choice: Roboto;
 
-#list {
-  height: 95%;
-  overflow-y: auto;
-}
-
+/******** GENERAL MAP/LIST GRID STYLES *************/
 #map-list-grid {
-  height: 95%;
+  padding: 1em;
+  position: absolute;
+  width: 100%;
+
+  #left-column {
+    background-color: #B8B8B8; // TODO: change
+    height: 100%;
+    overflow-y: scroll;
+    padding: 1em;
+  }
+
+  #right-column {
+    padding: 0;
+  }
 }
 
-#map-list-grid.column {
-  padding: 0;
+#left-column-divider {
+  margin-bottom: 0;
 }
 
-#pac-input {
+/*************** SEARCH STYLES ****************/
+// Location search
+#pac-input, #resources-input {
   background-color: #fff;
-  font-family: Roboto;
+  float: left;
+  font-family: $font-choice;
   font-size: 15px;
   font-weight: 300;
   text-overflow: ellipsis;
 }
 
-#pac-input:focus {
-  border-color: #4d90fe;
+#pac-input:focus, #resources-input:focus {
+  border-color: $accent-color;
+}
+
+#resources-form, #location-search {
+  margin: 0 0 5px 0;
+}
+
+.descriptor-group {
+  font-family: $font-choice;
+  margin: 3px;
+
+  h5 {
+    font-family: $font-choice;
+    margin: 0 0 5px 0;
+  }
+}
+
+.option-group, .option-group-advanced {
+  margin-bottom: 10px;
+  margin-top: 10px;
+}
+
+.option-group-advanced {
+  display: none; // hide initially
+}
+
+#advanced-filters-showhide {
+  color: $accent-color;
+  cursor: pointer;
+  font-family: $font-choice;
+  font-weight: 100;
+  text-decoration: none;
+}
+
+.checkbox-option {
+  margin-right: 5px;
+}
+
+.descriptor {
+  display: block;
+}
+
+// Resource name search
+#resources-form {
+  display: inline;
+  text-overflow: ellipsis;
+}
+
+#resources-input {
+  background-color: #fff;
+  font-family: $font-choice;
+  font-size: 15px;
+  font-weight: 300;
+  margin-top: 0px;
+  text-overflow: ellipsis;
+}
+
+/*************** LIST STYLES ****************/
+#list {
+  height: 100%;
+  margin-top: 0px;
+}
+
+// Resource list item
+#list > .item.list-resource {
+  padding-bottom: 1em;
+  padding-top: 0.5em;
+
+  .sub.header {
+    font-weight: normal;
+  }
+
+  .ui.label {
+    margin-left: 0;
+    margin-top: 0.5em;
+  }
+}
+
+/*************** MAP STYLES ****************/
+#map {
+  height: 100%;
+  width: 100%;
+}
+
+// Resource marker
+.more-info {
+  color: blue;
+  cursor: pointer;
+  text-decoration: underline;
+}
+
+/*************** RESOURCE VIEW SPECIFIC STYLES ****************/
+// Resource detailed information view
+#resource-info {
+  padding-left: 1em;
+
+  // Specificity to override default styles
+  > .ui.header > .sub.header > .ui.label {
+    margin-left: 0px;
+  }
+}
+
+#single-resource-map {
+  height: 300px;
+  width: 100%;
 }

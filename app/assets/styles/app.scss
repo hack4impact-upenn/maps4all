@@ -5,28 +5,31 @@ $small-monitor-breakpoint: 1200px;
 
 // General nav
 nav {
-    margin-bottom: 40px !important;
+  margin-bottom: 40px !important;
 }
 
 // Desktop nav
 .ui.fixed.main.menu .right.menu > .item:last-of-type {
-    border-right: 1px solid rgba(34, 36, 38, 0.0980392);
+  border-right: 1px solid rgba(34, 36, 38, 0.0980392);
 }
 
 // Mobile nav
 nav .mobile.only.row {
-    .ui.vertical.menu {
-        margin-top: 40px;
-        display: none;
-    }
+  .ui.vertical.menu {
+      display: none;
+      margin-top: 40px;
+  }
 }
 
 // Flashes
 .flashes > .ui.message:last-of-type {
-    margin-bottom: 2rem;
+  float: right;
+  overflow: visible;
+  position: absolute;
+  z-index: 1000;
 }
 
 // Tables
 table.selectable tr:hover {
-    cursor: pointer !important;
+  cursor: pointer !important;
 }

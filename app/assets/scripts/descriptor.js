@@ -1,23 +1,17 @@
 $(document).ready(function () {
 
     // This is for search on the index page
+    // Currently searches by descriptor name only
     $('#search-descriptors').keyup(function () {
         var searchText = $(this).val();
         if (searchText.length > 0) {
-            $('tbody td:icontains(' + searchText + ')').addClass('positive');
-            $('td.positive').not(':icontains(' + searchText + ')').removeClass('positive');
-            $('tbody td').not(':icontains(' + searchText + ')').closest('tr').addClass('hidden').hide();
-            $('tr.hidden:icontains(' + searchText + ')').removeClass('hidden').show();
+            $('tbody td.descriptor-name:icontains(' + searchText + ')').addClass('positive');
+            $('td.descriptor-name.positive').not(':icontains(' + searchText + ')').removeClass('positive');
+            $('tbody td.descriptor-name').not(':icontains(' + searchText + ')').closest('tr').addClass('hidden').hide();
+            $('tr.hidden:icontains(' + searchText + ')').has('td.descriptor-name:icontains(' + searchText + ')').removeClass('hidden').show();
         } else {
-            $('td.positive').removeClass('positive');
+            $('td.descriptor-name.positive').removeClass('positive');
             $('tr.hidden').removeClass('hidden').show();
-        }
-    });
-
-    $('#select-type').dropdown({
-        onChange: function (value, text, $selectedItem) {
-            $('td.descriptor.type:contains(' + value + ')').closest('tr').removeClass('hidden').show();
-            $('td.descriptor.type').not(':contains(' + value + ')').closest('tr').addClass('hidden').hide();
         }
     });
 

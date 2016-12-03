@@ -1,49 +1,56 @@
 {% extends 'layouts/base.html' %}
 
-{% block javascript %}
-    {% assets 'resources_js' %}<script type="text/javascript" src="{{ ASSET_URL }}"></script>{% endassets %}
-{% endblock %}
 {% block content %}
-    <div class="ui text container">
-        <h2 class="ui dividing header">Resources</h2>
-        <a href="{{ url_for('single_resource.create') }}">Add</a>
-        <form id="search-resources">
-            <div class="ui menu">
-                <div class="ui search item">
-                    <div class="ui transparent icon input">
-                        <input id="search-resources-text" type="text" value="{{ query|default('') }}" placeholder="Search resources...">
-                        <i class="search icon"></i>
-                    </div>
+    <div class="ui stackable grid container">
+        <div class="sixteen wide tablet twelve wide computer centered column">
+            <h2 class="centered ui header">
+                Resources
+                <div class="sub header">
+                    View and edit current resources.
                 </div>
+            </h2>
+
+            <div class="ui right action left icon input menu">
+                <i class="search icon"></i>
+                <input id="search-resources-text" type="text" value="{{ query_name|default('') }}" placeholder="Search resources by name">
                 <select id="search-resources-options" multiple="" class="ui fluid dropdown" placeholder="Select">
-                    {% for option in options %}
-                        <option value="{{ option }}">{{ option }}</option>
+                    {% for option in options.keys() %}
+                        {% if options[option] %}
+                            <option value="{{ option }}" selected="selected">{{ option }}</option>
+                        {% else %}
+                            <option value="{{ option }}" >{{ option }}</option>
+                        {% endif %}
                     {% endfor %}
                 </select>
+                <button class="ui button" id="search-resources">Search</button>
             </div>
-        <div style="overflow-x: scroll;">
-            <table class="ui searchable sortable unstackable selectable celled table">
-                <thead>
-                    <tr>
-                        <th>Name</th>
-                        <th>Address</th>
-                        <th>Latitude</th>
-                        <th>Longitude</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    {% for resource in resources %}
+
+            {# Use overflow-x: scroll so that mobile views don't freak out
+             # when the table is too wide #}
+            <div style="overflow-x: scroll;">
+                <table class="ui searchable sortable unstackable selectable celled striped table">
+                    <thead>
+                        <tr>
+                            <th class="three wide sorted ascending">Name</th>
+                            <th class="five wide sorted ascending">Address</th>
+                            <th class="one wide sorted ascending">Latitude</th>
+                            <th class="one wide sorted ascending">Longitude</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                    {% for resource in resources | sort(attribute='name') %}
                         <tr>
                             <td>
                                 <a href="{{ url_for('single_resource.edit', resource_id=resource['id']) }}">{{ resource['name'] }}</a>
-                            </td>
                             <td>{{ resource['address'] }}</td>
                             <td>{{ resource['latitude'] | round }}</td>
                             <td>{{ resource['longitude'] | round }}</td>
+                            </td>
                         </tr>
                     {% endfor %}
-                </tbody>
-            </table>
+                    </tbody>
+                </table>
+            </div>
         </div>
     </div>
 {% endblock %}

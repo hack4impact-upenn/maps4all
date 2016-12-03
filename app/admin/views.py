@@ -1,16 +1,17 @@
 from flask import abort, flash, redirect, render_template, url_for
 from flask.ext.login import current_user, login_required
+from flask.ext.rq import get_queue
 
 from . import admin
 from .. import db
-from ..email import send_email
-from ..models import Role, User
+from ..models import Role, User, Rating, Resource
 from forms import (
     ChangeAccountTypeForm,
     ChangeUserEmailForm,
     InviteUserForm,
     NewUserForm
 )
+from ..email import send_email
 
 
 @admin.route('/')
@@ -51,12 +52,16 @@ def invite_user():
         db.session.add(user)
         db.session.commit()
         token = user.generate_confirmation_token()
-        send_email(user.email,
-                   'You Are Invited To Join',
-                   'account/email/invite',
-                   user=user,
-                   user_id=user.id,
-                   token=token)
+        invite_link = url_for('account.join_from_invite', user_id=user.id,
+                              token=token, _external=True)
+        get_queue().enqueue(
+            send_email,
+            recipient=user.email,
+            subject='You Are Invited To Join',
+            template='account/email/invite',
+            user=user,
+            invite_link=invite_link,
+        )
         flash('User {} successfully invited'.format(user.full_name()),
               'form-success')
     return render_template('admin/new_user.html', form=form)
@@ -148,3 +153,16 @@ def delete_user(user_id):
         db.session.commit()
         flash('Successfully deleted user %s.' % user.full_name(), 'success')
     return redirect(url_for('admin.registered_users'))
+
+
+@admin.route('/ratings-table')
+@login_required
+def ratings_table():
+    """Ratings and Reviews Table."""
+    ratings = Rating.query.all()
+    for rating in ratings:
+        if rating.resource_id is not None:
+            temp = Resource.query.filter_by(id=rating.resource_id)
+            if temp is not None:
+                rating.resource_name = temp.first().name
+    return render_template('rating/index.html', ratings=ratings)

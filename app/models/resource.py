@@ -1,5 +1,5 @@
 from .. import db
-
+from .. models import Rating
 
 class OptionAssociation(db.Model):
     """
@@ -134,30 +134,33 @@ class Resource(db.Model):
             ))
 
             location = geolocater.reverse(latitude + ', ' + longitude)
-            resource = Resource(
-                name=fake.name(),
-                address=location.address,
-                latitude=latitude,
-                longitude=longitude
-            )
 
-            oa = OptionAssociation(option=randint(0, 1))
-            oa.descriptor = options[randint(0, num_options - 1)]
-            resource.option_descriptors.append(oa)
+            # Create one or two resources with that location.
+            for i in range(randint(1, 2)):
+                resource = Resource(
+                    name=fake.name(),
+                    address=location.address,
+                    latitude=latitude,
+                    longitude=longitude
+                )
 
-            ta = TextAssociation(text=fake.sentence(nb_words=10))
-            ta.descriptor = Descriptor(
-                name=fake.word(),
-                values=[],
-                is_searchable=fake.boolean()
-            )
-            resource.text_descriptors.append(ta)
+                oa = OptionAssociation(option=randint(0, 1))
+                oa.descriptor = options[randint(0, num_options - 1)]
+                resource.option_descriptors.append(oa)
 
-            db.session.add(resource)
-            try:
-                db.session.commit()
-            except IntegrityError:
-                db.session.rollback()
+                ta = TextAssociation(text=fake.sentence(nb_words=10))
+                ta.descriptor = Descriptor(
+                    name=fake.word(),
+                    values=[],
+                    is_searchable=fake.boolean()
+                )
+                resource.text_descriptors.append(ta)
+
+                db.session.add(resource)
+                try:
+                    db.session.commit()
+                except IntegrityError:
+                    db.session.rollback()
 
     @staticmethod
     def get_resources_as_dicts(resources):
@@ -177,3 +180,16 @@ class Resource(db.Model):
             print '(%s , %s)' % (resource.latitude, resource.longitude)
             print resource.text_descriptors
             print resource.option_descriptors
+
+    def get_avg_ratings(self):
+        ratings = Rating.query.filter_by(resource_id=self.id).all()
+        if not ratings:
+            return -1.0
+
+        total_sum = float(sum(r.rating for r in ratings))
+        return '%.1f' % total_sum / len(ratings)
+
+    def get_all_ratings(self):
+        ratings = Rating.query.filter_by(resource_id=self.id).all()
+        ratings.sort(key=lambda r: r.submission_time, reverse=True)
+        return ratings
