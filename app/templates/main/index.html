@@ -1,5 +1,5 @@
 {% extends 'layouts/base.html' %}
-{# {% import 'macros/form_macros.html' as f %} #}
+{% import 'macros/form_macros.html' as f %}
 
 {% block content %}
     <meta name="viewport" content="initial-scale=1.0, user-scalable=no">
@@ -9,15 +9,14 @@
     <div id="map-list-grid" class="ui two column horizontally padded grid">
       <div class="four wide column" id="left-column">
         <div id="search">
-        {% for o in options.keys() %}
-            <div>{{ o }}</div>
-            <select id="search-resources-options" multiple="" class="ui fluid dropdown" placeholder="Select">
-                {% for val in options[o] %}
-                        <option value="{{ val }}">{{ val }}</option>
-                {% endfor %}
-            </select>
-        {% endfor %}
-        </div>
+          <form id="resources-form">
+            <div class="ui fluid icon input">
+              <i class="search icon"></i>
+              <input type="text" id="resources-input" class="controls"
+                       placeholder="Enter a resource keyword">
+            </div>
+          </form>
+
           <div class="ui fluid icon input" id="location-search">
             <i class="search icon"></i>
             <input type="text" id="pac-input" class="controls"
@@ -25,82 +24,25 @@
           </div>
 
           <div id="default-search" class="option-group">
-            <div class="descriptor-group">
-              <h5>DESCRIPTOR #1</h5>
-              <form enctype class="ui form">
-                  <div class="field">watup</div>
-              </form>
-              <div class="ui checkbox field one wide column">
-                <input type="checkbox" name="option" class="checkbox-option">
-                <label>Option ekkeke</label>
-              </div>
-              <div class="ui checkbox field one wide column">
-                <input type="checkbox" name="option">
-                <label>Option</label>
-              </div>
-              <div class="ui checkbox field one wide column">
-                <input type="checkbox" name="option">
-                <label>Option</label>
-              </div>
-              <div class="ui checkbox field one wide column">
-                <input type="checkbox" name="option">
-                <label>Option</label>
-              </div>
-              <div class="ui checkbox field one wide column">
-                <input type="checkbox" name="option">
-                <label>Option</label>
-              </div>
-              <div class="ui checkbox field one wide column">
-                <input type="checkbox" name="option">
-                <label>Option</label>
-              </div>
-              <div class="ui checkbox field one wide column">
-                <input type="checkbox" name="option">
-                <label>Option</label>
-              </div>
-              <div class="ui checkbox field one wide column">
-                <input type="checkbox" name="option">
-                <label>Option</label>
-              </div>
-              <div class="ui checkbox field one wide column">
-                <input type="checkbox" name="option">
-                <label>Option</label>
-              </div>
-            </div>
+              {% for o in options.keys()[:number_of_basic_elements] %}
+                  <div>{{ o }}</div>
+                  <select id="search-resources-options" multiple="" class="ui fluid dropdown" placeholder="Select">
+                      {% for val in options[o] %}
+                              <option value="{{ val }}">{{ val }}</option>
+                      {% endfor %}
+                  </select>
+              {% endfor %}
           </div>
 
           <div id="advanced-search" class="option-group-advanced">
-            <div class="descriptor-group">
-              <h5>DESCRIPTOR #2</h5>
-              <div class="ui checkbox field one wide column">
-                <input type="checkbox" name="option">
-                <label>Option</label>
-              </div>
-              <div class="ui checkbox field one wide column">
-                <input type="checkbox" name="option">
-                <label>Option</label>
-              </div>
-              <div class="ui checkbox field one wide column">
-                <input type="checkbox" name="option">
-                <label>Option</label>
-              </div>
-            </div>
-
-            <div class="descriptor-group">
-              <h5>DESCRIPTOR #3</h5>
-              <div class="ui checkbox field one wide column">
-                <input type="checkbox" name="option">
-                <label>Option</label>
-              </div>
-              <div class="ui checkbox field one wide column">
-                <input type="checkbox" name="option">
-                <label>Option</label>
-              </div>
-              <div class="ui checkbox field one wide column">
-                <input type="checkbox" name="option">
-                <label>Option</label>
-              </div>
-            </div>
+              {% for o in options.keys()[number_of_basic_elements:] %}
+                  <div>{{ o }}</div>
+                  <select id="search-resources-options" multiple="" class="ui fluid dropdown" placeholder="Select">
+                      {% for val in options[o] %}
+                              <option value="{{ val }}">{{ val }}</option>
+                      {% endfor %}
+                  </select>
+              {% endfor %}
           </div>
 
           <div id="advanced-filters-showhide">

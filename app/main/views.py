@@ -14,17 +14,13 @@ from datetime import datetime
 
 @main.route('/')
 def index():
-    setattr(SingleResourceForm,
-            "Color",
-            SelectMultipleField(choices=[("0", "Red"), ("1", "Brown"), ("2", "Green")], default="Red"))
-    form = SingleResourceForm()
     options = Descriptor.query.all()
     options = [o for o in options if len(o.text_resources) == 0]
     options_dict = {}
     for o in options:
         options_dict[o.name] = o.values
     # options_dict = [{o.name: o.values} for o in options]
-    return render_template('main/index.html', options=options_dict)
+    return render_template('main/index.html', options=options_dict, number_of_basic_elements=min(2, len(options_dict.keys())))
 
 @main.route('/get-resources')
 def get_resources():
