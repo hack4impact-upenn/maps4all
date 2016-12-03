@@ -15,10 +15,10 @@
         Cancel
        </button>
        <div class="ui positive message updated-alert">Updated successfully</div>
-       {% else %}
-            <div id="editor-{{ editable_html_obj.editor_name }}" contenteditable="false">
-            {{ editable_html_obj.value|safe }}
-            </div>
+    {% else %}
+        <div id="editor-{{ editable_html_obj.editor_name }}" contenteditable="false">
+        {{ editable_html_obj.value|safe }}
+        </div>
     {% endif %}
 
     <script>
@@ -31,9 +31,11 @@
                 startupFocus: true,
                 autoGrow_onStartup: true
             });
-            editor.on('blur',function(e){
+
+            //Disables the automatic blur function of ckeditor.
+            editor.on('blur', function(e) {
                 return false;    
-            });
+            }); '''Disables the automatic blur function of ckeditor'''
             original_data = CKEDITOR.instances[editorIDName].getData();
             $(".start-edit").hide();
             $(".end-edit").show();
@@ -76,6 +78,7 @@
             cancelEdit();
         });
 
+        //Manages the focus activity of the CKEditor
         $("#" + editorIDName).focusout(function() {
             this.focus();
         });
