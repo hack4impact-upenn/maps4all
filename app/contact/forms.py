@@ -15,8 +15,8 @@ from wtforms.validators import (
 
 class ContactForm(Form):
     name = StringField('Name', validators=[
-            InputRequired(),
-            Length(1, 128),
+        InputRequired(),
+        Length(1, 128),
     ])
     email = EmailField('Email', validators=[
         InputRequired(),

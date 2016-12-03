@@ -1,3 +1,4 @@
+import os
 from flask import render_template, redirect, url_for, abort, flash
 from flask.ext.login import login_required
 from flask.ext.rq import get_queue
@@ -8,7 +9,7 @@ from .. import db
 from ..models import EditableHTML, Resource, ContactCategory
 from . import contact
 from forms import ContactForm, ContactCategoryForm, EditCategoryNameForm
-from ..email import send_email
+from app import create_app
 
 @contact.route('/', methods=['GET', 'POST'])
 def index():
@@ -17,7 +18,8 @@ def index():
             'category',
             SelectField('Category', choices=[(c.name, c.name) for c in ContactCategory.query.all()]))
     form = ContactForm()
-    contact_email = 'maps4all.team@gmail.com'
+    app = create_app(os.getenv('FLASK_CONFIG') or 'default')
+    contact_email = app.config['ADMIN_EMAIL']
     if form.validate_on_submit():
         get_queue().enqueue(
             send_email,
@@ -31,15 +33,18 @@ def index():
         return redirect(url_for('main.index'))
     category_form = ContactCategoryForm()
     if category_form.validate_on_submit():
-        new_category = ContactCategory(name=category_form.name.data)
-        db.session.add(new_category)
-        db.session.commit()
+        if ContactCategory.query.filter(ContactCategory.name == category_form.name.data).first() is not None:
+            flash('Category \"{}\" already exists.'.format(category_form.name.data), 'form-error')
+        else:
+            new_category = ContactCategory(name=category_form.name.data)
+            db.session.add(new_category)
+            db.session.commit()
     categories = ContactCategory.query.all()
     return render_template('contact/index.html',
-                           editable_html_obj=editable_html_obj,
-                           form=form,
-                           category_form=category_form,
-                           categories=categories)
+                            editable_html_obj=editable_html_obj,
+                            form=form,
+                            category_form=category_form,
+                            categories=categories)
 
 @contact.route('/<int:category_id>', methods=['GET', 'POST'])
 @login_required
@@ -52,11 +57,10 @@ def edit_category_name(category_id):
     form = EditCategoryNameForm()
     if form.validate_on_submit():
         if ContactCategory.query.filter(ContactCategory.name == form.name.data).first() is not None:
-            flash('Category {} already exists.'.format(form.name.data), 'form-error')
-            return render_template(
-                                'contact/manage_category.html',
-                                category=category,
-                                form=form)
+            flash('Category \"{}\" already exists.'.format(form.name.data), 'form-error')
+            return render_template('contact/manage_category.html',
+                                    category=category,
+                                    form=form)
         category.name = form.name.data
         db.session.add(category)
         try:
@@ -66,16 +70,14 @@ def edit_category_name(category_id):
                 'form-success')
         except IntegrityError:
             db.session.rollback()
-            flash('Database error occurred. Please try again', 'form-error')
-        return render_template(
-                            'contact/manage_category.html',
+            flash('Database error occurred. Please try again.', 'form-error')
+        return render_template('contact/manage_category.html',
+                                category=category,
+                                form=form)
+    form.name.data = category.name
+    return render_template('contact/manage_category.html',
                             category=category,
                             form=form)
-    form.name.data = category.name
-    return render_template(
-                        'contact/manage_category.html',
-                        category=category,
-                        form=form)
 
 @contact.route('/<int:category_id>/delete_request')
 @login_required
@@ -84,9 +86,8 @@ def delete_category_request(category_id):
     category = ContactCategory.query.get(category_id)
     if category is None:
         abort(404)
-    return render_template(
-                        'contact/manage_category.html',
-                        category=category)
+    return render_template('contact/manage_category.html',
+                            category=category)
 
 @contact.route('/<int:category_id>/delete')
 @login_required
@@ -98,11 +99,10 @@ def delete_category(category_id):
     db.session.delete(category)
     try:
         db.session.commit()
-        flash('Successfully deleted category %s.' % category.name, 'success')
+        flash('Successfully deleted category \"%s\".' % category.name, 'success')
     except IntegrityError:
         db.session.rollback()
         flash('Database error occurred. Please try again.', 'form-error')
-        return render_template(
-                            'contact/manage_category.html',
-                            category=category)
+        return render_template('contact/manage_category.html',
+                                category=category)
     return redirect(url_for('contact.index'))

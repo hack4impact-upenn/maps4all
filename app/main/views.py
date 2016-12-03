@@ -4,7 +4,7 @@ from flask import render_template, url_for, request
 from flask.ext.login import login_required
 
 from .. import db
-from ..models import EditableHTML
+from ..models import EditableHTML, Resource
 from . import main
 
 @main.route('/')
