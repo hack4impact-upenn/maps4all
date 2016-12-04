@@ -10,8 +10,11 @@ $(document).ready(function () {
     });
     // Show all resources when deleted the search query
     $('#search-resources-text').keyup(function () {
-        var required_options = document.querySelector('select').selectedOptions;
-        if ($(this).val().length === 0 && required_options.length === 0) {
+        var requiredOptions = [];
+        $("#search-resources-req-options :selected").each(function() {
+          requiredOptions.push($(this).val());
+        });
+        if ($(this).val().length === 0 && requiredOptions.length === 0) {
           window.location.replace('/single-resource/');
         }
     });
@@ -19,9 +22,14 @@ $(document).ready(function () {
 
 function searchQuery() {
   var query = '?name=' + $('#search-resources-text').val();
-  var required_options = document.querySelector('select').selectedOptions;
-  for (var i = 0; i < required_options.length; i++) {
-    query += '&' + 'reqoption=' + required_options[i].label;
+  // var required_options = document.querySelector('select').selectedOptions;
+  var requiredOptions = [];
+  $("#search-resources-req-options :selected").each(function() {
+    requiredOptions.push($(this).val());
+  });
+  console.log(requiredOptions);
+  for (var i = 0; i < requiredOptions.length; i++) {
+    query += '&' + 'reqoption=' + requiredOptions[i];
   }
   var endpoint = '/single-resource/search' + query;
   window.location.replace(endpoint);
