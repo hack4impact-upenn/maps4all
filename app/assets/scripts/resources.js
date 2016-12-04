@@ -27,9 +27,8 @@ function searchQuery() {
   $("#search-resources-req-options :selected").each(function() {
     requiredOptions.push($(this).val());
   });
-  console.log(requiredOptions);
   for (var i = 0; i < requiredOptions.length; i++) {
-    query += '&' + 'reqoption=' + requiredOptions[i];
+    query += '&reqoption=' + requiredOptions[i];
   }
   var endpoint = '/single-resource/search' + query;
   window.location.replace(endpoint);

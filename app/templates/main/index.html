@@ -14,6 +14,15 @@
               <input type="text" id="resources-input" class="controls"
                        placeholder="Enter a resource keyword">
             </div>
+              <select id="search-resources-req-options" multiple="" class="ui fluid dropdown" placeholder="Select">
+                    {% for req_option in req_options.keys() %}
+                        {% if req_options[req_option] %}
+                            <option value="{{ req_option }}" selected="selected">{{ req_option }}</option>
+                        {% else %}
+                            <option value="{{ req_option }}" >{{ req_option }}</option>
+                        {% endif %}
+                    {% endfor %}
+              </select>
           </form>
 
           <div class="ui fluid icon input" id="location-search">
