@@ -1,5 +1,6 @@
 $accent-color: #2C9FA3;
 $font-choice: Roboto;
+$font-size: 14px;
 
 /******** GENERAL MAP/LIST GRID STYLES *************/
 #map-list-grid {
@@ -8,7 +9,8 @@ $font-choice: Roboto;
   width: 100%;
 
   #left-column {
-    background-color: #B8B8B8; // TODO: change
+    background-color: #EEEEEE; // TODO: change
+    border: 1px solid #CCCCCC;
     height: 100%;
     overflow-y: scroll;
     padding: 1em;
@@ -65,7 +67,7 @@ $font-choice: Roboto;
   color: $accent-color;
   cursor: pointer;
   font-family: $font-choice;
-  font-weight: 100;
+  font-weight: 200;
   text-decoration: none;
 }
 
@@ -100,44 +102,117 @@ $font-choice: Roboto;
 
 // Resource list item
 #list > .item.list-resource {
-  padding-bottom: 1em;
+  margin: 0.5em;
+  padding-bottom: 0.5em;
   padding-top: 0.5em;
 
   .sub.header {
+    font-family: $font-choice;
     font-weight: normal;
+    margin-right: 10px;
+    .ui.small.label {
+      font-size: $font-size;
+    }
+    width: 80%;
+    float: left;
   }
 
   .ui.label {
     margin-left: 0;
     margin-top: 0.5em;
   }
+
+  cursor: pointer;
+
+  a, a:hover {
+    font-family: $font-choice;
+    font-weight: normal;
+    color: $accent-color;
+  }
+
+  .right.floated.content {
+    display: inline;
+    vertical-align: middle;
+    margin-top: 1em;
+    margin-right: -0.5em;
+  }
+
+  :hover {
+    background-color: #fff;
+  }
 }
+
 
 /*************** MAP STYLES ****************/
 #map {
+  border: solid #CCCCCC;
+  border-width: 1px 1px 1px 0;
   height: 100%;
   width: 100%;
 }
 
 // Resource marker
+.marker-info {
+  font-family: $font-choice;
+  padding: 0.25em;
+}
+
+.ui.header {
+  font-family: $font-choice;
+}
+
 .more-info {
-  color: blue;
+  color: $accent-color;
   cursor: pointer;
   text-decoration: underline;
+
+  :hover {
+    color: $accent-color!important;
+  }
 }
 
 /*************** RESOURCE VIEW SPECIFIC STYLES ****************/
 // Resource detailed information view
 #resource-info {
-  padding-left: 1em;
+  font-family: $font-choice;
+  overflow: scroll;
+  padding: 1em;
+  background-color: #F8F8F8;
+  border: solid #CCCCCC;
+  border-width: 1px 1px 1px 0;
+  height: 100%;
 
   // Specificity to override default styles
   > .ui.header > .sub.header > .ui.label {
     margin-left: 0px;
   }
+
+  a {
+    color: $accent-color;
+  }
+
+  .ui.label {
+    margin-top: 0.4em;
+    font-size: $font-size;
+  }
+
+  .sub.header {
+    font-family: $font-choice;
+    font-size: $font-size;
+  }
+
+  .ui.header  {
+    color: $accent-color;
+    font-family: $font-choice;
+  }
 }
 
 #single-resource-map {
-  height: 300px;
+  height: 400px;
   width: 100%;
+}
+
+#back-button {
+  display: inline;
+  float: right;
 }
