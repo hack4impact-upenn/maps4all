@@ -141,8 +141,9 @@
 
 <!-- Populate resource information view-->
 <script id="resource-template" type="text/x-handlebars-template">
+
   <i class="big link remove icon" id="back-button"></i>
-  <h1 class="ui header">
+  <h1 class="ui header" id="resource-name">
     {% raw %}{{ name }}{% endraw %}
     <div class="sub header">
       {% raw %}{{ address }}{% endraw %}
@@ -150,6 +151,7 @@
       <span class="ui large label">Category</span>
     </div>
   </h1>
+
   <div id="single-resource-map"></div>
   <div class="ui hidden divider"></div>
   <div class="descriptors">
@@ -180,15 +182,17 @@
       <a>
         {% raw %}{{ name }}{% endraw %}
       </a>
-      <div class="right floated content">
-        <a><i class="large right chevron icon"></i></a>
-      </div>
     </h3>
-
     <div class="sub header">
       <div>{% raw %}{{ address }}{% endraw %}</div>
       <div class="ui small label">Category</div>
     </div>
+
+
+    <div class="right floated content">
+      <a><i class="large right chevron icon"></i></a>
+    </div>
+
   </div>
   {% raw %}{{/each}}{% endraw %}
 </script>

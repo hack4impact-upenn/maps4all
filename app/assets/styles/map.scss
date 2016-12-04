@@ -102,6 +102,7 @@ $font-size: 14px;
 
 // Resource list item
 #list > .item.list-resource {
+  cursor: pointer;
   margin: 0.5em;
   padding-bottom: 0.5em;
   padding-top: 0.5em;
@@ -110,11 +111,16 @@ $font-size: 14px;
     font-family: $font-choice;
     font-weight: normal;
     margin-right: 10px;
+    width: 80%;
+    float: left;
+
     .ui.small.label {
       font-size: $font-size;
     }
-    width: 80%;
-    float: left;
+  }
+
+  .header {
+    display: inline-block;
   }
 
   .ui.label {
@@ -122,16 +128,13 @@ $font-size: 14px;
     margin-top: 0.5em;
   }
 
-  cursor: pointer;
-
-  a, a:hover {
+  a, a:hover, a:active {
+    color: $accent-color!important;
     font-family: $font-choice;
     font-weight: normal;
-    color: $accent-color;
   }
 
   .right.floated.content {
-    display: inline;
     vertical-align: middle;
     margin-top: 1em;
     margin-right: -0.5em;
@@ -174,13 +177,13 @@ $font-size: 14px;
 /*************** RESOURCE VIEW SPECIFIC STYLES ****************/
 // Resource detailed information view
 #resource-info {
-  font-family: $font-choice;
-  overflow: scroll;
-  padding: 1em;
   background-color: #F8F8F8;
   border: solid #CCCCCC;
   border-width: 1px 1px 1px 0;
+  font-family: $font-choice;
   height: 100%;
+  overflow: scroll;
+  padding: 1.25em;
 
   // Specificity to override default styles
   > .ui.header > .sub.header > .ui.label {
@@ -193,6 +196,7 @@ $font-size: 14px;
 
   .ui.label {
     margin-top: 0.4em;
+    margin-bottom: 1em;
     font-size: $font-size;
   }
 
@@ -205,6 +209,11 @@ $font-size: 14px;
     color: $accent-color;
     font-family: $font-choice;
   }
+
+  #resource-name {
+    display: inline;
+    font-size: 36px;
+  }
 }
 
 #single-resource-map {
@@ -213,6 +222,9 @@ $font-size: 14px;
 }
 
 #back-button {
-  display: inline;
+  position: fixed;
   float: right;
+  right: 1em;
+  z-index: 2;
+  display: inline-block;
 }
