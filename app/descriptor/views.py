@@ -357,7 +357,15 @@ def change_required_option_descriptor():
         if descriptor is not None:
             current_name = descriptor.name
     if current_name != "":
-        setattr(ChangeRequiredOptionDescriptorForm, 'descriptor', SelectField('Option Descriptor', choices=choices, validators=[InputRequired()], default=current_name))
+        setattr(
+            ChangeRequiredOptionDescriptorForm,
+            'descriptor',
+            SelectField(
+                'Option Descriptor',
+                choices=choices,
+                validators=[InputRequired()],
+                default=current_name)
+        )
         form = ChangeRequiredOptionDescriptorForm()
         if form.validate_on_submit():
             RequiredOptionDescriptorConstructor.query.delete()
@@ -407,7 +415,12 @@ def review_required_option_descriptor():
                 ).first()
                 if resource is not None:
                     for val in form.resources.data[j]:
-                        new_association = OptionAssociation(resource_id=resource.id, descriptor_id=descriptor.id, option=descriptor.values.index(val), resource=resource, descriptor=descriptor)
+                        new_association = OptionAssociation(
+                                            resource_id=resource.id,
+                                            descriptor_id=descriptor.id,
+                                            option=descriptor.values.index(val),
+                                            resource=resource,
+                                            descriptor=descriptor)
                         db.session.add(new_association)
                 RequiredOptionDescriptor.query.delete()
                 req_opt_desc = RequiredOptionDescriptor(descriptor_id=descriptor.id)

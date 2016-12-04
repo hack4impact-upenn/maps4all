@@ -9,6 +9,7 @@ from wtforms.fields import (
     SubmitField,
     TextAreaField,
     StringField,
+    SelectField,
     SelectMultipleField
 )
 
@@ -19,7 +20,7 @@ class NavigationForm(Form):
     submit_back = SubmitField('Back')
 
 class DetermineRequiredOptionDescriptorForm(Form):
-    required_option_descriptor = StringField('Required Option Descriptor', validators=[InputRequired()])
+    required_option_descriptor = SelectField('Required Option Descriptor', validators=[InputRequired()])
     navigation = FormField(NavigationForm)
 
 class DetermineDescriptorTypesForm(Form):

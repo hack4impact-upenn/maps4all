@@ -13,12 +13,12 @@
             <div class="ui right action left icon input menu">
                 <i class="search icon"></i>
                 <input id="search-resources-text" type="text" value="{{ query_name|default('') }}" placeholder="Search resources by name">
-                <select id="search-resources-options" multiple="" class="ui fluid dropdown" placeholder="Select">
-                    {% for option in options.keys() %}
-                        {% if options[option] %}
-                            <option value="{{ option }}" selected="selected">{{ option }}</option>
+                <select id="search-resources-req-options" multiple="" class="ui fluid dropdown" placeholder="Select">
+                    {% for req_option in req_options.keys() %}
+                        {% if req_options[req_option] %}
+                            <option value="{{ req_option }}" selected="selected">{{ req_option }}</option>
                         {% else %}
-                            <option value="{{ option }}" >{{ option }}</option>
+                            <option value="{{ req_option }}" >{{ req_option }}</option>
                         {% endif %}
                     {% endfor %}
                 </select>

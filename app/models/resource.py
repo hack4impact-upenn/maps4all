@@ -67,7 +67,7 @@ class Descriptor(db.Model):
 class RequiredOptionDescriptor(db.Model):
     __tablename__ = 'required_option_descriptor'
     id = db.Column(db.Integer, primary_key=True)
-    descriptor_id = db.Column(db.Integer);
+    descriptor_id = db.Column(db.Integer, db.ForeignKey('descriptors.id'));
     @staticmethod
     def insert_required_option_descriptor():
         required_option_descriptor = RequiredOptionDescriptor(descriptor_id=-1)
