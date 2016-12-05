@@ -33,7 +33,7 @@ def index():
         return redirect(url_for('main.index'))
     category_form = ContactCategoryForm()
     if category_form.validate_on_submit():
-        if ContactCategory.query.filter(ContactCategory.name == category_form.name.data).first() is not None:
+        if ContactCategory.query.filter_by(name = category_form.name.data).first() is not None:
             flash('Category \"{}\" already exists.'.format(category_form.name.data), 'form-error')
         else:
             new_category = ContactCategory(name=category_form.name.data)

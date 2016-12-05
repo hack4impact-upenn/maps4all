@@ -5,30 +5,16 @@
 {% block content %}
     <div class="ui text container">
         <h1>Contact Us</h1>
-        {% set flashes = {
-            'error': get_flashed_messages(category_filter=['form-error']),
-            'warning': get_flashed_messages(category_filter=['form-check-email']),
-            'info': get_flashed_messages(category_filter=['form-info']),
-            'success': get_flashed_messages(category_filter=['form-success'])
-            }
-        %}
         {% if current_user.is_admin() %}
             <h3>Edit Contact Description</h3>
         {% endif %}
         {{ page.render_inline_editor(editable_html_obj, current_user) }}
         {% if not current_user.is_admin() %}
-            {{ f.begin_form(form, flashes) }}
-            {{ f.render_form_field(form.name) }}
-            {{ f.render_form_field(form.email) }}
-            {{ f.render_form_field(form.category) }}
-            {{ f.render_form_field(form.message) }}
-            {% for field in form | selectattr('type', 'equalto', 'SubmitField') %}
-                {{ f.render_form_field(field) }}
-            {% endfor %}
-            {{ f.end_form(form) }}
+            <div class="ui divider"></div>
+            {{ f.render_form(form) }}
         {% else %}
             <h3>Add New Contact Category</h3>
-            {{ f.render_form(category_form, flashes) }}
+            {{ f.render_form(category_form) }}
             <h3>Current Categories</h3>
             <div style="overflow-x: scroll;">
                 <table class="ui searchable sortable unstackable selectable celled table">
