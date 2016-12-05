@@ -147,7 +147,7 @@
           {% raw %}{{ name }}{% endraw %}
           <div class="sub header">
             <span class="ui horizontal label">Category</span>
-            {% raw %}{{ address }}{% endraw %}
+            {% raw %}{{ rating }}{% endraw %}
           </div>
         </h1>
         <div id="single-resource-map"></div>
@@ -155,10 +155,11 @@
         <div class="descriptors">
           <h2 class="ui dividing header">Information</h2>
           <div class="ui list">
+              {% raw %}{{ rating }}{% endraw %}
             {% raw %}{{#each descriptors}}{% endraw %}
               <div class="item descriptor">
                 <div class="header">{% raw %}{{ key }}{% endraw %}</div>
-                {% raw %}{{ value }}{% endraw %}
+                  {% raw %}{{ value }}{% endraw %}
               </div>
             {% raw %}{{/each}}{% endraw %}
           </div>
@@ -169,6 +170,18 @@
           <a href="{% raw %}{{ suggestionUrl }}{% endraw %}">
             Suggest an edit for this resource
           </a>
+        </div>
+        <div class="ui form">
+          <h1 class="ui header">Submit a Review</h1>
+          <div class="field">
+            <label>Rating (Required)</label>
+            <div class="ui star rating" id="rating-input"></div>
+          </div>
+            <div class="field">
+              <label>Review (Optional)</label>
+              <textarea rows="2" id="review"></textarea>
+            </div>
+          <button class="ui disabled button" id="submit">Submit</button>
         </div>
     </script>
 

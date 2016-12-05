@@ -43,12 +43,12 @@ function markerListener(marker, event) {
 // Generate the detailed resource page view after clicking "more information"
 // on a marker
 function displayDetailedResourceView(marker) {
+    console.log(marker);
   // get descriptor information as associations
   $.get('get-associations/' + marker.resourceID).done(function(associations) {
     $("#map").hide();
     $("#resource-info").empty();
     $("#resource-info").show();
-
     var associationObject = JSON.parse(associations);
     var descriptors = [];
     for (var key in associationObject) {
@@ -58,7 +58,6 @@ function displayDetailedResourceView(marker) {
       };
       descriptors.push(descriptor);
     }
-
     // Detailed resource information template generation
     var resourceTemplate = $("#resource-template").html();
     var compiledResourceTemplate = Handlebars.compile(resourceTemplate);
@@ -67,6 +66,7 @@ function displayDetailedResourceView(marker) {
       address: marker.address,
       suggestionUrl: 'suggestion/' + marker.resourceID,
       descriptors: descriptors,
+      rating: marker.avg_rating,
     };
     var resourceInfo = compiledResourceTemplate(context);
     $("#resource-info").html(resourceInfo);

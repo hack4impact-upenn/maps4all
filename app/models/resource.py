@@ -155,10 +155,13 @@ class Resource(db.Model):
     @staticmethod
     def get_resources_as_dicts(resources):
         resources_as_dicts = [resource.__dict__ for resource in resources]
+        for resource in resources:
+            res = resource.__dict__
+            res['avg_rating'] = resource.get_avg_ratings()
+            del res['_sa_instance_state']
+            resources_as_dicts.append(res)
         # .__dict__ returns the SQLAlchemy object as a dict, but it also adds a
         # field '_sa_instance_state' that we don't need, so we delete it.
-        for d in resources_as_dicts:
-            del d['_sa_instance_state']
         return resources_as_dicts
 
     @staticmethod
