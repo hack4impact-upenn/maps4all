@@ -3,6 +3,7 @@ from wtforms.fields import (
     BooleanField,
     FieldList,
     SelectField,
+    SelectMultipleField,
     SubmitField,
     TextField
 )
@@ -43,3 +44,12 @@ class AddDescriptorOptionValueForm(Form):
 
 class FixAllResourceOptionValueForm(Form):
     submit = SubmitField('Update resource option values')
+
+
+class ChangeRequiredOptionDescriptorForm(Form):
+    submit = SubmitField('Change')
+
+
+class RequiredOptionDescriptorMissingForm(Form):
+    resources = FieldList(SelectMultipleField(validators=[InputRequired()]))
+    submit = SubmitField('Update')

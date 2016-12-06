@@ -10,14 +10,26 @@ $(document).ready(function () {
     });
     // Show all resources when deleted the search query
     $('#search-resources-text').keyup(function () {
-        if ($(this).val().length === 0) {
+        var requiredOptions = [];
+        $("#search-resources-req-options :selected").each(function() {
+          requiredOptions.push($(this).val());
+        });
+        if ($(this).val().length === 0 && requiredOptions.length === 0) {
           window.location.replace('/single-resource/');
         }
     });
 });
 
 function searchQuery() {
-  var query = $('#search-resources-text').val();
-  var endpoint = '/single-resource/' + query;
+  var query = '?name=' + $('#search-resources-text').val();
+  // var required_options = document.querySelector('select').selectedOptions;
+  var requiredOptions = [];
+  $("#search-resources-req-options :selected").each(function() {
+    requiredOptions.push($(this).val());
+  });
+  for (var i = 0; i < requiredOptions.length; i++) {
+    query += '&reqoption=' + requiredOptions[i];
+  }
+  var endpoint = '/single-resource/search' + query;
   window.location.replace(endpoint);
 }

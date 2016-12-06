@@ -1,10 +1,12 @@
-from flask import abort, flash, redirect, render_template, url_for
+from flask import abort, flash, redirect, render_template, url_for, request
 from flask.ext.login import login_required
 from sqlalchemy.exc import IntegrityError
 from wtforms.fields import SelectMultipleField, TextAreaField
+from wtforms.fields import SelectMultipleField, SelectField, TextAreaField
+from flask_wtf.file import InputRequired
 
 from .. import db
-from ..models import Descriptor, OptionAssociation, Resource, TextAssociation
+from ..models import Descriptor, OptionAssociation, Resource, TextAssociation, RequiredOptionDescriptor
 from . import single_resource
 from .forms import SingleResourceForm
 
@@ -14,19 +16,57 @@ from .forms import SingleResourceForm
 def index():
     """View resources in a list."""
     resources = Resource.query.all()
-    return render_template('single_resource/index.html', resources=resources)
+    req_opt_desc = RequiredOptionDescriptor.query.all()[0]
+    req_opt_desc = Descriptor.query.filter_by(
+        id=req_opt_desc.descriptor_id
+    ).first()
+    req_options = {}
+    if req_opt_desc is not None:
+        for val in req_opt_desc.values:
+            req_options[val] = False
+    return render_template('single_resource/index.html', resources=resources, req_options=req_options)
 
-@single_resource.route('/<query_name>')
+@single_resource.route('/search')
 @login_required
-def search_resources(query_name):
-    resources = Resource.query.filter(Resource.name.contains(query_name))
-    return render_template('single_resource/index.html', resources=resources, query=query_name)
+def search_resources():
+    name = request.args.get('name')
+    if name is None:
+        name = ""
+    req_options = request.args.getlist('reqoption')
+    if req_options is None:
+        req_options = []
+    resource_pool = Resource.query.filter(Resource.name.contains(name)).all()
+    req_opt_desc = RequiredOptionDescriptor.query.all()[0]
+    req_opt_desc = Descriptor.query.filter_by(
+        id=req_opt_desc.descriptor_id
+    ).first()
+    resources = list(resource_pool)
+    if req_opt_desc is not None and len(req_options) > 0:
+        resources = []
+        int_req_options = []
+        for o in req_options:
+            int_req_options.append(req_opt_desc.values.index(str(o)))
+        for resource in resource_pool:
+            associations = OptionAssociation.query.filter_by(
+                resource_id=resource.id,
+                descriptor_id=req_opt_desc.id
+            )
+            for a in associations:
+                if a.option in int_req_options:
+                    resources.append(resource)
+                    break
+    query_req_options = {}
+    if req_opt_desc is not None:
+        for val in req_opt_desc.values:
+            query_req_options[val] = val in req_options
+    return render_template('single_resource/index.html', resources=resources, query_name=name, req_options=query_req_options)
 
 @single_resource.route('/create', methods=['GET', 'POST'])
 @login_required
 def create():
     """Add a resource."""
     descriptors = Descriptor.query.all()
+    req_opt_desc = RequiredOptionDescriptor.query.all()[0]
     for descriptor in descriptors:
         if descriptor.values:  # Fields for option descriptors.
             choices = [(str(i), v) for i, v in enumerate(descriptor.values)]
@@ -66,6 +106,7 @@ def edit(resource_id):
         abort(404)
     resource_field_names = Resource.__table__.columns.keys()
     descriptors = Descriptor.query.all()
+    req_opt_desc = RequiredOptionDescriptor.query.all()[0]
     for descriptor in descriptors:
         if descriptor.values:  # Fields for option descriptors.
             choices = [(str(i), v) for i, v in enumerate(descriptor.values)]
