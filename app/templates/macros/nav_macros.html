@@ -28,7 +28,7 @@
 
 {% macro account_items(current_user) %}
     <a href="{{ url_for('main.about') }}" class="item">About</a>
-    <a href="{{ url_for('main.contact') }}" class="item">Contact Us</a>
+    <a href="{{ url_for('contact.index') }}" class="item">Contact Us</a>
     {% if current_user.is_authenticated() %}
         <div class="ui simple dropdown item">
             Manage Resources

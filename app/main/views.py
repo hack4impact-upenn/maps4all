@@ -1,6 +1,7 @@
 import json
 
 from flask import render_template, request,jsonify
+from flask import render_template, url_for, request, jsonify
 from flask.ext.login import login_required
 
 from app import csrf
@@ -41,12 +42,6 @@ def get_associations(resource_id):
 def about():
     editable_html_obj = EditableHTML.get_editable_html('about')
     return render_template('main/about.html',
-                           editable_html_obj=editable_html_obj)
-
-@main.route('/contact')
-def contact():
-    editable_html_obj = EditableHTML.get_editable_html('contact')
-    return render_template('main/contact.html',
                            editable_html_obj=editable_html_obj)
 
 @main.route('/update-editor-contents', methods=['POST'])
