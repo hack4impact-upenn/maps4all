@@ -235,10 +235,14 @@ def get_required_option_descriptor():
     # as choices in the SelectField
     descriptors = []
     for header_cell in csv_container.csv_header_row.csv_header_cells:
-        if header_cell.data == form.required_option_descriptor.data and header_cell.descriptor_type == 'option':
+        if header_cell.descriptor_type == 'option':
             descriptors.append(header_cell.data)
-    descriptors += Descriptor.query.all()
-    form.required_option_descriptor.choices = [(d.name, d.name) for d in descriptors]
+    existing_descriptors = Descriptor.query.all()
+    for desc in existing_descriptors:
+        if desc.values:
+            descriptors.append(desc.name)
+    print(descriptors)
+    form.required_option_descriptor.choices = [(d, d) for d in descriptors]
     # If there is an existing required option descriptor, then make it
     # the default choice
     req_opt_desc = RequiredOptionDescriptor.query.all()[0]
