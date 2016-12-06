@@ -44,6 +44,11 @@ $font-size: 14px;
   margin: 0 0 5px 0;
 }
 
+// Resource name search
+#resource-search {
+  background-color: #fff;
+}
+
 .descriptor-group {
   font-family: $font-choice;
   margin: 3px;
@@ -79,7 +84,6 @@ $font-size: 14px;
   display: block;
 }
 
-// Resource name search
 #resources-form {
   display: inline;
   text-overflow: ellipsis;

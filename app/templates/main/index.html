@@ -8,110 +8,127 @@
 <div id="map-list-grid" class="ui two column horizontally padded grid">
   <div class="four wide column" id="left-column">
     <div id="search">
-      <form id="resources-form">
+      <div class="ui fluid icon input" id="location-search">
+        <i class="search icon"></i>
+        <input type="text" id="pac-input" class="controls" placeholder="Go to a location">
+      </div>
+      <div class="ui horizontal divider">Search</div>
+      <div class="ui segment" id="resource-search">
         <div class="ui fluid icon input">
           <i class="search icon"></i>
           <input type="text" id="resources-input" class="controls"
           placeholder="Enter a resource keyword">
         </div>
-      </form>
+        <select id="search-resources-req-options" multiple="" class="ui fluid dropdown" placeholder="Select">
+          {% for req_option in req_options.keys() %}
+          {% if req_options[req_option] %}
+          <option value="{{ req_option }}" selected="selected">{{ req_option }}</option>
+          {% else %}
+          <option value="{{ req_option }}" >{{ req_option }}</option>
+          {% endif %}
+          {% endfor %}
+        </select>
+            <!-- <div class="ui fluid icon input">
+              <i class="search icon"></i>
+              <input type="text" id="resources-input" class="controls"
+                       placeholder="Enter resource name">
+                     </div> -->
 
-      <div class="ui fluid icon input" id="location-search">
-        <i class="search icon"></i>
-        <input type="text" id="pac-input" class="controls"
-        placeholder="Enter a location">
-      </div>
+                     <div id="default-search" class="option-group">
+                      <div class="descriptor-group">
+                        <h5>DESCRIPTOR #1</h5>
+                        <div class="ui checkbox field one wide column">
+                          <input type="checkbox" name="option" class="checkbox-option">
+                          <label>Option ekkeke</label>
+                        </div>
+                        <div class="ui checkbox field one wide column">
+                          <input type="checkbox" name="option">
+                          <label>Option</label>
+                        </div>
+                        <div class="ui checkbox field one wide column">
+                          <input type="checkbox" name="option">
+                          <label>Option</label>
+                        </div>
+                        <div class="ui checkbox field one wide column">
+                          <input type="checkbox" name="option">
+                          <label>Option</label>
+                        </div>
+                        <div class="ui checkbox field one wide column">
+                          <input type="checkbox" name="option">
+                          <label>Option</label>
+                        </div>
+                        <div class="ui checkbox field one wide column">
+                          <input type="checkbox" name="option">
+                          <label>Option</label>
+                        </div>
+                        <div class="ui checkbox field one wide column">
+                          <input type="checkbox" name="option">
+                          <label>Option</label>
+                        </div>
+                        <div class="ui checkbox field one wide column">
+                          <input type="checkbox" name="option">
+                          <label>Option</label>
+                        </div>
+                        <div class="ui checkbox field one wide column">
+                          <input type="checkbox" name="option">
+                          <label>Option</label>
+                        </div>
+                      </div>
+                    </div>
 
-      <div id="default-search" class="option-group">
-        <div class="descriptor-group">
-          <h5>DESCRIPTOR #1</h5>
-          <div class="ui checkbox field one wide column">
-            <input type="checkbox" name="option" class="checkbox-option">
-            <label>Option ekkeke</label>
+                    <div id="advanced-search" class="option-group-advanced">
+                      <div class="descriptor-group">
+                        <h5>DESCRIPTOR #2</h5>
+                        <div class="ui checkbox field one wide column">
+                          <input type="checkbox" name="option">
+                          <label>Option</label>
+                        </div>
+                        <div class="ui checkbox field one wide column">
+                          <input type="checkbox" name="option">
+                          <label>Option</label>
+                        </div>
+                        <div class="ui checkbox field one wide column">
+                          <input type="checkbox" name="option">
+                          <label>Option</label>
+                        </div>
+                      </div>
+
+                      <div class="descriptor-group">
+                        <h5>DESCRIPTOR #3</h5>
+                        <div class="ui checkbox field one wide column">
+                          <input type="checkbox" name="option">
+                          <label>Option</label>
+                        </div>
+                        <div class="ui checkbox field one wide column">
+                          <input type="checkbox" name="option">
+                          <label>Option</label>
+                        </div>
+                        <div class="ui checkbox field one wide column">
+                          <input type="checkbox" name="option">
+                          <label>Option</label>
+                        </div>
+                      </div>
+                    </div>
+
+                    <div id="advanced-filters-showhide">
+                      Show Advanced Filters
+                    </div>
+                    <button class="ui fluid button" id="search-user-resources">Search</button>
+                  </div>
+                </div>
+
+                <div class="ui horizontal divider">Results</div>
+                <div id="list" class="ui middle aligned divided list"></div>
+
+            <div class="ui divider" id="left-column-divider"></div>
+            <div class="ui middle aligned divided list" id="list"></div>
           </div>
-          <div class="ui checkbox field one wide column">
-            <input type="checkbox" name="option">
-            <label>Option</label>
-          </div>
-          <div class="ui checkbox field one wide column">
-            <input type="checkbox" name="option">
-            <label>Option</label>
-          </div>
-          <div class="ui checkbox field one wide column">
-            <input type="checkbox" name="option">
-            <label>Option</label>
-          </div>
-          <div class="ui checkbox field one wide column">
-            <input type="checkbox" name="option">
-            <label>Option</label>
-          </div>
-          <div class="ui checkbox field one wide column">
-            <input type="checkbox" name="option">
-            <label>Option</label>
-          </div>
-          <div class="ui checkbox field one wide column">
-            <input type="checkbox" name="option">
-            <label>Option</label>
-          </div>
-          <div class="ui checkbox field one wide column">
-            <input type="checkbox" name="option">
-            <label>Option</label>
-          </div>
-          <div class="ui checkbox field one wide column">
-            <input type="checkbox" name="option">
-            <label>Option</label>
+
+          <div class="twelve wide column" id="right-column">
+            <div id="map"></div>
+            <div id="resource-info"></div>
           </div>
         </div>
-      </div>
-
-      <div id="advanced-search" class="option-group-advanced">
-        <div class="descriptor-group">
-          <h5>DESCRIPTOR #2</h5>
-          <div class="ui checkbox field one wide column">
-            <input type="checkbox" name="option">
-            <label>Option</label>
-          </div>
-          <div class="ui checkbox field one wide column">
-            <input type="checkbox" name="option">
-            <label>Option</label>
-          </div>
-          <div class="ui checkbox field one wide column">
-            <input type="checkbox" name="option">
-            <label>Option</label>
-          </div>
-        </div>
-
-        <div class="descriptor-group">
-          <h5>DESCRIPTOR #3</h5>
-          <div class="ui checkbox field one wide column">
-            <input type="checkbox" name="option">
-            <label>Option</label>
-          </div>
-          <div class="ui checkbox field one wide column">
-            <input type="checkbox" name="option">
-            <label>Option</label>
-          </div>
-          <div class="ui checkbox field one wide column">
-            <input type="checkbox" name="option">
-            <label>Option</label>
-          </div>
-        </div>
-      </div>
-
-      <div id="advanced-filters-showhide">
-        Show Advanced Filters
-      </div>
-    </div>
-
-    <div class="ui divider" id="left-column-divider"></div>
-    <div class="ui middle aligned divided list" id="list"></div>
-  </div>
-
-  <div class="twelve wide column" id="right-column">
-    <div id="map"></div>
-    <div id="resource-info"></div>
-  </div>
-</div>
 
 <!-- HANDLEBARS.JS TEMPLATES COMPILED IN MAP.JS -->
 <!-- Populate location search marker info-->

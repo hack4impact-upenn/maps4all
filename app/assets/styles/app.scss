@@ -31,5 +31,10 @@ nav .mobile.only.row {
 
 // Tables
 table.selectable tr:hover {
-  cursor: pointer !important;
+    cursor: pointer !important;
+}
+
+// Multiple option selector placeholder
+.ui.dropdown > .text {
+    color: gray;
 }

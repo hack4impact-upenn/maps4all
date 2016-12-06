@@ -9,10 +9,8 @@
 }
 
 @media -sass-debug-info{filename{}line{font-family:\0000310}}
-#editor-about, #editor-contact {
-  max-height: 300px;
+#editor-about, #editor-contact-admin {
   min-height: 100px;
-  overflow-y: scroll;
   word-wrap: break-word;
 }
 
@@ -43,6 +41,11 @@ nav .mobile.only.row .ui.vertical.menu {
 @media -sass-debug-info{filename{}line{font-family:\0000333}}
 table.selectable tr:hover {
   cursor: pointer !important;
+}
+
+@media -sass-debug-info{filename{}line{font-family:\0000338}}
+.ui.dropdown > .text {
+  color: gray;
 }
 
 /******** GENERAL MAP/LIST GRID STYLES *************/
@@ -92,6 +95,11 @@ table.selectable tr:hover {
 }
 
 @media -sass-debug-info{filename{}line{font-family:\0000347}}
+#resource-search {
+  background-color: #fff;
+}
+
+@media -sass-debug-info{filename{}line{font-family:\0000350}}
 .descriptor-group {
   font-family: Roboto;
   margin: 3px;
@@ -101,6 +109,7 @@ table.selectable tr:hover {
   font-family: Roboto;
   margin: 0 0 5px 0;
 }
+
 
 @media -sass-debug-info{filename{}line{font-family:\0000357}}
 .option-group, .option-group-advanced {
@@ -241,6 +250,7 @@ table.selectable tr:hover {
   overflow: scroll;
   padding: 1.25em;
 }
+
 @media -sass-debug-info{filename{}line{font-family:\00003188}}
 #resource-info > .ui.header > .sub.header > .ui.label {
   margin-left: 0px;
@@ -284,4 +294,9 @@ table.selectable tr:hover {
 #single-resource-map {
   height: 400px;
   width: 100%;
+}
+
+@media -sass-debug-info{filename{}line{font-family:\000031}}
+#editor-contact-user {
+  word-wrap: break-word;
 }

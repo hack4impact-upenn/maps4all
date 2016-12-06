@@ -1,10 +1,12 @@
-from flask import abort, flash, redirect, render_template, url_for
+from flask import abort, flash, redirect, render_template, url_for, request
 from flask.ext.login import login_required
 from sqlalchemy.exc import IntegrityError
-from wtforms.fields import SelectField, TextAreaField
+from wtforms.fields import SelectMultipleField, TextAreaField
+from wtforms.fields import SelectMultipleField, SelectField, TextAreaField
+from flask_wtf.file import InputRequired
 
 from .. import db
-from ..models import Descriptor, OptionAssociation, Resource, TextAssociation
+from ..models import Descriptor, OptionAssociation, Resource, TextAssociation, RequiredOptionDescriptor
 from . import single_resource
 from .forms import SingleResourceForm
 
@@ -14,25 +16,63 @@ from .forms import SingleResourceForm
 def index():
     """View resources in a list."""
     resources = Resource.query.all()
-    return render_template('single_resource/index.html', resources=resources)
+    req_opt_desc = RequiredOptionDescriptor.query.all()[0]
+    req_opt_desc = Descriptor.query.filter_by(
+        id=req_opt_desc.descriptor_id
+    ).first()
+    req_options = {}
+    if req_opt_desc is not None:
+        for val in req_opt_desc.values:
+            req_options[val] = False
+    return render_template('single_resource/index.html', resources=resources, req_options=req_options)
 
-@single_resource.route('/<query_name>')
+@single_resource.route('/search')
 @login_required
-def search_resources(query_name):
-    resources = Resource.query.filter(Resource.name.contains(query_name))
-    return render_template('single_resource/index.html', resources=resources, query=query_name)
+def search_resources():
+    name = request.args.get('name')
+    if name is None:
+        name = ""
+    req_options = request.args.getlist('reqoption')
+    if req_options is None:
+        req_options = []
+    resource_pool = Resource.query.filter(Resource.name.contains(name)).all()
+    req_opt_desc = RequiredOptionDescriptor.query.all()[0]
+    req_opt_desc = Descriptor.query.filter_by(
+        id=req_opt_desc.descriptor_id
+    ).first()
+    resources = list(resource_pool)
+    if req_opt_desc is not None and len(req_options) > 0:
+        resources = []
+        int_req_options = []
+        for o in req_options:
+            int_req_options.append(req_opt_desc.values.index(str(o)))
+        for resource in resource_pool:
+            associations = OptionAssociation.query.filter_by(
+                resource_id=resource.id,
+                descriptor_id=req_opt_desc.id
+            )
+            for a in associations:
+                if a.option in int_req_options:
+                    resources.append(resource)
+                    break
+    query_req_options = {}
+    if req_opt_desc is not None:
+        for val in req_opt_desc.values:
+            query_req_options[val] = val in req_options
+    return render_template('single_resource/index.html', resources=resources, query_name=name, req_options=query_req_options)
 
 @single_resource.route('/create', methods=['GET', 'POST'])
 @login_required
 def create():
     """Add a resource."""
     descriptors = Descriptor.query.all()
+    req_opt_desc = RequiredOptionDescriptor.query.all()[0]
     for descriptor in descriptors:
         if descriptor.values:  # Fields for option descriptors.
             choices = [(str(i), v) for i, v in enumerate(descriptor.values)]
             setattr(SingleResourceForm,
                     descriptor.name,
-                    SelectField(choices=choices))
+                    SelectMultipleField(choices=choices))
         else:  # Fields for text descriptors
             setattr(SingleResourceForm, descriptor.name, TextAreaField())
     form = SingleResourceForm()
@@ -66,19 +106,20 @@ def edit(resource_id):
         abort(404)
     resource_field_names = Resource.__table__.columns.keys()
     descriptors = Descriptor.query.all()
+    req_opt_desc = RequiredOptionDescriptor.query.all()[0]
     for descriptor in descriptors:
         if descriptor.values:  # Fields for option descriptors.
             choices = [(str(i), v) for i, v in enumerate(descriptor.values)]
             default = None
-            option_association = OptionAssociation.query.filter_by(
+            option_associations = OptionAssociation.query.filter_by(
                 resource_id=resource_id,
                 descriptor_id=descriptor.id
-            ).first()
-            if option_association is not None:
-                default = option_association.option
+            )
+            if option_associations is not None:
+                default = [assoc.option for assoc in option_associations]
             setattr(SingleResourceForm,
                     descriptor.name,
-                    SelectField(choices=choices, default=default))
+                    SelectMultipleField(choices=choices, default=default))
         else:  # Fields for text descriptors.
             default = None
             text_association = TextAssociation.query.filter_by(
@@ -121,28 +162,29 @@ def save_associations(resource, form, descriptors, resource_existed=True):
     for descriptor in descriptors:
         if descriptor.values:
             AssociationClass = OptionAssociation
-            value = int(form[descriptor.name].data)
+            values = [int(i) for i in form[descriptor.name].data]
             keyword = 'option'
         else:
             AssociationClass = TextAssociation
-            value = form[descriptor.name].data
+            values = [form[descriptor.name].data]
             keyword = 'text'
-        association = None
-        if resource_existed:
-            association = AssociationClass.query.filter_by(
-                resource_id=resource.id,
-                descriptor_id=descriptor.id
-            ).first()
-        if association is not None:
-            setattr(association, keyword, value)
-        else:
-            arguments = {'resource_id': resource.id,
-                         'descriptor_id': descriptor.id,
-                         keyword: value,
-                         'resource': resource,
-                         'descriptor': descriptor}
-            new_association = AssociationClass(**arguments)
-            db.session.add(new_association)
+        for value in values:
+            association = None
+            if resource_existed:
+                association = AssociationClass.query.filter_by(
+                    resource_id=resource.id,
+                    descriptor_id=descriptor.id
+                ).first()
+            if association is not None:
+                setattr(association, keyword, value)
+            else:
+                arguments = {'resource_id': resource.id,
+                             'descriptor_id': descriptor.id,
+                             keyword: value,
+                             'resource': resource,
+                             'descriptor': descriptor}
+                new_association = AssociationClass(**arguments)
+                db.session.add(new_association)
 
 
 @single_resource.route('/<int:resource_id>/delete', methods=['POST'])

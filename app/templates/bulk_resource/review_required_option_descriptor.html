@@ -1,0 +1,36 @@
+{% extends 'layouts/base.html' %}
+{% import 'macros/form_macros.html' as f %}
+
+{% block content %}
+    <div class="ui stackable centered grid container">
+        <div class="twelve wide column">
+            <div class="ui fluid steps">
+                <div class="completed step">
+                    <i class="truck icon"></i>
+                    <div class="content">
+                        <div class="title">Upload</div>
+                        <div class="description">Upload your CSV file</div>
+                    </div>
+                </div>
+                <div class="completed step">
+                    <i class="configure icon"></i>
+                    <div class="content">
+                        <div class="title">Configure</div>
+                        <div class="description">Review your data</div>
+                    </div>
+                </div>
+                <div class="active step">
+                    <i class="save icon"></i>
+                    <div class="content">
+                        <div class="title">Save</div>
+                        <div class="description">Add your data</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="twelve wide column">
+            {{ f.render_form(form) }}
+        </div>
+    </div>
+{% endblock %}

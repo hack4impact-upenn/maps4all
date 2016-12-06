@@ -28,7 +28,7 @@
 
 {% macro account_items(current_user) %}
     <a href="{{ url_for('main.about') }}" class="item">About</a>
-    <a href="{{ url_for('main.contact') }}" class="item">Contact Us</a>
+    <a href="{{ url_for('contact.index') }}" class="item">Contact Us</a>
     {% if current_user.is_authenticated() %}
         <div class="ui simple dropdown item">
             Manage Resources
@@ -47,6 +47,9 @@
                                     icon='tags icon') }}
                 {{ dropdown_choice('Add New Descriptor', 'descriptor.new_descriptor',
                                     icon='add circle icon') }}
+                {{ dropdown_choice('Change Required Option Descriptor',
+                                    'descriptor.change_required_option_descriptor',
+                                    icon='configure icon') }}
                 <div class="ui section divider"></div>
                 <h3 class="ui header">Bulk</h3>
                 {{ dropdown_choice('Upload Resources', 'bulk_resource.upload',
@@ -56,6 +59,7 @@
         <a href="{{ url_for('account.manage') }}" class="item">Your Account</a>
         <a href="{{ url_for('account.logout') }}" class="item">Log out</a>
     {% else %}
+        <a href="{{ url_for('suggestion.suggest') }}" class="item">Suggest Resource</a>
         <a href="{{ url_for('account.login') }}" class="item">Log in</a>
     {% endif %}
 {% endmacro %}

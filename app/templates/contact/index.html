@@ -1,0 +1,46 @@
+{% extends 'layouts/base.html' %}
+{% import 'macros/page_macros.html' as page %}
+{% import 'macros/form_macros.html' as f %}
+
+{% block content %}
+    <div class="ui text container">
+        <h1 class="ui header">
+        	Contact Us
+        	{% if current_user.is_admin() %}
+        		<div class="sub header">This is what the user will see on the Contact page</div>
+        	{% endif %}
+        </h1>
+        {% if current_user.is_admin() %}
+            <h3>Edit Contact Description</h3>
+        {% endif %}
+        {{ page.render_inline_editor(editable_html_obj, current_user) }}
+        {% if not current_user.is_admin() %}
+            <div class="ui divider"></div>
+            {{ f.render_form(form) }}
+        {% else %}
+            <h3>Add New Contact Category</h3>
+            {{ f.render_form(category_form) }}
+            <h3>Current Categories</h3>
+            <div style="overflow-x: scroll;">
+                <table class="ui searchable sortable unstackable selectable celled table">
+                    <thead>
+                        <tr>
+                            <th>Category</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for category in categories %}
+                            <tr>
+                                <td>
+                                    <a href="{{ url_for('contact.edit_category_name', category_id=category.id) }}">{{ category['name'] }}</a>
+                                </td>
+                            </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        {% endif %}
+    </div>
+
+    <script src="{{ url_for('static', filename='ckeditor/ckeditor.js') }}"></script>
+{% endblock %}

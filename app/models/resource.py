@@ -11,7 +11,7 @@ class OptionAssociation(db.Model):
                             primary_key=True)
     descriptor_id = db.Column(db.Integer, db.ForeignKey('descriptors.id'),
                               primary_key=True)
-    option = db.Column(db.Integer)
+    option = db.Column(db.Integer, primary_key=True)
     resource = db.relationship('Resource',
                                back_populates='option_descriptors')
     descriptor = db.relationship('Descriptor',
@@ -32,7 +32,7 @@ class TextAssociation(db.Model):
                             primary_key=True)
     descriptor_id = db.Column(db.Integer, db.ForeignKey('descriptors.id'),
                               primary_key=True)
-    text = db.Column(db.String(64))
+    text = db.Column(db.Text)
     resource = db.relationship('Resource', back_populates='text_descriptors')
     descriptor = db.relationship('Descriptor', back_populates='text_resources')
 
@@ -64,6 +64,16 @@ class Descriptor(db.Model):
     def __repr__(self):
         return '<Descriptor \'%s\'>' % self.name
 
+class RequiredOptionDescriptor(db.Model):
+    __tablename__ = 'required_option_descriptor'
+    id = db.Column(db.Integer, primary_key=True)
+    descriptor_id = db.Column(db.Integer);
+    @staticmethod
+    def insert_required_option_descriptor():
+        required_option_descriptor = RequiredOptionDescriptor(descriptor_id=-1)
+        db.session.add(required_option_descriptor)
+        db.session.commit()
+
 
 class Resource(db.Model):
     """
@@ -72,7 +82,7 @@ class Resource(db.Model):
     __tablename__ = 'resources'
     id = db.Column(db.Integer, primary_key=True)
     name = db.Column(db.String(64), index=True)
-    address = db.Column(db.String(64))
+    address = db.Column(db.String(250))
     latitude = db.Column(db.Float)
     longitude = db.Column(db.Float)
     text_descriptors = db.relationship(

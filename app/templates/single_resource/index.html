@@ -10,32 +10,19 @@
                 </div>
             </h2>
 
-
-        <!--<div class="ui menu">
-            <div class="ui search item">
-                <div class="ui transparent icon input">
-                    <form id="search-resources">
-                        <input id="search-resources-text" type="text" value="{{ query|default('') }}" placeholder="Search resources...">
-                        <i class="search icon"></i>
-                    </form>
-                </div>
-            </div>
-        </div>-->
-
-            <!--waiting for functionality-->
             <div class="ui right action left icon input menu">
                 <i class="search icon"></i>
-                    <input type="text" placeholder="Search resources">
-                    <!--<div class="ui basic floating dropdown button">
-                        <div class="text">All Resources</div>
-                        <i class="dropdown icon"></i>
-                        <div class="menu">
-                            <div class="item" data-value="All Resources">All Resources</div>
-                            <div class="item" data-value="Address">Address</div>
-                            <div class="item" data-value="Latitude">Latitude</div>
-                            <div class="item" data-value="Longitude">Longitude</div>
-                        </div>
-                    </div>-->
+                <input id="search-resources-text" type="text" value="{{ query_name|default('') }}" placeholder="Search resources by name">
+                <select id="search-resources-req-options" multiple="" class="ui fluid dropdown" placeholder="Select">
+                    {% for req_option in req_options.keys() %}
+                        {% if req_options[req_option] %}
+                            <option value="{{ req_option }}" selected="selected">{{ req_option }}</option>
+                        {% else %}
+                            <option value="{{ req_option }}" >{{ req_option }}</option>
+                        {% endif %}
+                    {% endfor %}
+                </select>
+                <button class="ui button" id="search-resources">Search</button>
             </div>
 
             {# Use overflow-x: scroll so that mobile views don't freak out

@@ -7,9 +7,7 @@
   padding: .5em;
 }
 
-#editor-about, #editor-contact {
-  max-height: 300px;
+#editor-about-admin, #editor-contact-admin {
   min-height: 100px;
-  overflow-y: scroll;
   word-wrap: break-word;
 }

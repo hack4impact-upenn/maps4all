@@ -11,8 +11,8 @@ Flask-Compress==1.2.1
 Flask-Login==0.2.11
 Flask-Mail==0.9.1
 Flask-Migrate==1.4.0
-Flask-Script==2.0.5
 Flask-RQ==0.2
+Flask-Script==2.0.5
 Flask-SQLAlchemy==2.0
 Flask-SSLify==0.1.5
 Flask-Uploads==0.2.0
@@ -31,13 +31,13 @@ psycopg2==2.6.1
 pyflakes==1.0.0
 pytz==2016.3
 ratelim==0.1.6
+redis==2.10.5
 requests==2.9.1
 requirements==0.1
+rq==0.5.6
 six==1.10.0
 SQLAlchemy==1.0.6
 webassets==0.10.1
 Werkzeug==0.10.4
-WTForms==2.0.2
 wsgiref==0.1.2
-redis==2.10.5
-rq==0.5.6
+WTForms==2.0.2

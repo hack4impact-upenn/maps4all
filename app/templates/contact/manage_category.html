@@ -1,0 +1,71 @@
+{% extends 'layouts/base.html' %}
+{% import 'macros/form_macros.html' as f %}
+
+{% set deletion_endpoint = 'contact.delete_category_request' %}
+{% set change_endpoint = 'contact.edit_category_name' %}
+
+{% set endpoints = [
+    (change_endpoint, 'Edit name'),
+    (deletion_endpoint, 'Delete category')
+] %}
+
+{% macro navigation(items) %}
+    <div class="ui vertical fluid secondary menu">
+        {% for route, name in items %}
+            {% set href = url_for(route, category_id=category.id) %}
+            <a class="item {% if request.endpoint == route %} active {% endif %}" href="{{ href }}">
+                {{ name }}
+            </a>
+        {% endfor %}
+    </div>
+{% endmacro %}
+
+{% block content %}
+    <div class="ui stackable centered grid container">
+        <div class="twelve wide column">
+            <a class="ui basic compact button" href="{{ url_for('contact.index') }}">
+                <i class="caret left icon"></i>
+                Back to all contact information
+            </a>
+            <h2 class="ui header">
+                {{ category.name }}
+                <div class="sub header">View and manage category {{ category.name }}.</div>
+            </h2>
+        </div>
+        <div class="stretched divided very relaxed row">
+            <div class="four wide column">
+                {{ navigation(endpoints) }}
+            </div>
+            <div class="eight wide column">
+                {% if request.endpoint == deletion_endpoint %}
+                    <h3 class="ui red block header">
+                        <i class="warning circle icon"></i>
+                        <div class="content">
+                            This action is permanent
+                            <div class="sub header">
+                                Deleting a category is not a reversible change. Any information associated
+                                with this category will be removed, and cannot be recovered.
+                            </div>
+                        </div>
+                    </h3>
+
+                    <div class="ui form">
+                        <div class="inline field">
+                            <div class="ui deletion checkbox">
+                                <input type="checkbox" tabindex="0" class="hidden">
+                                <label>I understand that this action cannot be undone.</label>
+                            </div>
+                        </div>
+                        <a class="ui disabled negative deletion button" href="{{ url_for('contact.delete_category', category_id=category.id) }}")>
+                            Delete this category
+                        </a>
+                    </div>
+                    </div>
+                {% elif form %}
+                    {{ f.render_form(form) }}
+                {% endif %}
+            </div>
+        </div>
+    </div>
+
+{% endblock %}
