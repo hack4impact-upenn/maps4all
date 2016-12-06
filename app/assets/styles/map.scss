@@ -108,11 +108,11 @@ $font-size: 14px;
   padding-top: 0.5em;
 
   .sub.header {
+    float: left;
     font-family: $font-choice;
     font-weight: normal;
     margin-right: 10px;
     width: 80%;
-    float: left;
 
     .ui.small.label {
       font-size: $font-size;
@@ -124,6 +124,8 @@ $font-size: 14px;
   }
 
   .ui.label {
+    background-color: #DDDDDD;
+    display: inline-block;
     margin-left: 0;
     margin-top: 0.5em;
   }
@@ -131,17 +133,14 @@ $font-size: 14px;
   a, a:hover, a:active {
     color: $accent-color!important;
     font-family: $font-choice;
-    font-weight: normal;
   }
 
   .right.floated.content {
-    vertical-align: middle;
-    margin-top: 1em;
+    float: right;
     margin-right: -0.5em;
-  }
-
-  :hover {
-    background-color: #fff;
+    margin-top: 1.5em;
+    position: relative;
+    vertical-align: middle;
   }
 }
 
@@ -194,37 +193,36 @@ $font-size: 14px;
     color: $accent-color;
   }
 
-  .ui.label {
-    margin-top: 0.4em;
-    margin-bottom: 1em;
-    font-size: $font-size;
+  #resource-name {
+    display: inline;
+    font-size: 36px;
+    padding-bottom: 1em;
+    padding-top: 1em;
   }
 
   .sub.header {
-    font-family: $font-choice;
     font-size: $font-size;
   }
 
+  .ui.label {
+    font-size: $font-size;
+    margin-top: 0.4em;
+    margin-bottom: 1em;
+  }
   .ui.header  {
     color: $accent-color;
     font-family: $font-choice;
   }
+}
 
-  #resource-name {
-    display: inline;
-    font-size: 36px;
-  }
+#back-button {
+  display: inline-block;
+  float: right;
+  right: 1em;
+  z-index: 2;
 }
 
 #single-resource-map {
   height: 400px;
   width: 100%;
-}
-
-#back-button {
-  position: fixed;
-  float: right;
-  right: 1em;
-  z-index: 2;
-  display: inline-block;
 }
