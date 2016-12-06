@@ -32,7 +32,7 @@ class TextAssociation(db.Model):
                             primary_key=True)
     descriptor_id = db.Column(db.Integer, db.ForeignKey('descriptors.id'),
                               primary_key=True)
-    text = db.Column(db.String(64))
+    text = db.Column(db.Text)
     resource = db.relationship('Resource', back_populates='text_descriptors')
     descriptor = db.relationship('Descriptor', back_populates='text_resources')
 
