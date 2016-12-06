@@ -76,6 +76,7 @@ function displayDetailedResourceView(marker) {
     $('#back-button').click(function() {
       $("#map").show();
       $("#resource-info").hide();
+      resizeMapListGrid();
     });
 
     // Map for single resource on detailed resource info page
