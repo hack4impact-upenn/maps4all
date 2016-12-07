@@ -56,6 +56,7 @@
         <a href="{{ url_for('account.manage') }}" class="item">Your Account</a>
         <a href="{{ url_for('account.logout') }}" class="item">Log out</a>
     {% else %}
+        <a href="{{ url_for('suggestion.suggest') }}" class="item">Suggest Resource</a>
         <a href="{{ url_for('account.login') }}" class="item">Log in</a>
     {% endif %}
 {% endmacro %}

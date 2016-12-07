@@ -10,9 +10,7 @@
 
 @media -sass-debug-info{filename{}line{font-family:\0000310}}
 #editor-about, #editor-contact {
-  max-height: 300px;
   min-height: 100px;
-  overflow-y: scroll;
   word-wrap: break-word;
 }
 
@@ -95,29 +93,34 @@ table.selectable tr:hover {
   margin: 0 0 5px 0;
 }
 
-@media -sass-debug-info{filename{}line{font-family:\0000345}}
+@media -sass-debug-info{filename{}line{font-family:\0000346}}
+#resource-search {
+  background-color: #fff;
+}
+
+@media -sass-debug-info{filename{}line{font-family:\0000350}}
 .descriptor-group {
   font-family: Roboto;
   margin: 3px;
 }
-@media -sass-debug-info{filename{}line{font-family:\0000349}}
+@media -sass-debug-info{filename{}line{font-family:\0000354}}
 .descriptor-group h5 {
   font-family: Roboto;
   margin: 0 0 5px 0;
 }
 
-@media -sass-debug-info{filename{}line{font-family:\0000355}}
+@media -sass-debug-info{filename{}line{font-family:\0000360}}
 .option-group, .option-group-advanced {
   margin-bottom: 10px;
   margin-top: 10px;
 }
 
-@media -sass-debug-info{filename{}line{font-family:\0000360}}
+@media -sass-debug-info{filename{}line{font-family:\0000365}}
 .option-group-advanced {
   display: none;
 }
 
-@media -sass-debug-info{filename{}line{font-family:\0000364}}
+@media -sass-debug-info{filename{}line{font-family:\0000369}}
 #advanced-filters-showhide {
   color: #2C9FA3;
   cursor: pointer;
@@ -126,23 +129,23 @@ table.selectable tr:hover {
   text-decoration: none;
 }
 
-@media -sass-debug-info{filename{}line{font-family:\0000372}}
+@media -sass-debug-info{filename{}line{font-family:\0000377}}
 .checkbox-option {
   margin-right: 5px;
 }
 
-@media -sass-debug-info{filename{}line{font-family:\0000376}}
+@media -sass-debug-info{filename{}line{font-family:\0000381}}
 .descriptor {
   display: block;
 }
 
-@media -sass-debug-info{filename{}line{font-family:\0000381}}
+@media -sass-debug-info{filename{}line{font-family:\0000385}}
 #resources-form {
   display: inline;
   text-overflow: ellipsis;
 }
 
-@media -sass-debug-info{filename{}line{font-family:\0000386}}
+@media -sass-debug-info{filename{}line{font-family:\0000390}}
 #resources-input {
   background-color: #fff;
   font-family: Roboto;
@@ -153,35 +156,35 @@ table.selectable tr:hover {
 }
 
 /*************** LIST STYLES ****************/
-@media -sass-debug-info{filename{}line{font-family:\0000396}}
+@media -sass-debug-info{filename{}line{font-family:\00003100}}
 #list {
   height: 100%;
   margin-top: 0px;
 }
 
-@media -sass-debug-info{filename{}line{font-family:\00003102}}
+@media -sass-debug-info{filename{}line{font-family:\00003106}}
 #list > .item.list-resource {
   padding-bottom: 1em;
   padding-top: 0.5em;
 }
-@media -sass-debug-info{filename{}line{font-family:\00003106}}
+@media -sass-debug-info{filename{}line{font-family:\00003110}}
 #list > .item.list-resource .sub.header {
   font-weight: normal;
 }
-@media -sass-debug-info{filename{}line{font-family:\00003110}}
+@media -sass-debug-info{filename{}line{font-family:\00003114}}
 #list > .item.list-resource .ui.label {
   margin-left: 0;
   margin-top: 0.5em;
 }
 
 /*************** MAP STYLES ****************/
-@media -sass-debug-info{filename{}line{font-family:\00003117}}
+@media -sass-debug-info{filename{}line{font-family:\00003121}}
 #map {
   height: 100%;
   width: 100%;
 }
 
-@media -sass-debug-info{filename{}line{font-family:\00003123}}
+@media -sass-debug-info{filename{}line{font-family:\00003127}}
 .more-info {
   color: blue;
   cursor: pointer;
@@ -189,16 +192,16 @@ table.selectable tr:hover {
 }
 
 /*************** RESOURCE VIEW SPECIFIC STYLES ****************/
-@media -sass-debug-info{filename{}line{font-family:\00003131}}
+@media -sass-debug-info{filename{}line{font-family:\00003135}}
 #resource-info {
   padding-left: 1em;
 }
-@media -sass-debug-info{filename{}line{font-family:\00003135}}
+@media -sass-debug-info{filename{}line{font-family:\00003139}}
 #resource-info > .ui.header > .sub.header > .ui.label {
   margin-left: 0px;
 }
 
-@media -sass-debug-info{filename{}line{font-family:\00003140}}
+@media -sass-debug-info{filename{}line{font-family:\00003144}}
 #single-resource-map {
   height: 300px;
   width: 100%;

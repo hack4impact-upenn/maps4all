@@ -19,8 +19,7 @@ def index():
     options_dict = {}
     for o in options:
         options_dict[o.name] = o.values
-    # options_dict = [{o.name: o.values} for o in options]
-    return render_template('main/index.html', options=options_dict, number_of_basic_elements=min(2, len(options_dict.keys())))
+    return render_template('main/index.html', options=options_dict)
 
 @main.route('/get-resources')
 def get_resources():
@@ -30,9 +29,10 @@ def get_resources():
 
 @main.route('/search-resources/<query_name>')
 def search_resources(query_name):
+    print "searching"
     def orMultipleQueries(R, queries):
         return reduce(lambda acc, q: acc or R.name.contains(q), queries)
-
+    
     resources = Resource.query.filter(orMultipleQueries(Resource, queries))
     # resources = Resource.query.filter(Resource.name.contains(query_name))
     resources_as_dicts = Resource.get_resources_as_dicts(resources)
