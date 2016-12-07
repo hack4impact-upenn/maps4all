@@ -97,6 +97,9 @@
                     <h3 class="ui red block header">
                         <i class="warning circle icon"></i>
                         <div class="content">
+                            {% if is_required %}
+                                Deleting a required option descriptor is not allowed. You must first change the required option descriptor before deleting this descriptor.
+                            {% else %}
                             This action is permanent
                             <div class="sub header">
                                 Deleting a descriptor is not a reversible change. Any information associated
@@ -117,6 +120,7 @@
                         </a>
                     </div>
                     </div>
+                    {% endif %}
                 {% elif request.endpoint == change_endpoint %}
                     {{ option_values(form, desc) }}
                 {% elif form %}

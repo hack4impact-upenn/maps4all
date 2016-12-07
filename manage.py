@@ -10,6 +10,7 @@ from app.models import (
     Resource,
     Role,
     User,
+    RequiredOptionDescriptor,
 )
 from redis import Redis
 from rq import Worker, Queue, Connection
@@ -97,6 +98,7 @@ def setup_prod():
 def setup_general():
     """Runs the set-up needed for both local development and production."""
     Role.insert_roles()
+    RequiredOptionDescriptor.insert_required_option_descriptor()
 
 
 @manager.command

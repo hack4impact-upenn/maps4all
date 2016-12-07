@@ -18,10 +18,24 @@
           <div class="ui horizontal divider">Search</div>
           <div class="ui segment" id="resource-search">
             <div class="ui fluid icon input">
+                <i class="search icon"></i>
+                <input type="text" id="resources-input" class="controls"
+                    placeholder="Enter a resource keyword">
+            </div>
+            <select id="search-resources-req-options" multiple="" class="ui fluid dropdown" placeholder="Select">
+                {% for req_option in req_options.keys() %}
+                    {% if req_options[req_option] %}
+                        <option value="{{ req_option }}" selected="selected">{{ req_option }}</option>
+                    {% else %}
+                        <option value="{{ req_option }}" >{{ req_option }}</option>
+                    {% endif %}
+                {% endfor %}
+            </select>
+            <!-- <div class="ui fluid icon input">
               <i class="search icon"></i>
               <input type="text" id="resources-input" class="controls"
                        placeholder="Enter resource name">
-            </div>
+            </div> -->
 
             <div id="advanced-search" class="option-group-advanced">
                 {% for o in options.keys() %}

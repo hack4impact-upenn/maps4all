@@ -83,4 +83,6 @@ def create_app(config_name):
     from suggestion import suggestion as suggestion_blueprint
     app.register_blueprint(suggestion_blueprint, url_prefix='/suggestion')
 
+    from contact import contact as contact_blueprint
+    app.register_blueprint(contact_blueprint, url_prefix='/contact')
     return app

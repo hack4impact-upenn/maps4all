@@ -9,7 +9,7 @@ class Suggestion(db.Model):
     __tablename__ = 'suggestions'
     id = db.Column(db.Integer, primary_key=True)
     resource_id = db.Column(db.Integer, db.ForeignKey('resources.id'))
-    suggestion_text = db.Column(db.String(250))
+    suggestion_text = db.Column(db.Text)
     # 0 stands for read, 1 stands for unread
     read = db.Column(db.Boolean, default=False)
     submission_time = db.Column(db.DateTime)
@@ -17,7 +17,7 @@ class Suggestion(db.Model):
     contact_email = db.Column(db.String(64))
     contact_phone_number = db.Column(db.String(64))
     resource_name = db.Column(db.String(64))
-    resource_address = db.Column(db.String(64))
+    resource_address = db.Column(db.String(250))
 
     def __repr__(self):
         return '%s: %s' % (self.id, self.resource_id)

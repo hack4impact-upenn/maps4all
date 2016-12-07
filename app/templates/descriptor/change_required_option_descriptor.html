@@ -1,0 +1,13 @@
+{% extends 'layouts/base.html' %}
+{% import 'macros/form_macros.html' as f %}
+
+{% block content %}
+    <div class="ui text container">
+        <h2 class="ui dividing header">Change Required Option Descriptor</h2>
+        {% if form != None %}
+            {{ f.render_form(form) }}
+        {% else %}
+            <h3>No required option descriptor to change.</h3>
+        {% endif %}
+    </div>
+{% endblock %}
