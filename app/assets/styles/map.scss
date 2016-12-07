@@ -2,6 +2,10 @@ $accent-color: #2C9FA3;
 $font-choice: Roboto;
 $font-size: 14px;
 
+.ui.menu {
+  background-color: $accent-color;
+}
+
 /******** GENERAL MAP/LIST GRID STYLES *************/
 #map-list-grid {
   padding: 1em;
@@ -36,17 +40,25 @@ $font-size: 14px;
   text-overflow: ellipsis;
 }
 
-#pac-input:focus, #resources-input:focus {
+#pac-input:focus, #resources-input:focus, #search-resources-req-options:focus {
   border-color: $accent-color;
 }
 
-#resources-form, #location-search {
-  margin: 0 0 5px 0;
+#location-search, #search-keyword, #resources-input {
+  height: 40px;
+}
+
+// button
+#search-user-resources {
+  background-color: $accent-color;
+  color: #fff;
+  font-family: $font-choice;
+  font-weight: 400;
 }
 
 // Resource name search
 #resource-search {
-  background-color: #fff;
+  background-color: #F8F8F8;
 }
 
 .descriptor-group {
@@ -72,7 +84,7 @@ $font-size: 14px;
   color: $accent-color;
   cursor: pointer;
   font-family: $font-choice;
-  font-weight: 200;
+  margin-bottom: 0.5em;
   text-decoration: none;
 }
 
@@ -84,18 +96,21 @@ $font-size: 14px;
   display: block;
 }
 
-#resources-form {
-  display: inline;
-  text-overflow: ellipsis;
+.ui.horizontal.divider {
+  color: #555;
+  font-family: $font-choice;
 }
 
-#resources-input {
-  background-color: #fff;
-  font-family: $font-choice;
-  font-size: 15px;
-  font-weight: 300;
-  margin-top: 0px;
-  text-overflow: ellipsis;
+#results-divider {
+  margin-bottom: 0px;
+}
+
+#search-keyword {
+  margin: 0 0 5px 0;
+}
+
+.ui.segment {
+  box-shadow: none;
 }
 
 /*************** LIST STYLES ****************/
@@ -177,6 +192,10 @@ $font-size: 14px;
   }
 }
 
+.more-info:hover {
+  color: $accent-color!important;
+}
+
 /*************** RESOURCE VIEW SPECIFIC STYLES ****************/
 // Resource detailed information view
 #resource-info {
@@ -220,6 +239,7 @@ $font-size: 14px;
 }
 
 #back-button {
+  color: $accent-color;
   display: inline-block;
   float: right;
   right: 1em;

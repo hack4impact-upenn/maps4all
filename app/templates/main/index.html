@@ -14,8 +14,8 @@
       </div>
       <div class="ui horizontal divider">Search</div>
       <div class="ui segment" id="resource-search">
-        <div class="ui fluid icon input">
-          <i class="search icon"></i>
+        <div class="ui fluid icon input" id="search-keyword">
+          <i class="search icon" id="resources-input-searchicon"></i>
           <input type="text" id="resources-input" class="controls"
           placeholder="Enter a resource keyword">
         </div>
@@ -117,10 +117,10 @@
       </div>
     </div>
 
-    <div class="ui horizontal divider">Results</div>
+    <div class="ui horizontal divider" id="results-divider">Results</div>
     <div id="list" class="ui middle aligned divided list"></div>
 
-    <div class="ui divider" id="left-column-divider"></div>
+    <!--<div class="ui divider" id="left-column-divider"></div>-->
     <div class="ui middle aligned divided list" id="list"></div>
   </div>
 
