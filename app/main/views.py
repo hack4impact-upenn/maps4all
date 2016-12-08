@@ -71,15 +71,18 @@ def post_rating():
             time = datetime.now()
             star_rating = request.json['rating']
             comment = request.json['review']
+            resourceID = request.json['id']
             if comment and star_rating:
                 rating = Rating(submission_time=time,
                                 rating=star_rating,
-                                review=comment)
+                                review=comment,
+                                resource_id=resourceID)
                 db.session.add(rating)
                 db.session.commit()
             elif star_rating:
                 rating = Rating(submission_time=time,
-                                rating=star_rating)
+                                rating=star_rating,
+                                resource_id=resourceID)
                 db.session.add(rating)
                 db.session.commit()
     return jsonify(status='success')

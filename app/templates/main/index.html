@@ -145,9 +145,13 @@
         <button class="ui button right" id="back-button">Back</button>
         <h1 class="ui header">
           {% raw %}{{ name }}{% endraw %}
+            <a class="ui label" id="avg_rating">
+              <i class="yellow star icon"></i>
+              {% raw %}{{ avg_rating }}{% endraw %}
+            </a>
           <div class="sub header">
             <span class="ui horizontal label">Category</span>
-            {% raw %}{{ rating }}{% endraw %}
+            {% raw %}{{ address }}{% endraw %}
           </div>
         </h1>
         <div id="single-resource-map"></div>
@@ -155,7 +159,6 @@
         <div class="descriptors">
           <h2 class="ui dividing header">Information</h2>
           <div class="ui list">
-              {% raw %}{{ rating }}{% endraw %}
             {% raw %}{{#each descriptors}}{% endraw %}
               <div class="item descriptor">
                 <div class="header">{% raw %}{{ key }}{% endraw %}</div>
@@ -167,9 +170,6 @@
         <div class="ui hidden divider"></div>
         <div class="actions">
           <h2 class="ui dividing header">Actions</h2>
-          <a href="{% raw %}{{ suggestionUrl }}{% endraw %}">
-            Suggest an edit for this resource
-          </a>
         </div>
         <div class="ui form">
           <h1 class="ui header">Submit a Review</h1>
@@ -183,6 +183,14 @@
             </div>
           <button class="ui disabled button" id="submit">Submit</button>
         </div>
+        <div class="successMessage" style="display:none">
+            <div class="ui positive message">
+              Thanks, your rating has been posted!
+            </div>
+        </div>
+        <a href="{% raw %}{{ suggestionUrl }}{% endraw %}">
+            Suggest an edit for this resource
+        </a>
     </script>
 
     <!-- Populate list view-->

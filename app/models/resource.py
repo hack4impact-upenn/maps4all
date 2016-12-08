@@ -178,9 +178,9 @@ class Resource(db.Model):
         ratings = Rating.query.filter_by(resource_id=self.id).all()
         if not ratings:
             return -1.0
-
+        print len(ratings)
         total_sum = float(sum(r.rating for r in ratings))
-        return '%.1f' % total_sum / len(ratings)
+        return '%.1f' % (total_sum / len(ratings))
 
     def get_all_ratings(self):
         ratings = Rating.query.filter_by(resource_id=self.id).all()

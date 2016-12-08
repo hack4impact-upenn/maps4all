@@ -43,7 +43,7 @@ function markerListener(marker, event) {
 // Generate the detailed resource page view after clicking "more information"
 // on a marker
 function displayDetailedResourceView(marker) {
-    console.log(marker);
+    console.log(marker.avg_rating);
   // get descriptor information as associations
   $.get('get-associations/' + marker.resourceID).done(function(associations) {
     $("#map").hide();
@@ -66,7 +66,7 @@ function displayDetailedResourceView(marker) {
       address: marker.address,
       suggestionUrl: 'suggestion/' + marker.resourceID,
       descriptors: descriptors,
-      rating: marker.avg_rating,
+      avg_rating: marker.avg_rating,
     };
     var resourceInfo = compiledResourceTemplate(context);
     $("#resource-info").html(resourceInfo);
@@ -76,6 +76,37 @@ function displayDetailedResourceView(marker) {
     $('#back-button').click(function() {
       $("#map").show();
       $("#resource-info").hide();
+    });
+
+    $('.ui.rating')
+    .rating({
+      initialRating: 0,
+      maxRating: 5,
+      onRate: function(value) {
+        if (value !== 0)
+          $('#submit').removeClass('disabled').addClass('active');
+      }
+    });
+
+    $('#submit').click(function() {
+    var rating = $('#rating-input').rating('get rating');
+    var review = $('#review').val();
+      var time = new Date()
+         var ratingReview = {
+            'rating': rating,
+            'review': review,
+            'time': time,
+            'id': marker.resourceID
+         };
+         $.ajax({
+             url: '/resource-view',
+             data: JSON.stringify(ratingReview),
+             contentType: 'application/json',
+             dataType: 'json',
+             method: 'POST'
+          });    
+        $(".user-rating").hide();
+        $(".successMessage").show();
     });
 
     // Map for single resource on detailed resource info page
@@ -265,6 +296,7 @@ function createMarker(resource) {
     csrf_token: $('meta[name="csrf-token"]').prop('content'),
     data: resource.name
   };
+  markerToAdd.avg_rating = resource.avg_rating;
   markerToAdd.resourceID = resource.id;
   markerToAdd.address = resource.address;
 
