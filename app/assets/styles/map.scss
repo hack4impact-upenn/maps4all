@@ -2,10 +2,6 @@ $accent-color: #2C9FA3;
 $font-choice: Roboto;
 $font-size: 14px;
 
-.ui.menu {
-  background-color: $accent-color;
-}
-
 /******** GENERAL MAP/LIST GRID STYLES *************/
 #map-list-grid {
   padding: 1em;
@@ -59,6 +55,7 @@ $font-size: 14px;
 // Resource name search
 #resource-search {
   background-color: #F8F8F8;
+  box-shadow: none;
 }
 
 .descriptor-group {
@@ -96,7 +93,7 @@ $font-size: 14px;
   display: block;
 }
 
-.ui.horizontal.divider {
+#search-divider, #results-divider {
   color: #555;
   font-family: $font-choice;
 }
@@ -107,10 +104,6 @@ $font-size: 14px;
 
 #search-keyword {
   margin: 0 0 5px 0;
-}
-
-.ui.segment {
-  box-shadow: none;
 }
 
 /*************** LIST STYLES ****************/
@@ -130,8 +123,8 @@ $font-size: 14px;
     float: left;
     font-family: $font-choice;
     font-weight: normal;
-    margin-right: 10px;
-    width: 80%;
+    margin-right: 15px;
+    padding-right: 10px;
 
     .ui.small.label {
       font-size: $font-size;
@@ -150,15 +143,15 @@ $font-size: 14px;
   }
 
   a, a:hover, a:active {
-    color: $accent-color!important;
+    color: $accent-color;
     font-family: $font-choice;
   }
 
-  .right.floated.content {
+  #resource-list-chevron {
     float: right;
-    margin-right: -0.5em;
     margin-top: 1.5em;
-    position: relative;
+    position: absolute;
+    right: 1em;
     vertical-align: middle;
   }
 }
@@ -178,7 +171,7 @@ $font-size: 14px;
   padding: 0.25em;
 }
 
-.ui.header {
+#marker-resource-name, #marker-resource-info {
   font-family: $font-choice;
 }
 
@@ -186,14 +179,10 @@ $font-size: 14px;
   color: $accent-color;
   cursor: pointer;
   text-decoration: underline;
-
-  :hover {
-    color: $accent-color!important;
-  }
 }
 
 .more-info:hover {
-  color: $accent-color!important;
+  color: $accent-color;
 }
 
 /*************** RESOURCE VIEW SPECIFIC STYLES ****************/

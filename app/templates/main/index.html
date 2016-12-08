@@ -12,7 +12,7 @@
         <i class="search icon"></i>
         <input type="text" id="pac-input" class="controls" placeholder="Go to a location">
       </div>
-      <div class="ui horizontal divider">Search</div>
+      <div class="ui horizontal divider" id="search-divider">Search</div>
       <div class="ui segment" id="resource-search">
         <div class="ui fluid icon input" id="search-keyword">
           <i class="search icon" id="resources-input-searchicon"></i>
@@ -134,9 +134,9 @@
 <!-- Populate location search marker info-->
 <script id="searched-location-info-window-template" type="text/x-handlebars-template">
   <div class="loc-marker-info">
-    <h3 class="ui header">
+    <h3 class="ui header" id="marker-resource-name">
       {% raw %}{{ name }}{% endraw %}
-      <div class="sub header">
+      <div class="sub header" id="marker-resource-info">
         {% raw %}{{ address }}{% endraw %}
       </div>
     </h3>
@@ -200,7 +200,7 @@
       <div>{% raw %}{{ address }}{% endraw %}</div>
       <div class="ui small label">Category</div>
     </div>
-    <div class="right floated content">
+    <div class="right floated content" id="resource-list-chevron">
       <a><i class="large right chevron icon"></i></a>
     </div>
 
