@@ -9,7 +9,7 @@
 }
 
 @media -sass-debug-info{filename{}line{font-family:\0000310}}
-#editor-about, #editor-contact-admin {
+#editor-about-admin, #editor-contact-admin {
   min-height: 100px;
   word-wrap: break-word;
 }
@@ -49,31 +49,32 @@ table.selectable tr:hover {
 }
 
 /******** GENERAL MAP/LIST GRID STYLES *************/
-@media -sass-debug-info{filename{}line{font-family:\000035}}
+@media -sass-debug-info{filename{}line{font-family:\000036}}
 #map-list-grid {
   padding: 1em;
   position: absolute;
   width: 100%;
 }
-@media -sass-debug-info{filename{}line{font-family:\0000310}}
+@media -sass-debug-info{filename{}line{font-family:\0000311}}
 #map-list-grid #left-column {
-  background-color: #B8B8B8;
+  background-color: #EEEEEE;
+  border: 1px solid #CCCCCC;
   height: 100%;
   overflow-y: scroll;
   padding: 1em;
 }
-@media -sass-debug-info{filename{}line{font-family:\0000317}}
+@media -sass-debug-info{filename{}line{font-family:\0000319}}
 #map-list-grid #right-column {
   padding: 0;
 }
 
-@media -sass-debug-info{filename{}line{font-family:\0000322}}
+@media -sass-debug-info{filename{}line{font-family:\0000324}}
 #left-column-divider {
   margin-bottom: 0;
 }
 
 /*************** SEARCH STYLES ****************/
-@media -sass-debug-info{filename{}line{font-family:\0000328}}
+@media -sass-debug-info{filename{}line{font-family:\0000330}}
 #pac-input, #resources-input {
   background-color: #fff;
   float: left;
@@ -83,131 +84,228 @@ table.selectable tr:hover {
   text-overflow: ellipsis;
 }
 
-@media -sass-debug-info{filename{}line{font-family:\0000337}}
-#pac-input:focus, #resources-input:focus {
+@media -sass-debug-info{filename{}line{font-family:\0000339}}
+#pac-input:focus, #resources-input:focus, #search-resources-req-options:focus {
   border-color: #2C9FA3;
 }
 
-@media -sass-debug-info{filename{}line{font-family:\0000341}}
-#resources-form, #location-search {
-  margin: 0 0 5px 0;
+@media -sass-debug-info{filename{}line{font-family:\0000343}}
+#location-search, #search-keyword, #resources-input {
+  height: 40px;
 }
 
-@media -sass-debug-info{filename{}line{font-family:\0000346}}
+@media -sass-debug-info{filename{}line{font-family:\0000348}}
+#search-user-resources {
+  background-color: #2C9FA3;
+  color: #fff;
+  font-family: Roboto;
+  font-weight: 400;
+}
+
+@media -sass-debug-info{filename{}line{font-family:\0000356}}
 #resource-search {
-  background-color: #fff;
+  box-shadow: none;
+  background-color: #F8F8F8;
 }
 
-@media -sass-debug-info{filename{}line{font-family:\0000350}}
+@media -sass-debug-info{filename{}line{font-family:\0000361}}
 .descriptor-group {
   font-family: Roboto;
   margin: 3px;
 }
-@media -sass-debug-info{filename{}line{font-family:\0000354}}
+@media -sass-debug-info{filename{}line{font-family:\0000365}}
 .descriptor-group h5 {
   font-family: Roboto;
   margin: 0 0 5px 0;
 }
 
-@media -sass-debug-info{filename{}line{font-family:\0000360}}
+@media -sass-debug-info{filename{}line{font-family:\0000371}}
 .option-group, .option-group-advanced {
   margin-bottom: 10px;
   margin-top: 10px;
 }
 
-@media -sass-debug-info{filename{}line{font-family:\0000365}}
+@media -sass-debug-info{filename{}line{font-family:\0000376}}
 .option-group-advanced {
   display: none;
 }
 
-@media -sass-debug-info{filename{}line{font-family:\0000369}}
+@media -sass-debug-info{filename{}line{font-family:\0000380}}
 #advanced-filters-showhide {
   color: #2C9FA3;
   cursor: pointer;
   font-family: Roboto;
-  font-weight: 100;
+  margin-bottom: 0.5em;
   text-decoration: none;
 }
 
-@media -sass-debug-info{filename{}line{font-family:\0000377}}
+@media -sass-debug-info{filename{}line{font-family:\0000388}}
 .checkbox-option {
   margin-right: 5px;
 }
 
-@media -sass-debug-info{filename{}line{font-family:\0000381}}
+@media -sass-debug-info{filename{}line{font-family:\0000392}}
 .descriptor {
   display: block;
 }
 
-@media -sass-debug-info{filename{}line{font-family:\0000385}}
-#resources-form {
-  display: inline;
-  text-overflow: ellipsis;
+@media -sass-debug-info{filename{}line{font-family:\0000396}}
+#search-divider, #results-divider {
+  color: #555;
+  font-family: Roboto;
 }
 
-@media -sass-debug-info{filename{}line{font-family:\0000390}}
-#resources-input {
-  background-color: #fff;
-  font-family: Roboto;
-  font-size: 15px;
-  font-weight: 300;
-  margin-top: 0px;
-  text-overflow: ellipsis;
+@media -sass-debug-info{filename{}line{font-family:\00003101}}
+#results-divider {
+  margin-bottom: 0px;
+}
+
+@media -sass-debug-info{filename{}line{font-family:\00003105}}
+#search-keyword {
+  margin: 0 0 5px 0;
 }
 
 /*************** LIST STYLES ****************/
-@media -sass-debug-info{filename{}line{font-family:\00003100}}
+@media -sass-debug-info{filename{}line{font-family:\00003110}}
 #list {
   height: 100%;
   margin-top: 0px;
 }
 
-@media -sass-debug-info{filename{}line{font-family:\00003106}}
+@media -sass-debug-info{filename{}line{font-family:\00003116}}
 #list > .item.list-resource {
-  padding-bottom: 1em;
+  cursor: pointer;
+  margin: 0.5em;
+  padding-bottom: 0.5em;
   padding-top: 0.5em;
 }
-@media -sass-debug-info{filename{}line{font-family:\00003110}}
+@media -sass-debug-info{filename{}line{font-family:\00003122}}
 #list > .item.list-resource .sub.header {
+  float: left;
+  font-family: Roboto;
   font-weight: normal;
+  margin-right: 15px;
+  padding-right: 10px;
 }
-@media -sass-debug-info{filename{}line{font-family:\00003114}}
+@media -sass-debug-info{filename{}line{font-family:\00003129}}
+#list > .item.list-resource .sub.header .ui.small.label {
+  font-size: 14px;
+}
+@media -sass-debug-info{filename{}line{font-family:\00003134}}
+#list > .item.list-resource .header {
+  display: inline-block;
+}
+@media -sass-debug-info{filename{}line{font-family:\00003138}}
 #list > .item.list-resource .ui.label {
+  background-color: #DDDDDD;
+  display: inline-block;
   margin-left: 0;
   margin-top: 0.5em;
 }
+@media -sass-debug-info{filename{}line{font-family:\00003145}}
+#list > .item.list-resource a, #list > .item.list-resource a:hover, #list > .item.list-resource a:active {
+  color: #2C9FA3;
+  font-family: Roboto;
+}
+@media -sass-debug-info{filename{}line{font-family:\00003150}}
+#list > .item.list-resource #resource-list-chevron {
+  float: right;
+  margin-top: 1.5em;
+  position: absolute;
+  right: 1em;
+  vertical-align: middle;
+}
 
 /*************** MAP STYLES ****************/
-@media -sass-debug-info{filename{}line{font-family:\00003121}}
+@media -sass-debug-info{filename{}line{font-family:\00003161}}
 #map {
+  border: solid #CCCCCC;
+  border-width: 1px 1px 1px 0;
   height: 100%;
   width: 100%;
 }
 
-@media -sass-debug-info{filename{}line{font-family:\00003127}}
+@media -sass-debug-info{filename{}line{font-family:\00003169}}
+.marker-info {
+  font-family: Roboto;
+  padding: 0.25em;
+}
+
+@media -sass-debug-info{filename{}line{font-family:\00003174}}
+#marker-resource-name, #marker-resource-info {
+  font-family: Roboto;
+}
+
+@media -sass-debug-info{filename{}line{font-family:\00003178}}
 .more-info {
-  color: blue;
+  color: #2C9FA3;
   cursor: pointer;
   text-decoration: underline;
 }
 
-/*************** RESOURCE VIEW SPECIFIC STYLES ****************/
-@media -sass-debug-info{filename{}line{font-family:\00003135}}
-#resource-info {
-  padding-left: 1em;
+@media -sass-debug-info{filename{}line{font-family:\00003184}}
+.more-info:hover {
+  color: #2C9FA3;
 }
-@media -sass-debug-info{filename{}line{font-family:\00003139}}
+
+/*************** RESOURCE VIEW SPECIFIC STYLES ****************/
+@media -sass-debug-info{filename{}line{font-family:\00003190}}
+#resource-info {
+  background-color: #F8F8F8;
+  border: solid #CCCCCC;
+  border-width: 1px 1px 1px 0;
+  font-family: Roboto;
+  height: 100%;
+  overflow: scroll;
+  padding: 1.25em;
+}
+@media -sass-debug-info{filename{}line{font-family:\00003200}}
 #resource-info > .ui.header > .sub.header > .ui.label {
   margin-left: 0px;
 }
+@media -sass-debug-info{filename{}line{font-family:\00003204}}
+#resource-info a {
+  color: #2C9FA3;
+}
+@media -sass-debug-info{filename{}line{font-family:\00003208}}
+#resource-info #resource-name {
+  display: inline;
+  font-size: 36px;
+  padding-bottom: 1em;
+  padding-top: 1em;
+}
+@media -sass-debug-info{filename{}line{font-family:\00003215}}
+#resource-info .sub.header {
+  font-size: 14px;
+}
+@media -sass-debug-info{filename{}line{font-family:\00003219}}
+#resource-info .ui.label {
+  font-size: 14px;
+  margin-top: 0.4em;
+  margin-bottom: 1em;
+}
+@media -sass-debug-info{filename{}line{font-family:\00003224}}
+#resource-info .ui.header {
+  color: #2C9FA3;
+  font-family: Roboto;
+}
 
-@media -sass-debug-info{filename{}line{font-family:\00003144}}
+@media -sass-debug-info{filename{}line{font-family:\00003230}}
+#back-button {
+  color: #2C9FA3;
+  display: inline-block;
+  float: right;
+  right: 1em;
+  z-index: 2;
+}
+
+@media -sass-debug-info{filename{}line{font-family:\00003238}}
 #single-resource-map {
-  height: 300px;
+  height: 400px;
   width: 100%;
 }
 
 @media -sass-debug-info{filename{}line{font-family:\000031}}
-#editor-contact-user {
+#editor-about-user, #editor-contact-user {
   word-wrap: break-word;
 }

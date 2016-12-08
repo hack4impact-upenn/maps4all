@@ -76,6 +76,7 @@ function displayDetailedResourceView(marker) {
     $('#back-button').click(function() {
       $("#map").show();
       $("#resource-info").hide();
+      resizeMapListGrid();
     });
 
     // Map for single resource on detailed resource info page
@@ -98,6 +99,10 @@ function displayDetailedResourceView(marker) {
  * functionality on the resources
  */
 function initMap() {
+  // hide resource-info
+  $("#resource-info").empty();
+  $("#resource-info").hide();
+
   map = new google.maps.Map(document.getElementById('map'), {
     center: {lat: 39.949, lng: -75.181}, // TODO(#52): Do not hardcode this.
     zoom: focusZoom,
