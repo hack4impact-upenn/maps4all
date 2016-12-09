@@ -1,7 +1,7 @@
 {% macro render_inline_editor(editable_html_obj, current_user) %}
     {% if current_user.is_admin() %}
         <div class="ui segment">
-            <div id="editor-{{ editable_html_obj.editor_name }}-admin" contenteditable="false">
+            <div id="editor-{{ editable_html_obj.editor_name }}" class="editor-admin" contenteditable="false">
             {{ editable_html_obj.value|safe }}
             </div>
         </div>
@@ -16,7 +16,7 @@
        </button>
        <div class="ui positive message updated-alert">Updated successfully</div>
     {% else %}
-        <div id="editor-{{ editable_html_obj.editor_name }}-user" contenteditable="false">
+        <div id="editor-{{ editable_html_obj.editor_name }}" class="editor-user" contenteditable="false">
         {{ editable_html_obj.value|safe }}
         </div>
     {% endif %}
