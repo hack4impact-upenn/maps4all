@@ -171,17 +171,19 @@
         <div class="actions">
           <h2 class="ui dividing header">Actions</h2>
         </div>
-        <div class="ui form">
-          <h1 class="ui header">Submit a Review</h1>
-          <div class="field">
-            <label>Rating (Required)</label>
-            <div class="ui star rating" id="rating-input"></div>
-          </div>
+        <div class="userRating" id="user-rating">
+          <div class="ui form"> 
+            <h3 class="ui header">Submit a Review</h3>
             <div class="field">
-              <label>Review (Optional)</label>
-              <textarea rows="2" id="review"></textarea>
+              <label>Rating (Required)</label>
+              <div class="ui star rating" id="rating-input"></div>
             </div>
-          <button class="ui disabled button" id="submit">Submit</button>
+              <div class="field">
+                <label>Review (Optional)</label>
+                <textarea rows="2" id="review"></textarea>
+              </div>
+            <button class="ui disabled button" id="submit">Submit</button>
+          </div>
         </div>
         <div class="successMessage" style="display:none">
             <div class="ui positive message">

@@ -88,30 +88,31 @@ function displayDetailedResourceView(marker) {
       }
     });
 
-    $('#submit').click(function() {
+    $('#submit').click(function(e) {
+    e.preventDefault();
     var rating = $('#rating-input').rating('get rating');
     var review = $('#review').val();
-      var time = new Date()
-         var ratingReview = {
-            'rating': rating,
-            'review': review,
-            'time': time,
-            'id': marker.resourceID
-         };
-         $.ajax({
-             url: '/resource-view',
-             data: JSON.stringify(ratingReview),
-             contentType: 'application/json',
-             dataType: 'json',
-             method: 'POST'
-          });    
-        $(".user-rating").hide();
-        $(".successMessage").show();
+    var time = new Date();
+    var ratingReview = {
+      'rating': rating,
+      'review': review,
+      'time': time,
+      'id': marker.resourceID
+    };
+    $.ajax({
+       url: '/resource-view',
+       data: JSON.stringify(ratingReview),
+       contentType: 'application/json',
+       dataType: 'json',
+       method: 'POST'
+    }); 
+    $(".userRating").hide();   
+    $(".successMessage").show();
     });
 
     // Map for single resource on detailed resource info page
     var singleResourceMap = new google.maps.Map(
-      document.getElementById('single-resource-map'),
+      document.getElementById('single-resource-maap'),
       {
         center: marker.getPosition(),
         zoom: focusZoom,
