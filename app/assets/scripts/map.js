@@ -40,6 +40,44 @@ function markerListener(marker, event) {
   });
 }
 
+// Re-render html for descriptor values containing phone numbers
+function displayPhoneNumbers(descriptors) {
+  var PHONE_NUMBER_LENGTH = 12;
+  for (desc of descriptors) {
+    var text = desc.value;
+    var i = 0;
+    var phoneNumberInds = [];
+    var htmlPhoneNumbers = [];
+    while (i <= text.length-PHONE_NUMBER_LENGTH) {
+      var token = text.substring(i, i+PHONE_NUMBER_LENGTH);
+      if (token[3] === "-" && token[7] === "-") {
+        var firstThree = token.substring(0, 3);
+        var firstThreeAreNum = !isNaN(parseInt(firstThree, 10));
+        var secondThree = token.substring(4, 7);
+        var secondThreeAreNum = !isNaN(parseInt(secondThree, 10));
+        var lastFour = token.substring(8, 12);
+        var lastFourAreNum = !isNaN(parseInt(lastFour, 10));
+        if (firstThreeAreNum && secondThreeAreNum && lastFourAreNum) {
+            phoneNumberInds.push(i);
+            i += PHONE_NUMBER_LENGTH;
+            htmlPhoneNumbers.push("<a href=\"tel: 1 (" + firstThree + ") " + secondThree + "-" + lastFour + "\">" + token + "</a>");
+          continue;
+        }
+      }
+      i++;
+    }
+    var prev = 0;
+    var output = "";
+    for (var j = 0; j < phoneNumberInds.length; j++) {
+      output += text.substring(prev, phoneNumberInds[j]);
+      output += htmlPhoneNumbers[j];
+      prev = phoneNumberInds[j]+PHONE_NUMBER_LENGTH;
+    }
+    output += text.substring(prev, text.length);
+    $('#descriptor-value-'+desc.key).html(output);
+  }
+}
+
 // Generate the detailed resource page view after clicking "more information"
 // on a marker
 function displayDetailedResourceView(marker) {
@@ -60,6 +98,9 @@ function displayDetailedResourceView(marker) {
     }
 
     // Detailed resource information template generation
+    Handlebars.registerHelper('concat', function(str1, str2) {
+        return str1 + str2;
+    });
     var resourceTemplate = $("#resource-template").html();
     var compiledResourceTemplate = Handlebars.compile(resourceTemplate);
     var context = {
@@ -70,6 +111,7 @@ function displayDetailedResourceView(marker) {
     };
     var resourceInfo = compiledResourceTemplate(context);
     $("#resource-info").html(resourceInfo);
+    displayPhoneNumbers(descriptors);
 
     // Set handlers and populate DOM elements from resource template
     // Can only reference elements in template after compilation
