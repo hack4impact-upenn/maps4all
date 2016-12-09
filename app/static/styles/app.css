@@ -9,7 +9,7 @@
 }
 
 @media -sass-debug-info{filename{}line{font-family:\0000310}}
-#editor-about-admin, #editor-contact-admin {
+.editor-admin {
   min-height: 100px;
   word-wrap: break-word;
 }
@@ -104,8 +104,8 @@ table.selectable tr:hover {
 
 @media -sass-debug-info{filename{}line{font-family:\0000356}}
 #resource-search {
-  box-shadow: none;
   background-color: #F8F8F8;
+  box-shadow: none;
 }
 
 @media -sass-debug-info{filename{}line{font-family:\0000361}}
@@ -306,6 +306,6 @@ table.selectable tr:hover {
 }
 
 @media -sass-debug-info{filename{}line{font-family:\000031}}
-#editor-about-user, #editor-contact-user {
+.editor-user {
   word-wrap: break-word;
 }
