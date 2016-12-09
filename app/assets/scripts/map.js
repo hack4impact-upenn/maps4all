@@ -76,6 +76,7 @@ function displayDetailedResourceView(marker) {
     $('#back-button').click(function() {
       $("#map").show();
       $("#resource-info").hide();
+      resizeMapListGrid();
     });
 
     $('.ui.rating')
@@ -130,6 +131,10 @@ function displayDetailedResourceView(marker) {
  * functionality on the resources
  */
 function initMap() {
+  // hide resource-info
+  $("#resource-info").empty();
+  $("#resource-info").hide();
+
   map = new google.maps.Map(document.getElementById('map'), {
     center: {lat: 39.949, lng: -75.181}, // TODO(#52): Do not hardcode this.
     zoom: focusZoom,
@@ -230,11 +235,15 @@ function initLocationSearch(map) {
 function initResourceSearch() {
   // Click 'Search' on resource name input
   $('#search-user-resources').click(function() {
-    var query = $('#resources-input').val();
-    var endpoint = '/search-resources/'+query;
-    if (query.length == 0) {
-        endpoint = '/get-resources';
+    var query = '?' + 'name=' + $('#resources-input').val();
+    var requiredOptions = [];
+    $("#search-resources-req-options :selected").each(function() {
+      requiredOptions.push($(this).val());
+    });
+    for (var i = 0; i < requiredOptions.length; i++) {
+      query += '&reqoption=' + requiredOptions[i];
     }
+    var endpoint = '/search-resources'+query;
     resourceSearchRequest(endpoint);
   });
 
