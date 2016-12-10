@@ -7,12 +7,33 @@
             <h2 class="ui header">
                 Upload
             </h2>
+            <p>
+                The "Reset" mode clears all data in the database
+                and sets up a new schema based on the contents of the csv.
+                In contrast, the "Update" model only adds resources or updates existing
+                resources. In the case when a resource in the csv already
+                exists in the database, its data will be replaced with the
+                data in the csv.
+            </p>
             <form id="csv-upload-form" class="ui form">
                 <div class="field">
                     <label for="csv">CSV File</label>
-                    <p>this will be the instructions</p>
                     <input id="csv-file" name="csv" placeholder="CSV File" type="file">
                 </div>
+                <div class="inline fields">
+                    <div class="field">
+                      <div class="ui radio checkbox">
+                        <input type="radio" id="reset" name="reset-or-update" checked="" tabindex="0" class="hidden">
+                        <label>Reset</label>
+                      </div>
+                    </div>
+                    <div class="field">
+                      <div class="ui radio checkbox">
+                        <input type="radio" id="update" name="reset-or-update" tabindex="0" class="hidden">
+                        <label>Update</label>
+                      </div>
+                    </div>
+                  </div>
                 <button class="ui button" type="submit">Upload</button>
             </form>
         </div>
@@ -37,6 +58,8 @@
 
     <script src="http://maps.google.com/maps/api/js?sensor=false" type="text/javascript"></script>
     <script type="text/javascript">
+        $('.ui.radio.checkbox').checkbox();
+
         $("#close-button").click(function() {
             $('.ui.modal').modal('hide');
         });
@@ -128,12 +151,15 @@
                 }
             })
 
+            var resetOrUpdate = document.getElementById('reset').checked ? 'reset' : 'update';
+
             $.ajax({
                 url: "{{ url_for('bulk_resource.upload_data') }}",
                 data: JSON.stringify({
                     name_column_index: nameColumnIndex,
                     address_column_index: addressColumnIndex,
-                    csv_data: data
+                    csv_data: data,
+                    reset_or_update: resetOrUpdate,
                 }),
                 dataType: "json",
                 type: "POST",
