@@ -113,7 +113,7 @@ function displayDetailedResourceView(marker) {
 
     // Map for single resource on detailed resource info page
     var singleResourceMap = new google.maps.Map(
-      document.getElementById('single-resource-maap'),
+      document.getElementById('single-resource-map'),
       {
         center: marker.getPosition(),
         zoom: focusZoom,
