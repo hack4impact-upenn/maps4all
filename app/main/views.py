@@ -6,11 +6,7 @@ from flask.ext.login import login_required
 
 from app import csrf
 from .. import db
-<<<<<<< HEAD
-from ..models import EditableHTML, Resource, Descriptor
-=======
 from ..models import EditableHTML, Resource, Rating, Descriptor, OptionAssociation, RequiredOptionDescriptor
->>>>>>> 1d2f301d7bd18c37c636faa10e80d1827524ca32
 from . import main
 from wtforms.fields import SelectMultipleField, TextAreaField
 from ..single_resource.forms import SingleResourceForm
@@ -32,7 +28,7 @@ def index():
     if req_opt_desc is not None:
         for val in req_opt_desc.values:
             req_options[val] = False
-    return render_template('main/index.html', options=options, req_options=req_options)
+    return render_template('main/index.html', options=options_dict, req_options=req_options)
 
 @main.route('/get-resources')
 def get_resources():
@@ -40,14 +36,14 @@ def get_resources():
     resources_as_dicts = Resource.get_resources_as_dicts(resources)
     return json.dumps(resources_as_dicts)
 
-@main.route('/search-resources/<query_name>')
-def search_resources(query_name):
-    print "searching"
-    def orMultipleQueries(R, queries):
-        return reduce(lambda acc, q: acc or R.name.contains(q), queries)
-
-    resources = Resource.query.filter(orMultipleQueries(Resource, queries))
-    # resources = Resource.query.filter(Resource.name.contains(query_name))
+# @main.route('/search-resources/<query_name>')
+# def search_resources(query_name):
+    # print "searching"
+    # def orMultipleQueries(R, queries):
+    #     return reduce(lambda acc, q: acc or R.name.contains(q), queries)
+    #
+    # resources = Resource.query.filter(orMultipleQueries(Resource, queries))
+    # # resources = Resource.query.filter(Resource.name.contains(query_name))
 @main.route('/search-resources')
 def search_resources():
     name = request.args.get('name')
@@ -76,6 +72,20 @@ def search_resources():
                 if a.option in int_req_options:
                     resources.append(resource)
                     break
+    opt_options = request.args.getlist('optoption')
+    option_map = {}
+    for opt in opt_options:
+        print opt
+        if opt != "null":
+            option_val = opt.split(',')
+            for opt_val in option_val:
+                key_val = opt_val.split(':')
+                # print key_val
+                if key_val[0] in option_map:
+                    option_map[key_val[0]].append(key_val[1])
+                else:
+                    option_map[key_val[0]] = [key_val[1]]
+    print option_map
     resources_as_dicts = Resource.get_resources_as_dicts(resources)
     return json.dumps(resources_as_dicts)
 

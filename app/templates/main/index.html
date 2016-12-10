@@ -31,18 +31,12 @@
                     {% endif %}
                 {% endfor %}
             </select>
-            <!-- <div class="ui fluid icon input">
-              <i class="search icon"></i>
-              <input type="text" id="resources-input" class="controls"
-                       placeholder="Enter resource name">
-            </div> -->
-
             <div id="advanced-search" class="option-group-advanced">
                 {% for o in options.keys() %}
                     <div>{{ o }}</div>
-                    <select id="search-resources-options" multiple="" class="ui fluid dropdown" placeholder="Select">
+                    <select multiple="" class="ui fluid dropdown" placeholder="Select">
                         {% for val in options[o] %}
-                                <option value="{{ val }}">{{ val }}</option>
+                                <option value="{{ o }}:{{ val }}">{{ val }}</option>
                         {% endfor %}
                     </select>
                 {% endfor %}
