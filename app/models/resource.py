@@ -164,7 +164,7 @@ class Resource(db.Model):
 
     @staticmethod
     def get_resources_as_dicts(resources):
-        resources_as_dicts = [resource.__dict__ for resource in resources]
+        resources_as_dicts = []
         for resource in resources:
             res = resource.__dict__
             res['avg_rating'] = resource.get_avg_ratings()
@@ -188,7 +188,6 @@ class Resource(db.Model):
         ratings = Rating.query.filter_by(resource_id=self.id).all()
         if not ratings:
             return 0.0
-        print len(ratings)
         total_sum = float(sum(r.rating for r in ratings))
         return '%.1f' % (total_sum / len(ratings))
 

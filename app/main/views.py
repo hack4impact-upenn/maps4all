@@ -93,7 +93,7 @@ def update_editor_contents():
     return 'OK', 200
 
 @csrf.exempt
-@main.route('/resource-view', methods =['POST'])
+@main.route('/rating-post', methods =['POST'])
 def post_rating():
     if request is not None:
             time = datetime.now()
@@ -115,6 +115,3 @@ def post_rating():
                 db.session.commit()
     return jsonify(status='success')
 
-@main.route('/resource-view', methods =['GET'])
-def resource():
-    return render_template('main/resource.html')

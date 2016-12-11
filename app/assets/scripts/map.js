@@ -94,15 +94,13 @@ function displayDetailedResourceView(marker) {
     e.preventDefault();
     var rating = $('#rating-input').rating('get rating');
     var review = $('#review').val();
-    var time = new Date();
     var ratingReview = {
       'rating': rating,
       'review': review,
-      'time': time,
       'id': marker.resourceID
     };
     $.ajax({
-       url: '/resource-view',
+       url: '/rating-post',
        data: JSON.stringify(ratingReview),
        contentType: 'application/json',
        dataType: 'json',
