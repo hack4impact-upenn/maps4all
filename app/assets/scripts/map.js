@@ -73,6 +73,7 @@ function displayDetailedResourceView(marker) {
 
     // Set handlers and populate DOM elements from resource template
     // Can only reference elements in template after compilation
+    $("#resource-info").scrollTop(0); // reset scroll on div to top
     $('#back-button').click(function() {
       $("#map").show();
       $("#resource-info").hide();
@@ -124,8 +125,8 @@ function submitReview(rating, review, id){
      contentType: 'application/json',
      dataType: 'json',
      method: 'POST'
-  }); 
-  $(".userRating").hide();   
+  });
+  $(".userRating").hide();
   $(".successMessage").show();
 }
 
