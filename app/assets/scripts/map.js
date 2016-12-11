@@ -46,7 +46,7 @@ function displayPhoneNumbers(descriptors) {
   for (desc of descriptors) {
     var updated = desc.value.replace(/(\d\d\d-\d\d\d-\d\d\d\d)/g,
       function replacePhoneNum(num) {
-        return "<a href=\"tel: 1 (" + num.substring(0, 3) + ") " + num.substring(4, 7) + "-" + num.substring(8, 12) + "\">" + num + "</a>";
+        return "<a href=\"tel: +1-" + num +  "\">" + num + "</a>";
     });
     $('#descriptor-value-'+desc.key).html(updated);
   }
