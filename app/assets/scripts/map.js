@@ -44,7 +44,6 @@ function markerListener(marker, event) {
 // Generate the detailed resource page view after clicking "more information"
 // on a marker
 function displayDetailedResourceView(marker) {
-    console.log(marker.avg_rating);
   // get descriptor information as associations
   $.get('get-associations/' + marker.resourceID).done(function(associations) {
     $("#map").hide();
@@ -85,19 +84,24 @@ function displayDetailedResourceView(marker) {
       initialRating: 0,
       maxRating: 5,
       onRate: function(value) {
-        if (value !== 0)
-          $('#submit').removeClass('disabled').addClass('active');
+        if (value !== 0){
+          $('#submit-rating').removeClass('disabled').addClass('active');}
       }
     });
 
-    $('#submit').click(function(e) {
+    $('#submit-rating').click(function(e) {
     e.preventDefault();
     var rating = $('#rating-input').rating('get rating');
     var review = $('#review').val();
-    var ratingReview = {
+    var id = marker.resourceID;
+    submitReview(rating,review,id);
+    });
+
+    var submitReview = function(rating, review, id){
+      var ratingReview = {
       'rating': rating,
       'review': review,
-      'id': marker.resourceID
+      'id': id,
     };
     $.ajax({
        url: '/rating-post',
@@ -108,7 +112,7 @@ function displayDetailedResourceView(marker) {
     }); 
     $(".userRating").hide();   
     $(".successMessage").show();
-    });
+    }
 
     // Map for single resource on detailed resource info page
     var singleResourceMap = new google.maps.Map(
