@@ -90,11 +90,11 @@ function displayDetailedResourceView(marker) {
     });
 
     $('#submit-rating').click(function(e) {
-    e.preventDefault();
-    var rating = $('#rating-input').rating('get rating');
-    var review = $('#review').val();
-    var id = marker.resourceID;
-    submitReview(rating,review,id);
+      e.preventDefault();
+      var rating = $('#rating-input').rating('get rating');
+      var review = $('#review').val();
+      var id = marker.resourceID;
+      submitReview(rating,review,id);
     });
 
     // Map for single resource on detailed resource info page
@@ -112,21 +112,21 @@ function displayDetailedResourceView(marker) {
   });
 }
 
-var submitReview = function(rating, review, id){
+function submitReview(rating, review, id){
   var ratingReview = {
   'rating': rating,
   'review': review,
   'id': id,
-};
-$.ajax({
-   url: '/rating-post',
-   data: JSON.stringify(ratingReview),
-   contentType: 'application/json',
-   dataType: 'json',
-   method: 'POST'
-}); 
-$(".userRating").hide();   
-$(".successMessage").show();
+  };
+  $.ajax({
+     url: '/rating-post',
+     data: JSON.stringify(ratingReview),
+     contentType: 'application/json',
+     dataType: 'json',
+     method: 'POST'
+  }); 
+  $(".userRating").hide();   
+  $(".successMessage").show();
 }
 
 /*
