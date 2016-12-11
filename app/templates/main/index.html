@@ -148,10 +148,16 @@
   <div class="marker-info">
     <h3 class="ui header">
       {% raw %}{{ name }}{% endraw %}
-      <div class="sub header">
-        <div>{% raw %}{{ address }}{% endraw %}</div>
-        <a class="more-info">More Information</a>
-      </div>
+      {% raw %}{{#if avg_rating}}{% endraw %}
+      <a class="ui label" id="avg_rating">
+        <i class="yellow star icon"></i>
+        {% raw %}{{ avg_rating }}{% endraw %}
+      </a>
+      {% raw %}{{/if}}{% endraw %}
+        <div class="sub header">
+          <div>{% raw %}{{ address }}{% endraw %}</div>
+          <a class="more-info">More Information</a>
+        </div>
     </h3>
   </div>
 </script>
@@ -161,6 +167,12 @@
   <i class="big link remove icon" id="back-button"></i>
   <h1 class="ui header" id="resource-name">
     {% raw %}{{ name }}{% endraw %}
+    {% raw %}{{#if avg_rating}}{% endraw %}
+    <a class="ui label" id="avg_rating">
+      <i class="yellow star icon"></i>
+      {% raw %}{{ avg_rating }}{% endraw %}
+    </a>
+    {% raw %}{{/if}}{% endraw %}
     <div class="sub header">
       {% raw %}{{ address }}{% endraw %}
       <br>
@@ -183,6 +195,25 @@
   <div class="ui hidden divider"></div>
   <div class="actions">
     <h2 class="ui dividing header">Actions</h2>
+    <div class="userRating" id="user-rating">
+      <div class="ui form"> 
+        <h3 class="ui header">Submit a Review</h3>
+        <div class="field">
+          <label>Rating (Required)</label>
+          <div class="ui star rating" id="rating-input"></div>
+        </div>
+        <div class="field">
+          <label>Review (Optional)</label>
+          <textarea rows="2" id="review"></textarea>
+        </div>
+        <button class="ui disabled button" id="submit-rating">Submit</button>
+      </div>
+    </div>
+    <div class="successMessage">
+        <div class="ui positive message">
+          Thanks, your rating has been posted!
+        </div>
+    </div>
     <a href="{% raw %}{{ suggestionUrl }}{% endraw %}">
       Suggest an edit for this resource
     </a>
@@ -195,6 +226,12 @@
   <div class="item list-resource">
     <h3 class="ui header">
       <a>{% raw %}{{ name }}{% endraw %}</a>
+      {% raw %}{{#if avg_rating}}{% endraw %}
+      <a class="ui small label" id="avg_rating">
+        <i class="yellow star icon"></i>
+        {% raw %}{{ avg_rating }}{% endraw %}
+      </a>
+      {% raw %}{{/if}}{% endraw %}
     </h3>
     <div class="sub header">
       <div>{% raw %}{{ address }}{% endraw %}</div>

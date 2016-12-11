@@ -22,6 +22,7 @@ function markerListener(marker, event) {
   var context = {
     name: marker.title,
     address: marker.address,
+    avg_rating: marker.avg_rating,
   };
   var markerInfo = compiledMarkerInfoWindowTemplate(context);
 
@@ -48,7 +49,6 @@ function displayDetailedResourceView(marker) {
     $("#map").hide();
     $("#resource-info").empty();
     $("#resource-info").show();
-
     var associationObject = JSON.parse(associations);
     var descriptors = [];
     for (var key in associationObject) {
@@ -58,7 +58,6 @@ function displayDetailedResourceView(marker) {
       };
       descriptors.push(descriptor);
     }
-
     // Detailed resource information template generation
     var resourceTemplate = $("#resource-template").html();
     var compiledResourceTemplate = Handlebars.compile(resourceTemplate);
@@ -67,6 +66,7 @@ function displayDetailedResourceView(marker) {
       address: marker.address,
       suggestionUrl: 'suggestion/' + marker.resourceID,
       descriptors: descriptors,
+      avg_rating: marker.avg_rating,
     };
     var resourceInfo = compiledResourceTemplate(context);
     $("#resource-info").html(resourceInfo);
@@ -77,6 +77,24 @@ function displayDetailedResourceView(marker) {
       $("#map").show();
       $("#resource-info").hide();
       resizeMapListGrid();
+    });
+
+    $('.ui.rating')
+    .rating({
+      initialRating: 0,
+      maxRating: 5,
+      onRate: function(value) {
+        if (value !== 0){
+          $('#submit-rating').removeClass('disabled').addClass('active');}
+      }
+    });
+
+    $('#submit-rating').click(function(e) {
+      e.preventDefault();
+      var rating = $('#rating-input').rating('get rating');
+      var review = $('#review').val();
+      var id = marker.resourceID;
+      submitReview(rating,review,id);
     });
 
     // Map for single resource on detailed resource info page
@@ -92,6 +110,23 @@ function displayDetailedResourceView(marker) {
       map: singleResourceMap,
     });
   });
+}
+
+function submitReview(rating, review, id){
+  var ratingReview = {
+  'rating': rating,
+  'review': review,
+  'id': id,
+  };
+  $.ajax({
+     url: '/rating-post',
+     data: JSON.stringify(ratingReview),
+     contentType: 'application/json',
+     dataType: 'json',
+     method: 'POST'
+  }); 
+  $(".userRating").hide();   
+  $(".successMessage").show();
 }
 
 /*
@@ -274,6 +309,7 @@ function createMarker(resource) {
     csrf_token: $('meta[name="csrf-token"]').prop('content'),
     data: resource.name
   };
+  markerToAdd.avg_rating = resource.avg_rating;
   markerToAdd.resourceID = resource.id;
   markerToAdd.address = resource.address;
 
@@ -292,6 +328,7 @@ function populateListDiv() {
     var listResource = {
       name: markerToShow.title,
       address: markerToShow.address,
+      avg_rating: markerToShow.avg_rating,
     };
     listResources.push(listResource);
   });

@@ -275,22 +275,26 @@ table.selectable tr:hover {
   padding-top: 1em;
 }
 @media -sass-debug-info{filename{}line{font-family:\00003215}}
+#resource-info .successMessage {
+  display: none;
+}
+@media -sass-debug-info{filename{}line{font-family:\00003218}}
 #resource-info .sub.header {
   font-size: 14px;
 }
-@media -sass-debug-info{filename{}line{font-family:\00003219}}
+@media -sass-debug-info{filename{}line{font-family:\00003222}}
 #resource-info .ui.label {
   font-size: 14px;
   margin-top: 0.4em;
   margin-bottom: 1em;
 }
-@media -sass-debug-info{filename{}line{font-family:\00003224}}
+@media -sass-debug-info{filename{}line{font-family:\00003227}}
 #resource-info .ui.header {
   color: #2C9FA3;
   font-family: Roboto;
 }
 
-@media -sass-debug-info{filename{}line{font-family:\00003230}}
+@media -sass-debug-info{filename{}line{font-family:\00003234}}
 #back-button {
   color: #2C9FA3;
   display: inline-block;
@@ -299,7 +303,7 @@ table.selectable tr:hover {
   z-index: 2;
 }
 
-@media -sass-debug-info{filename{}line{font-family:\00003238}}
+@media -sass-debug-info{filename{}line{font-family:\00003242}}
 #single-resource-map {
   height: 400px;
   width: 100%;
