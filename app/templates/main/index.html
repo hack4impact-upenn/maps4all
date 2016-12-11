@@ -129,7 +129,7 @@
     <div id="resource-info"></div>
   </div>
 </div>
-</div>
+
 <!-- HANDLEBARS.JS TEMPLATES COMPILED IN MAP.JS -->
 <!-- Populate location search marker info-->
 <script id="searched-location-info-window-template" type="text/x-handlebars-template">
@@ -147,17 +147,17 @@
 <script id="marker-info-window-template" type="text/x-handlebars-template">
   <div class="marker-info">
     <h3 class="ui header">
-    {% raw %}{{ name }}{% endraw %}
-    {% raw %}{{#if avg_rating}}{% endraw %}
-    <a class="ui label" id="avg_rating">
-      <i class="yellow star icon"></i>
-      {% raw %}{{ avg_rating }}{% endraw %}
-    </a>
-    {% raw %}{{/if}}{% endraw %}
-      <div class="sub header">
-        <div>{% raw %}{{ address }}{% endraw %}</div>
-        <a class="more-info">More Information</a>
-      </div>
+      {% raw %}{{ name }}{% endraw %}
+      {% raw %}{{#if avg_rating}}{% endraw %}
+      <a class="ui label" id="avg_rating">
+        <i class="yellow star icon"></i>
+        {% raw %}{{ avg_rating }}{% endraw %}
+      </a>
+      {% raw %}{{/if}}{% endraw %}
+        <div class="sub header">
+          <div>{% raw %}{{ address }}{% endraw %}</div>
+          <a class="more-info">More Information</a>
+        </div>
     </h3>
   </div>
 </script>
@@ -202,14 +202,14 @@
           <label>Rating (Required)</label>
           <div class="ui star rating" id="rating-input"></div>
         </div>
-          <div class="field">
-            <label>Review (Optional)</label>
-            <textarea rows="2" id="review"></textarea>
-          </div>
+        <div class="field">
+          <label>Review (Optional)</label>
+          <textarea rows="2" id="review"></textarea>
+        </div>
         <button class="ui disabled button" id="submit">Submit</button>
       </div>
     </div>
-    <div class="successMessage" style="display:none">
+    <div class="successMessage">
         <div class="ui positive message">
           Thanks, your rating has been posted!
         </div>
