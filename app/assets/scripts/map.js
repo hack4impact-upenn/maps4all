@@ -41,6 +41,18 @@ function markerListener(marker, event) {
   });
 }
 
+// Re-render html for descriptor values containing phone numbers
+function displayPhoneNumbers(descriptors) {
+  var PHONE_NUMBER_LENGTH = 12;
+  for (desc of descriptors) {
+    var updated = desc.value.replace(/(\d\d\d-\d\d\d-\d\d\d\d)/g,
+      function replacePhoneNum(num) {
+        return "<a href=\"tel:+1-" + num +  "\">" + num + "</a>";
+    });
+    $('#descriptor-value-'+desc.key).html(updated);
+  }
+}
+
 // Generate the detailed resource page view after clicking "more information"
 // on a marker
 function displayDetailedResourceView(marker) {
@@ -59,6 +71,9 @@ function displayDetailedResourceView(marker) {
       descriptors.push(descriptor);
     }
     // Detailed resource information template generation
+    Handlebars.registerHelper('concat', function(str1, str2) {
+        return str1 + str2;
+    });
     var resourceTemplate = $("#resource-template").html();
     var compiledResourceTemplate = Handlebars.compile(resourceTemplate);
     var context = {
@@ -70,6 +85,7 @@ function displayDetailedResourceView(marker) {
     };
     var resourceInfo = compiledResourceTemplate(context);
     $("#resource-info").html(resourceInfo);
+    displayPhoneNumbers(descriptors);
 
     // Set handlers and populate DOM elements from resource template
     // Can only reference elements in template after compilation

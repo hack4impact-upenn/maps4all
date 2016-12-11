@@ -188,7 +188,9 @@
         {% raw %}{{#if value}}{% endraw %}
           <div class="item descriptor">
             <div class="header">{% raw %}{{ key }}{% endraw %}</div>
-            {% raw %}{{ value }}{% endraw %}
+            <div id={% raw %}{{ concat 'descriptor-value-' key }}{% endraw %}>
+              {% raw %}{{ value }}{% endraw %}
+            </div>
           </div>
         {% raw %}{{/if}}{% endraw %}
       {% raw %}{{/each}}{% endraw %}
