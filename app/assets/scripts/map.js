@@ -19,9 +19,13 @@ function markerListener(marker, event) {
   var markerInfoWindowTemplate = $("#marker-info-window-template").html();
   var compiledMarkerInfoWindowTemplate =
     Handlebars.compile(markerInfoWindowTemplate);
+  if(marker.avg_rating == -1){
+    marker.avg_rating=0;
+  }
   var context = {
     name: marker.title,
     address: marker.address,
+    avg_rating: marker.avg_rating,
   };
   var markerInfo = compiledMarkerInfoWindowTemplate(context);
 
@@ -61,6 +65,9 @@ function displayDetailedResourceView(marker) {
     // Detailed resource information template generation
     var resourceTemplate = $("#resource-template").html();
     var compiledResourceTemplate = Handlebars.compile(resourceTemplate);
+    if(marker.avg_rating == -1){
+      marker.avg_rating=0;
+    }
     var context = {
       name: marker.title,
       address: marker.address,
@@ -306,7 +313,10 @@ function createMarker(resource) {
     csrf_token: $('meta[name="csrf-token"]').prop('content'),
     data: resource.name
   };
-  markerToAdd.avg_rating = resource.avg_rating;
+  if(resource.avg_rating == -1){
+    markerToAdd.avg_rating = 0;}
+  else{
+    markerToAdd.avg_rating = resource.avg_rating;}
   markerToAdd.resourceID = resource.id;
   markerToAdd.address = resource.address;
 
@@ -325,6 +335,7 @@ function populateListDiv() {
     var listResource = {
       name: markerToShow.title,
       address: markerToShow.address,
+      avg_rating: markerToShow.avg_rating,
     };
     listResources.push(listResource);
   });

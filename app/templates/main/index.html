@@ -147,7 +147,13 @@
 <script id="marker-info-window-template" type="text/x-handlebars-template">
   <div class="marker-info">
     <h3 class="ui header">
-      {% raw %}{{ name }}{% endraw %}
+    {% raw %}{{ name }}{% endraw %}
+    {% raw %}{{#if avg_rating}}{% endraw %}
+    <a class="ui label" id="avg_rating">
+      <i class="yellow star icon"></i>
+      {% raw %}{{ avg_rating }}{% endraw %}
+    </a>
+    {% raw %}{{/if}}{% endraw %}
       <div class="sub header">
         <div>{% raw %}{{ address }}{% endraw %}</div>
         <a class="more-info">More Information</a>
@@ -156,70 +162,19 @@
   </div>
 </script>
 
-<!-- Populate resource information view
-<script id="resource-template" type="text/x-handlebars-template">
-  <i class="big link remove icon" id="back-button"></i>
-  <h1 class="ui header" id="resource-name">
-    {% raw %}{{ name }}{% endraw %}
-    <a class="ui label" id="avg_rating">
-              <i class="yellow star icon"></i>
-              {% raw %}{{ avg_rating }}{% endraw %}
-    </a>
-    <div class="sub header">
-      {% raw %}{{ address }}{% endraw %}
-      <br>
-      <span class="ui large label">Category</span>
-    </div>
-  </h1>
-  <div id="single-resource-map"></div>
-  <div class="ui hidden divider"></div>
-  <div class="descriptors">
-    <h2 class="ui dividing header">Information</h2>
-    <div class="ui list">
-      {% raw %}{{#each descriptors}}{% endraw %}
-      <div class="item descriptor">
-        <div class="header">{% raw %}{{ key }}{% endraw %}</div>
-        {% raw %}{{ value }}{% endraw %}
-      </div>
-  <div class="ui hidden divider"></div>
-    <div class="actions">
-      <h2 class="ui dividing header">Actions</h2>
-    </div>
-    <div class="userRating" id="user-rating">
-      <div class="ui form"> 
-        <h3 class="ui header">Submit a Review</h3>
-        <div class="field">
-          <label>Rating (Required)</label>
-          <div class="ui star rating" id="rating-input"></div>
-        </div>
-          <div class="field">
-            <label>Review (Optional)</label>
-            <textarea rows="2" id="review"></textarea>
-          </div>
-        <button class="ui disabled button" id="submit">Submit</button>
-      </div>
-    </div>
-    <div class="successMessage" style="display:none">
-        <div class="ui positive message">
-          Thanks, your rating has been posted!
-        </div>
-    </div>
-    <a href="{% raw %}{{ suggestionUrl }}{% endraw %}">
-        Suggest an edit for this resource
-    </a>
-</script> -->
-
 <!-- Populate resource information view-->
 <script id="resource-template" type="text/x-handlebars-template">
   <i class="big link remove icon" id="back-button"></i>
   <h1 class="ui header" id="resource-name">
     {% raw %}{{ name }}{% endraw %}
+    {% raw %}{{#if avg_rating}}{% endraw %}
+    <a class="ui label" id="avg_rating">
+      <i class="yellow star icon"></i>
+      {% raw %}{{ avg_rating }}{% endraw %}
+    </a>
+    {% raw %}{{/if}}{% endraw %}
     <div class="sub header">
       {% raw %}{{ address }}{% endraw %}
-      <a class="ui label" id="avg_rating">
-              <i class="yellow star icon"></i>
-              {% raw %}{{ avg_rating }}{% endraw %}
-      </a>
       <br>
       <span class="ui large label">Category</span>
     </div>
@@ -271,6 +226,12 @@
   <div class="item list-resource">
     <h3 class="ui header">
       <a>{% raw %}{{ name }}{% endraw %}</a>
+      {% raw %}{{#if avg_rating}}{% endraw %}
+      <a class="ui small label" id="avg_rating">
+        <i class="yellow star icon"></i>
+        {% raw %}{{ avg_rating }}{% endraw %}
+      </a>
+      {% raw %}{{/if}}{% endraw %}
     </h3>
     <div class="sub header">
       <div>{% raw %}{{ address }}{% endraw %}</div>
