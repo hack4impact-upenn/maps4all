@@ -140,14 +140,12 @@ def update_data():
                     errors.append('Descriptor {} is invalid'.format(descriptor_name))
                     continue
 
-                text_association = [td for td in resource.text_descriptors if td.descriptor_id == descriptor.id]
-                text_association = text_association[0] if text_association else None
-                option_association = [od for od in resource.option_descriptors if od.descriptor_id == descriptor.id]
-                option_association = option_association[0] if option_association else None
+                text_associations = [td for td in resource.text_descriptors if td.descriptor_id == descriptor.id]
+                option_associations = [od for od in resource.option_descriptors if od.descriptor_id == descriptor.id]
 
-                if text_association is not None:
+                for text_association in text_associations:
                     db.session.delete(text_association)
-                elif option_association is not None:
+                for option_association in option_associations:
                     db.session.delete(option_association)
 
                 values = list(descriptor.values)
