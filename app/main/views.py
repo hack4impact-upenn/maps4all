@@ -85,6 +85,20 @@ def search_resources():
                     option_map[key_val[0]].append(key_val[1])
                 else:
                     option_map[key_val[0]] = [key_val[1]]
+
+    option_descriptors = []
+    for n in option_map.keys():
+        option_descriptors.append(Descriptor.query.filter_by(
+            name=n
+        ))
+    for resource in resource_pool:
+        associations = OptionAssociation.query.filter_by(
+            resource_id=resource.id,
+        )
+        for a in associations:
+            if a.option in #int_req_options:
+                resources.append(resource)
+                break
     print option_map
     resources_as_dicts = Resource.get_resources_as_dicts(resources)
     return json.dumps(resources_as_dicts)
