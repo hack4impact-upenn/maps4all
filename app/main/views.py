@@ -75,7 +75,6 @@ def search_resources():
     opt_options = request.args.getlist('optoption')
     option_map = {}
     for opt in opt_options:
-        print opt
         if opt != "null":
             option_val = opt.split(',')
             for opt_val in option_val:
@@ -86,20 +85,17 @@ def search_resources():
                 else:
                     option_map[key_val[0]] = [key_val[1]]
 
-    option_descriptors = []
-    for n in option_map.keys():
-        option_descriptors.append(Descriptor.query.filter_by(
-            name=n
-        ))
+    descriptors = Descriptor.query.all()
     for resource in resource_pool:
-        associations = OptionAssociation.query.filter_by(
-            resource_id=resource.id,
-        )
-        for a in associations:
-            if a.option in #int_req_options:
+        for opt in option_map.keys():
+            number_of_options_to_find = len(option_map[opt])
+            for desc in resource.option_descriptors:
+                if desc.descriptor.name == opt:
+                    if desc.descriptor.values[desc.option] in option_map[opt]:
+                        number_of_options_to_find -= 1
+            if number_of_options_to_find == 0:
                 resources.append(resource)
-                break
-    print option_map
+                continue
     resources_as_dicts = Resource.get_resources_as_dicts(resources)
     return json.dumps(resources_as_dicts)
 
