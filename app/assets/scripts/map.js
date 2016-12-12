@@ -12,6 +12,14 @@ var locationMarker;
 
 // Click listener for a marker.
 function markerListener(marker, event) {
+  // mobile responsive
+  if ($(window).width() <= singleColBreakpoint) {
+    $('#left-column').hide();
+    $('#right-column').show();
+    resizeMapListGrid();
+    map.setZoom(17);
+  }
+
   $("#map").show();
   $("#resource-info").hide();
 
@@ -29,11 +37,17 @@ function markerListener(marker, event) {
   if (infowindow) {
     infowindow.close();
   }
-  infowindow = new google.maps.InfoWindow({
-    content: markerInfo,
-    maxWidth: 300,
-  });
-  infowindow.open(map, marker);
+
+  // If more than one column, display info window
+  if ($(window).width() > singleColBreakpoint) {
+    infowindow = new google.maps.InfoWindow({
+      content: markerInfo,
+      maxWidth: 300,
+    });
+    infowindow.open(map, marker);
+  } else { // One column then display bottom box for info
+
+  }
 
   // Marker "more information" link to detailed resource information view
   $(".more-info").click(function() {
@@ -177,6 +191,10 @@ function initMap() {
   google.maps.event.addListenerOnce(map, 'idle', function() {
     populateListDiv();
   });
+
+  if ($(window).width() <= singleColBreakpoint) {
+    $('#right-column').hide();
+  }
 }
 
 /*
@@ -369,11 +387,34 @@ function populateListDiv() {
 // Resize map/list area - set height to fit screen
 function resizeMapListGrid() {
   var navHeight = $('.ui.navigation.grid').height();
-  // TODO: remove hack of subtracting 40
+
+  // TODO: remove hack of subtracting 40 and 60
   $('#map-list-grid').height($('body').height() - navHeight - 40);
 
   var center = map.getCenter();
   // Need to call resize event on map or creates dead grey area on map
   google.maps.event.trigger(map, "resize");
   map.setCenter(center);
+}
+
+function makeResponsive() {
+  // Change to a single column view
+  if ($(window).width() <= singleColBreakpoint) {
+    $('#left-column').removeClass().addClass('sixteen wide column');
+    $('#right-column').removeClass().addClass('sixteen wide column');
+    $('#map-list-grid').addClass('grid-space');
+  } else if ( // Change to double column views
+    $(window).width() > singleColBreakpoint
+    && $(window).width() <= twoColResizeBreakpoint
+  ) {
+    $('#left-column').removeClass().addClass('five wide column');
+    $('#right-column').removeClass().addClass('eleven wide column');
+    $('#left-column').show();
+    $('#right-column').show();
+  } else if ($(window).width() > twoColResizeBreakpoint) {
+    $('#left-column').removeClass().addClass('four wide column');
+    $('#right-column').removeClass().addClass('twelve wide column');
+    $('#left-column').show();
+    $('right-column').show();
+  }
 }

@@ -253,10 +253,12 @@
   $(document).ready(function(){
     // defined in map.js
     initMap();
+    makeResponsive();
     resizeMapListGrid();
 
     // Adjust height of map/list grid when resize browser to fit in screen
     $(window).resize(function() {
+      makeResponsive();
       resizeMapListGrid();
     });
 

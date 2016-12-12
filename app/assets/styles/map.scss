@@ -19,6 +19,11 @@ $font-size: 14px;
   #right-column {
     padding: 0;
   }
+
+  &.grid-space {
+    padding-left: 2em;
+    padding-right: 2em;
+  }
 }
 
 #left-column-divider {
