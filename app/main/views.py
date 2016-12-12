@@ -102,8 +102,6 @@ def search_resources():
                         break
         if number_of_options_found == len(option_map.keys()):
             resources.append(resource)
-    if len(resources) == 0:
-        resources = list(resource_pool)
     resources_as_dicts = Resource.get_resources_as_dicts(resources)
     return json.dumps(resources_as_dicts)
 
