@@ -20,11 +20,11 @@ nav {
 }
 
 @media -sass-debug-info{filename{}line{font-family:\0000311}}
-.nav-mobile-switch {
+.ui.menu .item.nav-mobile-switch {
   display: none;
 }
 @media -sass-debug-info{filename{}line{font-family:\0000314}}
-.nav-mobile-switch p {
+.ui.menu .item.nav-mobile-switch p {
   display: inline-block;
 }
 
@@ -269,16 +269,17 @@ table.selectable tr:hover {
 @media -sass-debug-info{filename{}line{font-family:\00003197}}
 #map-footer {
   background-color: #EEEEEE;
+  display: none;
   overflow-y: auto;
   padding: 0.5em;
 }
-@media -sass-debug-info{filename{}line{font-family:\00003202}}
+@media -sass-debug-info{filename{}line{font-family:\00003203}}
 #map-footer #mobile-list-btn p {
   display: inline-block;
 }
 
 /*************** RESOURCE VIEW SPECIFIC STYLES ****************/
-@media -sass-debug-info{filename{}line{font-family:\00003209}}
+@media -sass-debug-info{filename{}line{font-family:\00003210}}
 #resource-info {
   background-color: #F8F8F8;
   border: solid #CCCCCC;
@@ -288,42 +289,42 @@ table.selectable tr:hover {
   overflow: scroll;
   padding: 1.25em;
 }
-@media -sass-debug-info{filename{}line{font-family:\00003219}}
+@media -sass-debug-info{filename{}line{font-family:\00003220}}
 #resource-info > .ui.header > .sub.header > .ui.label {
   margin-left: 0px;
 }
-@media -sass-debug-info{filename{}line{font-family:\00003223}}
+@media -sass-debug-info{filename{}line{font-family:\00003224}}
 #resource-info a {
   color: #000000;
 }
-@media -sass-debug-info{filename{}line{font-family:\00003227}}
+@media -sass-debug-info{filename{}line{font-family:\00003228}}
 #resource-info #resource-name {
   display: inline;
   font-size: 36px;
   padding-bottom: 1em;
   padding-top: 1em;
 }
-@media -sass-debug-info{filename{}line{font-family:\00003234}}
+@media -sass-debug-info{filename{}line{font-family:\00003235}}
 #resource-info .successMessage {
   display: none;
 }
-@media -sass-debug-info{filename{}line{font-family:\00003237}}
+@media -sass-debug-info{filename{}line{font-family:\00003238}}
 #resource-info .sub.header {
   font-size: 14px;
 }
-@media -sass-debug-info{filename{}line{font-family:\00003241}}
+@media -sass-debug-info{filename{}line{font-family:\00003242}}
 #resource-info .ui.label {
   font-size: 14px;
   margin-top: 0.4em;
   margin-bottom: 1em;
 }
-@media -sass-debug-info{filename{}line{font-family:\00003246}}
+@media -sass-debug-info{filename{}line{font-family:\00003247}}
 #resource-info .ui.header {
   color: #000000;
   font-family: Roboto;
 }
 
-@media -sass-debug-info{filename{}line{font-family:\00003253}}
+@media -sass-debug-info{filename{}line{font-family:\00003254}}
 #back-button {
   color: #000000;
   display: inline-block;
@@ -332,7 +333,7 @@ table.selectable tr:hover {
   z-index: 2;
 }
 
-@media -sass-debug-info{filename{}line{font-family:\00003261}}
+@media -sass-debug-info{filename{}line{font-family:\00003262}}
 #single-resource-map {
   height: 400px;
   width: 100%;

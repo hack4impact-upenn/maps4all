@@ -9,6 +9,7 @@ var markers = [];
 var infowindow;
 var focusZoom = 17;
 var locationMarker;
+var allResourceBounds;
 
 // Click listener for a marker.
 function markerListener(marker, event) {
@@ -349,6 +350,7 @@ function populateMarkers(resources) {
 
   map.fitBounds(bounds);
   map.setCenter(bounds.getCenter());
+  allResourceBounds = bounds;
 }
 
 /*
@@ -474,7 +476,6 @@ function makeResponsive() {
   } else if ($(window).width() > twoColResizeBreakpoint) {
     $('#left-column').removeClass().addClass('four wide column');
     $('#right-column').removeClass().addClass('twelve wide column');
-    doubleColumnResets();
   }
 }
 
@@ -483,8 +484,13 @@ function makeResponsive() {
 function singleColumnResets() {
   $('#left-column').removeClass().addClass('sixteen wide column');
   $('#right-column').removeClass().addClass('sixteen wide column');
-  $('#right-column').hide();
-  setNavSwitching();
+
+  // switched from double to single
+  // don't want to hide if a resize within single view is triggered
+  if ($('#right-column').is(':visible') && $('#left-column').is(':visible')) {
+    $('#right-column').hide();
+    setNavSwitching();
+  }
 }
 
 // Set a nav element that allows toggling between list and map view
@@ -510,11 +516,18 @@ function listToMapSingleColumn() {
   $('#left-column').hide();
   $('#right-column').show();
   $('#map').show();
+  $('#map-footer').hide();
+  $('#map').height($('#right-column').height());
+
+  // show all resources on map
+  if (allResourceBounds) {
+    map.fitBounds(allResourceBounds);
+    map.setCenter(allResourceBounds.getCenter());
+  }
   var center = map.getCenter();
   // Need to call resize event on map or creates dead grey area on map
   google.maps.event.trigger(map, "resize");
   map.setCenter(center);
-  map.setZoom(14);
 
   $('#nav-to-list').show();
   $('#nav-to-map').hide();
@@ -539,9 +552,13 @@ function doubleColumnResets() {
   $('#right-column').show();
   $('.nav-mobile-switch').hide();
 
+  // show all resources on map
+  if (allResourceBounds) {
+    map.fitBounds(allResourceBounds);
+    map.setCenter(allResourceBounds.getCenter());
+  }
   var center = map.getCenter();
   // Need to call resize event on map or creates dead grey area on map
   google.maps.event.trigger(map, "resize");
   map.setCenter(center);
-  map.setZoom(14);
 }
