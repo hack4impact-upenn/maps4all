@@ -22,11 +22,11 @@ nav .mobile.only.row {
 }
 
 // Flashes
-.flashes > .ui.message:last-of-type {
-  float: right;
+.flashes > .ui.nag:last-of-type {
   overflow: visible;
   position: absolute;
   z-index: 1000;
+  background-color: green;
 }
 
 // Tables
