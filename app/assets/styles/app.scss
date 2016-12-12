@@ -8,6 +8,14 @@ nav {
   margin-bottom: 40px !important;
 }
 
+.nav-mobile-switch {
+  display: none;
+
+  p {
+    display: inline-block;
+  }
+}
+
 // Desktop nav
 .ui.fixed.main.menu .right.menu > .item:last-of-type {
   border-right: 1px solid rgba(34, 36, 38, 0.0980392);
