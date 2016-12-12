@@ -79,7 +79,6 @@ def search_resources():
             option_val = opt.split(',')
             for opt_val in option_val:
                 key_val = opt_val.split(':')
-                # print key_val
                 if key_val[0] in option_map:
                     option_map[key_val[0]].append(key_val[1])
                 else:
@@ -89,13 +88,17 @@ def search_resources():
     for resource in resource_pool:
         for opt in option_map.keys():
             number_of_options_to_find = len(option_map[opt])
-            for desc in resource.option_descriptors:
+            opt_descriptors = OptionAssociation.query.filter_by(
+                resource_id=resource.id
+            )
+            for desc in opt_descriptors:
                 if desc.descriptor.name == opt:
                     if desc.descriptor.values[desc.option] in option_map[opt]:
                         number_of_options_to_find -= 1
             if number_of_options_to_find == 0:
                 resources.append(resource)
                 continue
+    print "WE HERE WOOOOOO"
     resources_as_dicts = Resource.get_resources_as_dicts(resources)
     return json.dumps(resources_as_dicts)
 
