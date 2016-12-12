@@ -58,6 +58,12 @@ $font-size: 14px;
   box-shadow: none;
 }
 
+// Resource option search
+.req-desc-name {
+  font-weight: bold;
+  text-transform: capitalize;
+}
+
 .descriptor-group {
   font-family: $font-choice;
   margin: 3px;
