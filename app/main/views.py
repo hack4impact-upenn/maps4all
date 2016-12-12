@@ -86,19 +86,23 @@ def search_resources():
 
     descriptors = Descriptor.query.all()
     for resource in resource_pool:
+        number_of_options_found = 0
         for opt in option_map.keys():
-            number_of_options_to_find = len(option_map[opt])
             opt_descriptors = OptionAssociation.query.filter_by(
                 resource_id=resource.id
             )
             for desc in opt_descriptors:
                 if desc.descriptor.name == opt:
+                    print opt
                     if desc.descriptor.values[desc.option] in option_map[opt]:
-                        number_of_options_to_find -= 1
-            if number_of_options_to_find == 0:
-                resources.append(resource)
-                continue
+                        print "LOOKY HERE"
+                        number_of_options_found += 1
+                        break
+            print number_of_options_found
+        if number_of_options_found == len(option_map.keys()):
+            resources.append(resource)
     if len(resources) == 0:
+        print "Adding all"
         resources = list(resource_pool)
     resources_as_dicts = Resource.get_resources_as_dicts(resources)
     return json.dumps(resources_as_dicts)
