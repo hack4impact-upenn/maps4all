@@ -57,7 +57,7 @@ def search_resources():
     req_opt_desc = Descriptor.query.filter_by(
         id=req_opt_desc.descriptor_id
     ).first()
-    resources = list(resource_pool)
+    resources = []
     if req_opt_desc is not None and len(req_options) > 0:
         resources = []
         int_req_options = []
@@ -98,7 +98,8 @@ def search_resources():
             if number_of_options_to_find == 0:
                 resources.append(resource)
                 continue
-    print "WE HERE WOOOOOO"
+    if len(resources) == 0:
+        resources = list(resource_pool)
     resources_as_dicts = Resource.get_resources_as_dicts(resources)
     return json.dumps(resources_as_dicts)
 
@@ -157,4 +158,3 @@ def post_rating():
                 db.session.add(rating)
                 db.session.commit()
     return jsonify(status='success')
-

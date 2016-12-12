@@ -168,7 +168,8 @@ class Resource(db.Model):
         for resource in resources:
             res = resource.__dict__
             res['avg_rating'] = resource.get_avg_ratings()
-            del res['_sa_instance_state']
+            if '_sa_instance_state' in res:
+                del res['_sa_instance_state']
             resources_as_dicts.append(res)
         # .__dict__ returns the SQLAlchemy object as a dict, but it also adds a
         # field '_sa_instance_state' that we don't need, so we delete it.
