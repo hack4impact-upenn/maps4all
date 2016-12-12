@@ -9,11 +9,34 @@ var markers = [];
 var infowindow;
 var focusZoom = 17;
 var locationMarker;
+var allResourceBounds;
 
 // Click listener for a marker.
 function markerListener(marker, event) {
-  $("#map").show();
-  $("#resource-info").hide();
+  $('#map').show();
+  $('#resource-info').hide();
+
+  var isResponsive = false;
+  // Adapt to one column view
+  // Clicking a list element/marker should hide the list view and
+  // show the marker on the map and a footer underneath the map with marker info
+  if ($(window).width() <= singleColBreakpoint) {
+    isResponsive = true;
+    listToMapSingleColumn();
+    $('#map-footer').show();
+    $('#map-footer').scrollTop(0);
+
+    // TODO: Remove 15 hack
+    // Split view vertically between map and a map footer for info
+    var totalHeight = $('#right-column').height() - 15;
+    $('#map-footer').height(totalHeight / 5);
+    $('#map').height(4 * totalHeight / 5);
+    resizeMapListGrid();
+
+    // Need to set center and zoom since default is not at right location
+    map.setCenter(marker.getPosition());
+    map.setZoom(17);
+  }
 
   // Show marker info bubble
   var markerInfoWindowTemplate = $("#marker-info-window-template").html();
@@ -23,17 +46,28 @@ function markerListener(marker, event) {
     name: marker.title,
     address: marker.address,
     avg_rating: marker.avg_rating,
+    responsive: isResponsive,
   };
   var markerInfo = compiledMarkerInfoWindowTemplate(context);
 
   if (infowindow) {
     infowindow.close();
   }
-  infowindow = new google.maps.InfoWindow({
-    content: markerInfo,
-    maxWidth: 300,
-  });
-  infowindow.open(map, marker);
+
+  // If more than one column, display info window
+  if ($(window).width() > singleColBreakpoint) {
+    infowindow = new google.maps.InfoWindow({
+      content: markerInfo,
+      maxWidth: 300,
+    });
+    infowindow.open(map, marker);
+  } else { // If one column then display bottom box for info
+    $('#map-footer').html(markerInfo);
+    // go back to list view from map info
+    $('#mobile-list-btn').click(function() {
+      mapToListSingleColumn();
+    });
+  }
 
   // Marker "more information" link to detailed resource information view
   $(".more-info").click(function() {
@@ -59,8 +93,10 @@ function displayDetailedResourceView(marker) {
   // get descriptor information as associations
   $.get('get-associations/' + marker.resourceID).done(function(associations) {
     $("#map").hide();
+    $('#map-footer').hide();
     $("#resource-info").empty();
     $("#resource-info").show();
+
     var associationObject = JSON.parse(associations);
     var descriptors = [];
     for (var key in associationObject) {
@@ -92,6 +128,7 @@ function displayDetailedResourceView(marker) {
     $("#resource-info").scrollTop(0); // reset scroll on div to top
     $('#back-button').click(function() {
       $("#map").show();
+      $('#map-footer').show();
       $("#resource-info").hide();
       resizeMapListGrid();
     });
@@ -238,6 +275,11 @@ function initLocationSearch(map) {
 
     infowindow.setContent(locationMarkerInfo);
     infowindow.open(map, locationMarker);
+
+    // If in single column view, entering a location should go to the map view
+    if ($(window).width() <= singleColBreakpoint) {
+      listToMapSingleColumn();
+    }
   });
 
   // Delete location marker when deleting location query
@@ -308,6 +350,7 @@ function populateMarkers(resources) {
 
   map.fitBounds(bounds);
   map.setCenter(bounds.getCenter());
+  allResourceBounds = bounds;
 }
 
 /*
@@ -369,9 +412,151 @@ function populateListDiv() {
 // Resize map/list area - set height to fit screen
 function resizeMapListGrid() {
   var navHeight = $('.ui.navigation.grid').height();
-  // TODO: remove hack of subtracting 40
-  $('#map-list-grid').height($('body').height() - navHeight - 40);
 
+  // TODO: remove hack of subtracting 40 and 15
+  // Adjusts for space between nav and grid
+  if ($(window).width() <= singleColNoSpaceBreakpoint) {
+    $('#map-list-grid').height($('body').height() - navHeight - 15);
+  } else {
+    $('#map-list-grid').height($('body').height() - navHeight - 40);
+  }
+
+  // If we resize from single col to double col, we remove the map footer
+  // so we have to make the map full size of the right column
+  if ($(window).width() > singleColBreakpoint) {
+    $('#map').height($('#right-column').height());
+  }
+
+  var center = map.getCenter();
+  // Need to call resize event on map or creates dead grey area on map
+  google.maps.event.trigger(map, "resize");
+  map.setCenter(center);
+}
+
+/********************* MOBILE RESPONSIVE *******************/
+/*
+ * Adjust the map list grid based on window width
+ * In general:
+ *  - For <= singleColBreakpoint we only display one column
+ *  - For > singleColBreakpoint we display two columns
+ * Specific fixes:
+ * - For <= singleColNoSpaceBreakpoint we have no white space
+ *   around the #map-list-grid div while for singleColBreakpoint
+ *   we do as for smaller screen sizes we need to maximize space use
+ * - For > twoColResizeBreakpoint we make the #left-column a little larger
+ *   to avoid that element getting too squished
+ *
+ * Single column things:
+ * - We only display either list or map at a time
+ * - When we display the map, we display a map footer, which is a div
+ *   underneath the map that will display a link back to the list and
+ *   replaces in the infowindow for showing content relating to a selected
+ *   marker
+ */
+function makeResponsive() {
+  // Change to a single column view
+  if ($(window).width() <= singleColNoSpaceBreakpoint) {
+    singleColumnResets();
+    $('#map-list-grid').removeClass('grid-space-large');
+    $('#map-list-grid').addClass('grid-space-small');
+  } else if (
+    $(window).width() > singleColNoSpaceBreakpoint
+    && $(window).width() <= singleColBreakpoint
+  ) {
+    singleColumnResets();
+    $('#map-list-grid').removeClass('grid-space-small');
+    $('#map-list-grid').addClass('grid-space-large');
+  } else if ( // Change to double column views
+    $(window).width() > singleColBreakpoint
+    && $(window).width() <= twoColResizeBreakpoint
+  ) {
+    $('#left-column').removeClass().addClass('five wide column');
+    $('#right-column').removeClass().addClass('eleven wide column');
+    doubleColumnResets();
+  } else if ($(window).width() > twoColResizeBreakpoint) {
+    $('#left-column').removeClass().addClass('four wide column');
+    $('#right-column').removeClass().addClass('twelve wide column');
+  }
+}
+
+// Switching from double -> single column
+// Default show list view
+function singleColumnResets() {
+  $('#left-column').removeClass().addClass('sixteen wide column');
+  $('#right-column').removeClass().addClass('sixteen wide column');
+
+  // switched from double to single
+  // don't want to hide if a resize within single view is triggered
+  if ($('#right-column').is(':visible') && $('#left-column').is(':visible')) {
+    $('#right-column').hide();
+    setNavSwitching();
+  }
+}
+
+// Set a nav element that allows toggling between list and map view
+// when in single column mode
+function setNavSwitching() {
+  // initialize to 'Show Map'
+  $('#nav-to-list').hide();
+  $('#nav-to-map').show();
+
+  // Switch from list to map
+  $('#nav-to-map').click(function() {
+    listToMapSingleColumn();
+  });
+
+  // Switch from map to list
+  $('#nav-to-list').click(function() {
+    mapToListSingleColumn();
+  });
+}
+
+// Changing from list view to map view in single column mode
+function listToMapSingleColumn() {
+  $('#left-column').hide();
+  $('#right-column').show();
+  $('#map').show();
+  $('#map-footer').hide();
+  $('#map').height($('#right-column').height());
+
+  // show all resources on map
+  if (allResourceBounds) {
+    map.fitBounds(allResourceBounds);
+    map.setCenter(allResourceBounds.getCenter());
+  }
+  var center = map.getCenter();
+  // Need to call resize event on map or creates dead grey area on map
+  google.maps.event.trigger(map, "resize");
+  map.setCenter(center);
+
+  $('#nav-to-list').show();
+  $('#nav-to-map').hide();
+}
+
+// Changing from map view to list view in single column mode
+function mapToListSingleColumn() {
+  $('#left-column').show();
+  $('#right-column').hide();
+
+  $('#nav-to-list').hide();
+  $('#nav-to-map').show();
+}
+
+// Switching from single -> double column
+function doubleColumnResets() {
+  $('#map-list-grid').removeClass('grid-space-small');
+  $('#map-list-grid').removeClass('grid-space-large');
+
+  $('#map-footer').hide();
+  $('#left-column').show();
+  $('#right-column').show();
+  $('.nav-mobile-switch').hide();
+
+  // show all resources on map
+  if (allResourceBounds) {
+    map.fitBounds(allResourceBounds);
+    map.setCenter(allResourceBounds.getCenter());
+  }
   var center = map.getCenter();
   // Need to call resize event on map or creates dead grey area on map
   google.maps.event.trigger(map, "resize");

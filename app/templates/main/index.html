@@ -75,13 +75,11 @@
 
     <div class="ui horizontal divider" id="results-divider">Results</div>
     <div id="list" class="ui middle aligned divided list"></div>
-
-    <!--<div class="ui divider" id="left-column-divider"></div>-->
-    <div class="ui middle aligned divided list" id="list"></div>
   </div>
 
   <div class="twelve wide column" id="right-column">
     <div id="map"></div>
+    <div id="map-footer"></div>
     <div id="resource-info"></div>
   </div>
 </div>
@@ -115,6 +113,12 @@
           <a class="more-info">More Information</a>
         </div>
     </h3>
+    {% raw %}{{#if responsive}}{% endraw %}
+      <a class="ui button item" id="mobile-list-btn">
+        <i class="list icon"></i>
+        <p>Show List</p>
+      </a>
+    {% raw %}{{/if}}{% endraw %}
   </div>
 </script>
 
@@ -209,10 +213,12 @@
   $(document).ready(function(){
     // defined in map.js
     initMap();
+    makeResponsive();
     resizeMapListGrid();
 
     // Adjust height of map/list grid when resize browser to fit in screen
     $(window).resize(function() {
+      makeResponsive();
       resizeMapListGrid();
     });
 
