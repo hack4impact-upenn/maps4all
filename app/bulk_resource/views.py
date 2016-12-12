@@ -56,6 +56,7 @@ def upload_data():
         post_data = arg
     post_data = json.loads(post_data)
     csv_data = post_data['csv_data']
+    reset_or_update = post_data['reset_or_update']
 
     # Create new CSV container object to hold contents of CSV file.
     csv_container = CsvContainer(
@@ -92,9 +93,92 @@ def upload_data():
     db.session.commit()
     # TODO: If the only descriptors are the required ones, then no need to
     # TODO: review them.
+    reset_url = url_for('bulk_resource.review_descriptor_types')
+    update_url = url_for('bulk_resource.update_data')
+    redirect_url = reset_url if reset_or_update == 'reset' else update_url
     return jsonify(
-        redirect=url_for('bulk_resource.review_descriptor_types')
+        redirect=redirect_url
     )
+
+@bulk_resource.route('/update-data', methods=['GET'])
+@login_required
+def update_data():
+    csv_container = CsvContainer.most_recent(user=current_user)
+    if csv_container is None:
+        abort(404)
+
+    errors = []
+
+    for row in csv_container.csv_rows:
+        name = row.csv_body_cells[csv_container.name_column_index].data
+        address = \
+            row.csv_body_cells[csv_container.address_column_index].data
+        g = geocoder.google(address)
+        resource = Resource.query.filter_by(name=name).first()
+
+        if resource is None:
+            resource = Resource(
+                name=name,
+                address=address,
+                latitude=g.latlng[0],
+                longitude=g.latlng[1]
+            )
+            db.session.add(resource)
+
+        else:
+            resource.latitude = g.latlng[0]
+            resource.longitude = g.latlng[1]
+
+        for i, cell in enumerate(row.csv_body_cells):
+            if i not in csv_container.required_column_indices():
+                descriptor_name = \
+                    csv_container.csv_header_row.csv_header_cells[i].data
+                descriptor = Descriptor.query.filter_by(
+                    name=descriptor_name
+                ).first()
+                if descriptor is None:
+                    errors.append('Descriptor {} is invalid'.format(descriptor_name))
+                    continue
+
+                text_associations = [td for td in resource.text_descriptors if td.descriptor_id == descriptor.id]
+                option_associations = [od for od in resource.option_descriptors if od.descriptor_id == descriptor.id]
+
+                for text_association in text_associations:
+                    db.session.delete(text_association)
+                for option_association in option_associations:
+                    db.session.delete(option_association)
+
+                values = list(descriptor.values)
+                assocValues = []
+                if len(descriptor.values) == 0:  # text descriptor
+                    association_class = TextAssociation
+                    assocValues.append(cell.data)
+                    keyword = 'text'
+                else:  # option descriptor
+                    association_class = OptionAssociation
+                    for s in cell.data.split(';'):
+                        if s in values:
+                            assocValues.append(values.index(s))
+                    keyword = 'option'
+                for value in assocValues:
+                    arguments = {
+                        'resource_id': resource.id,
+                        'descriptor_id': descriptor.id,
+                        keyword: value,
+                        'resource': resource,
+                        'descriptor': descriptor
+                    }
+                    new_association = association_class(**arguments)
+                    db.session.add(new_association)
+
+    if len(errors) > 0:
+        db.session.rollback()
+        for error in errors:
+            flash(error, 'error')
+        abort(400)
+
+    db.session.commit()
+    return redirect(url_for('single_resource.index'))
 
 @bulk_resource.route('/review-descriptor-types', methods=['GET', 'POST'])
 @login_required
@@ -333,12 +417,10 @@ def save():
     form = SaveCsvDataForm()
 
     if form.validate_on_submit():
-        # Temporary: Delete all descriptors and resources that are currently
-        # in the database.
-        # Descriptor.query.delete()
-        # OptionAssociation.query.delete()
-        # Resource.query.delete()
-        # TextAssociation.query.delete()
+        Descriptor.query.delete()
+        OptionAssociation.query.delete()
+        Resource.query.delete()
+        TextAssociation.query.delete()
 
         for i, header_cell in enumerate(
                 csv_container.csv_header_row.csv_header_cells):
