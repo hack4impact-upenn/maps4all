@@ -31,6 +31,9 @@
                     {% endif %}
                 {% endfor %}
             </select>
+            <div id="advanced-filters-showhide">
+                Show Advanced Filters
+            </div>
             <div id="advanced-search" class="option-group-advanced">
                 {% for o in options.keys() %}
                     <div>{{ o }}</div>
@@ -40,10 +43,6 @@
                         {% endfor %}
                     </select>
                 {% endfor %}
-            </div>
-
-            <div id="advanced-filters-showhide">
-                Show Advanced Filters
             </div>
             <button class="ui fluid button" id="search-user-resources">Search</button>
       </div>

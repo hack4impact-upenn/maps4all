@@ -267,10 +267,6 @@ function initResourceSearch() {
     $("#advanced-search select").each(function() {
         optionalOptions.push($(this).val());
     })
-    var optionalOptionNames = [];
-    $("#option-descriptor-name").each(function() {
-        optionalOptionNames.push($(this).val());
-    })
     for (var i = 0; i < optionalOptions.length; i++) {
         query += '&optoption=' + optionalOptions[i];
     }
