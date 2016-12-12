@@ -164,11 +164,14 @@ class Resource(db.Model):
 
     @staticmethod
     def get_resources_as_dicts(resources):
-        resources_as_dicts = [resource.__dict__ for resource in resources]
+        resources_as_dicts = []
+        for resource in resources:
+            res = resource.__dict__
+            res['avg_rating'] = resource.get_avg_ratings()
+            del res['_sa_instance_state']
+            resources_as_dicts.append(res)
         # .__dict__ returns the SQLAlchemy object as a dict, but it also adds a
         # field '_sa_instance_state' that we don't need, so we delete it.
-        for d in resources_as_dicts:
-            del d['_sa_instance_state']
         return resources_as_dicts
 
     @staticmethod
@@ -184,10 +187,9 @@ class Resource(db.Model):
     def get_avg_ratings(self):
         ratings = Rating.query.filter_by(resource_id=self.id).all()
         if not ratings:
-            return -1.0
-
+            return 0.0
         total_sum = float(sum(r.rating for r in ratings))
-        return '%.1f' % total_sum / len(ratings)
+        return '%.1f' % (total_sum / len(ratings))
 
     def get_all_ratings(self):
         ratings = Rating.query.filter_by(resource_id=self.id).all()
