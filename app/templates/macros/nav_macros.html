@@ -14,6 +14,15 @@
     {% if current_user.is_authenticated() %}
         {% set href = url_for(current_user.role.index + '.index') %}
         <a class="item" href="{{ href }}">{{ current_user.role.name }} Dashboard</a>
+    {% else %}
+        <a class="item nav-mobile-switch" id="nav-to-map">
+          <i class="world icon"></i>
+          <p>Show Map</p>
+        </a>
+        <a class="item nav-mobile-switch" id="nav-to-list">
+          <i class="list icon"></i>
+          <p>Show List</p>
+        </a>
     {% endif %}
 {% endmacro %}
 
