@@ -19,62 +19,18 @@
           <input type="text" id="resources-input" class="controls"
           placeholder="Enter a resource keyword">
         </div>
-        <select id="search-resources-req-options" multiple="" class="ui fluid dropdown" placeholder="Select">
-            {% for req_option in req_options.keys() %}
-            {% if req_options[req_option] %}
-          <option value="{{ req_option }}" selected="selected">{{ req_option }}</option>
-          {% else %}
-          <option value="{{ req_option }}" >{{ req_option }}</option>
-          {% endif %}
-          {% endfor %}
-        </select>
-          <!-- <div class="ui fluid icon input">
-          <i class="search icon"></i>
-          <input type="text" id="resources-input" class="controls"
-          placeholder="Enter resource name">
-        </div> -->
-
-        <div id="default-search" class="option-group">
-          <div class="descriptor-group">
-            <h5>DESCRIPTOR #1</h5>
-            <div class="ui checkbox field one wide column">
-              <input type="checkbox" name="option" class="checkbox-option">
-              <label>Option ekkeke</label>
-            </div>
-            <div class="ui checkbox field one wide column">
-              <input type="checkbox" name="option">
-              <label>Option</label>
-            </div>
-            <div class="ui checkbox field one wide column">
-              <input type="checkbox" name="option">
-              <label>Option</label>
-            </div>
-            <div class="ui checkbox field one wide column">
-              <input type="checkbox" name="option">
-              <label>Option</label>
-            </div>
-            <div class="ui checkbox field one wide column">
-              <input type="checkbox" name="option">
-              <label>Option</label>
-            </div>
-            <div class="ui checkbox field one wide column">
-              <input type="checkbox" name="option">
-              <label>Option</label>
-            </div>
-            <div class="ui checkbox field one wide column">
-              <input type="checkbox" name="option">
-              <label>Option</label>
-            </div>
-            <div class="ui checkbox field one wide column">
-              <input type="checkbox" name="option">
-              <label>Option</label>
-            </div>
-            <div class="ui checkbox field one wide column">
-              <input type="checkbox" name="option">
-              <label>Option</label>
-            </div>
-          </div>
-        </div>
+        {% if req_desc %}
+          <div class="req-desc-name">{{ req_desc.name }}</div>
+          <select id="search-resources-req-options" multiple="" class="ui fluid dropdown">
+              {% for req_option in req_options.keys() %}
+              {% if req_options[req_option] %}
+                <option value="{{ req_option }}" selected="selected">{{ req_option }}</option>
+              {% else %}
+                <option value="{{ req_option }}" >{{ req_option }}</option>
+              {% endif %}
+            {% endfor %}
+          </select>
+        {% endif %}
 
         <div id="advanced-search" class="option-group-advanced">
           <div class="descriptor-group">
@@ -278,6 +234,9 @@
       }
       $('.option-group-advanced').toggle();
     });
+
+    // Placeholder text for descriptor dropdowns
+    $(".ui.dropdown>.text").text("Choose option(s)");
   });
 </script>
 

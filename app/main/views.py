@@ -20,7 +20,7 @@ def index():
     if req_opt_desc is not None:
         for val in req_opt_desc.values:
             req_options[val] = False
-    return render_template('main/index.html', req_options=req_options)
+    return render_template('main/index.html', req_options=req_options, req_desc=req_opt_desc)
 
 @main.route('/get-resources')
 def get_resources():
