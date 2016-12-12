@@ -118,6 +118,7 @@ function displayDetailedResourceView(marker) {
       suggestionUrl: 'suggestion/' + marker.resourceID,
       descriptors: descriptors,
       avg_rating: marker.avg_rating,
+      requiredOpts: marker.requiredOpts,
     };
     var resourceInfo = compiledResourceTemplate(context);
     $("#resource-info").html(resourceInfo);
@@ -373,6 +374,7 @@ function createMarker(resource) {
   markerToAdd.avg_rating = resource.avg_rating;
   markerToAdd.resourceID = resource.id;
   markerToAdd.address = resource.address;
+  markerToAdd.requiredOpts = resource.requiredOpts;
 
   markers.push(markerToAdd);
 }
@@ -390,6 +392,7 @@ function populateListDiv() {
       name: markerToShow.title,
       address: markerToShow.address,
       avg_rating: markerToShow.avg_rating,
+      requiredOpts: markerToShow.requiredOpts,
     };
     listResources.push(listResource);
   });
