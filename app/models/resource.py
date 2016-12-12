@@ -175,11 +175,13 @@ class Resource(db.Model):
             res = resource.__dict__
 
             # set required option descriptor
-            associations = OptionAssociation.query.filter_by(
-                resource_id=resource.id,
-                descriptor_id=req_opt_desc.id
-            ).all()
-            req = [a.descriptor.values[a.option] for a in associations]
+            req = []
+            if req_opt_desc is not None:
+                associations = OptionAssociation.query.filter_by(
+                    resource_id=resource.id,
+                    descriptor_id=req_opt_desc.id
+                ).all()
+                req = [a.descriptor.values[a.option] for a in associations]
             res['requiredOpts'] = req
 
             # set ratings
