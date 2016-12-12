@@ -274,6 +274,11 @@ function initLocationSearch(map) {
 
     infowindow.setContent(locationMarkerInfo);
     infowindow.open(map, locationMarker);
+
+    // If in single column view, entering a location should go to the map view
+    if ($(window).width() <= singleColBreakpoint) {
+      listToMapSingleColumn();
+    }
   });
 
   // Delete location marker when deleting location query
