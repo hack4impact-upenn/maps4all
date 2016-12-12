@@ -176,7 +176,9 @@
     <div class="sub header">
       {% raw %}{{ address }}{% endraw %}
       <br>
-      <span class="ui large label">Category</span>
+      {% raw %}{{#each requiredOpts}}{% endraw %}
+          <span class="ui large label">{% raw %}{{ this }}{% endraw %}</span>
+      {% raw %}{{/each}}{% endraw %}
     </div>
   </h1>
   <div id="single-resource-map"></div>
@@ -239,7 +241,9 @@
     </h3>
     <div class="sub header">
       <div>{% raw %}{{ address }}{% endraw %}</div>
-      <div class="ui small label">Category</div>
+      {% raw %}{{#each requiredOpts}}{% endraw %}
+          <div class="ui small label">{% raw %}{{ this }}{% endraw %}</div>
+      {% raw %}{{/each}}{% endraw %}
     </div>
     <div class="right floated content" id="resource-list-chevron">
       <a><i class="large right chevron icon"></i></a>
