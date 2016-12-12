@@ -324,6 +324,7 @@ function resourceSearchRequest(endpoint) {
       markers[i].setMap(null);
     }
     markers = [];
+    $('#map').show();
     var resources = JSON.parse(resourcesString);
     if (resources.length != 0) {
       populateMarkers(resources);
