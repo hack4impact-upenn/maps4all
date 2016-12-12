@@ -19,18 +19,27 @@ nav {
   margin-bottom: 40px !important;
 }
 
-@media -sass-debug-info{filename{}line{font-family:\0000312}}
+@media -sass-debug-info{filename{}line{font-family:\0000311}}
+.ui.menu .item.nav-mobile-switch {
+  display: none;
+}
+@media -sass-debug-info{filename{}line{font-family:\0000314}}
+.ui.menu .item.nav-mobile-switch p {
+  display: inline-block;
+}
+
+@media -sass-debug-info{filename{}line{font-family:\0000320}}
 .ui.fixed.main.menu .right.menu > .item:last-of-type {
   border-right: 1px solid rgba(34, 36, 38, 0.09804);
 }
 
-@media -sass-debug-info{filename{}line{font-family:\0000318}}
+@media -sass-debug-info{filename{}line{font-family:\0000326}}
 nav .mobile.only.row .ui.vertical.menu {
   display: none;
   margin-top: 40px;
 }
 
-@media -sass-debug-info{filename{}line{font-family:\0000325}}
+@media -sass-debug-info{filename{}line{font-family:\0000333}}
 .flashes > .ui.message:last-of-type {
   float: right;
   overflow: visible;
@@ -38,12 +47,12 @@ nav .mobile.only.row .ui.vertical.menu {
   z-index: 1000;
 }
 
-@media -sass-debug-info{filename{}line{font-family:\0000333}}
+@media -sass-debug-info{filename{}line{font-family:\0000341}}
 table.selectable tr:hover {
   cursor: pointer !important;
 }
 
-@media -sass-debug-info{filename{}line{font-family:\0000338}}
+@media -sass-debug-info{filename{}line{font-family:\0000346}}
 .ui.dropdown > .text {
   color: gray;
 }
@@ -67,14 +76,23 @@ table.selectable tr:hover {
 #map-list-grid #right-column {
   padding: 0;
 }
+@media -sass-debug-info{filename{}line{font-family:\0000323}}
+#map-list-grid.grid-space-large {
+  padding-left: 2em;
+  padding-right: 2em;
+}
+@media -sass-debug-info{filename{}line{font-family:\0000328}}
+#map-list-grid.grid-space-small {
+  padding: 0;
+}
 
-@media -sass-debug-info{filename{}line{font-family:\0000324}}
+@media -sass-debug-info{filename{}line{font-family:\0000333}}
 #left-column-divider {
   margin-bottom: 0;
 }
 
 /*************** SEARCH STYLES ****************/
-@media -sass-debug-info{filename{}line{font-family:\0000330}}
+@media -sass-debug-info{filename{}line{font-family:\0000339}}
 #pac-input, #resources-input {
   background-color: #fff;
   float: left;
@@ -84,25 +102,25 @@ table.selectable tr:hover {
   text-overflow: ellipsis;
 }
 
-@media -sass-debug-info{filename{}line{font-family:\0000339}}
+@media -sass-debug-info{filename{}line{font-family:\0000348}}
 #pac-input:focus, #resources-input:focus, #search-resources-req-options:focus {
-  border-color: #2C9FA3;
+  border-color: #000000;
 }
 
-@media -sass-debug-info{filename{}line{font-family:\0000343}}
+@media -sass-debug-info{filename{}line{font-family:\0000352}}
 #location-search, #search-keyword, #resources-input {
   height: 40px;
 }
 
-@media -sass-debug-info{filename{}line{font-family:\0000348}}
+@media -sass-debug-info{filename{}line{font-family:\0000357}}
 #search-user-resources {
-  background-color: #2C9FA3;
+  background-color: #000000;
   color: #fff;
   font-family: Roboto;
   font-weight: 400;
 }
 
-@media -sass-debug-info{filename{}line{font-family:\0000356}}
+@media -sass-debug-info{filename{}line{font-family:\0000365}}
 #resource-search {
   background-color: #F8F8F8;
   box-shadow: none;
@@ -115,6 +133,7 @@ table.selectable tr:hover {
 }
 
 @media -sass-debug-info{filename{}line{font-family:\0000367}}
+
 .descriptor-group {
   font-family: Roboto;
   margin: 3px;
@@ -138,7 +157,7 @@ table.selectable tr:hover {
 
 @media -sass-debug-info{filename{}line{font-family:\0000386}}
 #advanced-filters-showhide {
-  color: #2C9FA3;
+  color: #000000;
   cursor: pointer;
   font-family: Roboto;
   margin-bottom: 0.5em;
@@ -185,6 +204,7 @@ table.selectable tr:hover {
   padding-bottom: 0.5em;
   padding-top: 0.5em;
 }
+
 @media -sass-debug-info{filename{}line{font-family:\00003128}}
 #list > .item.list-resource .sub.header {
   float: left;
@@ -199,7 +219,7 @@ table.selectable tr:hover {
 }
 @media -sass-debug-info{filename{}line{font-family:\00003140}}
 #list > .item.list-resource .header {
-  display: inline-block;
+  display: block;
 }
 @media -sass-debug-info{filename{}line{font-family:\00003144}}
 #list > .item.list-resource .ui.label {
@@ -210,7 +230,7 @@ table.selectable tr:hover {
 }
 @media -sass-debug-info{filename{}line{font-family:\00003151}}
 #list > .item.list-resource a, #list > .item.list-resource a:hover, #list > .item.list-resource a:active {
-  color: #2C9FA3;
+  color: #000000;
   font-family: Roboto;
 }
 @media -sass-debug-info{filename{}line{font-family:\00003156}}
@@ -244,14 +264,26 @@ table.selectable tr:hover {
 
 @media -sass-debug-info{filename{}line{font-family:\00003184}}
 .more-info {
-  color: #2C9FA3;
+  color: #000000;
   cursor: pointer;
   text-decoration: underline;
 }
 
 @media -sass-debug-info{filename{}line{font-family:\00003190}}
 .more-info:hover {
-  color: #2C9FA3;
+  color: #000000;
+}
+
+@media -sass-debug-info{filename{}line{font-family:\00003197}}
+#map-footer {
+  background-color: #EEEEEE;
+  display: none;
+  overflow-y: auto;
+  padding: 0.5em;
+}
+@media -sass-debug-info{filename{}line{font-family:\00003203}}
+#map-footer #mobile-list-btn p {
+  display: inline-block;
 }
 
 /*************** RESOURCE VIEW SPECIFIC STYLES ****************/
@@ -265,14 +297,16 @@ table.selectable tr:hover {
   overflow: scroll;
   padding: 1.25em;
 }
+
 @media -sass-debug-info{filename{}line{font-family:\00003206}}
 #resource-info > .ui.header > .sub.header > .ui.label {
   margin-left: 0px;
 }
 @media -sass-debug-info{filename{}line{font-family:\00003210}}
 #resource-info a {
-  color: #2C9FA3;
+  color: #000000;
 }
+
 @media -sass-debug-info{filename{}line{font-family:\00003214}}
 #resource-info #resource-name {
   display: inline;
@@ -280,6 +314,7 @@ table.selectable tr:hover {
   padding-bottom: 1em;
   padding-top: 1em;
 }
+
 @media -sass-debug-info{filename{}line{font-family:\00003221}}
 #resource-info .successMessage {
   display: none;
@@ -294,15 +329,16 @@ table.selectable tr:hover {
   margin-top: 0.4em;
   margin-bottom: 1em;
 }
+
 @media -sass-debug-info{filename{}line{font-family:\00003233}}
 #resource-info .ui.header {
-  color: #2C9FA3;
+  color: #000000;
   font-family: Roboto;
 }
 
 @media -sass-debug-info{filename{}line{font-family:\00003240}}
 #back-button {
-  color: #2C9FA3;
+  color: #000000;
   display: inline-block;
   float: right;
   right: 1em;
