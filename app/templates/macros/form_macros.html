@@ -78,7 +78,7 @@
 {# Render a message for the form #}
 {% macro form_message(messages, header=none, class='') %}
     {% if messages %}
-        <div class="ui {{ class }} message">
+        <div class="ui inline nag">
             {% if header is not none %}
                 <div class="header">{{ header }}</div>
             {% endif %}

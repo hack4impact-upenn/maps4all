@@ -31,11 +31,11 @@ nav .mobile.only.row .ui.vertical.menu {
 }
 
 @media -sass-debug-info{filename{}line{font-family:\0000325}}
-.flashes > .ui.message:last-of-type {
-  float: right;
+.flashes > .ui.nag:last-of-type {
   overflow: visible;
   position: absolute;
   z-index: 1000;
+  background-color: green;
 }
 
 @media -sass-debug-info{filename{}line{font-family:\0000333}}
