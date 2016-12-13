@@ -19,6 +19,7 @@ def index():
     req_opt_desc = Descriptor.query.filter_by(
         id=req_opt_desc.descriptor_id
     ).first()
+
     options = Descriptor.query.all()
     options = [o for o in options if len(o.text_resources) == 0 and o.id is not req_opt_desc.descriptor_id]
     options_dict = {}
@@ -65,6 +66,7 @@ def search_resources():
                     break
     opt_options = request.args.getlist('optoption')
     option_map = {}
+    # Create a dict, option_map, that maps from option names to a list of user selected values
     for opt in opt_options:
         if opt != "null":
             option_val = opt.split(',')
@@ -80,6 +82,8 @@ def search_resources():
     if len(req_options) > 0:
         new_pool = resources
         resources = []
+    # Iterate through resources and check that there's a match for all of the options
+    # that the user selected. If there is, add that resource to the list of resources
     for resource in new_pool:
         number_of_options_found = 0
         for opt in option_map.keys():
