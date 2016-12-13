@@ -17,6 +17,7 @@ vendor_css = Bundle(
     output='styles/vendor.css'
 )
 
+# Define order or issues on heroku
 vendor_js = Bundle(
     'vendor/jquery.min.js',
     'vendor/semantic.min.js',
