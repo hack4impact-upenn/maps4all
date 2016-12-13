@@ -21,7 +21,7 @@ def index():
     ).first()
     req_opt_id = -1
     if req_opt_desc is not None:
-        req_opt_id = req_opt_desc.descriptor_id
+        req_opt_id = req_opt_desc.id
     options = Descriptor.query.all()
     options = [o for o in options if len(o.text_resources) == 0 and o.id != req_opt_id]
     options_dict = {}
