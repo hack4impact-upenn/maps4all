@@ -2,6 +2,11 @@ from flask import render_template
 from . import main
 
 
+@main.app_errorhandler(400)
+def client_error(_):
+    return render_template('errors/400.html'), 400
+
+
 @main.app_errorhandler(403)
 def forbidden(_):
     return render_template('errors/403.html'), 403

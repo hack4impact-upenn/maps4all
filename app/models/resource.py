@@ -164,15 +164,31 @@ class Resource(db.Model):
 
     @staticmethod
     def get_resources_as_dicts(resources):
+        # get required option descriptor
+        req_opt_desc = RequiredOptionDescriptor.query.all()[0]
+        req_opt_desc = Descriptor.query.filter_by(
+            id=req_opt_desc.descriptor_id
+        ).first()
+
         resources_as_dicts = []
         for resource in resources:
             res = resource.__dict__
+
+            # set required option descriptor
+            req = []
+            if req_opt_desc is not None:
+                associations = OptionAssociation.query.filter_by(
+                    resource_id=resource.id,
+                    descriptor_id=req_opt_desc.id
+                ).all()
+                req = [a.descriptor.values[a.option] for a in associations]
+            res['requiredOpts'] = req
+
+            # set ratings
             res['avg_rating'] = resource.get_avg_ratings()
             if '_sa_instance_state' in res:
                 del res['_sa_instance_state']
             resources_as_dicts.append(res)
-        # .__dict__ returns the SQLAlchemy object as a dict, but it also adds a
-        # field '_sa_instance_state' that we don't need, so we delete it.
         return resources_as_dicts
 
     @staticmethod

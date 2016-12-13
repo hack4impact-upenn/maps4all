@@ -1,18 +1,36 @@
 {% extends 'layouts/base.html' %}
 
 {% block content %}
-    <meta name="viewport" content="initial-scale=1.0, user-scalable=no">
-    <meta charset="utf-8">
-    <meta name="csrf-token" content="{{ csrf_token() }}">
+<meta name="viewport" content="initial-scale=1.0, user-scalable=no">
+<meta charset="utf-8">
+<meta name="csrf-token" content="{{ csrf_token() }}">
 
-    <div id="map-list-grid" class="ui two column horizontally padded grid">
-      <div class="four wide column" id="left-column">
-        <div id="search">
-          <div class="ui fluid icon input" id="location-search">
-            <i class="search icon"></i>
-            <input type="text" id="pac-input" class="controls"
-                   placeholder="Go to a location">
-          </div>
+<div id="map-list-grid" class="ui two column horizontally padded grid">
+  <div class="four wide column" id="left-column">
+    <div id="search">
+      <div class="ui fluid icon input" id="location-search">
+        <i class="search icon"></i>
+        <input type="text" id="pac-input" class="controls" placeholder="Go to a location">
+      </div>
+      <div class="ui horizontal divider" id="search-divider">Search</div>
+      <div class="ui segment" id="resource-search">
+        <div class="ui fluid icon input" id="search-keyword">
+          <i class="search icon" id="resources-input-searchicon"></i>
+          <input type="text" id="resources-input" class="controls"
+          placeholder="Enter a resource keyword">
+        </div>
+        {% if req_desc %}
+          <div class="req-desc-name">{{ req_desc.name }}</div>
+          <select id="search-resources-req-options" multiple="" class="ui fluid dropdown">
+              {% for req_option in req_options.keys() %}
+              {% if req_options[req_option] %}
+                <option value="{{ req_option }}" selected="selected">{{ req_option }}</option>
+              {% else %}
+                <option value="{{ req_option }}" >{{ req_option }}</option>
+              {% endif %}
+            {% endfor %}
+          </select>
+        {% endif %}
 
           <div class="ui horizontal divider">Search</div>
           <div class="ui segment" id="resource-search">
@@ -49,13 +67,11 @@
 
     <div class="ui horizontal divider" id="results-divider">Results</div>
     <div id="list" class="ui middle aligned divided list"></div>
-
-    <!--<div class="ui divider" id="left-column-divider"></div>-->
-    <div class="ui middle aligned divided list" id="list"></div>
   </div>
 
   <div class="twelve wide column" id="right-column">
     <div id="map"></div>
+    <div id="map-footer"></div>
     <div id="resource-info"></div>
   </div>
 </div>
@@ -89,6 +105,12 @@
           <a class="more-info">More Information</a>
         </div>
     </h3>
+    {% raw %}{{#if responsive}}{% endraw %}
+      <a class="ui button item" id="mobile-list-btn">
+        <i class="list icon"></i>
+        <p>Show List</p>
+      </a>
+    {% raw %}{{/if}}{% endraw %}
   </div>
 </script>
 
@@ -106,7 +128,9 @@
     <div class="sub header">
       {% raw %}{{ address }}{% endraw %}
       <br>
-      <span class="ui large label">Category</span>
+      {% raw %}{{#each requiredOpts}}{% endraw %}
+          <span class="ui large label">{% raw %}{{ this }}{% endraw %}</span>
+      {% raw %}{{/each}}{% endraw %}
     </div>
   </h1>
   <div id="single-resource-map"></div>
@@ -169,7 +193,9 @@
     </h3>
     <div class="sub header">
       <div>{% raw %}{{ address }}{% endraw %}</div>
-      <div class="ui small label">Category</div>
+      {% raw %}{{#each requiredOpts}}{% endraw %}
+          <div class="ui small label">{% raw %}{{ this }}{% endraw %}</div>
+      {% raw %}{{/each}}{% endraw %}
     </div>
     <div class="right floated content" id="resource-list-chevron">
       <a><i class="large right chevron icon"></i></a>
@@ -183,10 +209,12 @@
   $(document).ready(function(){
     // defined in map.js
     initMap();
+    makeResponsive();
     resizeMapListGrid();
 
     // Adjust height of map/list grid when resize browser to fit in screen
     $(window).resize(function() {
+      makeResponsive();
       resizeMapListGrid();
     });
 
@@ -198,6 +226,9 @@
       }
       $('.option-group-advanced').toggle();
     });
+
+    // Placeholder text for descriptor dropdowns
+    $(".ui.dropdown>.text").text("Choose option(s)");
   });
 </script>
 
