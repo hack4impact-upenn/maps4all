@@ -158,6 +158,7 @@ function displayDetailedResourceView(marker) {
       {
         center: marker.getPosition(),
         zoom: focusZoom,
+        scrollwheel: false,
       }
     );
     var singleMarker = new google.maps.Marker({
