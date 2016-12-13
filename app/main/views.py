@@ -8,6 +8,9 @@ from app import csrf
 from .. import db
 from ..models import EditableHTML, Resource, Rating, Descriptor, OptionAssociation, RequiredOptionDescriptor
 from . import main
+from wtforms.fields import SelectMultipleField, TextAreaField
+from ..single_resource.forms import SingleResourceForm
+
 from datetime import datetime
 
 @main.route('/')
@@ -16,11 +19,19 @@ def index():
     req_opt_desc = Descriptor.query.filter_by(
         id=req_opt_desc.descriptor_id
     ).first()
+    req_opt_id = -1
+    if req_opt_desc is not None:
+        req_opt_id = req_opt_desc.descriptor_id
+    options = Descriptor.query.all()
+    options = [o for o in options if len(o.text_resources) == 0 and o.id != req_opt_id]
+    options_dict = {}
+    for o in options:
+        options_dict[o.name] = o.values
     req_options = {}
     if req_opt_desc is not None:
         for val in req_opt_desc.values:
             req_options[val] = False
-    return render_template('main/index.html', req_options=req_options, req_desc=req_opt_desc)
+    return render_template('main/index.html', options=options_dict, req_options=req_options, req_desc=req_opt_desc)
 
 @main.route('/get-resources')
 def get_resources():
@@ -41,9 +52,8 @@ def search_resources():
     req_opt_desc = Descriptor.query.filter_by(
         id=req_opt_desc.descriptor_id
     ).first()
-    resources = list(resource_pool)
+    resources = []
     if req_opt_desc is not None and len(req_options) > 0:
-        resources = []
         int_req_options = []
         for o in req_options:
             int_req_options.append(req_opt_desc.values.index(str(o)))
@@ -56,6 +66,39 @@ def search_resources():
                 if a.option in int_req_options:
                     resources.append(resource)
                     break
+    opt_options = request.args.getlist('optoption')
+    option_map = {}
+    # Create a dict, option_map, that maps from option names to a list of user selected values
+    for opt in opt_options:
+        if opt != "null":
+            option_val = opt.split(',')
+            for opt_val in option_val:
+                key_val = opt_val.split(':')
+                if key_val[0] in option_map:
+                    option_map[key_val[0]].append(key_val[1])
+                else:
+                    option_map[key_val[0]] = [key_val[1]]
+
+    descriptors = Descriptor.query.all()
+    new_pool = resource_pool
+    if len(req_options) > 0:
+        new_pool = resources
+        resources = []
+    # Iterate through resources and check that there's a match for all of the options
+    # that the user selected. If there is, add that resource to the list of resources
+    for resource in new_pool:
+        number_of_options_found = 0
+        for opt in option_map.keys():
+            opt_descriptors = OptionAssociation.query.filter_by(
+                resource_id=resource.id
+            )
+            for desc in opt_descriptors:
+                if desc.descriptor.name == opt:
+                    if desc.descriptor.values[desc.option] in option_map[opt]:
+                        number_of_options_found += 1
+                        break
+        if number_of_options_found == len(option_map.keys()):
+            resources.append(resource)
     resources_as_dicts = Resource.get_resources_as_dicts(resources)
     return json.dumps(resources_as_dicts)
 
@@ -114,4 +157,3 @@ def post_rating():
                 db.session.add(rating)
                 db.session.commit()
     return jsonify(status='success')
-

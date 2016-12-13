@@ -32,44 +32,36 @@
           </select>
         {% endif %}
 
-        <div id="advanced-search" class="option-group-advanced">
-          <div class="descriptor-group">
-            <h5>DESCRIPTOR #2</h5>
-            <div class="ui checkbox field one wide column">
-              <input type="checkbox" name="option">
-              <label>Option</label>
+          <div class="ui horizontal divider">Search</div>
+          <div class="ui segment" id="resource-search">
+            <div class="ui fluid icon input">
+                <i class="search icon"></i>
+                <input type="text" id="resources-input" class="controls"
+                    placeholder="Enter a resource keyword">
             </div>
-            <div class="ui checkbox field one wide column">
-              <input type="checkbox" name="option">
-              <label>Option</label>
+            <select id="search-resources-req-options" multiple="" class="ui fluid dropdown" placeholder="Select">
+                {% for req_option in req_options.keys() %}
+                    {% if req_options[req_option] %}
+                        <option value="{{ req_option }}" selected="selected">{{ req_option }}</option>
+                    {% else %}
+                        <option value="{{ req_option }}" >{{ req_option }}</option>
+                    {% endif %}
+                {% endfor %}
+            </select>
+            <div id="advanced-filters-showhide">
+                Show Advanced Filters
             </div>
-            <div class="ui checkbox field one wide column">
-              <input type="checkbox" name="option">
-              <label>Option</label>
+            <div id="advanced-search" class="option-group-advanced">
+                {% for o in options.keys() %}
+                    <div>{{ o }}</div>
+                    <select multiple="" class="ui fluid dropdown" placeholder="Select">
+                        {% for val in options[o] %}
+                                <option value="{{ o }}:{{ val }}">{{ val }}</option>
+                        {% endfor %}
+                    </select>
+                {% endfor %}
             </div>
-          </div>
-
-          <div class="descriptor-group">
-            <h5>DESCRIPTOR #3</h5>
-            <div class="ui checkbox field one wide column">
-              <input type="checkbox" name="option">
-              <label>Option</label>
-            </div>
-            <div class="ui checkbox field one wide column">
-              <input type="checkbox" name="option">
-              <label>Option</label>
-            </div>
-            <div class="ui checkbox field one wide column">
-              <input type="checkbox" name="option">
-              <label>Option</label>
-            </div>
-          </div>
-        </div>
-
-        <div id="advanced-filters-showhide">
-          Show Advanced Filters
-        </div>
-        <button class="ui fluid button" id="search-user-resources">Search</button>
+            <button class="ui fluid button" id="search-user-resources">Search</button>
       </div>
     </div>
 

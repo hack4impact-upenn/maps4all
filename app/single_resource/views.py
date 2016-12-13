@@ -171,11 +171,23 @@ def save_associations(resource, form, descriptors, resource_existed=True):
         for value in values:
             association = None
             if resource_existed:
-                association = AssociationClass.query.filter_by(
+                associations = AssociationClass.query.filter_by(
                     resource_id=resource.id,
                     descriptor_id=descriptor.id
-                ).first()
+                )
+                # for a in associations:
+                #     print a
+                #     db.session.delete(a)
+                #     try:
+                #         db.session.commit()
+                #         flash('Resource deleted', 'form-success')
+                #     except IntegrityError:
+                #         db.session.rollback()
+                #         flash('Error: failed to delete resource. Please try again.',
+                #               'form-error')
+
             if association is not None:
+                ## NEED TO LOOK INTO THIS
                 setattr(association, keyword, value)
             else:
                 arguments = {'resource_id': resource.id,
