@@ -13,6 +13,7 @@
 - Ben Sandler
 - Brandon Obas
 - Kyle Rosenbluth
+- Rani Iyer
 
 ## Synopsis
 
