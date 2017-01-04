@@ -115,7 +115,6 @@ def edit(resource_id):
                 resource_id=resource_id,
                 descriptor_id=descriptor.id
             )
-            print option_associations
             if option_associations is not None:
                 default = [assoc.option for assoc in option_associations]
             setattr(SingleResourceForm,
@@ -166,16 +165,12 @@ def save_associations(resource, form, descriptors, resource_existed):
         options = OptionAssociation.query.filter_by(resource_id = resource.id).all()
         texts = TextAssociation.query.filter_by(resource_id = resource.id).all()
         associations = options + texts
-        print "in this resource :)"
         for a in associations:
-             print a
              db.session.delete(a)
-             try:
-                 db.session.commit()
-                 print "association deleted"
-             except IntegrityError:
-                 db.session.rollback()
-                 print "not deleting associations :/"
+        try:
+            db.session.commit()
+        except IntegrityError:
+            db.session.rollback()
 
     for descriptor in descriptors:
         if descriptor.values:
@@ -187,8 +182,6 @@ def save_associations(resource, form, descriptors, resource_existed):
             values = [form[descriptor.name].data]
             keyword = 'text'
         for value in values:
-            print value
-            print "adding a value"
             arguments = {'resource_id': resource.id,
                          'descriptor_id': descriptor.id,
                          keyword: value,
