@@ -162,8 +162,8 @@ def save_associations(resource, form, descriptors, resource_existed):
     handlers to the database."""
     #first delete all the associations for this resource if it already existed (to handle the "empty" case)
     if resource_existed:
-        options = OptionAssociation.query.filter_by(resource_id = resource.id).all()
-        texts = TextAssociation.query.filter_by(resource_id = resource.id).all()
+        options = OptionAssociation.query.filter_by(resource_id=resource.id).all()
+        texts = TextAssociation.query.filter_by(resource_id=resource.id).all()
         associations = options + texts
         for a in associations:
              db.session.delete(a)
@@ -171,6 +171,8 @@ def save_associations(resource, form, descriptors, resource_existed):
             db.session.commit()
         except IntegrityError:
             db.session.rollback()
+            flash('Error: failed to save edits. Please try again.',
+                  'form-error')
 
     for descriptor in descriptors:
         if descriptor.values:
