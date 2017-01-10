@@ -35,8 +35,9 @@ class RequiredOptionDescriptorMissingForm(Form):
     navigation = FormField(NavigationForm)
 
 class DetermineOptionsForm(Form):
-    options = FieldList(TextAreaField())
     navigation = FormField(NavigationForm)
 
 class SaveCsvDataForm(Form):
     submit = SubmitField('Save')
+    submit_cancel = SubmitField('Cancel')
+    submit_back = SubmitField('Back')

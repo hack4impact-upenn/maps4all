@@ -7,11 +7,10 @@ class OptionAssociation(db.Model):
     value of the option.
     """
     __tablename__ = 'option_associations'
-    resource_id = db.Column(db.Integer, db.ForeignKey('resources.id'),
-                            primary_key=True)
-    descriptor_id = db.Column(db.Integer, db.ForeignKey('descriptors.id'),
-                              primary_key=True)
-    option = db.Column(db.Integer, primary_key=True)
+    id = db.Column(db.Integer, primary_key=True)
+    resource_id = db.Column(db.Integer, db.ForeignKey('resources.id'))
+    descriptor_id = db.Column(db.Integer, db.ForeignKey('descriptors.id'))
+    option = db.Column(db.Integer)
     resource = db.relationship('Resource',
                                back_populates='option_descriptors')
     descriptor = db.relationship('Descriptor',
@@ -28,10 +27,9 @@ class TextAssociation(db.Model):
     value of the descriptor.
     """
     __tablename__ = 'text_associations'
-    resource_id = db.Column(db.Integer, db.ForeignKey('resources.id'),
-                            primary_key=True)
-    descriptor_id = db.Column(db.Integer, db.ForeignKey('descriptors.id'),
-                              primary_key=True)
+    id = db.Column(db.Integer, primary_key=True)
+    resource_id = db.Column(db.Integer, db.ForeignKey('resources.id'))
+    descriptor_id = db.Column(db.Integer, db.ForeignKey('descriptors.id'))
     text = db.Column(db.Text)
     resource = db.relationship('Resource', back_populates='text_descriptors')
     descriptor = db.relationship('Descriptor', back_populates='text_resources')
@@ -63,6 +61,13 @@ class Descriptor(db.Model):
 
     def __repr__(self):
         return '<Descriptor \'%s\'>' % self.name
+
+    def value_string(self):
+        if not self.values:
+            return ''
+        l = list(self.values)
+        l.sort()
+        return ', '.join(map(str, l))
 
 class RequiredOptionDescriptor(db.Model):
     __tablename__ = 'required_option_descriptor'

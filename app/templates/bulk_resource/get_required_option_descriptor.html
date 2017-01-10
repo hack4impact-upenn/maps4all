@@ -30,6 +30,9 @@
         </div>
 
         <div class="twelve wide column">
+            {% if current %}
+              <p>The current required option descriptor is: <b>{{ current }}</b></p>
+            {% endif %}
             {{ f.render_form(form) }}
         </div>
     </div>

@@ -52,6 +52,9 @@ class User(UserMixin, db.Model):
     csv_containers = db.relationship('CsvContainer', backref='user',
                                      uselist=True,
                                      order_by='CsvContainer.date_uploaded')
+    csv_storages = db.relationship('CsvStorage', backref='user',
+                                     uselist=True,
+                                     order_by='CsvStorage.date_uploaded')
 
     def __init__(self, **kwargs):
         super(User, self).__init__(**kwargs)
