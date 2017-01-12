@@ -30,9 +30,20 @@
         </div>
 
         <div class="twelve wide column">
-            {% if current %}
-              <p>The current required option descriptor is: <b>{{ current }}</b></p>
-            {% endif %}
+            <h2 class="ui header">
+                Review
+            </h2>
+        </div>
+        <div class="twelve wide column">
+          Select one of the following option descriptors to be the required option descriptor.
+          If you haven't specified any option descriptors, please go back and do so
+          since there needs to be a required option descriptor to help users better
+          filter over the resources.
+          {% if current %}
+            <p>The current required option descriptor is: <b>{{ current }}</b></p>
+          {% endif %}
+        </div>
+        <div class="twelve wide column">
             {{ f.render_form(form) }}
         </div>
     </div>

@@ -493,7 +493,14 @@ def validate_required_option_descriptor():
         form.resources[num].label = name
         form.resources[num].choices = [(v, v) for v in req_opt_desc_const.values]
 
-    return render_template('bulk_resource/review_required_option_descriptor.html', form=form)
+    # Remove auto form label
+    form.resources.label = ''
+
+    return render_template(
+                'bulk_resource/review_required_option_descriptor.html',
+                form=form,
+                required=req_opt_desc,
+    )
 
 
 ''' Last step in CSV workflow to update the resource and descriptor data models'''
