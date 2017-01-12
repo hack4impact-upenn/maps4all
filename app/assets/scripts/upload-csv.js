@@ -124,6 +124,7 @@ function displayErrors(errorList) {
       "<div class='item'>" + errorList[i] + "</div>"
     );
   }
+  $('#upload-progress').progress('set error');
 }
 
 // Helper to submit the parsed CSV data to the server to go through the
@@ -161,6 +162,9 @@ function submitCsvData(numRows, rowObjects, fields) {
     action: 'finished',
   });
 
+
+  var moveToNextStep = true;
+
   // DeferredAjax object definition
   // Each Ajax request will be executed as a DeferredAjax object to enforce
   // all the Ajax requests executing sequentially (next will only execute when
@@ -171,11 +175,17 @@ function submitCsvData(numRows, rowObjects, fields) {
     this.action = opts.action;
     this.row = opts.row;
     this.fields = opts.fields;
+    this.count = opts.count;
   }
 
   DeferredAjax.prototype.invoke = function() {
     var self = this;
-    var data = {action: self.action, row: self.row, fields: self.fields}
+    var data = {
+      action: self.action,
+      row: self.row,
+      fields: self.fields,
+      count: self.count,
+    };
     return $.ajax({
       type: "POST",
       url: "/bulk-resource/_upload",
@@ -189,6 +199,11 @@ function submitCsvData(numRows, rowObjects, fields) {
           $("#status-success").append(
             "<div class='item'>" + res.message + "</div>"
           );
+        } else if (res.status = 'Error') {
+          $("#status-errors").append(
+            "<div class='item'>" + res.message + "</div>"
+          );
+          moveToNextStep = false;
         }
         self.deferred.resolve();
      },
@@ -197,6 +212,7 @@ function submitCsvData(numRows, rowObjects, fields) {
          "<div class='item'>There was an unexpected error. " +
          "Please try again.</div>"
        );
+       $('#upload-progress').progress('set error');
      },
    });
   }
@@ -219,12 +235,18 @@ function submitCsvData(numRows, rowObjects, fields) {
       action: el.action,
       row: el.row,
       fields: el.fields,
+      count: idx,
     });
     $.when(prevAjax).then(
       function() { /* success */
         // handle progress bar
         $('#upload-progress').progress('increment', 1);
-        nextAjax.invoke();
+
+        if (el.action === 'finished' && !moveToNextStep) {
+          nextAjax.abort();
+        } else {
+          nextAjax.invoke();
+        }
       },
       function() { /* failure */
         nextAjax.abort();

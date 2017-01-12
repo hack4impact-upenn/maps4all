@@ -1,6 +1,7 @@
 from datetime import datetime
 import json
 import geocoder
+import time
 
 from flask import abort, jsonify, redirect, render_template, request, url_for, flash
 from flask.ext.login import current_user, login_required
@@ -24,6 +25,7 @@ from ..models import (
     CsvRow,
     CsvDescriptor,
     CsvDescriptorRemove,
+    GeocoderCache,
     Descriptor,
     OptionAssociation,
     Resource,
@@ -158,6 +160,32 @@ def upload_row():
         try:
             row = data['row']
             clean_row = {k.strip():v.strip() for k, v in row.iteritems()}
+
+            # Validate addresses
+            address = clean_row['Address']
+            # See if address exists in cache
+            cached = GeocoderCache.query.filter_by(
+                address=address
+            ).first()
+            if cached is None:
+                # Add delay to avoid hitting Google geocoder API limit
+                if data['count'] % 45 == 0:
+                    time.sleep(1)
+                g = geocoder.google(address)
+                if g.status != 'OK':
+                    msg = 'Address cannot be geocoded due to ' + g.status + ": " + address
+                    return jsonify({
+                        "status": "Error",
+                        "message": msg
+                        })
+                else:
+                    geo = GeocoderCache(
+                        address=address,
+                        latitude=g.latlng[0],
+                        longitude=g.latlng[1]
+                    )
+                    db.session.add(geo)
+
             csv_storage = CsvStorage.most_recent(user=current_user)
             if csv_storage is None:
                 abort(404)
