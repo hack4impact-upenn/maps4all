@@ -3,7 +3,7 @@
         <div class="ui segment">
             <div id="editor-{{ editable_html_obj.editor_name }}" class="editor-admin" contenteditable="false">
             {{ editable_html_obj.value|safe }}
-            </div>
+        </div>
         </div>
        <button class="ui button start-edit">
         Edit
@@ -78,10 +78,6 @@
             cancelEdit();
         });
 
-        //We want the blue focus border to appear even when we click outside of the border in order to denote an edit state
-        $("#" + editorIDName).focusout(function() {
-            this.focus();
-        });
     });
     </script>
 
