@@ -150,15 +150,30 @@ def edit(resource_id):
                   'form-error')
     # Field id is not needed for the form, hence omitted with [1:].
     for field_name in resource_field_names[1:]:
-        form[field_name].data = resource.__dict__[field_name]
+        if form[field_name]:
+            form[field_name].data = resource.__dict__[field_name]
     return render_template('single_resource/edit.html',
                            form=form,
                            resource_id=resource_id)
 
 
-def save_associations(resource, form, descriptors, resource_existed=True):
+def save_associations(resource, form, descriptors, resource_existed):
     """Save associations from the forms received by 'create' and 'edit' route
     handlers to the database."""
+    #first delete all the associations for this resource if it already existed (to handle the "empty" case)
+    if resource_existed:
+        options = OptionAssociation.query.filter_by(resource_id=resource.id).all()
+        texts = TextAssociation.query.filter_by(resource_id=resource.id).all()
+        associations = options + texts
+        for a in associations:
+             db.session.delete(a)
+        try:
+            db.session.commit()
+        except IntegrityError:
+            db.session.rollback()
+            flash('Error: failed to save edits. Please try again.',
+                  'form-error')
+
     for descriptor in descriptors:
         if descriptor.values:
             AssociationClass = OptionAssociation
@@ -169,35 +184,13 @@ def save_associations(resource, form, descriptors, resource_existed=True):
             values = [form[descriptor.name].data]
             keyword = 'text'
         for value in values:
-            association = None
-            if resource_existed:
-                associations = AssociationClass.query.filter_by(
-                    resource_id=resource.id,
-                    descriptor_id=descriptor.id
-                )
-                # for a in associations:
-                #     print a
-                #     db.session.delete(a)
-                #     try:
-                #         db.session.commit()
-                #         flash('Resource deleted', 'form-success')
-                #     except IntegrityError:
-                #         db.session.rollback()
-                #         flash('Error: failed to delete resource. Please try again.',
-                #               'form-error')
-
-            if association is not None:
-                ## NEED TO LOOK INTO THIS
-                setattr(association, keyword, value)
-            else:
-                arguments = {'resource_id': resource.id,
-                             'descriptor_id': descriptor.id,
-                             keyword: value,
-                             'resource': resource,
-                             'descriptor': descriptor}
-                new_association = AssociationClass(**arguments)
-                db.session.add(new_association)
-
+            arguments = {'resource_id': resource.id,
+                         'descriptor_id': descriptor.id,
+                         keyword: value,
+                         'resource': resource,
+                         'descriptor': descriptor}
+            new_association = AssociationClass(**arguments)
+            db.session.add(new_association)
 
 @single_resource.route('/<int:resource_id>/delete', methods=['POST'])
 @login_required
