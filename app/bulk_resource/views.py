@@ -16,6 +16,7 @@ from wtforms.fields import (
 )
 from flask.ext.wtf import Form
 
+from app import csrf
 from . import bulk_resource
 from .. import db
 from ..models import (
@@ -40,6 +41,7 @@ from forms import (
 )
 
 
+@csrf.exempt
 @bulk_resource.route('/upload', methods=['GET', 'POST'])
 @login_required
 def upload():
@@ -48,6 +50,7 @@ def upload():
 
 
 ''' Processes each Deferred Ajax request '''
+@csrf.exempt
 @bulk_resource.route('/_upload', methods=['POST'])
 def upload_row():
     data = json.loads(request.form['json'])

@@ -14,6 +14,17 @@
   word-wrap: break-word;
 }
 
+@media -sass-debug-info{filename{}line{font-family:\0000316}}
+#upload-progress {
+  display: none;
+}
+
+@media -sass-debug-info{filename{}line{font-family:\0000320}}
+#progress-msgs .ui.segment {
+  max-height: 175px;
+  overflow-y: scroll;
+}
+
 @media -sass-debug-info{filename{}line{font-family:\000037}}
 nav {
   margin-bottom: 40px !important;
