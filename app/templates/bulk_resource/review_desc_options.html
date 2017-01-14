@@ -44,6 +44,9 @@
         <div class="twelve wide column">
             <h5 class="ui header">New Option Descriptor Values</h5>
             <div class="ui relaxed divided list">
+                {% if not new_opt_descs %}
+                  <i>No new option descriptors in CSV</i>
+                {% endif %}
                 {% for desc in new_opt_descs %}
                 <div class="item">
                   <div class="content">
@@ -66,11 +69,11 @@
                     <div class="content">
                       <h5 class="header">{{ desc.name }}</h5>
                       {% if desc.value_string() %}
-                        <div class="description">In CSV: {{ desc.value_string() }}</div>
+                        <div class="description"><b>In CSV:</b> {{ desc.value_string() }}</div>
                         {% else %}
-                        <div class="description">In CSV: <i>None specified</i></div>
+                        <div class="description"><b>In CSV:</b> <i>None specified</i></div>
                       {% endif %}
-                        <div class="description">In app: {{ old_desc.value_string() }}</div>
+                        <div class="description"><b>In app:</b> {{ old_desc.value_string() }}</div>
                     </div>
                   </div>
                   {% endfor %}

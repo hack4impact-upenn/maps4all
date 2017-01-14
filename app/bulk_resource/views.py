@@ -267,6 +267,16 @@ def upload_row():
 
     # Done processing CSV, move onto next step
     if data['action'] == 'finished':
+        csv_storage = CsvStorage.most_recent(user=current_user)
+        if csv_storage is None:
+            abort(404)
+
+        if len(csv_storage.csv_rows) == 0:
+            return jsonify({
+                "status": "Error",
+                "message": 'No resources to update from CSV'
+                })
+
         return jsonify(
             redirect=url_for('bulk_resource.set_descriptor_types')
         )
@@ -332,7 +342,7 @@ def set_descriptor_types():
     if csv_storage.action == 'update':
         existing_descs = Descriptor.query.all()
     return render_template('bulk_resource/set_descriptor_types.html',
-                           form=form, existing_descs=existing_descs)
+                           form=form, existing_descs=existing_descs, num=num)
 
 
 ''' If there are option descriptors in the CSV, display the option values parsed
@@ -462,10 +472,7 @@ def set_required_option_descriptor():
     # No existing required option descriptor and no option descriptors in CSV,
     # then no possible required option descriptor
     if len(descriptors) == 0:
-        flash(
-            'Error: No option descriptors to choose from. Please cancel and add some option descriptors',
-            'form-error'
-        )
+        return redirect(url_for('bulk_resource.save_csv'))
 
     form.required_option_descriptor.choices = [(d, d) for d in descriptors]
     return render_template(

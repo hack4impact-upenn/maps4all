@@ -19,6 +19,7 @@ function initializeUpload() {
 
     $("#status-success").empty();
     $("#status-errors").empty();
+    $('#upload-progress').progress();
     $('#upload-progress').show();
 
     parseCSV();

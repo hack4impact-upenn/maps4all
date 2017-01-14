@@ -43,6 +43,9 @@
                 identify each descriptor as either a text or an option descriptor.
               </div>
             </h4>
+            {% if num == 0 %}
+              <i>No new descriptor types in CSV</i>
+            {% endif %}
             {{ f.render_form(form) }}
 
             {% if existing_descs %}
