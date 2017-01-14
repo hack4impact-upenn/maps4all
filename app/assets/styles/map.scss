@@ -61,6 +61,14 @@ $font-size: 14px;
   font-weight: 400;
 }
 
+#reset-button {
+  background-color: #CCCCCC;
+  color: #fff;
+  font-family: $font-choice;
+  font-weight: 400;
+  margin-top: 0.5em;
+}
+
 // Resource name search
 #resource-search {
   background-color: #F8F8F8;
