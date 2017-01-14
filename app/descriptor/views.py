@@ -2,6 +2,7 @@ from flask import abort, flash, render_template, redirect, url_for, request
 from flask.ext.login import login_required
 from sqlalchemy.exc import IntegrityError
 from wtforms.fields import SelectField
+from wtforms.fields import SelectMultipleField
 from flask_wtf.file import InputRequired
 
 from forms import (
@@ -105,12 +106,9 @@ def edit_name(desc_id):
         db.session.add(descriptor)
         try:
             db.session.commit()
-            flash('Name for descriptor {} successfully changed to {}.'
-                  .format(old_name, descriptor.name),
-                  'form-success')
         except IntegrityError:
             db.session.rollback()
-            flash('Database error occurred. Please try again.', 'form-error')
+            flash('Database error occurred, and the name was not changed. Please try again.', 'form-error')
         return render_template('descriptor/manage_descriptor.html',
                                desc=descriptor, is_option=is_option)
     form.name.data = descriptor.name
@@ -254,37 +252,19 @@ def remove_option_value(desc_id, option_index):
     form = FixAllResourceOptionValueForm()
 
     # Delete the dynamic fields after the form is instantiated
+    resources = {}
     for oa in option_assocs:
-        delattr(FixAllResourceOptionValueForm, oa.resource.name)
-
-    if form.validate_on_submit():
-        for oa in option_assocs:
-            choice = form[oa.resource.name].data
-            # Case for 'Remove this descriptor'
-            if choice == -1:
-                db.session.delete(oa)
-            else:
-                oa.option = choice
-                db.session.add(oa)
-
-        # Index starting from 1 to skip 'Remove this descriptor'
-        if remove_value_from_db(descriptor, choice_names[1:], old_value):
-            return redirect(url_for('descriptor.descriptor_info',
-                                    desc_id=desc_id))
-    return render_template('descriptor/confirm_resources.html',
-                           option_assocs=option_assocs, desc_id=desc_id,
-                           desc=descriptor, option_index=option_index,
-                           form=form)
-
+        resources[oa.resource] = oa.resource_id
+    return render_template('descriptor/confirm_resources.html', resources=resources)
 
 def generate_option_choices(descriptor, removed_index):
-    """Helper function to generate the option values for a SelectField."""
-    choice_names = (['Remove this descriptor'] +
-                    descriptor.values[:removed_index] +
+    """Helper function to generate the option values for a SelectMultipleField."""
+    choice_names = (descriptor.values[:removed_index] +
                     descriptor.values[removed_index + 1:])
     choices = []
     for i in range(len(choice_names)):
         choices.append((i - 1, choice_names[i]))
+    print choices
     return choice_names, choices
 
 
