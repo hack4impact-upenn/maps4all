@@ -43,7 +43,7 @@ class AddDescriptorOptionValueForm(Form):
 
 
 class FixAllResourceOptionValueForm(Form):
-    submit = SubmitField('Update resource option values')
+    submit = SubmitField('I understand, delete this option')
 
 
 class ChangeRequiredOptionDescriptorForm(Form):

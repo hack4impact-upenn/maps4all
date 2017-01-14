@@ -63,11 +63,11 @@
                     </a></td>
                 </tr>
             {% endfor %}
-            {% for resource in resources %}
                 <tr>
-                    <td><a href="{{ url_for('single_resource.edit', resource_id=resource['id']) }}">{{ resource['name'] }}</a></td>
+                    <td colspan="2">{{ f.render_form_field(form.value) }}</td>
+                    <td>{{ f.render_form_field(form.submit) }}<td>
+                </tr>
             </tbody>
-            {% endfor %}
         </table>
         {{ f.form_message(flashes['error'], header='Something went wrong.', class='error') }}
         {{ f.form_message(flashes['warning'], header='Check your email.', class='warning') }}

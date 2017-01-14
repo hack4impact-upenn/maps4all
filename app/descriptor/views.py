@@ -241,21 +241,26 @@ def remove_option_value(desc_id, option_index):
 
     # If no resources are affected, just remove the option value.
     if len(option_assocs) == 0:
-        # Index starting from 1 to skip 'Remove this descriptor'
-        remove_value_from_db(descriptor, choice_names[1:], old_value)
+        remove_value_from_db(descriptor, choice_names, old_value)
         return redirect(url_for('descriptor.descriptor_info', desc_id=desc_id))
 
     # Create the select field for each resource.
-    for oa in option_assocs:
-        setattr(FixAllResourceOptionValueForm, oa.resource.name,
-                SelectField('', coerce=int, choices=choices))
     form = FixAllResourceOptionValueForm()
 
     # Delete the dynamic fields after the form is instantiated
-    resources = {}
-    for oa in option_assocs:
-        resources[oa.resource] = oa.resource_id
-    return render_template('descriptor/confirm_resources.html', resources=resources)
+    if form.validate_on_submit():
+        for oa in option_assocs:
+            # Case for 'Remove this descriptor'
+            db.session.delete(oa)
+            print oa
+
+        if remove_value_from_db(descriptor, choice_names, old_value):
+            return redirect(url_for('descriptor.descriptor_info',
+                                    desc_id=desc_id))
+    return render_template('descriptor/confirm_resources.html',
+                           option_assocs=option_assocs, desc_id=desc_id,
+                           desc=descriptor, option_index=option_index,
+                           form=form)
 
 def generate_option_choices(descriptor, removed_index):
     """Helper function to generate the option values for a SelectMultipleField."""
@@ -263,7 +268,7 @@ def generate_option_choices(descriptor, removed_index):
                     descriptor.values[removed_index + 1:])
     choices = []
     for i in range(len(choice_names)):
-        choices.append((i - 1, choice_names[i]))
+        choices.append((i, choice_names[i]))
     print choices
     return choice_names, choices
 
