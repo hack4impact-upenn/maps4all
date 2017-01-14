@@ -43,8 +43,8 @@
                             <td>
                                 <a href="{{ url_for('single_resource.edit', resource_id=resource['id']) }}">{{ resource['name'] }}</a>
                             <td>{{ resource['address'] }}</td>
-                            <td>{{ resource['latitude'] | round }}</td>
-                            <td>{{ resource['longitude'] | round }}</td>
+                            <td>{{ resource['latitude'] | round(2) }}</td>
+                            <td>{{ resource['longitude'] | round(2) }}</td>
                             </td>
                         </tr>
                     {% endfor %}

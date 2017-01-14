@@ -2,6 +2,7 @@ from datetime import datetime
 import json
 import geocoder
 import time
+import os
 
 from flask import abort, jsonify, redirect, render_template, request, url_for, flash
 from flask.ext.login import current_user, login_required
@@ -168,10 +169,13 @@ def upload_row():
                 address=address
             ).first()
             if cached is None:
-                # Add delay to avoid hitting Google geocoder API limit
+                # Toggle API to avoid Google geocoder API limit - temp solution
                 if data['count'] % 45 == 0:
-                    time.sleep(1)
-                g = geocoder.google(address)
+                    if os.environ.get('GOOGLE_API_KEY') == os.environ.get('GOOGLE_API_1'):
+                        os.environ['GOOGLE_API_KEY'] = os.environ.get('GOOGLE_API_2')
+                    else:
+                        os.environ['GOOGLE_API_KEY'] = os.environ.get('GOOGLE_API_1')
+                g = geocoder.google(address, key=os.environ.get('GOOGLE_API_KEY'))
                 if g.status != 'OK':
                     msg = 'Address cannot be geocoded due to ' + g.status + ": " + address
                     return jsonify({
@@ -207,6 +211,35 @@ def upload_row():
         try:
             row = data['row']
             clean_row = {k.strip():v.strip() for k, v in row.iteritems()}
+
+            # Validate addresses
+            address = clean_row['Address']
+            # See if address exists in cache
+            cached = GeocoderCache.query.filter_by(
+                address=address
+            ).first()
+            if cached is None:
+                # Toggle API to avoid Google geocoder API limit - temp solution
+                if data['count'] % 45 == 0:
+                    if os.environ.get('GOOGLE_API_KEY') == os.environ.get('GOOGLE_API_1'):
+                        os.environ['GOOGLE_API_KEY'] = os.environ.get('GOOGLE_API_2')
+                    else:
+                        os.environ['GOOGLE_API_KEY'] = os.environ.get('GOOGLE_API_1')
+                g = geocoder.google(address, key=os.environ.get('GOOGLE_API_KEY'))
+                if g.status != 'OK':
+                    msg = 'Address cannot be geocoded due to ' + g.status + ": " + address
+                    return jsonify({
+                        "status": "Error",
+                        "message": msg
+                        })
+                else:
+                    geo = GeocoderCache(
+                        address=address,
+                        latitude=g.latlng[0],
+                        longitude=g.latlng[1]
+                    )
+                    db.session.add(geo)
+
             csv_storage = CsvStorage.most_recent(user=current_user)
             if csv_storage is None:
                 abort(404)
@@ -586,21 +619,32 @@ def save_csv():
                 resource = Resource.query.filter_by(
                     id=row.resource_id
                 ).first()
-                if resource.address != row.data['Address']:
-                    resource.address = row.data['Address']
-                    g = geocoder.google(address)
-                    resource.latitude = g.latlng[0]
-                    resource.longitude = g.latlng[1]
+                address = row.data['Address']
+                if resource.address != address:
+                    resource.address = address
+                    cached = GeocoderCache.query.filter_by(
+                        address=address
+                    ).first()
+                    if cached is None:
+                        db.session.rollback()
+                        abort(404)
+                    resource.latitude = cached.latitude
+                    resource.longitude = cached.longitude
                     db.session.add(resource)
             else:
                 name = row.data['Name']
                 address = row.data['Address']
-                g = geocoder.google(address)
+                cached = GeocoderCache.query.filter_by(
+                    address=address
+                ).first()
+                if cached is None:
+                    db.session.rollback()
+                    abort(404)
                 resource = Resource(
                     name=name,
                     address=address,
-                    latitude=g.latlng[0],
-                    longitude=g.latlng[1]
+                    latitude=cached.latitude,
+                    longitude=cached.longitude
                 )
                 db.session.add(resource)
 

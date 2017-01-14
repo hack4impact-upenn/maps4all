@@ -29,7 +29,8 @@ class CsvStorage(db.Model):
                             values = desc.values
                         val = val.split(';')
                         for v in val:
-                            values.add(v)
+                            if v.strip():
+                                values.add(v.strip())
                         desc.values = values
                         db.session.add(desc)
         db.session.commit()

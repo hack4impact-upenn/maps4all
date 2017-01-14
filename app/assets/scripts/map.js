@@ -211,9 +211,6 @@ function initMap() {
   $.get('/get-resources').done(function(resourcesString) {
     var resources = JSON.parse(resourcesString);
     populateMarkers(resources);
-  });
-
-  google.maps.event.addListenerOnce(map, 'idle', function() {
     populateListDiv();
   });
 }

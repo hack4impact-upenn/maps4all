@@ -199,7 +199,7 @@ function submitCsvData(numRows, rowObjects, fields) {
           $("#status-success").append(
             "<div class='item'>" + res.message + "</div>"
           );
-        } else if (res.status = 'Error') {
+        } else if (res.status === 'Error') {
           $("#status-errors").append(
             "<div class='item'>" + res.message + "</div>"
           );
@@ -243,7 +243,7 @@ function submitCsvData(numRows, rowObjects, fields) {
         $('#upload-progress').progress('increment', 1);
 
         if (el.action === 'finished' && !moveToNextStep) {
-          nextAjax.abort();
+          $('#upload-progress').progress('set error');
         } else {
           nextAjax.invoke();
         }
