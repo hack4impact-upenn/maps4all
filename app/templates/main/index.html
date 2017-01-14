@@ -31,6 +31,7 @@
             {% endfor %}
           </select>
         {% endif %}
+        {% if options %}
           <div id="advanced-filters-showhide">
               Show Advanced Filters
           </div>
@@ -44,6 +45,7 @@
                   </select>
               {% endfor %}
           </div>
+        {% endif %}
             <button class="ui fluid button" id="search-user-resources">Search</button>
       </div>
     </div>
