@@ -93,7 +93,6 @@ def edit_name(desc_id):
     old_name = descriptor.name
     form = EditDescriptorNameForm()
     if form.validate_on_submit():
-        descriptor.name = form.name.data
         if Descriptor.query.filter(Descriptor.name == form.name.data).first() \
                 is not None:
             flash('Descriptor {} already exists.'.format(descriptor.name),
@@ -101,7 +100,8 @@ def edit_name(desc_id):
             return render_template('descriptor/manage_descriptor.html',
                                    desc=descriptor, form=form,
                                    is_option=is_option)
-
+            
+        descriptor.name = form.name.data
         db.session.add(descriptor)
         try:
             db.session.commit()
