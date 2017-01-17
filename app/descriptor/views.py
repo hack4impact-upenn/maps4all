@@ -247,10 +247,8 @@ def remove_option_value(desc_id, option_index):
 
     form = FixAllResourceOptionValueForm()
 
-    # Delete the dynamic fields after the form is instantiated
     if form.validate_on_submit():
         for oa in option_assocs:
-            # Case for 'Remove this descriptor'
             db.session.delete(oa)
 
         if remove_value_from_db(descriptor, choice_names, old_value):
