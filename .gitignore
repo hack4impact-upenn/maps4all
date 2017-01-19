@@ -12,3 +12,5 @@ dist
 *.sqlite
 .idea
 migrations/
+.env
+dump.rdb
