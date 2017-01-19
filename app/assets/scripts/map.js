@@ -207,13 +207,11 @@ function initMap() {
   infowindow = new google.maps.InfoWindow();
   initLocationSearch(map);
   initResourceSearch();
+  initResetButton();
 
   $.get('/get-resources').done(function(resourcesString) {
     var resources = JSON.parse(resourcesString);
     populateMarkers(resources);
-  });
-
-  google.maps.event.addListenerOnce(map, 'idle', function() {
     populateListDiv();
   });
 }
@@ -297,7 +295,7 @@ function initLocationSearch(map) {
  * Initialize searching on the map by resource name input
  */
 function initResourceSearch() {
-  // Click 'Search' on resource name input
+  // Click 'Search' on search box
   $('#search-user-resources').click(function() {
     var query = '?' + 'name=' + $('#resources-input').val();
     var requiredOptions = [];
@@ -324,6 +322,22 @@ function initResourceSearch() {
     if ($(this).val().length === 0) {
       resourceSearchRequest('/get-resources');
     }
+  });
+}
+
+/*
+ * Initialize resetting search input and filters
+ */
+function initResetButton() {
+  // Click 'Reset' on search box
+  $('#reset-button').click(function() {
+    // clear search input and option filters
+    $('#resources-input').val('');
+    $('#search-resources-req-options').dropdown('clear');
+    $('.search-resources-options').dropdown('clear');
+
+    // show all resources again
+    resourceSearchRequest('/get-resources');
   });
 }
 
