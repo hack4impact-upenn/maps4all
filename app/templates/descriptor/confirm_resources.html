@@ -21,7 +21,7 @@
                 <div class="content">
                     Action Required
                     <div class="sub header">
-                        Deleting the value {{ desc.values[option_index] }} from descriptor {{ desc.name }}
+                        Deleting the value <b> {{ desc.values[option_index] }} </b> from descriptor  {{ desc.name }}
                         will affect these resources. Please select the new value for the resources below.
                     </div>
                 </div>
@@ -42,16 +42,12 @@
                         <thead>
                             <tr>
                                 <th class="sorted ascending">Name</th>
-                                <th class="sorted ascending">{{ desc.name }}</th>
                             </tr>
                         </thead>
                         <tbody>
-                        {% for i in range(option_assocs|length) %}
+                        {% for oa in option_assocs %}
                             <tr>
-                                <td>{{ option_assocs[i].resource.name }}</td>
-                                <td class="descriptor value">
-                                    {{ f.render_form_field(form[option_assocs[i].resource.name])}}
-                                </td>
+                                <td><a href="{{ url_for('single_resource.edit', resource_id=oa.resource_id) }}">{{ oa.resource.name }}</a></td></td>
                             </tr>
                         {% endfor %}
                         </tbody>
