@@ -18,160 +18,48 @@
             <form id="csv-upload-form" class="ui form">
                 <div class="field">
                     <label for="csv">CSV File</label>
-                    <input id="csv-file" name="csv" placeholder="CSV File" type="file">
+                    <!-- only allow .csv file types -->
+                    <input id="csv-file" name="csv" placeholder="CSV File" type="file" accept=".csv">
                 </div>
                 <div class="inline fields">
                   <div class="field">
-                      <div class="ui radio checkbox">
-                        <input type="radio" id="update" name="reset-or-update" tabindex="0" class="hidden">
-                        <label>Update</label>
-                      </div>
-                    </div>
-                    <div class="field">
-                      <div class="ui radio checkbox">
-                        <input type="radio" id="reset" name="reset-or-update" checked="" tabindex="0" class="hidden">
-                        <label>Reset</label>
-                      </div>
+                    <div class="ui radio checkbox">
+                      <input type="radio" id="reset" name="reset-or-update" checked="" tabindex="0" class="hidden">
+                      <label>Reset</label>
                     </div>
                   </div>
-                <button class="ui button" type="submit">Upload</button>
-            </form>
-        </div>
-    </div>
-
-    <div class="ui modal">
-        <div class="header">
-            Your CSV file has some errors
-        </div>
-        <div class="image content">
-            <div class="description">
-                <div id="errors">
+                  <div class="field">
+                    <div class="ui radio checkbox">
+                      <input type="radio" id="update" name="reset-or-update" tabindex="0" class="hidden">
+                      <label>Update</label>
+                    </div>
+                  </div>
                 </div>
+                <button class="ui disabled button" type="submit" id="upload-button">Upload</button>
+            </form>
+            <h3 class="ui header">Upload Progress</h3>
+            <div class="ui progress" id="upload-progress">
+              <div class="bar">
+                <div class="progress"></div>
+              </div>
+              <div class="label">Parsing CSV File...</div>
             </div>
-        </div>
-        <div class="actions">
-            <div class="ui right labeled button" id="close-button">
-                Got it!
+            <div class="ui horizontal segments" id="progress-msgs">
+              <div class="ui segment">
+                <h5 class="ui header green">Success Messages</h5>
+                <div class="ui list" id="status-success"></div>
+              </div>
+              <div class="ui segment">
+                <h5 class="ui header red">Error Messages</h5>
+                <div class="ui list" id="status-errors"></div>
+              </div>
             </div>
         </div>
     </div>
 
-    <script src="http://maps.google.com/maps/api/js?sensor=false" type="text/javascript"></script>
-    <script type="text/javascript">
-        $('.ui.radio.checkbox').checkbox();
-
-        $("#close-button").click(function() {
-            $('.ui.modal').modal('hide');
-        });
-
-        var csrftoken = "{{ csrf_token() }}"
-
-        $("#csv-upload-form").submit(function(event) {
-
-            event.preventDefault();
-            $("#csv-file").parse({
-				config: {
-                    delimiter: ",",
-                    skipEmptyLines: true,
-				    complete: function(results, file) {
-				        // Check that CSV data is formatted correctly.
-				        var errorList = [];
-				        var csvData = results.data;
-				        var numColumns = csvData[0].length;
-				        for (var i = 1; i < csvData.length; i++) {
-				            if (csvData[i].length != numColumns) {
-				                errorList.push("Row " + (i + 1) + " has the incorrect number of columns.");
-				            }
-				        }
-
-				        // Check that CSV data contains the correct headers.
-				        var columnNames = csvData[0];
-				        var nameColumnIndex = columnNames.indexOf("Name");
-				        if (nameColumnIndex == -1) {
-				            errorList.push("'Name' is a required column name.");
-				        }
-				        var addressColumnIndex = columnNames.indexOf("Address");
-				        if (addressColumnIndex == -1) {
-				            errorList.push("'Address' is a required column name.");
-				        }
-
-				        if (errorList.length > 0) {
-				            displayErrors(errorList);
-				            return;
-				        }
-
-				        // Validate addresses.
-				        if (errorList.length == 0) {
-				            var geocoder = new google.maps.Geocoder();
-				            var numAddressesValidated = 0;
-				            for (var i = 1; i < csvData.length; i++) {
-				                address = csvData[i][addressColumnIndex];
-				                address = address.replace(/\n/g, "");
-                                geocoder.geocode({ "address": address }, function (results, status) {
-                                    numAddressesValidated++;
-                                    if (status != google.maps.GeocoderStatus.OK) {
-                                        // TODO: Report the exact address that is invalid.
-                                        errorList.push("Invalid address.");
-                                    }
-                                    if (numAddressesValidated == csvData.length - 1) {
-                                        if (errorList.length > 0) {
-                                            displayErrors(errorList);
-                                        } else {
-                                            submitCsvData(csvData, nameColumnIndex, addressColumnIndex);
-                                        }
-                                    }
-                                });
-                            }
-				        }
-                    }
-				},
-				before: function(file, inputElem) { },
-				error: function(error, file) {
-				    displayErrors([error]);
-				},
-				complete: function() { }
-			});
-        });
-
-        function displayErrors(errorList) {
-            $("#errors").empty();
-            for (var i = 0; i < errorList.length; i++) {
-                $("#errors").append("<p>" + errorList[i] + "</p>");
-            }
-            $(".ui.modal").modal("show");
-        }
-
-        function submitCsvData(data, nameColumnIndex, addressColumnIndex) {
-            // Needed for CSRF protection.
-            $.ajaxSetup({
-                beforeSend: function(xhr, settings) {
-                    if (!/^(GET|HEAD|OPTIONS|TRACE)$/i.test(settings.type) && !this.crossDomain) {
-                        xhr.setRequestHeader("X-CSRFToken", csrftoken);
-                    }
-                }
-            })
-
-            var resetOrUpdate = document.getElementById('reset').checked ? 'reset' : 'update';
-
-            $.ajax({
-                url: "{{ url_for('bulk_resource.upload_data') }}",
-                data: JSON.stringify({
-                    name_column_index: nameColumnIndex,
-                    address_column_index: addressColumnIndex,
-                    csv_data: data,
-                    reset_or_update: resetOrUpdate,
-                }),
-                dataType: "json",
-                type: "POST",
-                mimeType: "application/json",
-                success: function (data) {
-                    if (data.redirect) {
-                        window.location.href = data.redirect;
-                    }
-                },
-                error: function (errorMessage) { }
-            });
-        }
-
-    </script>
+  <script type="text/javascript">
+    $(document).ready(function() {
+      initializeUpload();
+    });
+  </script>
 {% endblock %}

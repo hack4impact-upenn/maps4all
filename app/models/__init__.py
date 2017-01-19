@@ -9,4 +9,6 @@ from rating import * # flake8: noqa
 from resource import * # flake8: noqa
 from suggestion import * # flake8: noqa
 from user import *  # flake8: noqa
-from contact_category import *
+from contact_category import * # flake8: noqa
+from csv import * # flake8: noqa
+from geocoder_cache import * # flake8: noqa

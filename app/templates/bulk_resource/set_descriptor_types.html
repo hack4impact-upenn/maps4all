@@ -1,0 +1,77 @@
+{% extends 'layouts/base.html' %}
+{% import 'macros/form_macros.html' as f %}
+
+{% block content %}
+    <div class="ui stackable centered grid container">
+        <div class="twelve wide column">
+            <div class="ui fluid steps">
+                <div class="completed step">
+                    <i class="truck icon"></i>
+                    <div class="content">
+                        <div class="title">Upload</div>
+                        <div class="description">Upload your CSV file</div>
+                    </div>
+                </div>
+                <div class="active step">
+                    <i class="configure icon"></i>
+                    <div class="content">
+                        <div class="title">Configure</div>
+                        <div class="description">Review your data</div>
+                    </div>
+                </div>
+                <div class="disabled step">
+                    <i class="save icon"></i>
+                    <div class="content">
+                        <div class="title">Save</div>
+                        <div class="description">Add your data</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="twelve wide column">
+            <h2 class="ui header">
+                Review
+            </h2>
+        <div>
+
+        <div class="twelve wide column">
+            <h4 class="ui header">
+              Set New Descriptor Types
+              <div class="sub header">
+                We have identified these new descriptors in your CSV file. Please
+                identify each descriptor as either a text or an option descriptor.
+              </div>
+            </h4>
+            {% if num == 0 %}
+              <i>No new descriptor types in CSV</i>
+            {% endif %}
+            {{ f.render_form(form) }}
+
+            {% if existing_descs %}
+              <h4 class="ui header">
+                Existing Descriptor Types
+                <div class="sub header">
+                  These are the descriptors currently in the app and their types.
+                  You cannot change these types unless you delete the descriptor
+                  and recreate it under a different type through CSV or in-app.
+                </div>
+              </h4>
+              <div class="ui relaxed list">
+                {% for desc in existing_descs %}
+                <div class="item">
+                  <div class="content">
+                    <h5 class="header">{{ desc.name }}</h5>
+                    {% if desc.values %}
+                      <div class="description">Option</div>
+                    {% else %}
+                      <div class="description">Text</div>
+                    {% endif %}
+                  </div>
+                </div>
+                {% endfor %}
+              </div>
+            {% endif %}
+        </div>
+    </div>
+{% endblock %}

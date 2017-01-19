@@ -11,3 +11,13 @@
   min-height: 100px;
   word-wrap: break-word;
 }
+
+// CSV Upload
+#upload-progress {
+  display: none;
+}
+
+#progress-msgs .ui.segment {
+  max-height: 175px;
+  overflow-y: scroll;
+}
