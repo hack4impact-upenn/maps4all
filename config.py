@@ -1,6 +1,6 @@
 import os
 import urlparse
-import logging
+import logging, sys
 
 basedir = os.path.abspath(os.path.dirname(__file__))
 
