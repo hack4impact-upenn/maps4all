@@ -15,7 +15,7 @@ class NewDescriptorForm(Form):
                             choices=[('Text', 'Text'), ('Option', 'Option')],
                             validators=[InputRequired()]
                             )
-    name = TextField('Name', validators=[InputRequired(), Length(1, 64)])
+    name = TextField('Name', validators=[InputRequired(), Length(1, 250)])
     option_values = FieldList(TextField('Option', [Length(0, 64)]))
     is_searchable = BooleanField('Searchable')
     submit = SubmitField('Add descriptor')
