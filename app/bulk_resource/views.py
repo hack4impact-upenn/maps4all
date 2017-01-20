@@ -597,10 +597,10 @@ def save_csv():
 
         RequiredOptionDescriptor.query.delete()
         if csv_storage.action == 'reset':
-            Descriptor.query.delete()
             OptionAssociation.query.delete()
-            Resource.query.delete()
             TextAssociation.query.delete()
+            Descriptor.query.delete()
+            Resource.query.delete()
 
         # Create/Update descriptors
         for desc in csv_storage.csv_descriptors:
