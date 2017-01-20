@@ -431,6 +431,7 @@ def set_required_option_descriptor():
                         values=desc.values
                     )
                     db.session.add(req_opt_desc_const)
+                    db.session.commit()
                     return redirect(url_for('bulk_resource.validate_required_option_descriptor'))
 
             # If not in CSV, see if it is existing required option descriptor
@@ -445,6 +446,7 @@ def set_required_option_descriptor():
                         values=descriptor.values
                     )
                     db.session.add(req_opt_desc_const)
+                    db.session.commit()
                     return redirect(url_for('bulk_resource.validate_required_option_descriptor'))
             # If no descriptor found
             flash('Error: No required option descriptor. Please try again.', 'form-error')
