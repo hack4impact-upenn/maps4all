@@ -45,7 +45,7 @@ class Descriptor(db.Model):
     """
     __tablename__ = 'descriptors'
     id = db.Column(db.Integer, primary_key=True)
-    name = db.Column(db.String(64), index=True)
+    name = db.Column(db.String(250), index=True)
     values = db.Column(db.PickleType)
     is_searchable = db.Column(db.Boolean)
     text_resources = db.relationship(
@@ -86,7 +86,7 @@ class Resource(db.Model):
     """
     __tablename__ = 'resources'
     id = db.Column(db.Integer, primary_key=True)
-    name = db.Column(db.String(64), index=True)
+    name = db.Column(db.String(250), index=True)
     address = db.Column(db.String(250))
     latitude = db.Column(db.Float)
     longitude = db.Column(db.Float)

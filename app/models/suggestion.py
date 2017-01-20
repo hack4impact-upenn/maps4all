@@ -16,7 +16,7 @@ class Suggestion(db.Model):
     contact_name = db.Column(db.String(64))
     contact_email = db.Column(db.String(64))
     contact_phone_number = db.Column(db.String(64))
-    resource_name = db.Column(db.String(64))
+    resource_name = db.Column(db.String(250))
     resource_address = db.Column(db.String(250))
 
     def __repr__(self):
