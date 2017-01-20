@@ -735,18 +735,19 @@ def save_csv():
         req_opt_desc = RequiredOptionDescriptor(descriptor_id=required_option_descriptor.id)
 
         # Add associations for the resources missing values for the required option descriptor
-        for name in req_opt_desc_const.missing_dict.keys():
-            resource = Resource.query.filter_by(
-                name=name
-            ).first()
-            if resource is not None:
-                for val in req_opt_desc_const.missing_dict[name]:
-                    new_association = OptionAssociation(
-                                        resource_id=resource.id,
-                                        descriptor_id=required_option_descriptor.id,
-                                        option=required_option_descriptor.values.index(val),
-                                        resource=resource, descriptor=required_option_descriptor)
-                    db.session.add(new_association)
+        if req_opt_desc_const.missing_dict:
+            for name in req_opt_desc_const.missing_dict.keys():
+                resource = Resource.query.filter_by(
+                    name=name
+                ).first()
+                if resource is not None:
+                    for val in req_opt_desc_const.missing_dict[name]:
+                        new_association = OptionAssociation(
+                                            resource_id=resource.id,
+                                            descriptor_id=required_option_descriptor.id,
+                                            option=required_option_descriptor.values.index(val),
+                                            resource=resource, descriptor=required_option_descriptor)
+                        db.session.add(new_association)
         db.session.delete(req_opt_desc_const)
         db.session.delete(csv_storage)
         db.session.add(req_opt_desc)
