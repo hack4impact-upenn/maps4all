@@ -1,6 +1,5 @@
 import json
 
-from flask import render_template, request,jsonify
 from flask import render_template, url_for, request, jsonify
 from flask.ext.login import login_required
 
