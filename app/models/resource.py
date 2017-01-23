@@ -8,8 +8,8 @@ class OptionAssociation(db.Model):
     """
     __tablename__ = 'option_associations'
     id = db.Column(db.Integer, primary_key=True)
-    resource_id = db.Column(db.Integer, db.ForeignKey('resources.id'))
-    descriptor_id = db.Column(db.Integer, db.ForeignKey('descriptors.id'))
+    resource_id = db.Column(db.Integer, db.ForeignKey('resources.id', ondelete='CASCADE'))
+    descriptor_id = db.Column(db.Integer, db.ForeignKey('descriptors.id', ondelete='CASCADE'))
     option = db.Column(db.Integer)
     resource = db.relationship('Resource',
                                back_populates='option_descriptors')
@@ -28,8 +28,8 @@ class TextAssociation(db.Model):
     """
     __tablename__ = 'text_associations'
     id = db.Column(db.Integer, primary_key=True)
-    resource_id = db.Column(db.Integer, db.ForeignKey('resources.id'))
-    descriptor_id = db.Column(db.Integer, db.ForeignKey('descriptors.id'))
+    resource_id = db.Column(db.Integer, db.ForeignKey('resources.id', ondelete='CASCADE'))
+    descriptor_id = db.Column(db.Integer, db.ForeignKey('descriptors.id', ondelete='CASCADE'))
     text = db.Column(db.Text)
     resource = db.relationship('Resource', back_populates='text_descriptors')
     descriptor = db.relationship('Descriptor', back_populates='text_resources')
@@ -45,18 +45,18 @@ class Descriptor(db.Model):
     """
     __tablename__ = 'descriptors'
     id = db.Column(db.Integer, primary_key=True)
-    name = db.Column(db.String(64), index=True)
+    name = db.Column(db.String(250), index=True)
     values = db.Column(db.PickleType)
     is_searchable = db.Column(db.Boolean)
     text_resources = db.relationship(
         'TextAssociation',
         back_populates='descriptor',
-        cascade='save-update, merge, delete, delete-orphan'
+        cascade='all, save-update, merge, delete, delete-orphan'
     )
     option_resources = db.relationship(
         'OptionAssociation',
         back_populates='descriptor',
-        cascade='save-update, merge, delete, delete-orphan'
+        cascade='all, save-update, merge, delete, delete-orphan'
     )
 
     def __repr__(self):
@@ -86,7 +86,7 @@ class Resource(db.Model):
     """
     __tablename__ = 'resources'
     id = db.Column(db.Integer, primary_key=True)
-    name = db.Column(db.String(64), index=True)
+    name = db.Column(db.String(250), index=True)
     address = db.Column(db.String(250))
     latitude = db.Column(db.Float)
     longitude = db.Column(db.Float)
