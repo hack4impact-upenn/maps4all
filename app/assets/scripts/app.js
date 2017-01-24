@@ -23,15 +23,15 @@ $(document).ready(function () {
     $('.dropdown').dropdown();
     $('select').dropdown();
 
-    // // Generates the icon for unread suggested resources
-    // $.get('/suggestion/unread', function (data) {
-    //     var numUnread = data;
-    //     if (parseInt(numUnread) > 0) {
-    //         var icon = document.createElement("i");
-    //         $(icon).addClass('ui red label').html(numUnread);
-    //         $("#suggested-resources i").replaceWith(icon);
-    //     }
-    // });
+    // Generates the icon for unread suggested resources
+    $.get('/suggestion/unread', function (data) {
+        var numUnread = data;
+        if (parseInt(numUnread) > 0) {
+            var icon = document.createElement("i");
+            $(icon).addClass('ui red label').html(numUnread);
+            $("#suggested-resources i").replaceWith(icon);
+        }
+    });
 });
 
 
