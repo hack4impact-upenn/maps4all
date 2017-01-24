@@ -73,39 +73,56 @@
     {% endif %}
 {% endmacro %}
 
-
-{% macro mobile_account_items(current_user) %}
-    <a href="{{ url_for('main.about') }}" class="item">About</a>
-    <a href="{{ url_for('contact.index') }}" class="item">Contact Us</a>
-    {% if current_user.is_authenticated() %}
-        <div class="ui simple dropdown item">
-            Manage Resources
-            <i class="dropdown icon"></i>
-            <div class="menu">
-                <h3 class="ui header">Resources</h3>
-                {{ dropdown_choice('All Resources', 'single_resource.index',
-                                    icon='book icon') }}
-                {{ dropdown_choice('Add New Resource', 'single_resource.create',
-                                    icon='add circle icon') }}
-                {{ dropdown_choice('Suggested Resources', 'suggestion.index',
-                                    icon='checkmark box icon', id='suggested-resources') }}
-                <div class="ui section divider"></div>
-                <h3 class="ui header">Descriptors</h3>
-                {{ dropdown_choice('All Descriptors', 'descriptor.index',
-                                    icon='tags icon') }}
-                {{ dropdown_choice('Add New Descriptor', 'descriptor.new_descriptor',
-                                    icon='add circle icon') }}
-                {{ dropdown_choice('Change Required Option Descriptor',
-                                    'descriptor.change_required_option_descriptor',
-                                    icon='configure icon') }}
-                <div class="ui section divider"></div>
-                <h3 class="ui header">Bulk</h3>
-                {{ dropdown_choice('Upload Resources', 'bulk_resource.upload',
-                                    icon='upload icon') }}
+{% macro mobile_nav(current_user, endpoints=None) %}
+    <div class="mobile only row">
+        <div class="ui fixed inverted black main menu">
+            {{ header_items(current_user) }}
+            <div class="right menu">
+                <a class="icon item" id="open-nav"><i class="sidebar icon"></i></a>
             </div>
         </div>
-        <a href="{{ url_for('account.manage') }}" class="item">Your Account</a>
-        <a href="{{ url_for('account.logout') }}" class="item">Log out</a>
+
+        {# The menu items which will be shown when open-nav is clicked #}
+        <div class="ui fixed vertical fluid menu">
+            {% if endpoints %}
+                {{ render_menu_items(endpoints) }}
+            {% endif %}
+            {{ account_items(current_user) }}
+        </div>
+    </div>
+{% endmacro %}
+
+{# If `count` and `endpoints` are specified, the endpoints will be put into a
+ # secondary menu. `count` should be the string (e.g. 'four') number of endpoints. #}
+{% macro desktop_nav(current_user, endpoints=None, count=None) %}
+    <div class="computer tablet only row">
+        <div class="ui fixed inverted black main menu">
+            <div class="ui container">
+                {{ header_items(current_user) }}
+                <div class="right menu">
+                    {{ account_items(current_user) }}
+                </div>
+            </div>
+        </div>
+
+        {# Endpoints go into a submenu #}
+        {% if endpoints %}
+            <div class="ui fixed {{ count + ' item' }} labeled icon fluid stackable sub menu">
+                <div class="ui stackable container">
+                    {{ render_menu_items(endpoints) }}
+                </div>
+            </div>
+        {% endif %}
+    </div>
+{% endmacro %}
+
+{% macro render_nav(current_user, count, endpoints) %}
+    <nav class="ui navigation grid {% if endpoints %}has-submenu{% endif %}">
+        {{ mobile_nav(current_user, endpoints=endpoints) }}
+        {{ desktop_nav(current_user, endpoints=endpoints, count=count) }}
+    </nav>
+{% endmacro %}
+) }}" class="item">Log out</a>
     {% else %}
         <a href="{{ url_for('suggestion.suggest') }}" class="item">Suggest Resource</a>
         <a href="{{ url_for('account.login') }}" class="item">Log in</a>
