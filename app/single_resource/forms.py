@@ -6,11 +6,11 @@ from wtforms.validators import InputRequired, Length
 class SingleResourceForm(Form):
     name = StringField('Name', validators=[
         InputRequired(),
-        Length(1, 512)
+        Length(1, 500)
     ])
     address = StringField('Address', validators=[
         InputRequired(),
-        Length(1, 512)
+        Length(1, 500)
     ])
     latitude = FloatField('Latitude', validators=[
         InputRequired()

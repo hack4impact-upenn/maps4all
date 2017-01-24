@@ -16,30 +16,29 @@ from wtforms.validators import (
 class ContactForm(Form):
     name = StringField('Name', validators=[
         InputRequired(),
-        Length(1, 128),
+        Length(1, 500),
     ])
     email = EmailField('Email', validators=[
         InputRequired(),
-        Length(1, 64),
+        Length(1, 500),
         Email(),
     ])
-    message = TextAreaField('Message', validators=[
-        InputRequired(),
-        Length(1, 1024),
+    message = TextField('Message', validators=[
+        InputRequired()
     ])
     submit = SubmitField('Submit')
 
 class ContactCategoryForm(Form):
     name = StringField('Name', validators=[
         InputRequired(),
-        Length(1, 128),
+        Length(1, 250),
     ])
     submit = SubmitField('Add Category')
 
 class EditCategoryNameForm(Form):
     name = TextField('Name', validators=[
         InputRequired(),
-        Length(1, 128),
+        Length(1, 250),
     ])
     submit = SubmitField('Update name')
 

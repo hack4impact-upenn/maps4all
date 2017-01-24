@@ -29,9 +29,11 @@ from ..models import (
     GeocoderCache,
     Descriptor,
     OptionAssociation,
+    Rating,
     Resource,
     RequiredOptionDescriptor,
     RequiredOptionDescriptorConstructor,
+    Suggestion,
     TextAssociation
 )
 from forms import (
@@ -599,6 +601,8 @@ def save_csv():
         if csv_storage.action == 'reset':
             OptionAssociation.query.delete()
             TextAssociation.query.delete()
+            Suggestion.query.delete()
+            Rating.query.delete()
             Descriptor.query.delete()
             Resource.query.delete()
 
