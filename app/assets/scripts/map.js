@@ -79,11 +79,15 @@ function markerListener(marker, event) {
 function displayPhoneNumbers(descriptors) {
   var PHONE_NUMBER_LENGTH = 12;
   for (desc of descriptors) {
-    var updated = desc.value.replace(/(\d\d\d-\d\d\d-\d\d\d\d)/g,
-      function replacePhoneNum(num) {
-        return "<a href=\"tel:+1-" + num +  "\">" + num + "</a>";
-    });
-    $('#descriptor-value-'+desc.key).html(updated);
+    // skip option descriptors
+    if (desc.value.replace) {
+      var updated = desc.value.replace(/(\d\d\d-\d\d\d-\d\d\d\d)/g,
+        function replacePhoneNum(num) {
+          return "<a href=\"tel:+1-" + num + "\">" + num + "</a>";
+        }
+      );
+      $('#descriptor-value-'+desc.key).html(updated);
+    }
   }
 }
 
@@ -100,9 +104,16 @@ function displayDetailedResourceView(marker) {
     var associationObject = JSON.parse(associations);
     var descriptors = [];
     for (var key in associationObject) {
+      value = associationObject[key];
+
+      // Combine multiple option descriptor values
+      if (Array.isArray(associationObject[key])) {
+        value = Object.values(value).join(', ');
+      }
+
       var descriptor = {
         key: key,
-        value: associationObject[key],
+        value: value
       };
       descriptors.push(descriptor);
     }

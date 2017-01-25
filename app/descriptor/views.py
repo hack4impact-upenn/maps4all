@@ -407,10 +407,10 @@ def review_required_option_descriptor():
                                             resource=resource,
                                             descriptor=descriptor)
                         db.session.add(new_association)
-                RequiredOptionDescriptor.query.delete()
-                req_opt_desc = RequiredOptionDescriptor(descriptor_id=descriptor.id)
-                db.session.add(req_opt_desc)
-                db.session.commit()
+            RequiredOptionDescriptor.query.delete()
+            req_opt_desc = RequiredOptionDescriptor(descriptor_id=descriptor.id)
+            db.session.add(req_opt_desc)
+            db.session.commit()
             return redirect(url_for('descriptor.index'))
     for j, r_name in enumerate(missing_resources):
         form.resources.append_entry()

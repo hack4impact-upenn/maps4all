@@ -687,6 +687,7 @@ def save_csv():
                         keyword = 'option'
                         curr_opts = []
                         for s in row.data[key].split(';'):
+                            s = s.strip()
                             if s in values:
                                 curr_opts.append(values.index(s))
                         # see if same descriptor already exists
