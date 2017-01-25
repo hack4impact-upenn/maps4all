@@ -587,8 +587,10 @@ def save_csv():
 
     if form.validate_on_submit():
         if form.data['submit_back']:
-            req_opt_desc_const = RequiredOptionDescriptorConstructor.query.all()[0]
-            if req_opt_desc_const.missing_dict:
+            req_opt_desc_const = RequiredOptionDescriptorConstructor.query.all()
+            if not req_opt_desc_const:
+                return redirect(url_for('bulk_resource.set_descriptor_types'))
+            elif req_opt_desc_const[0].missing_dict:
                 return redirect(url_for('bulk_resource.validate_required_option_descriptor'))
             else:
                 return redirect(url_for('bulk_resource.set_required_option_descriptor'))
@@ -601,7 +603,8 @@ def save_csv():
         if csv_storage.action == 'reset':
             OptionAssociation.query.delete()
             TextAssociation.query.delete()
-            Suggestion.query.delete()
+            # on delete suggestions linked to resources
+            Suggestion.query.filter(Suggestion.resource_id != None).delete()
             Rating.query.delete()
             Descriptor.query.delete()
             Resource.query.delete()
@@ -725,36 +728,42 @@ def save_csv():
                         db.session.add(new_association)
 
         # Set required option descriptor
-        req_opt_desc_const = RequiredOptionDescriptorConstructor.query.all()[0]
-        required_option_descriptor = Descriptor.query.filter_by(
-            name=req_opt_desc_const.name
-        ).first()
-        if required_option_descriptor is None:
-            required_option_descriptor = Descriptor(
-                                            name=req_opt_desc_const.name,
-                                            values=req_opt_desc_const.values,
-                                            is_searchable=True)
-            db.session.add(required_option_descriptor)
-            db.session.commit()
-        req_opt_desc = RequiredOptionDescriptor(descriptor_id=required_option_descriptor.id)
+        req_opt_desc_const = RequiredOptionDescriptorConstructor.query.all()
+        if req_opt_desc_const:
+            req_opt_desc_const = req_opt_desc_const[0]
+            required_option_descriptor = Descriptor.query.filter_by(
+                name=req_opt_desc_const.name
+            ).first()
+            if required_option_descriptor is None:
+                required_option_descriptor = Descriptor(
+                                                name=req_opt_desc_const.name,
+                                                values=req_opt_desc_const.values,
+                                                is_searchable=True)
+                db.session.add(required_option_descriptor)
+            req_opt_desc = RequiredOptionDescriptor(descriptor_id=required_option_descriptor.id)
 
-        # Add associations for the resources missing values for the required option descriptor
-        if req_opt_desc_const.missing_dict:
-            for name in req_opt_desc_const.missing_dict.keys():
-                resource = Resource.query.filter_by(
-                    name=name
-                ).first()
-                if resource is not None:
-                    for val in req_opt_desc_const.missing_dict[name]:
-                        new_association = OptionAssociation(
-                                            resource_id=resource.id,
-                                            descriptor_id=required_option_descriptor.id,
-                                            option=required_option_descriptor.values.index(val),
-                                            resource=resource, descriptor=required_option_descriptor)
-                        db.session.add(new_association)
-        db.session.delete(req_opt_desc_const)
+            # Add associations for the resources missing values for the required option descriptor
+            if req_opt_desc_const.missing_dict:
+                for name in req_opt_desc_const.missing_dict.keys():
+                    resource = Resource.query.filter_by(
+                        name=name
+                    ).first()
+                    if resource is not None:
+                        for val in req_opt_desc_const.missing_dict[name]:
+                            new_association = OptionAssociation(
+                                                resource_id=resource.id,
+                                                descriptor_id=required_option_descriptor.id,
+                                                option=required_option_descriptor.values.index(val),
+                                                resource=resource, descriptor=required_option_descriptor)
+                            db.session.add(new_association)
+            db.session.delete(req_opt_desc_const)
+            db.session.add(req_opt_desc)
+        else:
+            # No required option descriptor set, initialize to dummy
+            req_opt_desc = RequiredOptionDescriptor(descriptor_id=-1)
+            db.session.add(req_opt_desc)
+
         db.session.delete(csv_storage)
-        db.session.add(req_opt_desc)
         try:
             db.session.commit()
         except:
