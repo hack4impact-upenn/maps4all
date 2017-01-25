@@ -163,6 +163,11 @@ function displayDetailedResourceView(marker) {
       submitReview(rating,review,id);
     });
 
+    $('#text-save-submit').click(function(e){
+      var number = $('#phone-number').val();
+      var id = marker.resourceID;
+    })
+
     // Map for single resource on detailed resource info page
     var singleResourceMap = new google.maps.Map(
       document.getElementById('single-resource-map'),
@@ -194,6 +199,20 @@ function submitReview(rating, review, id){
   });
   $(".userRating").hide();
   $(".successMessage").show();
+}
+
+function sendText(number,id){
+  var twilioText ={
+    'number': number,
+    'id': id
+  };
+  $.ajax({
+    url:'/send-sms',
+    data: JSON.stringify(twilioText),
+    contentType: 'application/json',
+    dataType:'json',
+    method: 'Post'
+  })
 }
 
 /*

@@ -2,7 +2,7 @@ import json
 
 from flask import render_template, url_for, request, jsonify
 from flask.ext.login import login_required
-
+from twilio import twiml
 from app import csrf
 from .. import db
 from ..models import EditableHTML, Resource, Rating, Descriptor, OptionAssociation, RequiredOptionDescriptor
@@ -11,6 +11,9 @@ from wtforms.fields import SelectMultipleField, TextAreaField
 from ..single_resource.forms import SingleResourceForm
 
 from datetime import datetime
+ACCOUNT_SID = "AC66b23a9fb924a84547e9c95e56436895" 
+AUTH_TOKEN = "873011dea73b3449b7fb9ca01fbcc264" 
+
 
 @main.route('/')
 def index():
@@ -142,6 +145,16 @@ def update_editor_contents():
     db.session.add(editor_contents)
     db.session.commit()
     return 'OK', 200
+
+@main.route('/send-sms', methods=['POST'])
+def send_sms():
+    if request is not None:
+        phone_num= reqest.json['number']
+        resourceID = request.json['id']
+        curr_res = Resource.query.get(resourceID)
+        name = "Name:" + curr_res.name
+        address = "Address:" + curr_res.address
+
 
 @csrf.exempt
 @main.route('/rating-post', methods =['POST'])
