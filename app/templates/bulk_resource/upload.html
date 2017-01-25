@@ -5,19 +5,34 @@
     <div class="ui stackable centered grid container">
         <div class="twelve wide column">
             <h2 class="ui header">
-                Upload
+                CSV Upload
             </h2>
             <p>
+                <h4 class="ui header"> Reset </h4>
                 The "Reset" mode clears all data in the database
-                and sets up a new schema based on the contents of the csv.
-                In contrast, the "Update" model only adds resources or updates existing
-                resources. In the case when a resource in the csv already
-                exists in the database, its data will be replaced with the
-                data in the csv.
+                and sets up a new schema based on the contents of the CSV.
+
+                <h4 class="ui header"> Update </h4>
+                The "Update" model only adds new resources or updates existing
+                resources. <br>
+                <div class="ui bulleted list">
+                  <div class="ui item">
+                    If a resource in the CSV has the same name ('Name' column in the CSV) as
+                    a resource in the app, they are assumed to be the same resource.
+                    Then, the data of the resource in the app will be replaced with
+                    the data in the CSV. So determining if two resources are the same or not is based on
+                    their name.
+                  </div>
+                  <div class="ui item">
+                    Resources that are in the app but not in the CSV will not be
+                    removed.
+                  </div>
+                </div>
             </p>
+            <div class="ui divider"></div>
             <form id="csv-upload-form" class="ui form">
                 <div class="field">
-                    <label for="csv">CSV File</label>
+                    <label for="csv">CSV File (only .csv files accepted)</label>
                     <!-- only allow .csv file types -->
                     <input id="csv-file" name="csv" placeholder="CSV File" type="file" accept=".csv">
                 </div>
