@@ -15,14 +15,14 @@ class NewDescriptorForm(Form):
                             choices=[('Text', 'Text'), ('Option', 'Option')],
                             validators=[InputRequired()]
                             )
-    name = TextField('Name', validators=[InputRequired(), Length(1, 250)])
-    option_values = FieldList(TextField('Option', [Length(0, 64)]))
+    name = TextField('Name', validators=[InputRequired(), Length(1, 500)])
+    option_values = FieldList(TextField('Option', [Length(0, 500)]))
     is_searchable = BooleanField('Searchable')
     submit = SubmitField('Add descriptor')
 
 
 class EditDescriptorNameForm(Form):
-    name = TextField('Name', validators=[InputRequired(), Length(1, 64)])
+    name = TextField('Name', validators=[InputRequired(), Length(1, 500)])
     submit = SubmitField('Update name')
 
 
@@ -33,12 +33,12 @@ class EditDescriptorSearchableForm(Form):
 
 class EditDescriptorOptionValueForm(Form):
     value = TextField('Option Value',
-                      validators=[InputRequired(), Length(1, 64)])
+                      validators=[InputRequired(), Length(1, 500)])
     submit = SubmitField('Update option value')
 
 
 class AddDescriptorOptionValueForm(Form):
-    value = TextField('', validators=[InputRequired(), Length(1, 64)])
+    value = TextField('', validators=[InputRequired(), Length(1, 500)])
     submit = SubmitField('Add option')
 
 

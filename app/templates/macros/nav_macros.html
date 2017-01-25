@@ -71,6 +71,20 @@
         <a href="{{ url_for('suggestion.suggest') }}" class="item">Suggest Resource</a>
         <a href="{{ url_for('account.login') }}" class="item">Log in</a>
     {% endif %}
+
+    {% if current_user.is_authenticated() %}
+      <script>
+        // Generates the icon for unread suggested resources
+        $.get('/suggestion/unread', function (data) {
+            var numUnread = data;
+            if (parseInt(numUnread) > 0) {
+                var icon = document.createElement("i");
+                $(icon).addClass('ui red label').html(numUnread);
+                $("#suggested-resources i").replaceWith(icon);
+            }
+        });
+      </script>
+    {% endif %}
 {% endmacro %}
 
 {% macro mobile_nav(current_user, endpoints=None) %}

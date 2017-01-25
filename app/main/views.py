@@ -110,7 +110,16 @@ def get_associations(resource_id):
     for td in resource.text_descriptors:
         associations[td.descriptor.name] = td.text
     for od in resource.option_descriptors:
-        associations[od.descriptor.name] = od.descriptor.values[od.option]
+        val = od.descriptor.values[od.option]
+        values = set()
+        # multiple option association values
+        if associations.get(od.descriptor.name):
+            curr = associations.get(od.descriptor.name)
+            curr.append(val)
+            values = set(curr)
+        else:
+            values.add(val)
+        associations[od.descriptor.name] = list(values)
     return json.dumps(associations)
 
 @main.route('/about')

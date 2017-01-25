@@ -98,7 +98,7 @@ def setup_prod():
 def setup_general():
     """Runs the set-up needed for both local development and production."""
     Role.insert_roles()
-    RequiredOptionDescriptor.insert_required_option_descriptor()
+    RequiredOptionDescriptor.init_required_option_descriptor()
 
 
 @manager.command
