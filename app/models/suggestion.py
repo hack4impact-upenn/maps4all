@@ -2,22 +2,23 @@ from datetime import datetime
 import pytz
 from .. import db
 
+
 class Suggestion(db.Model):
     """
     Association between a resource and potential suggestions for it
     """
     __tablename__ = 'suggestions'
     id = db.Column(db.Integer, primary_key=True)
-    resource_id = db.Column(db.Integer, db.ForeignKey('resources.id'))
+    resource_id = db.Column(db.Integer, db.ForeignKey('resources.id', ondelete='CASCADE'))
     suggestion_text = db.Column(db.Text)
     # 0 stands for read, 1 stands for unread
     read = db.Column(db.Boolean, default=False)
     submission_time = db.Column(db.DateTime)
-    contact_name = db.Column(db.String(64))
-    contact_email = db.Column(db.String(64))
+    contact_name = db.Column(db.String(500))
+    contact_email = db.Column(db.String(500))
     contact_phone_number = db.Column(db.String(64))
-    resource_name = db.Column(db.String(250))
-    resource_address = db.Column(db.String(250))
+    resource_name = db.Column(db.String(500))
+    resource_address = db.Column(db.String(500))
 
     def __repr__(self):
         return '%s: %s' % (self.id, self.resource_id)
