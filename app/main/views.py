@@ -1,5 +1,6 @@
 import json
-from twilio.rest import TwilioLookupsClient, TwilioRestClient 
+from twilio.rest.lookups import TwilioLookupsClient
+from twilio.rest import TwilioRestClient 
 from flask import render_template, url_for, request, jsonify
 from flask.ext.login import login_required
 from twilio import twiml
