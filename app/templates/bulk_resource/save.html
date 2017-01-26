@@ -28,10 +28,21 @@
                 </div>
             </div>
         </div>
-
         <div class="twelve wide column">
-            It may take awhile to save your changes.
-            {{ f.render_form(form) }}
+            <h2 class="ui header">
+                CSV Upload Workflow
+            </h2>
+        </div>
+        <div class="twelve wide column">
+          <h4 class="ui header">
+            Save Changes
+            <div class="sub header">
+              It may take a while to save your changes.
+            </div>
+          </h4>
+        </div>
+        <div class="twelve wide column">
+            {{ f.render_form(form, style='SubmitForm') }}
         </div>
     </div>
 {% endblock %}

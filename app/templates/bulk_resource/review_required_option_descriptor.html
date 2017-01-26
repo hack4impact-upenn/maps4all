@@ -31,13 +31,18 @@
 
         <div class="twelve wide column">
             <h2 class="ui header">
-                Review
+                CSV Upload Workflow
             </h2>
         </div>
         <div class="twelve wide column">
-          These are the resources we found that don't have a value for the
-          selected required option descriptor <b>{{ required }}</b>. Please
-          set a value for these resources.
+          <h4 class="ui header">
+            Set Required Option Descriptor Values
+            <div class="sub header">
+              These are the resources we found that don't have a value for the
+              selected required option descriptor <b>{{ required }}</b>. Please
+              set a value for these resources to continue.
+            </div>
+          </h4>
         </div>
         <div class="twelve wide column">
             {{ f.render_form(form) }}

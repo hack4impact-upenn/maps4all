@@ -8,8 +8,9 @@
         method        – <form> method attribute (default 'POST')
         extra_classes – The classes to add to the <form>.
         enctype       – <form> enctype attribute. If None, will automatically be set to
-                        multipart/form-data if a FileField is present in the form. #}
-{% macro render_form(form, method='POST', extra_classes='', enctype=None) %}
+                        multipart/form-data if a FileField is present in the form.
+        style         - Render form with specified style #}
+{% macro render_form(form, method='POST', extra_classes='', enctype=None, style='') %}
     {% set flashes = {
         'error':   get_flashed_messages(category_filter=['form-error']),
         'warning': get_flashed_messages(category_filter=['form-check-email']),
@@ -29,6 +30,20 @@
                 {{ back_field(class='ui button') }}
                 {{ cancel_field(class='ui button') }}
                 {{ next_field(class='ui primary button') }}
+            </div>
+
+        {{ end_form(form) }}
+    {% elif style == 'SubmitForm' %}
+        {{ begin_form(form, flashes, method=method, extra_classes=extra_classes, enctype=enctype) }}
+
+            {% set back_field = form.__getitem__('submit_back') %}
+            {% set cancel_field = form.__getitem__('submit_cancel') %}
+            {% set submit_field = form.__getitem__('submit') %}
+
+            <div class="three ui buttons">
+                {{ back_field(class='ui button') }}
+                {{ cancel_field(class='ui button') }}
+                {{ submit_field(class='ui primary button') }}
             </div>
 
         {{ end_form(form) }}
