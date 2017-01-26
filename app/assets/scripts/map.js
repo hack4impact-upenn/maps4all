@@ -80,7 +80,7 @@ function displayPhoneNumbers(descriptors) {
   var PHONE_NUMBER_LENGTH = 12;
   for (desc of descriptors) {
     // skip option descriptors
-    if (desc.value.replace) {
+    if (desc.value.replace!=null) {
       var updated = desc.value.replace(/(\d\d\d-\d\d\d-\d\d\d\d)/g,
         function replacePhoneNum(num) {
           return "<a href=\"tel:+1-" + num + "\">" + num + "</a>";
@@ -163,6 +163,21 @@ function displayDetailedResourceView(marker) {
       submitReview(rating,review,id);
     });
 
+    // Button to "send" a text to the number using twilio
+    $('#text-save-submit').click(function(e){
+      var number = $('#phone-number').val();
+      var id = marker.resourceID;
+      sendText(number,id);
+    })
+
+    $('#sms-success-close')
+      .on('click', function() {
+        $(this)
+          .closest('.message')
+          .transition('fade')
+        ;
+      })
+    ;
     // Map for single resource on detailed resource info page
     var singleResourceMap = new google.maps.Map(
       document.getElementById('single-resource-map'),
@@ -194,6 +209,29 @@ function submitReview(rating, review, id){
   });
   $(".userRating").hide();
   $(".successMessage").show();
+}
+
+function sendText(number,id) {
+  var twilioText = {
+    'number': number,
+    'id': id
+  };
+  $.ajax({
+    url:'/send-sms',
+    data: JSON.stringify(twilioText),
+    contentType: 'application/json',
+    dataType:'json',
+    method: 'POST',
+    success: function(data) {
+      if(data.status=='success') {
+        $(".textSentSuccess").show();
+      }
+      else {
+        alert('Invalid phone number');
+        $("#phone-number").val('');
+      }
+    }
+  })
 }
 
 /*

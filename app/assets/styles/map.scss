@@ -249,8 +249,35 @@ $font-size: 14px;
   .successMessage{
     display: none;
   }
+
+  .textSentSuccess{
+    display: none;
+    margin-top: 3px;
+  }
+
+  
+  #sms-header {
+    margin-bottom: 2px;
+  }
+
+  #phone-number{
+    margin-bottom: 4px;
+    margin-top: 2px;
+  }
+
+  .disclaimer-sms {
+    font-size: 10;
+    margin-bottom: 2px;
+    margin-top: 2px;
+  }
+
   .sub.header {
     font-size: $font-size;
+  }
+
+  #text-save-submit {
+    margin-bottom: 2px;
+    margin-top: 3px;
   }
 
   .ui.label {
