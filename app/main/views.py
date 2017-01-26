@@ -1,4 +1,5 @@
 import json
+import os
 from twilio.rest.lookups import TwilioLookupsClient
 from twilio.rest import TwilioRestClient 
 from flask import render_template, url_for, request, jsonify
@@ -10,11 +11,7 @@ from ..models import EditableHTML, Resource, Rating, Descriptor, OptionAssociati
 from . import main
 from wtforms.fields import SelectMultipleField, TextAreaField
 from ..single_resource.forms import SingleResourceForm
-
 from datetime import datetime
-ACCOUNT_SID = "AC66b23a9fb924a84547e9c95e56436895" 
-AUTH_TOKEN = "873011dea73b3449b7fb9ca01fbcc264" 
-
 
 @main.route('/')
 def index():
@@ -150,14 +147,16 @@ def update_editor_contents():
 @csrf.exempt
 @main.route('/send-sms', methods=['POST'])
 def send_sms():
-    client = TwilioLookupsClient(account=ACCOUNT_SID, token=AUTH_TOKEN)
-    send_client = TwilioRestClient(account=ACCOUNT_SID, token=AUTH_TOKEN) 
+    sid = os.environ.get('TWILIO_ACCOUNT_SID')
+    auth = os.environ.get('TWILIO_AUTH_TOKEN')
+    client = TwilioLookupsClient(account=sid, token=auth)
+    send_client = TwilioRestClient(account=sid, token=auth) 
     if request is not None:
         phone_num= request.json['number']
         resourceID = request.json['id']
         curr_res = Resource.query.get(resourceID)
-        name = "Name:" + curr_res.name
-        address = "Address:" + curr_res.address
+        name = "Name: " + curr_res.name
+        address = "Address: " + curr_res.address
         message = name +"\n" + address
         try:
             number = client.phone_numbers.get(phone_num, include_carrier_info=False)

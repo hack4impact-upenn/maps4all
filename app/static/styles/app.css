@@ -334,27 +334,48 @@ table.selectable tr:hover {
 #resource-info .successMessage {
   display: none;
 }
-@media -sass-debug-info{filename{}line{font-family:\00003252}}
+@media -sass-debug-info{filename{}line{font-family:\00003253}}
 #resource-info .textSentSuccess {
   display: none;
+  margin-top: 3px;
 }
-@media -sass-debug-info{filename{}line{font-family:\00003255}}
+@media -sass-debug-info{filename{}line{font-family:\00003259}}
+#resource-info #sms-header {
+  margin-bottom: 2px;
+}
+@media -sass-debug-info{filename{}line{font-family:\00003263}}
+#resource-info #phone-number {
+  margin-bottom: 4px;
+  margin-top: 2px;
+}
+@media -sass-debug-info{filename{}line{font-family:\00003268}}
+#resource-info .disclaimer-sms {
+  font-size: 10;
+  margin-bottom: 2px;
+  margin-top: 2px;
+}
+@media -sass-debug-info{filename{}line{font-family:\00003274}}
 #resource-info .sub.header {
   font-size: 14px;
 }
-@media -sass-debug-info{filename{}line{font-family:\00003259}}
+@media -sass-debug-info{filename{}line{font-family:\00003278}}
+#resource-info #text-save-submit {
+  margin-bottom: 2px;
+  margin-top: 3px;
+}
+@media -sass-debug-info{filename{}line{font-family:\00003283}}
 #resource-info .ui.label {
   font-size: 14px;
   margin-top: 0.4em;
   margin-bottom: 1em;
 }
-@media -sass-debug-info{filename{}line{font-family:\00003264}}
+@media -sass-debug-info{filename{}line{font-family:\00003288}}
 #resource-info .ui.header {
   color: #000000;
   font-family: Roboto;
 }
 
-@media -sass-debug-info{filename{}line{font-family:\00003271}}
+@media -sass-debug-info{filename{}line{font-family:\00003295}}
 #back-button {
   color: #000000;
   display: inline-block;
@@ -363,7 +384,7 @@ table.selectable tr:hover {
   z-index: 2;
 }
 
-@media -sass-debug-info{filename{}line{font-family:\00003279}}
+@media -sass-debug-info{filename{}line{font-family:\00003303}}
 #single-resource-map {
   height: 400px;
   width: 100%;

@@ -163,12 +163,21 @@ function displayDetailedResourceView(marker) {
       submitReview(rating,review,id);
     });
 
+    // Button to "send" a text to the number using twilio
     $('#text-save-submit').click(function(e){
       var number = $('#phone-number').val();
       var id = marker.resourceID;
       sendText(number,id);
     })
 
+    $('#sms-success-close')
+      .on('click', function() {
+        $(this)
+          .closest('.message')
+          .transition('fade')
+        ;
+      })
+    ;
     // Map for single resource on detailed resource info page
     var singleResourceMap = new google.maps.Map(
       document.getElementById('single-resource-map'),
@@ -202,8 +211,8 @@ function submitReview(rating, review, id){
   $(".successMessage").show();
 }
 
-function sendText(number,id){
-  var twilioText ={
+function sendText(number,id) {
+  var twilioText = {
     'number': number,
     'id': id
   };
@@ -213,12 +222,12 @@ function sendText(number,id){
     contentType: 'application/json',
     dataType:'json',
     method: 'POST',
-    success: function(data){
-      if(data.status=='success'){
+    success: function(data) {
+      if(data.status=='success') {
         $(".textSentSuccess").show();
       }
-      else{
-        alert('invalid phone number');
+      else {
+        alert('Invalid phone number');
         $("#phone-number").val('');
       }
     }
