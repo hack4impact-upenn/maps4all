@@ -1,6 +1,7 @@
 import os
 import urlparse
 import logging, sys
+from logging.handlers import SMTPHandler
 
 basedir = os.path.abspath(os.path.dirname(__file__))
 
@@ -64,8 +65,6 @@ class ProductionConfig(Config):
         app.logger.addHandler(logging.StreamHandler(sys.stdout))
         app.logger.setLevel(logging.ERROR)
         # Email errors to administators
-        import logging
-        from logging.handlers import SMTPHandler
         credentials = None
         secure = None
         if getattr(cls, 'MAIL_USERNAME', None) is not None:
