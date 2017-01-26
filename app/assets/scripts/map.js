@@ -80,7 +80,7 @@ function displayPhoneNumbers(descriptors) {
   var PHONE_NUMBER_LENGTH = 12;
   for (desc of descriptors) {
     // skip option descriptors
-    if (desc.value.replace) {
+    if (desc.value.replace!=null) {
       var updated = desc.value.replace(/(\d\d\d-\d\d\d-\d\d\d\d)/g,
         function replacePhoneNum(num) {
           return "<a href=\"tel:+1-" + num + "\">" + num + "</a>";
@@ -166,6 +166,7 @@ function displayDetailedResourceView(marker) {
     $('#text-save-submit').click(function(e){
       var number = $('#phone-number').val();
       var id = marker.resourceID;
+      sendText(number,id);
     })
 
     // Map for single resource on detailed resource info page
@@ -211,7 +212,16 @@ function sendText(number,id){
     data: JSON.stringify(twilioText),
     contentType: 'application/json',
     dataType:'json',
-    method: 'Post'
+    method: 'POST',
+    success: function(data){
+      if(data.status=='success'){
+        $(".textSentSuccess").show();
+      }
+      else{
+        alert('invalid phone number');
+        $("#phone-number").val('');
+      }
+    }
   })
 }
 

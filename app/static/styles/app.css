@@ -335,22 +335,26 @@ table.selectable tr:hover {
   display: none;
 }
 @media -sass-debug-info{filename{}line{font-family:\00003252}}
+#resource-info .textSentSuccess {
+  display: none;
+}
+@media -sass-debug-info{filename{}line{font-family:\00003255}}
 #resource-info .sub.header {
   font-size: 14px;
 }
-@media -sass-debug-info{filename{}line{font-family:\00003256}}
+@media -sass-debug-info{filename{}line{font-family:\00003259}}
 #resource-info .ui.label {
   font-size: 14px;
   margin-top: 0.4em;
   margin-bottom: 1em;
 }
-@media -sass-debug-info{filename{}line{font-family:\00003261}}
+@media -sass-debug-info{filename{}line{font-family:\00003264}}
 #resource-info .ui.header {
   color: #000000;
   font-family: Roboto;
 }
 
-@media -sass-debug-info{filename{}line{font-family:\00003268}}
+@media -sass-debug-info{filename{}line{font-family:\00003271}}
 #back-button {
   color: #000000;
   display: inline-block;
@@ -359,7 +363,7 @@ table.selectable tr:hover {
   z-index: 2;
 }
 
-@media -sass-debug-info{filename{}line{font-family:\00003276}}
+@media -sass-debug-info{filename{}line{font-family:\00003279}}
 #single-resource-map {
   height: 400px;
   width: 100%;
