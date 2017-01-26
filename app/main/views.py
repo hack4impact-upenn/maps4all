@@ -1,5 +1,5 @@
 import json
-
+from twilio.rest.lookups import TwilioLookupsClient
 from flask import render_template, url_for, request, jsonify
 from flask.ext.login import login_required
 from twilio import twiml
@@ -148,13 +148,24 @@ def update_editor_contents():
 
 @main.route('/send-sms', methods=['POST'])
 def send_sms():
+    client = TwilioLookupsClient()
+    send_client = TwilioRestClient(ACCOUNT_SID, AUTH_TOKEN) 
     if request is not None:
         phone_num= reqest.json['number']
         resourceID = request.json['id']
         curr_res = Resource.query.get(resourceID)
         name = "Name:" + curr_res.name
         address = "Address:" + curr_res.address
-
+        message = name +"\n" + address
+        number = client.phone_numbers.get(phone_num, include_carrier_info=False)
+            if not number.errorcode:
+                num = number.phone_number
+                send_client.messages.create(
+                    to=num,
+                    from_="+17657692023", 
+                    body=message)
+                return jsonify(status='success')
+    return jsonify(status='fail')
 
 @csrf.exempt
 @main.route('/rating-post', methods =['POST'])
