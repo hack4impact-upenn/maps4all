@@ -243,6 +243,15 @@ $input-color: rgba(0, 0, 0, 0.4);
   }
 }
 
+// Target Safari marker info window: remove scrolling
+#map div.gm-style-iw {
+    overflow: visible !important;
+
+    > div, > div > div {
+      overflow: visible !important;
+    }
+}
+
 #avg_rating-marker {
   background-color: inherit;
   border: 1px solid $secondary-color-light;
