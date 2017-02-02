@@ -29,6 +29,7 @@ function markerListener(marker, event) {
 
     // TODO: Remove 15 hack
     // Split view vertically between map and a map footer for info
+    $('#right-column').height($('#map-list-grid').height());
     var totalHeight = $('#right-column').height() - 15;
     $('#map-footer').height(totalHeight / 3);
     $('#map').height(2 * totalHeight / 3);
@@ -512,7 +513,7 @@ function resizeMapListGrid() {
   // If we resize from single col to double col, we remove the map footer
   // so we have to make the map full size of the right column
   if ($(window).width() > singleColBreakpoint) {
-    $('#map').height($('#right-column').height());
+    $('#map').height($('#map-list-grid').height());
   }
 
   var center = map.getCenter();
