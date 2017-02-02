@@ -1,11 +1,12 @@
 {% extends 'layouts/base.html' %}
 <!--TODO: have a "mark as read" column in the table -->
 {% block content %}
-  <div class="ui text container">
+<div class="ui stackable grid container">
+    <div class="sixteen wide tablet fourteen wide computer centered column">
     <h2 class="ui centered header">
       Suggestions
     </h2>
-    <table class="ui unstackable celled table">
+    <table class="ui searchable sortable unstackable selectable celled striped table">
       <thead>
         <tr>
           <th>Timestamp</th>
@@ -60,4 +61,5 @@
       </tbody>
     </table>
   </div>
+</div>
 {% endblock %}

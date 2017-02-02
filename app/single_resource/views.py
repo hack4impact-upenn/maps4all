@@ -37,7 +37,7 @@ def search_resources():
     req_options = request.args.getlist('reqoption')
     if req_options is None:
         req_options = []
-    resource_pool = Resource.query.filter(Resource.name.contains(name)).all()
+    resource_pool = Resource.query.filter(Resource.name.ilike('%{}%'.format(name))).all()
     req_opt_desc = RequiredOptionDescriptor.query.all()
     if req_opt_desc:
         req_opt_desc = req_opt_desc[0]

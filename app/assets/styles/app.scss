@@ -175,7 +175,8 @@ h1.ui.header, h2.ui.header {
 // Scrollbar
 ::-webkit-scrollbar {
     -webkit-appearance: none;
-    width: 7px;
+    width: 10px;
+    min-height: 100px;
 }
 ::-webkit-scrollbar-thumb {
     border-radius: 4px;

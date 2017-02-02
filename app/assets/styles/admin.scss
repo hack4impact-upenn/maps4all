@@ -48,6 +48,12 @@ $transform: translate(-50%,0%);
   .ui.header:first-child {
     margin-top: 0.7em;
   }
+
+  .ui.padded.segment {
+    .ui.header:first-child {
+      margin-top: 0;
+    }
+  }
 }
 
 .ui.text.container {

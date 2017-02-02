@@ -80,7 +80,7 @@ function markerListener(marker, event) {
 // Re-render html for descriptor values containing phone numbers
 function displayPhoneNumbers(descriptors) {
   var PHONE_NUMBER_LENGTH = 12;
-  for (desc of descriptors) {
+  for (var desc in descriptors) {
     // skip option descriptors
     if (desc.value.replace!=null) {
       var updated = desc.value.replace(/(\d\d\d-\d\d\d-\d\d\d\d)/g,
@@ -393,6 +393,14 @@ function initResetButton() {
     $('#resources-input').val('');
     $('#search-resources-req-options').dropdown('clear');
     $('.search-resources-options').dropdown('clear');
+
+    // Placeholder text for descriptor dropdowns
+    $(".ui.dropdown>.text").text("Choose option(s)");
+
+    // clear location
+    locationMarker.setMap(null);
+    locationMarker = null;
+    $('#pac-input').val('')
 
     // show all resources again
     resourceSearchRequest('/get-resources');
