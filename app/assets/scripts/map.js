@@ -30,8 +30,8 @@ function markerListener(marker, event) {
     // TODO: Remove 15 hack
     // Split view vertically between map and a map footer for info
     var totalHeight = $('#right-column').height() - 15;
-    $('#map-footer').height(totalHeight / 4);
-    $('#map').height(3 * totalHeight / 4);
+    $('#map-footer').height(totalHeight / 3);
+    $('#map').height(2 * totalHeight / 3);
     resizeMapListGrid();
 
     // Need to set center and zoom since default is not at right location
@@ -504,9 +504,9 @@ function resizeMapListGrid() {
   // TODO: remove hack of subtracting 40 and 15
   // Adjusts for space between nav and grid
   if ($(window).width() <= singleColNoSpaceBreakpoint) {
-    $('#map-list-grid').height($('body').height() - navHeight - 15);
+    $('#map-list-grid').height($('body').height() - navHeight - 23);
   } else {
-    $('#map-list-grid').height($('body').height() - navHeight - 45);
+    $('#map-list-grid').height($('body').height() - navHeight - 50);
   }
 
   // If we resize from single col to double col, we remove the map footer
