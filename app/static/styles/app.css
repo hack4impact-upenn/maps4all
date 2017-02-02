@@ -107,29 +107,42 @@ nav {
   background-color: #000000;
   font-family: "Nunito Sans", sans-serif;
 }
-
 @media -sass-debug-info{filename{}line{font-family:\0000370}}
+.ui.fixed.main.menu .ui.container #h4i-logo img {
+  width: 1.5em;
+}
+@media -sass-debug-info{filename{}line{font-family:\0000375}}
+.ui.fixed.main.menu .ui.container {
+  width: 95%;
+}
+
+@media -sass-debug-info{filename{}line{font-family:\0000382}}
+.ui.menu:not(.secondary):not(.text):not(.tabular):not(.borderless) > .container > .item:not(.right):not(.borderless):first-child {
+  border-left-color: #000000;
+}
+
+@media -sass-debug-info{filename{}line{font-family:\0000386}}
 .ui.menu .item.nav-mobile-switch {
   display: none;
   padding-top: 1.4em;
 }
-@media -sass-debug-info{filename{}line{font-family:\0000374}}
+@media -sass-debug-info{filename{}line{font-family:\0000390}}
 .ui.menu .item.nav-mobile-switch p {
   display: inline-block;
 }
 
-@media -sass-debug-info{filename{}line{font-family:\0000380}}
+@media -sass-debug-info{filename{}line{font-family:\0000396}}
 .ui.fixed.main.menu .right.menu > .item:last-of-type {
   border-right: 1px solid rgba(34, 36, 38, 0.09804);
 }
 
-@media -sass-debug-info{filename{}line{font-family:\0000386}}
+@media -sass-debug-info{filename{}line{font-family:\00003102}}
 nav .mobile.only.row .ui.vertical.menu {
   display: none;
   margin-top: 40px;
 }
 
-@media -sass-debug-info{filename{}line{font-family:\0000393}}
+@media -sass-debug-info{filename{}line{font-family:\00003109}}
 .flashes > .row > .ui.message {
   background-color: #27ae60;
   box-shadow: none;
@@ -145,27 +158,27 @@ nav .mobile.only.row .ui.vertical.menu {
   z-index: 1000;
 }
 
-@media -sass-debug-info{filename{}line{font-family:\00003109}}
+@media -sass-debug-info{filename{}line{font-family:\00003125}}
 table.selectable tr:hover {
   cursor: pointer !important;
 }
 
-@media -sass-debug-info{filename{}line{font-family:\00003114}}
+@media -sass-debug-info{filename{}line{font-family:\00003130}}
 .ui.dropdown > .text {
   color: gray;
 }
 
-@media -sass-debug-info{filename{}line{font-family:\00003120}}
+@media -sass-debug-info{filename{}line{font-family:\00003136}}
 form .field, form input, form textarea, table .field, table input, table textarea {
   font-family: "Nunito Sans", sans-serif !important;
 }
-@media -sass-debug-info{filename{}line{font-family:\00003124}}
+@media -sass-debug-info{filename{}line{font-family:\00003140}}
 form .ui.button:hover, table .ui.button:hover {
   background-color: #505050;
   color: #FFFFFF;
 }
 
-@media -sass-debug-info{filename{}line{font-family:\00003131}}
+@media -sass-debug-info{filename{}line{font-family:\00003147}}
 .ui.button {
   background-color: #000000;
   color: #FFFFFF;
@@ -173,41 +186,46 @@ form .ui.button:hover, table .ui.button:hover {
   font-weight: normal;
 }
 
-@media -sass-debug-info{filename{}line{font-family:\00003138}}
+@media -sass-debug-info{filename{}line{font-family:\00003154}}
 .ui.button:hover {
   background-color: #505050;
   color: #FFFFFF;
   font-family: "Nunito Sans", sans-serif;
 }
 
-@media -sass-debug-info{filename{}line{font-family:\00003144}}
+@media -sass-debug-info{filename{}line{font-family:\00003160}}
 h1.ui.header, h2.ui.header {
   color: #000000;
 }
 
-@media -sass-debug-info{filename{}line{font-family:\00003149}}
+@media -sass-debug-info{filename{}line{font-family:\00003165}}
 .ui.positive.message {
   background-color: transparent;
   border: 1px solid #27ae60;
   box-shadow: none;
   color: #27ae60;
 }
-@media -sass-debug-info{filename{}line{font-family:\00003155}}
+@media -sass-debug-info{filename{}line{font-family:\00003171}}
 .ui.positive.message > .close.icon {
   top: 1em;
 }
 
-@media -sass-debug-info{filename{}line{font-family:\00003161}}
+@media -sass-debug-info{filename{}line{font-family:\00003177}}
 ::-webkit-scrollbar {
   -webkit-appearance: none;
   width: 7px;
 }
 
-@media -sass-debug-info{filename{}line{font-family:\00003165}}
+@media -sass-debug-info{filename{}line{font-family:\00003181}}
 ::-webkit-scrollbar-thumb {
   border-radius: 4px;
   background-color: rgba(0, 0, 0, 0.3);
   -webkit-box-shadow: 0 0 1px rgba(255, 255, 255, 0.5);
+}
+
+@media -sass-debug-info{filename{}line{font-family:\00003188}}
+#h4i-full-logo img {
+  width: 8em;
 }
 
 /******** GENERAL MAP/LIST GRID STYLES *************/

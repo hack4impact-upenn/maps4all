@@ -12,5 +12,14 @@
         {{ page.render_inline_editor(editable_html_obj, current_user) }}
     </div>
 
-    <script src="{{ url_for('static', filename='ckeditor/ckeditor.js') }}"></script>
+    {% if not current_user.is_admin() %}
+    <div class="ui text container">
+      <a class="header item" id="h4i-full-logo" target="_blank" href="https://hack4impact.org">
+        <img src="{{ url_for('static', filename='images/applogo_color.png') }}">
+      </a>
+    </div>
+    {% endif %}
+  </div>
+
+  <script src="{{ url_for('static', filename='ckeditor/ckeditor.js') }}"></script>
 {% endblock %}

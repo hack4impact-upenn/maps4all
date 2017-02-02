@@ -65,6 +65,22 @@ nav {
 .ui.fixed.main.menu {
   background-color: $accent-color;
   font-family: $font-choice;
+
+  .ui.container #h4i-logo {
+    img {
+      width: 1.5em;
+    }
+  }
+
+  .ui.container {
+    width: 95%;
+  }
+}
+
+// Logo border
+// specificity to override
+.ui.menu:not(.secondary):not(.text):not(.tabular):not(.borderless)>.container>.item:not(.right):not(.borderless):first-child {
+  border-left-color: $accent-color;
 }
 
 .ui.menu .item.nav-mobile-switch {
@@ -166,4 +182,10 @@ h1.ui.header, h2.ui.header {
     border-radius: 4px;
     background-color: rgba(0,0,0,.3);
     -webkit-box-shadow: 0 0 1px rgba(255,255,255,.5);
+}
+
+#h4i-full-logo {
+  img {
+    width: 8em;
+  }
 }
