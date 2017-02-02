@@ -502,7 +502,7 @@ function populateListDiv() {
 function resizeMapListGrid() {
   var navHeight = $('.ui.navigation.grid').height();
 
-  // TODO: remove hack of subtracting 40 and 15
+  // TODO: remove hack of subtracting 50 and 23
   // Adjusts for space between nav and grid
   if ($(window).width() <= singleColNoSpaceBreakpoint) {
     $('#map-list-grid').height($('body').height() - navHeight - 23);
@@ -517,9 +517,11 @@ function resizeMapListGrid() {
   }
 
   var center = map.getCenter();
+  var zoom = map.getZoom();
   // Need to call resize event on map or creates dead grey area on map
   google.maps.event.trigger(map, "resize");
   map.setCenter(center);
+  map.setZoom(zoom);
 }
 
 /********************* MOBILE RESPONSIVE *******************/
