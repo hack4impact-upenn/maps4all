@@ -148,6 +148,22 @@
   <div class="ui hidden divider"></div>
   <div class="actions">
     <h2 class="ui dividing header">Actions</h2>
+    <div class="text-save">
+        <div class="ui form">
+          <h3 class="ui header" id="sms-header">Save this resource through SMS</h3>
+          <p class="disclaimer-sms">Standard messaging rates apply</p>
+          <div class="ui input" id="twilio-input">
+            <input type="text" id="phone-number" placeholder="Type your mobile number in the form: 1234567890">
+          </div>
+          <button class="ui button" id="text-save-submit">Text me</button>
+        </div>
+    </div>
+    <div class="textSentSuccess">
+      <div class="ui positive message">
+        <i class="close icon" id="sms-success-close"></i>
+        Your text was sent!
+      </div>
+    </div>
     <div class="userRating">
       <div class="ui segment" id="user-rating">
         <div class="ui form">

@@ -318,8 +318,33 @@ $input-color: rgba(0, 0, 0, 0.4);
     display: none;
   }
 
+  .textSentSuccess{
+    display: none;
+    margin-top: 3px;
+  }
+
+  #sms-header {
+    margin-bottom: 2px;
+  }
+
+  #phone-number {
+    margin-bottom: 4px;
+    margin-top: 2px;
+  }
+
+  #twilio-input {
+    width: 100%;
+  }
+
+  .disclaimer-sms {
+    font-size: 10;
+    margin-bottom: 2px;
+    margin-top: 2px;
+  }
+
   .sub.header {
     font-size: $font-size;
+    margin-bottom: 0.5em;
   }
 
   .ui.label {
