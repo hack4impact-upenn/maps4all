@@ -72,6 +72,26 @@
                 {% endfor %}
               </div>
             {% endif %}
+
+            {% if remove_descs %}
+            <h4 class="ui header">
+              Descriptor Types To Be Removed
+              <div class="sub header">
+                These are the descriptors currently in the app but <b>NOT</b> in the CSV,
+                and will be deleted. If you did not want to delete these descriptors, please add them
+                back into the CSV.
+              </div>
+            </h4>
+            <div class="ui relaxed list">
+              {% for desc in remove_descs %}
+              <div class="item">
+                <div class="content">
+                  <h5 class="header">{{ desc }}</h5>
+                </div>
+              </div>
+              {% endfor %}
+            </div>
+            {% endif %}
         </div>
     </div>
 {% endblock %}

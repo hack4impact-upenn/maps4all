@@ -82,7 +82,6 @@ class CsvDescriptor(db.Model):
 
 class CsvDescriptorRemove(db.Model):
     """
-    (CURRENTLY NOT IN USE)
     Representation of a descriptor (header) not in the CSV but in the app
     - In updates, if a descriptor is in the app but not in the new CSV then we
     assume deletion of this descriptor
