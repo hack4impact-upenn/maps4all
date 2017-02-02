@@ -1,3 +1,42 @@
+$accent-color: #000000;
+$accent-color-light: #505050;
+$accent-color-grey: #EEEEEE;
+$accent-color-dark-grey: #555;
+$secondary-color: #27ae60;
+$secondary-color-light: #2ecc71;
+$subheader-color: #AAAAAA;
+$font-choice: 'Nunito Sans', sans-serif;
+$transform: translate(-50%,0%);
+
 .editor-user {
-    word-wrap: break-word;
+  word-wrap: break-word;
+}
+
+.static-page, .form-page {
+  margin-bottom: 50px;
+  left: 50%;
+  position: absolute;
+  top: 75px;
+  transform: $transform;
+  -ms-transform: $transform;
+  -webkit-transform: $transform;
+
+  .ui.text.container {
+    margin-bottom: 1em;
+  }
+}
+
+.static-page {
+  p {
+    font-family: $font-choice;
+  }
+
+  h1, h2, h3 {
+    color: $subheader-color;
+    margin-bottom: 8px;
+  }
+
+  .ui.header {
+    color: $accent-color;
+  }
 }

@@ -634,7 +634,36 @@ h1.ui.header, h2.ui.header {
   background-color: #505050;
 }
 
-@media -sass-debug-info{filename{}line{font-family:\000031}}
+@media -sass-debug-info{filename{}line{font-family:\0000311}}
 .editor-user {
   word-wrap: break-word;
+}
+
+@media -sass-debug-info{filename{}line{font-family:\0000315}}
+.static-page, .form-page {
+  margin-bottom: 50px;
+  left: 50%;
+  position: absolute;
+  top: 75px;
+  transform: translate(-50%, 0%);
+  -ms-transform: translate(-50%, 0%);
+  -webkit-transform: translate(-50%, 0%);
+}
+@media -sass-debug-info{filename{}line{font-family:\0000324}}
+.static-page .ui.text.container, .form-page .ui.text.container {
+  margin-bottom: 1em;
+}
+
+@media -sass-debug-info{filename{}line{font-family:\0000330}}
+.static-page p {
+  font-family: "Nunito Sans", sans-serif;
+}
+@media -sass-debug-info{filename{}line{font-family:\0000334}}
+.static-page h1, .static-page h2, .static-page h3 {
+  color: #AAAAAA;
+  margin-bottom: 8px;
+}
+@media -sass-debug-info{filename{}line{font-family:\0000339}}
+.static-page .ui.header {
+  color: #000000;
 }
