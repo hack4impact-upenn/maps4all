@@ -51,12 +51,14 @@ def search_resources():
         req_options = []
     # case insensitive search
     resource_pool = Resource.query.filter(Resource.name.ilike('%{}%'.format(name))).all()
-    req_opt_desc = RequiredOptionDescriptor.query.all()[0]
-    req_opt_desc = Descriptor.query.filter_by(
-        id=req_opt_desc.descriptor_id
-    ).first()
+    req_opt_desc = RequiredOptionDescriptor.query.all()
+    if req_opt_desc:
+        req_opt_desc = req_opt_desc[0]
+        req_opt_desc = Descriptor.query.filter_by(
+            id=req_opt_desc.descriptor_id
+        ).first()
     resources = []
-    if req_opt_desc is not None and len(req_options) > 0:
+    if req_opt_desc and len(req_options) > 0:
         int_req_options = []
         for o in req_options:
             int_req_options.append(req_opt_desc.values.index(str(o)))

@@ -441,19 +441,21 @@ def set_required_option_descriptor():
                     return redirect(url_for('bulk_resource.validate_required_option_descriptor'))
 
             # If not in CSV, see if it is existing required option descriptor
-            req_opt_desc = RequiredOptionDescriptor.query.all()[0]
-            if req_opt_desc.descriptor_id != -1:
-                descriptor = Descriptor.query.filter_by(
-                    id=req_opt_desc.descriptor_id
-                ).first()
-                if descriptor is not None and descriptor.name == form.required_option_descriptor.data:
-                    req_opt_desc_const = RequiredOptionDescriptorConstructor(
-                        name=descriptor.name,
-                        values=descriptor.values
-                    )
-                    db.session.add(req_opt_desc_const)
-                    db.session.commit()
-                    return redirect(url_for('bulk_resource.validate_required_option_descriptor'))
+            req_opt_desc = RequiredOptionDescriptor.query.all()
+            if req_opt_desc:
+                req_opt_desc = req_opt_desc[0]
+                if req_opt_desc.descriptor_id != -1:
+                    descriptor = Descriptor.query.filter_by(
+                        id=req_opt_desc.descriptor_id
+                    ).first()
+                    if descriptor is not None and descriptor.name == form.required_option_descriptor.data:
+                        req_opt_desc_const = RequiredOptionDescriptorConstructor(
+                            name=descriptor.name,
+                            values=descriptor.values
+                        )
+                        db.session.add(req_opt_desc_const)
+                        db.session.commit()
+                        return redirect(url_for('bulk_resource.validate_required_option_descriptor'))
             # If no descriptor found
             flash('Error: No required option descriptor. Please try again.', 'form-error')
 
@@ -463,14 +465,16 @@ def set_required_option_descriptor():
     req_name = ''
     remove_descs = [d.name for d in csv_storage.csv_descriptors_remove]
     if csv_storage.action == 'update':
-        req_opt_desc = RequiredOptionDescriptor.query.all()[0]
-        if req_opt_desc.descriptor_id != -1:
-            descriptor = Descriptor.query.filter_by(
-                id=req_opt_desc.descriptor_id
-            ).first()
-            if descriptor is not None and descriptor.name not in remove_descs:
-                req_name = descriptor.name
-                descriptors.append(req_name)
+        req_opt_desc = RequiredOptionDescriptor.query.all()
+        if req_opt_desc:
+            req_opt_desc = req_opt_desc[0]
+            if req_opt_desc.descriptor_id != -1:
+                descriptor = Descriptor.query.filter_by(
+                    id=req_opt_desc.descriptor_id
+                ).first()
+                if descriptor is not None and descriptor.name not in remove_descs:
+                    req_name = descriptor.name
+                    descriptors.append(req_name)
 
     # Collect all option descriptors in the CSV to display as choices in the
     # SelectField.
@@ -517,14 +521,16 @@ def validate_required_option_descriptor():
     # association with the chosen required option descriptor
     if csv_storage.action == 'update':
         # Check if there is a required option descriptor already
-        curr_req_opt_desc = RequiredOptionDescriptor.query.all()[0]
+        curr_req_opt_desc = RequiredOptionDescriptor.query.all()
         curr_req = ''
-        if curr_req_opt_desc.descriptor_id != -1:
-            req_descriptor = Descriptor.query.filter_by(
-                id=curr_req_opt_desc.descriptor_id
-            ).first()
-            if req_descriptor is not None:
-                curr_req = req_descriptor.name
+        if curr_req_opt_desc:
+            curr_req_opt_desc = curr_req_opt_desc[0]
+            if curr_req_opt_desc.descriptor_id != -1:
+                req_descriptor = Descriptor.query.filter_by(
+                    id=curr_req_opt_desc.descriptor_id
+                ).first()
+                if req_descriptor is not None:
+                    curr_req = req_descriptor.name
 
         resources = Resource.query.all()
         for r in resources:

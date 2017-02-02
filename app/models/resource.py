@@ -190,10 +190,12 @@ class Resource(db.Model):
     @staticmethod
     def get_resources_as_dicts(resources):
         # get required option descriptor
-        req_opt_desc = RequiredOptionDescriptor.query.all()[0]
-        req_opt_desc = Descriptor.query.filter_by(
-            id=req_opt_desc.descriptor_id
-        ).first()
+        req_opt_desc = RequiredOptionDescriptor.query.all()
+        if req_opt_desc:
+            req_opt_desc = req_opt_desc[0]
+            req_opt_desc = Descriptor.query.filter_by(
+                id=req_opt_desc.descriptor_id
+            ).first()
 
         resources_as_dicts = []
         for resource in resources:
@@ -201,7 +203,7 @@ class Resource(db.Model):
 
             # set required option descriptor
             req = []
-            if req_opt_desc is not None:
+            if req_opt_desc:
                 associations = OptionAssociation.query.filter_by(
                     resource_id=resource.id,
                     descriptor_id=req_opt_desc.id
