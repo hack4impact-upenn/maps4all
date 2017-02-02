@@ -87,7 +87,6 @@ def create():
                 id=req_opt_desc.descriptor_id
             ).first()
             if descriptor is not None:
-                print descriptor.name
                 if not form[descriptor.name].data:
                     flash('Error: Must set required descriptor: {}'.format(descriptor.name), 'form-error')
                     return render_template('single_resource/create.html', form=form)
