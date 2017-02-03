@@ -116,7 +116,7 @@ $ source env/bin/activate
 $ foreman start -f Local
 ```
 
-**Note**: if you are using Redis container with docker, you can ignore the error that `foreman` will display when you run the `foreman` command above. `foreman` will try to start the redis-server locally and it will not find the `redis-server` command. This is fine as long as you followed the instructions above to run Redis in a container. The error should look like this
+**Note**: if you are using Redis container with docker, you can ignore the error that `foreman` will display when you run the `foreman` command above. `foreman` will try to start the redis-server locally and it will not find the `redis-server` command. This is fine as long as you followed the [instructions above](#other-dependencies-for-running-locally) to run Redis in a container. The error should look like this
 
 ```
 $ foreman start -f Local
