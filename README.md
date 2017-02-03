@@ -71,10 +71,23 @@ Mac (using [homebrew](http://brew.sh/)):
 $ brew install redis
 ```
 
-Linux:
+Linux (Fedora)
+
+```
+$ sudo dnf install redis
+```
+
+Linux (Debian/Ubuntu):
 
 ```
 $ sudo apt-get install redis-server
+```
+
+Using Redis docker:
+
+```
+$ docker pull redis:latest
+$ docker run -d -p 6379:6379 --name maps4all-redis redis:latest
 ```
 
 ##### Create the database
