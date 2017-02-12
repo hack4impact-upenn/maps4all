@@ -82,7 +82,7 @@ function displayPhoneNumbers(descriptors) {
   var PHONE_NUMBER_LENGTH = 12;
   for (var desc in descriptors) {
     // skip option descriptors
-    if (desc.value.replace!=null) {
+    if (desc.value) {
       var updated = desc.value.replace(/(\d\d\d-\d\d\d-\d\d\d\d)/g,
         function replacePhoneNum(num) {
           return "<a href=\"tel:+1-" + num + "\">" + num + "</a>";
@@ -400,7 +400,7 @@ function initResetButton() {
     // clear location
     locationMarker.setMap(null);
     locationMarker = null;
-    $('#pac-input').val('')
+    $('#pac-input').val('');
 
     // show all resources again
     resourceSearchRequest('/get-resources');
