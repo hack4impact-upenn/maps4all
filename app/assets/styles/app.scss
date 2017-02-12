@@ -3,13 +3,73 @@ $mobile-breakpoint:        768px;
 $tablet-breakpoint:        992px;
 $small-monitor-breakpoint: 1200px;
 
+$accent-color: #000000;
+$accent-color-light: #505050;
+$accent-color-grey: #EEEEEE;
+$accent-color-dark-grey: #555;
+$secondary-color: #27ae60;
+$secondary-color-light: #2ecc71;
+$subheader-color: #AAAAAA;
+$font-choice: 'Nunito Sans', sans-serif;
+
+// General Style
+body {
+  font-family: $font-choice;
+
+  a, h1 {
+    color: $accent-color;
+    font-family: $font-choice;
+  }
+
+  a:hover {
+    color: $accent-color-light;
+  }
+
+  h2, h3 {
+    font-family: $font-choice;
+  }
+
+  p {
+    font-size: 14px;
+  }
+
+  h1 {
+    font-size: 30px;
+  }
+
+  h2 {
+    font-size: 24px;
+  }
+
+  h3 {
+    font-size: 18px;
+  }
+}
+
+.ui.menu, .ui.header {
+  font-family: $font-choice;
+}
+
+// Single Column static pages
+@media only screen and (max-width: 800px) {
+  div.form-page, div.static-page {
+    width: 90%;
+  }
+}
+
 // General nav
 nav {
   margin-bottom: 40px !important;
 }
 
+.ui.fixed.main.menu {
+  background-color: $accent-color;
+  font-family: $font-choice;
+}
+
 .ui.menu .item.nav-mobile-switch {
   display: none;
+  padding-top: 1.4em;
 
   p {
     display: inline-block;
@@ -24,16 +84,24 @@ nav {
 // Mobile nav
 nav .mobile.only.row {
   .ui.vertical.menu {
-      display: none;
-      margin-top: 40px;
+    display: none;
+    margin-top: 40px;
   }
 }
 
 // Flashes
-.flashes > .ui.message:last-of-type {
-  float: right;
+.flashes > .row > .ui.message {
+  background-color: $secondary-color;
+  box-shadow: none;
+  color: #fff;
+  font-family: $font-choice;
+  left: 0;
+  margin: auto;
   overflow: visible;
   position: absolute;
+  right: 0;
+  text-align: center;
+  width: 60%;
   z-index: 1000;
 }
 
@@ -45,4 +113,46 @@ table.selectable tr:hover {
 // Multiple option selector placeholder
 .ui.dropdown > .text {
     color: gray;
+}
+
+// Forms
+form, table {
+  .field, input, textarea {
+    font-family: $font-choice!important;
+  }
+
+  .ui.button:hover {
+    background-color: $accent-color-light;
+    color: #FFFFFF;
+  }
+}
+
+// Buttons
+.ui.button {
+  background-color: $accent-color;
+  color: #FFFFFF;
+  font-family: $font-choice;
+  font-weight: normal;
+}
+
+.ui.button:hover {
+  background-color: $accent-color-light;
+  color: #FFFFFF;
+  font-family: $font-choice;
+}
+
+h1.ui.header, h2.ui.header {
+  color: $accent-color;
+}
+
+// Message
+.ui.positive.message {
+  background-color: transparent;
+  border: 1px solid $secondary-color;
+  box-shadow: none;
+  color: $secondary-color;
+
+  > .close.icon {
+    top: 1em;
+  }
 }

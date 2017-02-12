@@ -1,17 +1,18 @@
 {% macro render_inline_editor(editable_html_obj, current_user) %}
     {% if current_user.is_admin() %}
+        <div class="ui raised teal segment">
+          <h3 class="ui header">Editing Instructions</h3>
+          <h4 class="ui header">Inserting Links</h4>
+          <p><i>To insert links and open them in a new tab, choose the "target" tab after clicking the link button, and select "New Window".</i></p>
+          <h4 class="ui header">Linking Phone Numbers</h4>
+          <p><i>To insert a linkable phone number, choose the "link" button, and in the "Display Text" field type the phone number, in the "Link type" field, choose "URL", in the "Protocol" field choose "other", and in the "URL" field, type "tel:+[countrycode]-[xxx]-[xxx]-[xxxx]", replacing the text with the number you want to link to.</i></p>
+        </div>
         <div class="ui positive message updated-alert">
           <i class="close icon"></i>
           Updated successfully
         </div>
-        <div class="ui divider"></div>
-        <h3 class="ui header">Extra Instructions</h3>
-        <h4 class="ui header">Inserting Links</h4>
-        <p><i>To insert links and open them in a new tab, choose the "target" tab after clicking the link button, and select "New Window".</i></p>
-        <h4 class="ui header">Linking Phone Numbers</h4> 
-        <p><i>To insert a linkable phone number, choose the "link" button, and in the "Display Text" field type the phone number, in the "Link type" field, choose "URL", in the "Protocol" field choose "other", and in the "URL" field, type "tel:+[countrycode]-[xxx]-[xxx]-[xxxx]", replacing the text with the number you want to link to.</i></p>
         <button class="ui button start-edit">
-         Edit
+         Edit Text
         </button>
         <div class="ui hidden divider"></div>
         <div id="editor-{{ editable_html_obj.editor_name }}" class="editor-admin" contenteditable="false">

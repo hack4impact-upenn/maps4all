@@ -1,15 +1,23 @@
-$accent-color: #000000; // change to specific color for non-generalized
-$font-choice: Roboto;
+$accent-color: #000000;
+$accent-color-light: #505050;
+$accent-color-grey: #EEEEEE;
+$accent-color-dark-grey: #555;
+$secondary-color: #27ae60;
+$secondary-color-light: #2ecc71;
+$subheader-color: #AAAAAA;
+$font-choice: 'Nunito Sans', sans-serif;
 $font-size: 14px;
+$input-color: rgba(0, 0, 0, 0.4);
 
 /******** GENERAL MAP/LIST GRID STYLES *************/
 #map-list-grid {
+  margin-top: -4px;
   padding: 1em;
   position: absolute;
   width: 100%;
 
   #left-column {
-    background-color: #EEEEEE; // TODO: change
+    background-color: $accent-color-grey;
     border: 1px solid #CCCCCC;
     height: 100%;
     overflow-y: scroll;
@@ -35,9 +43,9 @@ $font-size: 14px;
 }
 
 /*************** SEARCH STYLES ****************/
-// Location search
-#pac-input, #resources-input {
+#pac-input, #resources-input, #resource-search .ui.dropdown > .text {
   background-color: #fff;
+  color: $input-color;
   float: left;
   font-family: $font-choice;
   font-size: 15px;
@@ -47,6 +55,7 @@ $font-size: 14px;
 
 #pac-input:focus, #resources-input:focus, #search-resources-req-options:focus {
   border-color: $accent-color;
+  color: $accent-color-dark-grey;
 }
 
 #location-search, #search-keyword, #resources-input {
@@ -57,16 +66,20 @@ $font-size: 14px;
 #search-user-resources {
   background-color: $accent-color;
   color: #fff;
+  display: block;
   font-family: $font-choice;
   font-weight: 400;
+  text-align: center;
 }
 
 #reset-button {
   background-color: #CCCCCC;
   color: #fff;
+  display: block;
   font-family: $font-choice;
   font-weight: 400;
   margin-top: 0.5em;
+  text-align: center;
 }
 
 // Resource name search
@@ -77,35 +90,37 @@ $font-size: 14px;
 
 // Resource option search
 .req-desc-name {
-  font-weight: bold;
   text-transform: capitalize;
 }
 
-.descriptor-group {
-  font-family: $font-choice;
-  margin: 3px;
-
-  h5 {
-    font-family: $font-choice;
-    margin: 0 0 5px 0;
-  }
-}
-
-.option-group, .option-group-advanced {
+.option-group-advanced {
+  display: none;
   margin-bottom: 10px;
   margin-top: 10px;
 }
 
-.option-group-advanced {
-  display: none; // hide initially
+#resource-search .ui.dropdown > .ui.label {
+  background-color: inherit;
+  border: 1px solid $accent-color-light;
+  box-shadow: none;
+  color: $accent-color-light;
+  font-weight: normal;
 }
 
-#advanced-filters-showhide {
+#advanced-filters-show, #advanced-filters-hide {
   color: $accent-color;
   cursor: pointer;
-  font-family: $font-choice;
   margin-bottom: 0.5em;
+  margin-top: 0.5em;
   text-decoration: none;
+}
+
+#advanced-filters-hide {
+  display: none;
+}
+
+#advanced-filters-showhide:hover {
+  color: $accent-color-light;
 }
 
 .checkbox-option {
@@ -117,8 +132,7 @@ $font-size: 14px;
 }
 
 #search-divider, #results-divider {
-  color: #555;
-  font-family: $font-choice;
+  color: $accent-color-dark-grey;
 }
 
 #results-divider {
@@ -131,18 +145,23 @@ $font-size: 14px;
 
 /*************** LIST STYLES ****************/
 #list {
-  height: 100%;
+  margin-bottom: 0px;
   margin-top: 0px;
 }
 
 // Resource list item
-#list > .item.list-resource {
+.item.list-resource {
   cursor: pointer;
   margin: 0.5em;
   padding-bottom: 0.5em;
   padding-top: 0.5em;
 
-  .sub.header {
+  .ui.grid {
+    margin-bottom:-0.5em;
+    margin-top: -0.5em;
+  }
+
+  #list-resource-details {
     float: left;
     font-family: $font-choice;
     font-weight: normal;
@@ -150,35 +169,48 @@ $font-size: 14px;
     padding-right: 10px;
 
     .ui.small.label {
-      font-size: $font-size;
+      font-size: 12px;
     }
+  }
+
+  .ui.label {
+    background-color: inherit;
+    border: 1px solid $accent-color-light;
+    color: $accent-color-light;
+    display: inline-block;
+    font-weight: normal;
+    margin-left: 0;
+    margin-top: 0.5em;
+    padding-top: 0.5em;
+    white-space: normal;
+    word-wrap: break-word;
   }
 
   .header {
     display: block;
   }
 
-  .ui.label {
-    background-color: #DDDDDD;
-    display: inline-block;
-    margin-left: 0;
-    margin-top: 0.5em;
+  &:hover {
+    .ui.header a, #resource-list-chevron a {
+      color: $accent-color-light;
+    }
   }
 
-  a, a:hover, a:active {
-    color: $accent-color;
-    font-family: $font-choice;
-  }
-
-  #resource-list-chevron {
-    float: right;
-    margin-top: 1.5em;
-    position: absolute;
-    right: 1em;
-    vertical-align: middle;
+  &.list-selected {
+    .ui.header a, #resource-list-chevron a {
+      color: $secondary-color;
+    }
   }
 }
 
+#resource-list-chevron {
+  padding-left: 0;
+}
+
+#category, #avg_rating {
+  display: inline-block;
+  vertical-align: middle;
+}
 
 /*************** MAP STYLES ****************/
 #map {
@@ -190,32 +222,63 @@ $font-size: 14px;
 
 // Resource marker
 .marker-info {
-  font-family: $font-choice;
-  padding: 0.25em;
+  padding: 0.25em 0.25em 0em;
+
+  #address-marker {
+    margin-bottom: 2px;
+  }
+
+  #more-info-label {
+    background-color: $secondary-color;
+    color: white;
+    cursor: pointer;
+    font-weight: 300;
+    position: relative;
+    right: 8px;
+    text-decoration: none;
+  }
+
+  #more-info-label:hover {
+    background-color: $secondary-color-light;
+  }
 }
 
-#marker-resource-name, #marker-resource-info {
-  font-family: $font-choice;
-}
-
-.more-info {
-  color: $accent-color;
-  cursor: pointer;
-  text-decoration: underline;
-}
-
-.more-info:hover {
-  color: $accent-color;
+#avg_rating-marker {
+  background-color: inherit;
+  border: 1px solid $secondary-color-light;
+  color: $secondary-color-light;
+  font-size: 11px;
+  margin-right: 0px;
+  position: relative;
+  right: 8px;
 }
 
 #map-footer {
-  background-color: #EEEEEE;
+  background-color: $accent-color-grey;
   display: none;
   overflow-y: auto;
   padding: 0.5em;
 
-  #mobile-list-btn p {
-    display: inline-block;
+  .marker-info .ui.header {
+    margin-bottom: 0.5em;
+  }
+
+  #mobile-list-btn {
+    background-color: $accent-color-grey;
+    border: none;
+    color: $accent-color-dark-grey;
+    cursor: pointer;
+    font-weight: normal;
+    margin-left: 0;
+    padding-left: 0;
+
+    p {
+      display: inline-block;
+    }
+
+    &:hover {
+      color: #000;
+    }
   }
 }
 
@@ -225,18 +288,14 @@ $font-size: 14px;
   background-color: #F8F8F8;
   border: solid #CCCCCC;
   border-width: 1px 1px 1px 0;
-  font-family: $font-choice;
   height: 100%;
   overflow: scroll;
   padding: 1.25em;
+  word-wrap: break-word;
 
   // Specificity to override default styles
   > .ui.header > .sub.header > .ui.label {
     margin-left: 0px;
-  }
-
-  a {
-    color: $accent-color;
   }
 
   #resource-name {
@@ -246,50 +305,32 @@ $font-size: 14px;
     padding-top: 1em;
   }
 
-  .successMessage{
+  .successMessage {
     display: none;
-  }
-
-  .textSentSuccess{
-    display: none;
-    margin-top: 3px;
-  }
-
-  
-  #sms-header {
-    margin-bottom: 2px;
-  }
-
-  #phone-number{
-    margin-bottom: 4px;
-    margin-top: 2px;
-  }
-
-  .disclaimer-sms {
-    font-size: 10;
-    margin-bottom: 2px;
-    margin-top: 2px;
   }
 
   .sub.header {
     font-size: $font-size;
   }
 
-  #text-save-submit {
-    margin-bottom: 2px;
-    margin-top: 3px;
-  }
-
   .ui.label {
+    background-color: inherit;
+    border: 1px solid $accent-color-light;
+    color: $accent-color-light;
     font-size: $font-size;
+    font-weight: normal;
     margin-top: 0.4em;
     margin-bottom: 1em;
-  }
-  .ui.header  {
-    color: $accent-color;
-    font-family: $font-choice;
+    padding-top: 0.4em;
   }
 
+  .ui.header  {
+    color: $accent-color;
+  }
+}
+
+#descriptor-name {
+  font-family: $font-choice;
 }
 
 #back-button {
@@ -300,7 +341,34 @@ $font-size: 14px;
   z-index: 2;
 }
 
+#back-button:hover {
+  color: $accent-color-light;
+}
+
 #single-resource-map {
   height: 400px;
   width: 100%;
+}
+
+#user-rating, .successMessage {
+  margin-bottom: 1em;
+}
+
+#user-rating {
+  background-color: #F8F8F8;
+  box-shadow: none;
+}
+
+#avg_rating {
+  color: $accent-color;
+}
+
+#submit-rating {
+  background-color: $accent-color;
+  color: #fff;
+  font-weight: 400;
+}
+
+#submit-rating:hover {
+  background-color: $accent-color-light;
 }

@@ -32,8 +32,13 @@
           </select>
         {% endif %}
         {% if options %}
-          <div id="advanced-filters-showhide">
+          <div id="advanced-filters-show">
+              <i class="plus icon"></i>
               Show Advanced Filters
+          </div>
+          <div id="advanced-filters-hide">
+              <i class="minus icon"></i>
+              Hide Advanced Filters
           </div>
           <div id="advanced-search" class="option-group-advanced">
               {% for o in options.keys() %}
@@ -80,21 +85,23 @@
   <div class="marker-info">
     <h3 class="ui header">
       {% raw %}{{ name }}{% endraw %}
-      {% raw %}{{#if avg_rating}}{% endraw %}
-      <a class="ui label" id="avg_rating">
-        <i class="yellow star icon"></i>
-        {% raw %}{{ avg_rating }}{% endraw %}
-      </a>
-      {% raw %}{{/if}}{% endraw %}
-        <div class="sub header">
-          <div>{% raw %}{{ address }}{% endraw %}</div>
-          <a class="more-info">More Information</a>
-        </div>
+      <div class="sub header">
+        <div id="address-marker">{% raw %}{{ address }}{% endraw %}</div>
+        {% raw %}{{#if avg_rating}}{% endraw %}
+          <div class="ui label" id="avg_rating-marker">
+            <i class="yellow star icon"></i>
+            {% raw %}{{ avg_rating }}{% endraw %}
+          </div>
+        {% raw %}{{/if}}{% endraw %}
+        <a class="more-info">
+          <div class="ui label" id="more-info-label">More Information</div>
+        </a>
+      </div>
     </h3>
     {% raw %}{{#if responsive}}{% endraw %}
-      <a class="ui button item" id="mobile-list-btn">
-        <i class="list icon"></i>
-        <p>Show List</p>
+      <a class="ui label" id="mobile-list-btn">
+        <i class="chevron left icon"></i>
+        <p>Back to List</p>
       </a>
     {% raw %}{{/if}}{% endraw %}
   </div>
@@ -105,17 +112,19 @@
   <i class="big link remove icon" id="back-button"></i>
   <h1 class="ui header" id="resource-name">
     {% raw %}{{ name }}{% endraw %}
-    {% raw %}{{#if avg_rating}}{% endraw %}
-    <a class="ui label" id="avg_rating">
-      <i class="yellow star icon"></i>
-      {% raw %}{{ avg_rating }}{% endraw %}
-    </a>
-    {% raw %}{{/if}}{% endraw %}
     <div class="sub header">
       {% raw %}{{ address }}{% endraw %}
       <br>
+      {% raw %}{{#if avg_rating}}{% endraw %}
+      <div class="ui label" id="avg_rating">
+        <i class="yellow star icon"></i>
+        {% raw %}{{ avg_rating }}{% endraw %}
+      </div>
+      {% raw %}{{/if}}{% endraw %}
       {% raw %}{{#each requiredOpts}}{% endraw %}
-          <span class="ui large label">{% raw %}{{ this }}{% endraw %}</span>
+          <span class="ui large label" id="category">
+            {% raw %}{{ this }}{% endraw %}
+          </span>
       {% raw %}{{/each}}{% endraw %}
     </div>
   </h1>
@@ -127,7 +136,7 @@
       {% raw %}{{#each descriptors}}{% endraw %}
         {% raw %}{{#if value}}{% endraw %}
           <div class="item descriptor">
-            <div class="header">{% raw %}{{ key }}{% endraw %}</div>
+            <div class="header" id="descriptor-name">{% raw %}{{ key }}{% endraw %}</div>
             <div id={% raw %}{{ concat 'descriptor-value-' key }}{% endraw %}>
               {% raw %}{{ value }}{% endraw %}
             </div>
@@ -139,42 +148,26 @@
   <div class="ui hidden divider"></div>
   <div class="actions">
     <h2 class="ui dividing header">Actions</h2>
-    <div class="text-save">
+    <div class="userRating">
+      <div class="ui segment" id="user-rating">
         <div class="ui form">
-          <h3 class="ui header" id="sms-header">Save this resource through SMS</h3>
-          <p class="disclaimer-sms">Standard messaging rates apply</p>
-          <div class="ui input">
-            <input type="text" id="phone-number" placeholder="Type your mobile number in the form: 1234567890">
+          <h3 class="ui dividing header" id="rating-header">Submit a Review</h3>
+          <div class="field">
+            <label>Rating (Required)</label>
+            <div class="ui star rating" id="rating-input"></div>
           </div>
-          <button class="ui button" id="text-save-submit">Text me</button>
+          <div class="field">
+            <label>Review (Optional)</label>
+            <textarea rows="2" id="review"></textarea>
+          </div>
+          <button class="ui disabled button" id="submit-rating">Submit</button>
         </div>
-      </div>
-    </div>
-    <div class="textSentSuccess">
-      <div class="ui positive message">
-        <i class="close icon" id="sms-success-close"></i>
-        Your text was sent!
-      </div>
-    </div>
-    <div class="ui hidden divider"></div>
-    <div class="userRating" id="user-rating">
-      <div class="ui form">
-        <h3 class="ui header">Submit a Review</h3>
-        <div class="field">
-          <label>Rating (Required)</label>
-          <div class="ui star rating" id="rating-input"></div>
-        </div>
-        <div class="field">
-          <label>Review (Optional)</label>
-          <textarea rows="2" id="review"></textarea>
-        </div>
-        <button class="ui disabled button" id="submit-rating">Submit</button>
       </div>
     </div>
     <div class="successMessage">
-        <div class="ui positive message">
-          Thanks, your rating has been posted!
-        </div>
+      <div class="ui positive message">
+        Thanks, your rating has been posted!
+      </div>
     </div>
     <a href="{% raw %}{{ suggestionUrl }}{% endraw %}">
       Suggest an edit for this resource
@@ -186,25 +179,32 @@
 <script id="listview-template" type="text/x-handlebars-template">
   {% raw %}{{#each resource}}{% endraw %}
   <div class="item list-resource">
-    <h3 class="ui header">
-      <a>{% raw %}{{ name }}{% endraw %}</a>
-      {% raw %}{{#if avg_rating}}{% endraw %}
-      <a class="ui small label" id="avg_rating">
-        <i class="yellow star icon"></i>
-        {% raw %}{{ avg_rating }}{% endraw %}
-      </a>
-      {% raw %}{{/if}}{% endraw %}
-    </h3>
-    <div class="sub header">
-      <div>{% raw %}{{ address }}{% endraw %}</div>
-      {% raw %}{{#each requiredOpts}}{% endraw %}
-          <div class="ui small label">{% raw %}{{ this }}{% endraw %}</div>
-      {% raw %}{{/each}}{% endraw %}
+    <div class="ui grid">
+      <div class="ui fourteen wide column">
+        <h3 class="ui left aligned header">
+          <a>{% raw %}{{ name }}{% endraw %}</a>
+        </h3>
+        <div class="list-resource-details">
+          <div>{% raw %}{{ address }}{% endraw %}</div>
+          <div>
+          {% raw %}{{#if avg_rating}}{% endraw %}
+            <a class="ui small label" id="avg_rating">
+              <i class="yellow star icon"></i>
+              {% raw %}{{ avg_rating }}{% endraw %}
+            </a>
+          {% raw %}{{/if}}{% endraw %}
+          {% raw %}{{#each requiredOpts}}{% endraw %}
+              <div class="ui small label" id="category">
+                {% raw %}{{ this }}{% endraw %}
+              </div>
+          {% raw %}{{/each}}{% endraw %}
+          </div>
+        </div>
+      </div>
+      <div class="two wide column" id="resource-list-chevron">
+        <a><i class="large right chevron icon"></i></a>
+      </div>
     </div>
-    <div class="right floated content" id="resource-list-chevron">
-      <a><i class="large right chevron icon"></i></a>
-    </div>
-
   </div>
   {% raw %}{{/each}}{% endraw %}
 </script>
@@ -222,13 +222,16 @@
       resizeMapListGrid();
     });
 
-    $('#advanced-filters-showhide').click(function() {
-      if ($(this).text() === 'Close Advanced Filters') {
-        $(this).text('Show Advanced Filters');
-      } else {
-        $(this).text('Close Advanced Filters');
-      }
-      $('.option-group-advanced').toggle();
+    $('#advanced-filters-show').click(function() {
+      $('#advanced-filters-show').hide();
+      $('#advanced-filters-hide').show();
+      $('#advanced-search').show();
+    });
+
+    $('#advanced-filters-hide').click(function() {
+      $('#advanced-filters-show').show();
+      $('#advanced-filters-hide').hide();
+      $('#advanced-search').hide();
     });
 
     // Placeholder text for descriptor dropdowns
