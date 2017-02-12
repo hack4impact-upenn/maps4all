@@ -1,7 +1,7 @@
 import json
 import os
 from twilio.rest.lookups import TwilioLookupsClient
-from twilio.rest import TwilioRestClient 
+from twilio.rest import TwilioRestClient
 from flask import render_template, url_for, request, jsonify
 from flask.ext.login import login_required
 from twilio import twiml
@@ -15,20 +15,22 @@ from datetime import datetime
 
 @main.route('/')
 def index():
-    req_opt_desc = RequiredOptionDescriptor.query.all()[0]
-    req_opt_desc = Descriptor.query.filter_by(
-        id=req_opt_desc.descriptor_id
-    ).first()
+    req_opt_desc = RequiredOptionDescriptor.query.all()
     req_opt_id = -1
-    if req_opt_desc is not None:
-        req_opt_id = req_opt_desc.id
+    if req_opt_desc:
+        req_opt_desc = req_opt_desc[0]
+        req_opt_desc = Descriptor.query.filter_by(
+            id=req_opt_desc.descriptor_id
+        ).first()
+        if req_opt_desc is not None:
+            req_opt_id = req_opt_desc.id
     options = Descriptor.query.all()
     options = [o for o in options if len(o.text_resources) == 0 and o.id != req_opt_id]
     options_dict = {}
     for o in options:
         options_dict[o.name] = o.values
     req_options = {}
-    if req_opt_desc is not None:
+    if req_opt_desc:
         for val in req_opt_desc.values:
             req_options[val] = False
     return render_template('main/index.html', options=options_dict, req_options=req_options, req_desc=req_opt_desc)
@@ -49,12 +51,14 @@ def search_resources():
         req_options = []
     # case insensitive search
     resource_pool = Resource.query.filter(Resource.name.ilike('%{}%'.format(name))).all()
-    req_opt_desc = RequiredOptionDescriptor.query.all()[0]
-    req_opt_desc = Descriptor.query.filter_by(
-        id=req_opt_desc.descriptor_id
-    ).first()
+    req_opt_desc = RequiredOptionDescriptor.query.all()
+    if req_opt_desc:
+        req_opt_desc = req_opt_desc[0]
+        req_opt_desc = Descriptor.query.filter_by(
+            id=req_opt_desc.descriptor_id
+        ).first()
     resources = []
-    if req_opt_desc is not None and len(req_options) > 0:
+    if req_opt_desc and len(req_options) > 0:
         int_req_options = []
         for o in req_options:
             int_req_options.append(req_opt_desc.values.index(str(o)))
@@ -130,6 +134,13 @@ def about():
     return render_template('main/about.html',
                            editable_html_obj=editable_html_obj)
 
+@main.route('/overview')
+@login_required
+def overview():
+   editable_html_obj = EditableHTML.get_editable_html('overview')
+   return render_template('main/overview.html',
+                          editable_html_obj=editable_html_obj)
+
 @main.route('/update-editor-contents', methods=['POST'])
 @login_required
 def update_editor_contents():
@@ -151,7 +162,7 @@ def send_sms():
     sid = os.environ.get('TWILIO_ACCOUNT_SID')
     auth = os.environ.get('TWILIO_AUTH_TOKEN')
     client = TwilioLookupsClient(account=sid, token=auth)
-    send_client = TwilioRestClient(account=sid, token=auth) 
+    send_client = TwilioRestClient(account=sid, token=auth)
     if request is not None:
         phone_num= request.json['number']
         resourceID = request.json['id']
@@ -164,7 +175,7 @@ def send_sms():
             num = number.phone_number
             send_client.messages.create(
                 to=num,
-                from_="+17657692023", 
+                from_="+17657692023",
                 body=message)
             return jsonify(status='success')
         except:

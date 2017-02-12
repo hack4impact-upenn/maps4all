@@ -69,7 +69,6 @@
                             Delete this user
                         </a>
                     </div>
-                    </div>
                 {% elif form %}
                     {{ f.render_form(form) }}
                 {% else %}
@@ -80,14 +79,16 @@
     </div>
 
     <script type="text/javascript">
-        $('.deletion.checkbox').checkbox({
-            onChecked: function() {
-                $('.deletion.button').removeClass('disabled')
-                        .attr('href', '{{ url_for('admin.delete_user', user_id=user.id) }}');
-            },
-            onUnchecked: function() {
-                $('.deletion.button').addClass('disabled').removeAttr('href');
-            }
-        });
+      $(document).ready(function() {
+          $('.ui.deletion.checkbox').checkbox({
+              onChecked: function() {
+                  $('.deletion.button').removeClass('disabled')
+                          .attr('href', '{{ url_for('admin.delete_user', user_id=user.id) }}');
+              },
+              onUnchecked: function() {
+                  $('.deletion.button').addClass('disabled').removeAttr('href');
+              }
+          });
+      });
     </script>
 {% endblock %}

@@ -36,18 +36,6 @@
         <div>
 
         <div class="twelve wide column">
-            <h4 class="ui header">
-              Set New Descriptor Types
-              <div class="sub header">
-                We have identified these new descriptors in your CSV file. Please
-                identify each descriptor as either a text or an option descriptor.
-              </div>
-            </h4>
-            {% if num == 0 %}
-              <i>No new descriptor types in CSV</i>
-            {% endif %}
-            {{ f.render_form(form) }}
-
             {% if existing_descs %}
               <h4 class="ui header">
                 Existing Descriptor Types
@@ -71,7 +59,41 @@
                 </div>
                 {% endfor %}
               </div>
+              <div class="ui divider"></div>
             {% endif %}
+
+            {% if remove_descs %}
+            <h4 class="ui header">
+              Descriptor Types To Be Removed
+              <div class="sub header">
+                These are the descriptors currently in the app but <b>NOT</b> in the CSV,
+                and will be deleted. If you did not want to delete these descriptors, please add them
+                back into the CSV.
+              </div>
+            </h4>
+            <div class="ui relaxed list">
+              {% for desc in remove_descs %}
+              <div class="item">
+                <div class="content">
+                  <h5 class="header">{{ desc }}</h5>
+                </div>
+              </div>
+              {% endfor %}
+            </div>
+            <div class="ui divider"></div>
+            {% endif %}
+
+            <h4 class="ui header">
+              Set New Descriptor Types
+              <div class="sub header">
+                We have identified these new descriptors in your CSV file. Please
+                identify each descriptor as either a text or an option descriptor.
+              </div>
+            </h4>
+            {% if num == 0 %}
+              <i>No new descriptor types in CSV</i>
+            {% endif %}
+            {{ f.render_form(form) }}
         </div>
     </div>
 {% endblock %}

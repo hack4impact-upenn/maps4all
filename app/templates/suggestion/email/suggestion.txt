@@ -1,0 +1,6 @@
+Name: {{ name }}
+Email: {{ email }}
+Phone Number: {{ phone }}
+Resource Name: {{ resource_name }}
+Resource Address: {{ resource_address }}
+Suggestion Text: {{ message }}

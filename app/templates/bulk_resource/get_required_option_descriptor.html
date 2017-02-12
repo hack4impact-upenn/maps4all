@@ -42,7 +42,8 @@
               Required option descriptor denotes an option descriptor that every resource
               needs to have a value for and will be the primary filter in search.
               You can only choose from the option descriptors in the current CSV and the
-              current required option descriptor (if any).
+              current required option descriptor (if any). You cannot choose from
+              removed descriptors.
               {% if current %}
                 <p>The current required option descriptor is: <b>{{ current }}</b></p>
               {% endif %}

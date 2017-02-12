@@ -2,7 +2,7 @@
 
 {% block content %}
     <div class="ui stackable grid container">
-        <div class="sixteen wide tablet twelve wide computer centered column">
+        <div class="sixteen wide tablet fourteen wide computer centered column">
             <h2 class="centered ui header">
                 Ratings and Reviews
                 <div class="sub header">
@@ -25,7 +25,7 @@
                     <tbody>
                     {% for rating in ratings %}
                         <tr>
-                            <td>{{ rating['submission_time'] }}</td>
+                            <td>{{ rating['submission_time'].strftime('%m-%d-%Y') }}</td>
                             <td>{{ rating['resource_name'] }}</td>
                             <td>{{ rating['rating'] }}</td>
                             <td>{{ rating['review'] }}</td>

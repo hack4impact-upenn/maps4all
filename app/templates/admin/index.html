@@ -21,11 +21,11 @@
 {% endmacro %}
 
 {% block content %}
-    <div class="ui stackable centered grid container">
+    <div class="ui stackable centered grid container" id="admin-home">
         <div class="twelve wide column">
-            <h2 class="ui header">
+            <h1 class="ui header">
                 Administrator Dashboard
-            </h2>
+            </h1>
             <div class="ui three column stackable grid">
                 {{ dashboard_option('Registered Users', 'admin.registered_users',
                                     description='View and manage user accounts', icon='users icon') }}
@@ -46,7 +46,7 @@
                 {{ dashboard_option('Upload Resources', 'bulk_resource.upload',
                                     description='Upload a list of resources', icon='upload icon') }}
                 {{ dashboard_option('View Ratings/Reviews', 'admin.ratings_table',
-                                    description='See all the Ratings and Reviews', icon='star icon') }}                   
+                                    description='See all the Ratings and Reviews', icon='star icon') }}
             </div>
         </div>
     </div>

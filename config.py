@@ -1,6 +1,7 @@
 import os
 import urlparse
 import logging, sys
+from logging.handlers import SMTPHandler
 
 basedir = os.path.abspath(os.path.dirname(__file__))
 
@@ -11,13 +12,13 @@ class Config:
         'SjefBOa$1FgGco0SkfPO392qqH9%a492'
     SQLALCHEMY_COMMIT_ON_TEARDOWN = True
 
-    MAIL_SERVER = 'smtp.gmail.com'
+    MAIL_SERVER = 'smtp.sendgrid.net'
     MAIL_PORT = 587
     MAIL_USE_TLS = True
     MAIL_USERNAME = os.environ.get('MAIL_USERNAME')
     MAIL_PASSWORD = os.environ.get('MAIL_PASSWORD')
 
-    ADMIN_EMAIL = 'maps4all.team@gmail.com'
+    ADMIN_EMAIL = os.environ.get('ADMIN_EMAIL')
     EMAIL_SUBJECT_PREFIX = '[{}]'.format(APP_NAME)
     EMAIL_SENDER = '{app_name} Admin <{email}>'.format(app_name=APP_NAME,
                                                        email=MAIL_USERNAME)
@@ -63,25 +64,23 @@ class ProductionConfig(Config):
 
         app.logger.addHandler(logging.StreamHandler(sys.stdout))
         app.logger.setLevel(logging.ERROR)
-        # # Email errors to administators
-        # import logging
-        # from logging.handlers import SMTPHandler
-        # credentials = None
-        # secure = None
-        # if getattr(cls, 'MAIL_USERNAME', None) is not None:
-        #     credentials = (cls.MAIL_USERNAME, cls.MAIL_PASSWORD)
-        #     if getattr(cls, 'MAIL_USE_TLS', None):
-        #         secure = ()
-        # mail_handler = SMTPHandler(
-        #     mailhost=(cls.MAIL_SERVER, cls.MAIL_PORT),
-        #     fromaddr=cls.EMAIL_SENDER,
-        #     toaddrs=[cls.ADMIN_EMAIL],
-        #     subject=cls.EMAIL_SUBJECT_PREFIX + ' Application Error',
-        #     credentials=credentials,
-        #     secure=secure
-        # )
-        # mail_handler.setLevel(logging.ERROR)
-        # app.logger.addHandler(mail_handler)
+        # Email errors to administators
+        credentials = None
+        secure = None
+        if getattr(cls, 'MAIL_USERNAME', None) is not None:
+            credentials = (cls.MAIL_USERNAME, cls.MAIL_PASSWORD)
+            if getattr(cls, 'MAIL_USE_TLS', None):
+                secure = ()
+        mail_handler = SMTPHandler(
+            mailhost=(cls.MAIL_SERVER, cls.MAIL_PORT),
+            fromaddr=cls.EMAIL_SENDER,
+            toaddrs=[cls.ADMIN_EMAIL],
+            subject=cls.EMAIL_SUBJECT_PREFIX + ' Application Error',
+            credentials=credentials,
+            secure=secure
+        )
+        mail_handler.setLevel(logging.ERROR)
+        app.logger.addHandler(mail_handler)
 
 
 class HerokuConfig(ProductionConfig):

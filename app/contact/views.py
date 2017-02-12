@@ -10,6 +10,7 @@ from ..models import EditableHTML, Resource, ContactCategory
 from . import contact
 from forms import ContactForm, ContactCategoryForm, EditCategoryNameForm
 from app import create_app
+from ..email import send_email
 
 @contact.route('/', methods=['GET', 'POST'])
 def index():

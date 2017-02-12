@@ -1,8 +1,12 @@
 {% extends 'layouts/base.html' %}
 <!--TODO: have a "mark as read" column in the table -->
 {% block content %}
-  <div class="ui text container">
-    <table class="ui unstackable celled table">
+<div class="ui stackable grid container">
+    <div class="sixteen wide tablet fourteen wide computer centered column">
+    <h2 class="ui centered header">
+      Suggestions
+    </h2>
+    <table class="ui searchable sortable unstackable selectable celled striped table">
       <thead>
         <tr>
           <th>Timestamp</th>
@@ -17,7 +21,7 @@
       <tbody>
         {% for suggestion in suggestions %}
           <tr>
-            <td>{{ suggestion.submission_time }}</td>
+            <td>{{ suggestion.submission_time.strftime('%m-%d-%Y') }}</td>
             <td>{{ suggestion.resource_name }}</td>
             <td>{{ suggestion.resource_address }}</td>
             <td>{{ suggestion.suggestion_text }}</td>
@@ -42,10 +46,10 @@
             </td>
             <td>
               <a href="{{ url_for('suggestion.toggle_read', sugg_id=suggestion.id) }}">
-                {% if suggestion.read %} 
+                {% if suggestion.read %}
                   Mark as unread
                 {% else %}
-                  Mark as read 
+                  Mark as read
                 {% endif %}
               </a>
               <br>
@@ -57,4 +61,5 @@
       </tbody>
     </table>
   </div>
+</div>
 {% endblock %}

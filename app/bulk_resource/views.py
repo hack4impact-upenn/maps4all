@@ -110,7 +110,6 @@ def upload_row():
                 f.strip() and f.strip() != 'Name' and f.strip() != 'Address']
 
             # store descriptors to remove
-            # TODO: handle to remove descriptors in CSV workflow
             removed = set(old_d) - set(new_d)
             for f in removed:
                 old_desc = Descriptor.query.filter_by(
@@ -340,11 +339,16 @@ def set_descriptor_types():
     form.descriptor_types.label = ''
 
     # Show what type is for each existing descriptor (but don't allow to change)
+    # Also show which ones to remove
     existing_descs = []
+    remove_descs = []
     if csv_storage.action == 'update':
-        existing_descs = Descriptor.query.all()
+        remove_descs = [d.name for d in csv_storage.csv_descriptors_remove]
+        existing_descs = [d for d in Descriptor.query.all() if d.name not in remove_descs]
+
     return render_template('bulk_resource/set_descriptor_types.html',
-                           form=form, existing_descs=existing_descs, num=num)
+                           form=form, existing_descs=existing_descs,
+                           num=num, remove_descs=remove_descs)
 
 
 ''' If there are option descriptors in the CSV, display the option values parsed
@@ -437,19 +441,21 @@ def set_required_option_descriptor():
                     return redirect(url_for('bulk_resource.validate_required_option_descriptor'))
 
             # If not in CSV, see if it is existing required option descriptor
-            req_opt_desc = RequiredOptionDescriptor.query.all()[0]
-            if req_opt_desc.descriptor_id != -1:
-                descriptor = Descriptor.query.filter_by(
-                    id=req_opt_desc.descriptor_id
-                ).first()
-                if descriptor is not None and descriptor.name == form.required_option_descriptor.data:
-                    req_opt_desc_const = RequiredOptionDescriptorConstructor(
-                        name=descriptor.name,
-                        values=descriptor.values
-                    )
-                    db.session.add(req_opt_desc_const)
-                    db.session.commit()
-                    return redirect(url_for('bulk_resource.validate_required_option_descriptor'))
+            req_opt_desc = RequiredOptionDescriptor.query.all()
+            if req_opt_desc:
+                req_opt_desc = req_opt_desc[0]
+                if req_opt_desc.descriptor_id != -1:
+                    descriptor = Descriptor.query.filter_by(
+                        id=req_opt_desc.descriptor_id
+                    ).first()
+                    if descriptor is not None and descriptor.name == form.required_option_descriptor.data:
+                        req_opt_desc_const = RequiredOptionDescriptorConstructor(
+                            name=descriptor.name,
+                            values=descriptor.values
+                        )
+                        db.session.add(req_opt_desc_const)
+                        db.session.commit()
+                        return redirect(url_for('bulk_resource.validate_required_option_descriptor'))
             # If no descriptor found
             flash('Error: No required option descriptor. Please try again.', 'form-error')
 
@@ -457,15 +463,18 @@ def set_required_option_descriptor():
     # If there is an existing required option descriptor, then make it
     # the default choice
     req_name = ''
+    remove_descs = [d.name for d in csv_storage.csv_descriptors_remove]
     if csv_storage.action == 'update':
-        req_opt_desc = RequiredOptionDescriptor.query.all()[0]
-        if req_opt_desc.descriptor_id != -1:
-            descriptor = Descriptor.query.filter_by(
-                id=req_opt_desc.descriptor_id
-            ).first()
-            if descriptor is not None:
-                req_name = descriptor.name
-                descriptors.append(req_name)
+        req_opt_desc = RequiredOptionDescriptor.query.all()
+        if req_opt_desc:
+            req_opt_desc = req_opt_desc[0]
+            if req_opt_desc.descriptor_id != -1:
+                descriptor = Descriptor.query.filter_by(
+                    id=req_opt_desc.descriptor_id
+                ).first()
+                if descriptor is not None and descriptor.name not in remove_descs:
+                    req_name = descriptor.name
+                    descriptors.append(req_name)
 
     # Collect all option descriptors in the CSV to display as choices in the
     # SelectField.
@@ -512,14 +521,16 @@ def validate_required_option_descriptor():
     # association with the chosen required option descriptor
     if csv_storage.action == 'update':
         # Check if there is a required option descriptor already
-        curr_req_opt_desc = RequiredOptionDescriptor.query.all()[0]
+        curr_req_opt_desc = RequiredOptionDescriptor.query.all()
         curr_req = ''
-        if curr_req_opt_desc.descriptor_id != -1:
-            req_descriptor = Descriptor.query.filter_by(
-                id=curr_req_opt_desc.descriptor_id
-            ).first()
-            if req_descriptor is not None:
-                curr_req = req_descriptor.name
+        if curr_req_opt_desc:
+            curr_req_opt_desc = curr_req_opt_desc[0]
+            if curr_req_opt_desc.descriptor_id != -1:
+                req_descriptor = Descriptor.query.filter_by(
+                    id=curr_req_opt_desc.descriptor_id
+                ).first()
+                if req_descriptor is not None:
+                    curr_req = req_descriptor.name
 
         resources = Resource.query.all()
         for r in resources:
@@ -628,6 +639,14 @@ def save_csv():
                     is_searchable=True,
                 )
                 db.session.add(descriptor)
+
+        # Remove descriptors not in the CSV
+        for desc in csv_storage.csv_descriptors_remove:
+            d = Descriptor.query.get(desc.descriptor_id)
+            if d is None:
+                db.session.rollback()
+                abort(404)
+            db.session.delete(d)
 
         # Create/update rows and descriptor associations
         for row in csv_storage.csv_rows:

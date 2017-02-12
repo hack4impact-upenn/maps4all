@@ -72,8 +72,8 @@ function parseCSV() {
         // Catch empty lines
         // skipEmptyLines config does not catch this since we include the header
         // so the row is returned as an object which is not considered 'empty'
-        var rowValues = Object.values(row).filter(function(e) {
-          return e !== '';
+        var rowValues = Object.keys(row).filter(function(e) {
+          return row[e] !== '';
         }); // row cell values
         if (rowValues.length != 0) {
           var rowNum = numRows + 2

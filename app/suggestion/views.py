@@ -1,8 +1,10 @@
 import pytz
+import os
 
 from datetime import datetime
 from flask import abort, flash, redirect, render_template, url_for
 from flask.ext.login import login_required
+from flask.ext.rq import get_queue
 from sqlalchemy.exc import IntegrityError
 
 from . import suggestion
@@ -13,6 +15,8 @@ from wtforms.fields import TextAreaField, SelectField
 from ..single_resource.views import save_associations
 from ..single_resource.forms import SingleResourceForm
 
+from app import create_app
+from ..email import send_email
 
 @suggestion.route('/')
 @login_required
@@ -106,6 +110,20 @@ def suggest(resource_id):
         db.session.add(suggestion)
         try:
             db.session.commit()
+            app = create_app(os.getenv('FLASK_CONFIG') or 'default')
+            contact_email = app.config['ADMIN_EMAIL']
+            get_queue().enqueue(
+                send_email,
+                recipient=contact_email,
+                subject='New Suggestion',
+                template='suggestion/email/suggestion',
+                name=basic_form.contact_name.data,
+                email=basic_form.contact_email.data,
+                phone=basic_form.contact_phone_number.data,
+                message=basic_form.suggestion_text.data,
+                resource_name=basic_form.name.data,
+                resource_address=basic_form.address.data,
+            )
             flash('Thanks for the suggestion!', 'success')
             return redirect(url_for('main.index'))
         except IntegrityError:

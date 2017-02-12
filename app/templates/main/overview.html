@@ -1,0 +1,24 @@
+{% import 'macros/page_macros.html' as page %}
+{% extends 'layouts/base.html' %}
+
+{% block content %}
+  <div class="static-page">
+    <div class="ui text container">
+        <h1 class="ui header">
+        	Using the App: the Basics
+        </h1>
+         <div class="ui raised teal segment">
+          <h3 class="ui header">What's a Resource?</h3>
+          <p>A resource is a location on the map, with a required Name and Address. The Address must be "geo-codable" by Google Maps. There are no requirements for resources beyond name and address, but more information can be added to a resource through descriptors. Names should be unique to support the 'Update' CSV functionality</p>
+          <h3 class="ui header">What's a Descriptor?</h3>
+          <p>A descriptor is a standardized field you can use to add additional information to a resource, beyond its name and address. Descriptors can be used to specify a resource's hours, target audience, description, and more. There are no built-in descriptors in the app: all descriptors are admin-created, either through bulk upload or in-app creation. When you upload by CSV, descriptors are created from the non-name or non-address columns in your CSV. Descriptors come in two general types: option and text.</p>
+          <h4 class="ui header">Option Descriptors</h4>
+          <p>Option descriptors are descriptors that have an admin-specified set of values (called "options"). A resource with an option descriptor can have as many options as it wants. For example, we could have a descriptor called "Resource Type," with options "Food pantry," "Health," "Legal Services," and "Shelter." A resource that is both a "Food Pantry" and a "Shelter" could be specified as both. In bulk resource upload, specify multiple options by putting semicolons between the options you want for a resource. </p>
+          <h5 class="ui header">Required Option Descriptor</h5>
+          <p>The Required Option Descriptor is a way to have a "primary" descriptor that all resources have. This enables our "primary" search on the user end. Any option descriptor can be set as the required option descriptor, and every resource must have an option for that descriptor. The Required Option Descriptor is initially set through the CSV workflow, but can be modified in-app after upload as well.</p>
+          <h4 class="ui header">Text Descriptors</h4>
+          <p>Text descriptors are fields with no specified structure. Examples of text descriptors include, "hours", "description," and more.</p>
+        </div>
+    </div>
+  </div>
+{% endblock %}

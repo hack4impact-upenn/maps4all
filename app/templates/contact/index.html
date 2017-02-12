@@ -3,7 +3,8 @@
 {% import 'macros/form_macros.html' as f %}
 
 {% block content %}
-    <div class="ui text container">
+  <div class="form-page">
+    <div class="ui text container" id="contact">
         <h1 class="ui header">
         	Contact Us
         	{% if current_user.is_admin() %}
@@ -18,7 +19,12 @@
             <div class="ui divider"></div>
             {{ f.render_form(form) }}
         {% else %}
-            <h3>Add New Contact Category</h3>
+            <h3 class="ui header">
+              Add New Contact Category
+              <div class="sub header">
+                These are the options a user selects as the reason for contacting the admin.
+              </div>
+            </h3>
             {{ f.render_form(category_form) }}
             <h3>Current Categories</h3>
             <div style="overflow-x: scroll;">
@@ -41,6 +47,6 @@
             </div>
         {% endif %}
     </div>
-
-    <script src="{{ url_for('static', filename='ckeditor/ckeditor.js') }}"></script>
+  </div>
+  <script src="{{ url_for('static', filename='ckeditor/ckeditor.js') }}"></script>
 {% endblock %}

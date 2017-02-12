@@ -21,10 +21,14 @@
                     a resource in the app, they are assumed to be the same resource.
                     Then, the data of the resource in the app will be replaced with
                     the data in the CSV. So determining if two resources are the same or not is based on
-                    their name.
+                    their name. <b>Note: resources must have unique names then.</b>
                   </div>
                   <div class="ui item">
-                    Resources that are in the app but not in the CSV will not be
+                    Resources that are in the app but not in the CSV <b>will not</b> be
+                    removed.
+                  </div>
+                  <div class="ui item">
+                    Descriptors that are in the app but not in the CSV <b>will be</b>
                     removed.
                   </div>
                 </div>
@@ -39,14 +43,14 @@
                 <div class="inline fields">
                   <div class="field">
                     <div class="ui radio checkbox">
-                      <input type="radio" id="reset" name="reset-or-update" checked="" tabindex="0" class="hidden">
-                      <label>Reset</label>
+                      <input type="radio" id="update" name="reset-or-update" checked="" tabindex="0" class="hidden">
+                      <label>Update</label>
                     </div>
                   </div>
                   <div class="field">
                     <div class="ui radio checkbox">
-                      <input type="radio" id="update" name="reset-or-update" tabindex="0" class="hidden">
-                      <label>Update</label>
+                      <input type="radio" id="reset" name="reset-or-update" tabindex="0" class="hidden">
+                      <label>Reset</label>
                     </div>
                   </div>
                 </div>

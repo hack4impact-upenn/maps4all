@@ -13,6 +13,7 @@ var allResourceBounds;
 
 // Click listener for a marker.
 function markerListener(marker, event) {
+  $('.list-resource').removeClass('list-selected');
   $('#map').show();
   $('#resource-info').hide();
 
@@ -28,9 +29,10 @@ function markerListener(marker, event) {
 
     // TODO: Remove 15 hack
     // Split view vertically between map and a map footer for info
+    $('#right-column').height($('#map-list-grid').height());
     var totalHeight = $('#right-column').height() - 15;
-    $('#map-footer').height(totalHeight / 5);
-    $('#map').height(4 * totalHeight / 5);
+    $('#map-footer').height(totalHeight / 3);
+    $('#map').height(2 * totalHeight / 3);
     resizeMapListGrid();
 
     // Need to set center and zoom since default is not at right location
@@ -78,9 +80,9 @@ function markerListener(marker, event) {
 // Re-render html for descriptor values containing phone numbers
 function displayPhoneNumbers(descriptors) {
   var PHONE_NUMBER_LENGTH = 12;
-  for (desc of descriptors) {
+  for (var desc in descriptors) {
     // skip option descriptors
-    if (desc.value.replace!=null) {
+    if (desc.value) {
       var updated = desc.value.replace(/(\d\d\d-\d\d\d-\d\d\d\d)/g,
         function replacePhoneNum(num) {
           return "<a href=\"tel:+1-" + num + "\">" + num + "</a>";
@@ -96,6 +98,7 @@ function displayPhoneNumbers(descriptors) {
 function displayDetailedResourceView(marker) {
   // get descriptor information as associations
   $.get('get-associations/' + marker.resourceID).done(function(associations) {
+
     $("#map").hide();
     $('#map-footer').hide();
     $("#resource-info").empty();
@@ -104,11 +107,14 @@ function displayDetailedResourceView(marker) {
     var associationObject = JSON.parse(associations);
     var descriptors = [];
     for (var key in associationObject) {
-      value = associationObject[key];
+      var value = associationObject[key];
 
       // Combine multiple option descriptor values
       if (Array.isArray(associationObject[key])) {
-        value = Object.values(value).join(', ');
+        value = Object.keys(value).map(function(key) {
+          return value[key];
+        });
+        value = value.join(', ');
       }
 
       var descriptor = {
@@ -140,8 +146,11 @@ function displayDetailedResourceView(marker) {
     $("#resource-info").scrollTop(0); // reset scroll on div to top
     $('#back-button').click(function() {
       $("#map").show();
-      $('#map-footer').show();
       $("#resource-info").hide();
+
+      if ($(window).width() <= singleColBreakpoint) {
+        $('#map-footer').show();
+      }
       resizeMapListGrid();
     });
 
@@ -168,16 +177,15 @@ function displayDetailedResourceView(marker) {
       var number = $('#phone-number').val();
       var id = marker.resourceID;
       sendText(number,id);
-    })
+    });
 
     $('#sms-success-close')
       .on('click', function() {
         $(this)
           .closest('.message')
-          .transition('fade')
-        ;
-      })
-    ;
+          .transition('fade');
+      });
+
     // Map for single resource on detailed resource info page
     var singleResourceMap = new google.maps.Map(
       document.getElementById('single-resource-map'),
@@ -185,6 +193,7 @@ function displayDetailedResourceView(marker) {
         center: marker.getPosition(),
         zoom: focusZoom,
         scrollwheel: false,
+        draggable: false,
       }
     );
     var singleMarker = new google.maps.Marker({
@@ -231,7 +240,7 @@ function sendText(number,id) {
         $("#phone-number").val('');
       }
     }
-  })
+  });
 }
 
 /*
@@ -385,6 +394,14 @@ function initResetButton() {
     $('#search-resources-req-options').dropdown('clear');
     $('.search-resources-options').dropdown('clear');
 
+    // Placeholder text for descriptor dropdowns
+    $(".ui.dropdown>.text").text("Choose option(s)");
+
+    // clear location
+    locationMarker.setMap(null);
+    locationMarker = null;
+    $('#pac-input').val('');
+
     // show all resources again
     resourceSearchRequest('/get-resources');
   });
@@ -480,6 +497,11 @@ function populateListDiv() {
   $(".list-resource").each(function(i, element) {
     element.addEventListener('click', function() {
       markerListener(markersToShow[i], 'click');
+      $('.list-resource').removeClass('list-selected');
+
+      if ($(window).width() > singleColBreakpoint) {
+        $(this).addClass('list-selected');
+      }
     });
   });
 }
@@ -488,24 +510,26 @@ function populateListDiv() {
 function resizeMapListGrid() {
   var navHeight = $('.ui.navigation.grid').height();
 
-  // TODO: remove hack of subtracting 40 and 15
+  // TODO: remove hack of subtracting 50 and 23
   // Adjusts for space between nav and grid
   if ($(window).width() <= singleColNoSpaceBreakpoint) {
-    $('#map-list-grid').height($('body').height() - navHeight - 15);
+    $('#map-list-grid').height($('body').height() - navHeight - 23);
   } else {
-    $('#map-list-grid').height($('body').height() - navHeight - 40);
+    $('#map-list-grid').height($('body').height() - navHeight - 50);
   }
 
   // If we resize from single col to double col, we remove the map footer
   // so we have to make the map full size of the right column
   if ($(window).width() > singleColBreakpoint) {
-    $('#map').height($('#right-column').height());
+    $('#map').height($('#map-list-grid').height());
   }
 
   var center = map.getCenter();
+  var zoom = map.getZoom();
   // Need to call resize event on map or creates dead grey area on map
   google.maps.event.trigger(map, "resize");
   map.setCenter(center);
+  map.setZoom(zoom);
 }
 
 /********************* MOBILE RESPONSIVE *******************/
@@ -606,6 +630,10 @@ function listToMapSingleColumn() {
 
   $('#nav-to-list').show();
   $('#nav-to-map').hide();
+
+  if (infowindow) {
+    infowindow.close();
+  }
 }
 
 // Changing from map view to list view in single column mode

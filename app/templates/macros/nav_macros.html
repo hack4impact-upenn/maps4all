@@ -65,6 +65,10 @@
                 <h3 class="ui header">Bulk</h3>
                 {{ dropdown_choice('Upload Resources', 'bulk_resource.upload',
                                     icon='upload icon') }}
+                <div class="ui section divider"></div>
+                <h3 class="ui header">Info</h3>
+                {{ dropdown_choice('App Overview', 'main.overview',
+                                    icon='help circle icon') }}
             </div>
         </div>
         <a href="{{ url_for('account.manage') }}" class="item">Your Account</a>
@@ -117,6 +121,9 @@
                 {{ header_items(current_user) }}
                 <div class="right menu">
                     {{ account_items(current_user) }}
+                    <a class="header item" id="h4i-logo" target="_blank" href="https://hack4impact.org">
+                      <img src="{{ url_for('static', filename='images/h4i_square_white.png') }}">
+                    </a>
                 </div>
             </div>
         </div>
