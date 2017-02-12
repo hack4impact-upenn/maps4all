@@ -2,6 +2,7 @@
 {% extends 'layouts/base.html' %}
 
 {% block content %}
+  <div class="static-page">
     <div class="ui text container">
         <h1 class="ui header">
         	About
@@ -20,6 +21,5 @@
     </div>
     {% endif %}
   </div>
-
   <script src="{{ url_for('static', filename='ckeditor/ckeditor.js') }}"></script>
 {% endblock %}

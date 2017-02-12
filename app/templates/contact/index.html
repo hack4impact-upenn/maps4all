@@ -3,7 +3,8 @@
 {% import 'macros/form_macros.html' as f %}
 
 {% block content %}
-    <div class="ui text container">
+  <div class="form-page">
+    <div class="ui text container" id="contact">
         <h1 class="ui header">
         	Contact Us
         	{% if current_user.is_admin() %}
@@ -46,6 +47,6 @@
             </div>
         {% endif %}
     </div>
-
-    <script src="{{ url_for('static', filename='ckeditor/ckeditor.js') }}"></script>
+  </div>
+  <script src="{{ url_for('static', filename='ckeditor/ckeditor.js') }}"></script>
 {% endblock %}

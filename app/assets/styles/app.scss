@@ -110,6 +110,7 @@ nav .mobile.only.row {
   box-shadow: none;
   color: #fff;
   font-family: $font-choice;
+  font-weight: 600;
   left: 0;
   margin: auto;
   overflow: visible;
@@ -118,6 +119,10 @@ nav .mobile.only.row {
   text-align: center;
   width: 60%;
   z-index: 1000;
+
+  .close.icon {
+   opacity: 1;
+  }
 }
 
 // Tables
@@ -176,7 +181,6 @@ h1.ui.header, h2.ui.header {
 ::-webkit-scrollbar {
     -webkit-appearance: none;
     width: 10px;
-    min-height: 100px;
 }
 ::-webkit-scrollbar-thumb {
     border-radius: 4px;

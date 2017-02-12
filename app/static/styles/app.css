@@ -151,6 +151,7 @@ nav .mobile.only.row .ui.vertical.menu {
   box-shadow: none;
   color: #fff;
   font-family: "Nunito Sans", sans-serif;
+  font-weight: 600;
   left: 0;
   margin: auto;
   overflow: visible;
@@ -160,28 +161,32 @@ nav .mobile.only.row .ui.vertical.menu {
   width: 60%;
   z-index: 1000;
 }
+@media -sass-debug-info{filename{}line{font-family:\00003123}}
+.flashes > .row > .ui.message .close.icon {
+  opacity: 1;
+}
 
-@media -sass-debug-info{filename{}line{font-family:\00003124}}
+@media -sass-debug-info{filename{}line{font-family:\00003129}}
 table.selectable tr:hover {
   cursor: pointer !important;
 }
 
-@media -sass-debug-info{filename{}line{font-family:\00003129}}
+@media -sass-debug-info{filename{}line{font-family:\00003134}}
 .ui.dropdown > .text {
   color: gray;
 }
 
-@media -sass-debug-info{filename{}line{font-family:\00003135}}
+@media -sass-debug-info{filename{}line{font-family:\00003140}}
 form .field, form input, form textarea, table .field, table input, table textarea {
   font-family: "Nunito Sans", sans-serif !important;
 }
-@media -sass-debug-info{filename{}line{font-family:\00003139}}
+@media -sass-debug-info{filename{}line{font-family:\00003144}}
 form .ui.button:hover, table .ui.button:hover {
   background-color: #505050;
   color: #FFFFFF;
 }
 
-@media -sass-debug-info{filename{}line{font-family:\00003146}}
+@media -sass-debug-info{filename{}line{font-family:\00003151}}
 .ui.button {
   background-color: #000000;
   color: #FFFFFF;
@@ -189,45 +194,44 @@ form .ui.button:hover, table .ui.button:hover {
   font-weight: normal;
 }
 
-@media -sass-debug-info{filename{}line{font-family:\00003153}}
+@media -sass-debug-info{filename{}line{font-family:\00003158}}
 .ui.button:hover {
   background-color: #505050;
   color: #FFFFFF;
   font-family: "Nunito Sans", sans-serif;
 }
 
-@media -sass-debug-info{filename{}line{font-family:\00003159}}
+@media -sass-debug-info{filename{}line{font-family:\00003164}}
 h1.ui.header, h2.ui.header {
   color: #000000;
 }
 
-@media -sass-debug-info{filename{}line{font-family:\00003164}}
+@media -sass-debug-info{filename{}line{font-family:\00003169}}
 .ui.positive.message {
   background-color: transparent;
   border: 1px solid #27ae60;
   box-shadow: none;
   color: #27ae60;
 }
-@media -sass-debug-info{filename{}line{font-family:\00003170}}
+@media -sass-debug-info{filename{}line{font-family:\00003175}}
 .ui.positive.message > .close.icon {
   top: 1em;
 }
 
-@media -sass-debug-info{filename{}line{font-family:\00003176}}
+@media -sass-debug-info{filename{}line{font-family:\00003181}}
 ::-webkit-scrollbar {
   -webkit-appearance: none;
   width: 10px;
-  min-height: 100px;
 }
 
-@media -sass-debug-info{filename{}line{font-family:\00003181}}
+@media -sass-debug-info{filename{}line{font-family:\00003185}}
 ::-webkit-scrollbar-thumb {
   border-radius: 4px;
   background-color: rgba(0, 0, 0, 0.3);
   -webkit-box-shadow: 0 0 1px rgba(255, 255, 255, 0.5);
 }
 
-@media -sass-debug-info{filename{}line{font-family:\00003188}}
+@media -sass-debug-info{filename{}line{font-family:\00003192}}
 #h4i-full-logo img {
   width: 8em;
 }
