@@ -197,8 +197,13 @@ $input-color: rgba(0, 0, 0, 0.4);
   }
 
   &.list-selected {
-    .ui.header a, #resource-list-chevron a {
+    .ui.header a, #resource-list-chevron a{
       color: $secondary-color;
+    }
+
+    #avg_rating.ui.label, #category.ui.label {
+      color: $secondary-color-light;
+      border: 1px solid $secondary-color-light;
     }
   }
 }
@@ -232,7 +237,7 @@ $input-color: rgba(0, 0, 0, 0.4);
     background-color: $secondary-color;
     color: white;
     cursor: pointer;
-    font-weight: 300;
+    font-weight: 600;
     position: relative;
     right: 8px;
     text-decoration: none;
@@ -300,6 +305,8 @@ $input-color: rgba(0, 0, 0, 0.4);
   height: 100%;
   overflow: scroll;
   padding: 1.25em;
+  position: absolute;
+  width: 100%;
   word-wrap: break-word;
 
   // Specificity to override default styles
@@ -316,11 +323,13 @@ $input-color: rgba(0, 0, 0, 0.4);
 
   .successMessage {
     display: none;
+    color: 1px solid $secondary-color;
   }
 
   .textSentSuccess{
     display: none;
     margin-top: 3px;
+    color: 1px solid $secondary-color;
   }
 
   #sms-header {
@@ -345,6 +354,11 @@ $input-color: rgba(0, 0, 0, 0.4);
   .sub.header {
     font-size: $font-size;
     margin-bottom: 0.5em;
+  }
+
+  #text-save-submit {
+    margin-bottom: 2px;
+    margin-top: 3px;
   }
 
   .ui.label {
@@ -391,6 +405,7 @@ $input-color: rgba(0, 0, 0, 0.4);
 #user-rating {
   background-color: #F8F8F8;
   box-shadow: none;
+  margin-top: 1em;
 }
 
 #avg_rating {
