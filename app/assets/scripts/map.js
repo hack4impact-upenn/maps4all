@@ -303,8 +303,25 @@ function initLocationSearch(map) {
           place.address_components[2].short_name) || '')
       ].join(' ');
     }
+    createLocationMarker(place);
 
-    if (!locationMarker) {
+    // If in single column view, entering a location should go to the map view
+    if ($(window).width() <= singleColBreakpoint) {
+      listToMapSingleColumn();
+    }
+  });
+
+  // Delete location marker when deleting location query
+  $('#pac-input').keyup(function() {
+    if ($(this).val() === "") {
+      locationMarker.setMap(null);
+      locationMarker = null;
+    }
+  });
+}2
+
+function createLocationMarker(place){
+  if (!locationMarker) {
       locationMarker = new google.maps.Marker({
         map: map,
         position: place.geometry.location,
@@ -337,16 +354,6 @@ function initLocationSearch(map) {
     // If in single column view, entering a location should go to the map view
     if ($(window).width() <= singleColBreakpoint) {
       listToMapSingleColumn();
-    }
-  });
-
-  // Delete location marker when deleting location query
-  $('#pac-input').keyup(function() {
-    if ($(this).val() === "") {
-      locationMarker.setMap(null);
-      locationMarker = null;
-    }
-  });
 }
 
 /*
