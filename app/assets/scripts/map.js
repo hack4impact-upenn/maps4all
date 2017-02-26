@@ -339,7 +339,7 @@ function initCurrentLocationButton(){
         var marker_info = {
           location: pos,
           address: "",
-          name: "Current Location",
+          name: "You are here",
           currentLocation: true
         }
         console.log('current location called');
