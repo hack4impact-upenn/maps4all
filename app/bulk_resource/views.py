@@ -36,7 +36,7 @@ from ..models import (
     Suggestion,
     TextAssociation
 )
-from forms import (
+from .forms import (
     DetermineRequiredOptionDescriptorForm,
     RequiredOptionDescriptorMissingForm,
     DetermineDescriptorTypesForm,
@@ -103,7 +103,7 @@ def upload_row():
             # get old fields
             descriptors = Descriptor.query.all()
             descriptors = dict([(d.name, d) for d in descriptors])
-            old_d = descriptors.keys()
+            old_d = list(descriptors.keys())
 
             # compare with new fields
             new_d = [f.strip() for f in fields if
@@ -161,7 +161,7 @@ def upload_row():
     if data['action'] == 'reset-update': # Reset operation
         try:
             row = data['row']
-            clean_row = {k.strip():v.strip() for k, v in row.iteritems()}
+            clean_row = {k.strip():v.strip() for k, v in row.items()}
 
             # Validate addresses
             address = clean_row['Address']
@@ -211,7 +211,7 @@ def upload_row():
     if data['action'] == 'update': # Update operation
         try:
             row = data['row']
-            clean_row = {k.strip():v.strip() for k, v in row.iteritems()}
+            clean_row = {k.strip():v.strip() for k, v in row.items()}
 
             # Validate addresses
             address = clean_row['Address']
@@ -764,7 +764,7 @@ def save_csv():
 
             # Add associations for the resources missing values for the required option descriptor
             if req_opt_desc_const.missing_dict:
-                for name in req_opt_desc_const.missing_dict.keys():
+                for name in list(req_opt_desc_const.missing_dict.keys()):
                     resource = Resource.query.filter_by(
                         name=name
                     ).first()

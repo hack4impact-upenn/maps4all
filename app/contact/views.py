@@ -8,7 +8,7 @@ from wtforms.fields import SelectField
 from .. import db
 from ..models import EditableHTML, Resource, ContactCategory
 from . import contact
-from forms import ContactForm, ContactCategoryForm, EditCategoryNameForm
+from .forms import ContactForm, ContactCategoryForm, EditCategoryNameForm
 from app import create_app
 from ..email import send_email
 

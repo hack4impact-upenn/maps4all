@@ -223,11 +223,11 @@ class Resource(db.Model):
     def print_resources():
         resources = Resource.query.all()
         for resource in resources:
-            print resource
-            print resource.address
-            print '(%s , %s)' % (resource.latitude, resource.longitude)
-            print resource.text_descriptors
-            print resource.option_descriptors
+            print(resource)
+            print(resource.address)
+            print('(%s , %s)' % (resource.latitude, resource.longitude))
+            print(resource.text_descriptors)
+            print(resource.option_descriptors)
 
     def get_avg_ratings(self):
         ratings = Rating.query.filter_by(resource_id=self.id).all()
