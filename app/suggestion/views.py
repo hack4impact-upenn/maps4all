@@ -10,7 +10,7 @@ from sqlalchemy.exc import IntegrityError
 from . import suggestion
 from .. import db
 from ..models import Resource, Suggestion, Descriptor, TextAssociation, OptionAssociation
-from forms import SuggestionBasicForm, SuggestionAdvancedForm
+from .forms import SuggestionBasicForm, SuggestionAdvancedForm
 from wtforms.fields import TextAreaField, SelectField
 from ..single_resource.views import save_associations
 from ..single_resource.forms import SingleResourceForm
@@ -181,7 +181,7 @@ def edit(sugg_id):
     if resource is None:
         abort(404)
     resource_id = suggestion.resource_id
-    resource_field_names = Resource.__table__.columns.keys()
+    resource_field_names = list(Resource.__table__.columns.keys())
     descriptors = Descriptor.query.all()
     for descriptor in descriptors:
         if descriptor.values:  # Fields for option descriptors.

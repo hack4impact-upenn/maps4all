@@ -4,7 +4,7 @@ from sqlalchemy.exc import IntegrityError
 from wtforms.fields import SelectField
 from flask_wtf.file import InputRequired
 
-from forms import (
+from .forms import (
     AddDescriptorOptionValueForm,
     EditDescriptorNameForm,
     EditDescriptorOptionValueForm,

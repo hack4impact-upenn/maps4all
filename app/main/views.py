@@ -93,7 +93,7 @@ def search_resources():
     # that the user selected. If there is, add that resource to the list of resources
     for resource in new_pool:
         number_of_options_found = 0
-        for opt in option_map.keys():
+        for opt in list(option_map.keys()):
             opt_descriptors = OptionAssociation.query.filter_by(
                 resource_id=resource.id
             )
@@ -102,7 +102,7 @@ def search_resources():
                     if desc.descriptor.values[desc.option] in option_map[opt]:
                         number_of_options_found += 1
                         break
-        if number_of_options_found == len(option_map.keys()):
+        if number_of_options_found == len(list(option_map.keys())):
             resources.append(resource)
     resources_as_dicts = Resource.get_resources_as_dicts(resources)
     return json.dumps(resources_as_dicts)

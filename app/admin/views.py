@@ -5,7 +5,7 @@ from flask.ext.rq import get_queue
 from . import admin
 from .. import db
 from ..models import Role, User, Rating, Resource
-from forms import (
+from .forms import (
     ChangeAccountTypeForm,
     ChangeUserEmailForm,
     InviteUserForm,

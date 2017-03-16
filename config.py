@@ -1,5 +1,5 @@
 import os
-import urlparse
+import urllib.parse
 import logging, sys
 from logging.handlers import SMTPHandler
 
@@ -26,8 +26,8 @@ class Config:
     REDIS_URL = os.getenv('REDISTOGO_URL') or 'http://localhost:6379'
 
     # Parse the REDIS_URL to set RQ config variables
-    urlparse.uses_netloc.append('redis')
-    url = urlparse.urlparse(REDIS_URL)
+    urllib.parse.uses_netloc.append('redis')
+    url = urllib.parse.urlparse(REDIS_URL)
 
     RQ_DEFAULT_HOST = url.hostname
     RQ_DEFAULT_PORT = url.port
