@@ -20,4 +20,8 @@ class SiteAttribute(db.Model):
             db.session.add(attribute)
             db.session.commit()
 
-        return attribute.value
+        return attribute
+
+    @staticmethod
+    def get_value(attr):
+        return SiteAttribute.get(attr).value

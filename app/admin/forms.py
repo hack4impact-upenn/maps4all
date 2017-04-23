@@ -57,3 +57,17 @@ class NewUserForm(InviteUserForm):
     password2 = PasswordField('Confirm password', validators=[InputRequired()])
 
     submit = SubmitField('Create')
+
+
+class ChangeSiteNameForm(Form):
+    site_name = StringField('Name', validators=[InputRequired(),
+                                                Length(1, 30)])
+
+    submit = SubmitField('Change name')
+
+
+class ChangeSiteLogoForm(Form):
+    site_logo = StringField('Logo', validators=[InputRequired(),
+                                                Length(1, 30)])
+
+    submit = SubmitField('Change logo')

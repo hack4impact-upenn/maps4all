@@ -4,12 +4,14 @@ from flask.ext.rq import get_queue
 
 from . import admin
 from .. import db
-from ..models import Role, User, Rating, Resource
+from ..models import Role, User, Rating, Resource, SiteAttribute
 from .forms import (
     ChangeAccountTypeForm,
     ChangeUserEmailForm,
     InviteUserForm,
-    NewUserForm
+    NewUserForm,
+    ChangeSiteNameForm,
+    ChangeSiteLogoForm
 )
 from ..email import send_email
 
@@ -166,3 +168,48 @@ def ratings_table():
             if temp is not None:
                 rating.resource_name = temp.first().name
     return render_template('rating/index.html', ratings=ratings)
+
+
+@admin.route('/customize-site')
+@login_required
+def customize_site():
+    """Customize the site"""
+    return render_template('admin/customize_site',
+                           app_name=SiteAttribute.get_value("ORG_NAME"))
+
+
+@admin.route('/customize-size/name', methods=['GET', 'POST'])
+@login_required
+def change_site_name():
+    """Change a site's name."""
+    site_name = SiteAttribute.get("ORG_NAME")
+
+    form = ChangeSiteNameForm()
+    if form.validate_on_submit():
+        site_name.value = form.site_name.data
+        db.session.add(site_name)
+        db.session.commit()
+        flash('Site name successfully changed to {}.'
+              .format(form.site_name.data),
+              'form-success')
+    return render_template('admin/customize_site.html',
+                           app_name=site_name.value, form=form)
+
+
+@admin.route('/customize-size/logo', methods=['GET', 'POST'])
+@login_required
+def change_site_logo():
+    """Change a site's logo."""
+    site_logo = SiteAttribute.get("SITE_LOGO")
+
+    form = ChangeSiteLogoForm()
+    if form.validate_on_submit():
+        site_logo.value = form.site_logo.data
+        db.session.add(site_logo)
+        db.session.commit()
+        flash('Site logo successfully changed to <img src="{}"/>.'
+              .format(form.site_name.data),
+              'form-success')
+    return render_template('admin/customize_site.html',
+                           app_name=SiteAttribute.get_value("ORG_NAME"),
+                           form=form)
