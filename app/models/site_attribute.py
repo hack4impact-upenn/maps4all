@@ -12,8 +12,10 @@ class SiteAttribute(db.Model):
         attribute = SiteAttribute.query.filter_by(attr_name=attr).first()
         if attribute is None:
             attribute = SiteAttribute(attr_name=attr)
-            if attribute in os.environ:
-                attribute.value = os.environ[attribute]
+            if attr in os.environ:
+                attribute.value = os.environ[attr]
+            elif attr == "ORG_NAME":
+                attribute.value = "Maps4All"
             else:
                 attribute.value = ""
 

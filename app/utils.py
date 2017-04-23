@@ -1,4 +1,5 @@
 from flask import url_for
+from .models import SiteAttribute
 
 
 def register_template_utils(app):
@@ -12,6 +13,10 @@ def register_template_utils(app):
     def is_hidden_field(field):
         from wtforms.fields import HiddenField
         return isinstance(field, HiddenField)
+
+    @app.context_processor
+    def inject_name():
+        return dict(site_name=SiteAttribute.get_value("ORG_NAME"))
 
     app.add_template_global(index_for_role)
 
