@@ -6,7 +6,7 @@
 
     <body>
         {% block nav %}
-            {{ nav.render_nav(current_user) }}
+            {{ nav.render_nav(current_user, site_name) }}
         {% endblock %}
 
         {% include 'partials/_flashes.html' %}

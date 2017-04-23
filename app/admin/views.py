@@ -174,11 +174,11 @@ def ratings_table():
 @login_required
 def customize_site():
     """Customize the site"""
-    return render_template('admin/customize_site',
+    return render_template('admin/customize_site.html',
                            app_name=SiteAttribute.get_value("ORG_NAME"))
 
 
-@admin.route('/customize-size/name', methods=['GET', 'POST'])
+@admin.route('/customize-site/name', methods=['GET', 'POST'])
 @login_required
 def change_site_name():
     """Change a site's name."""
@@ -196,7 +196,7 @@ def change_site_name():
                            app_name=site_name.value, form=form)
 
 
-@admin.route('/customize-size/logo', methods=['GET', 'POST'])
+@admin.route('/customize-site/logo', methods=['GET', 'POST'])
 @login_required
 def change_site_logo():
     """Change a site's logo."""
