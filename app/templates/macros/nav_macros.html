@@ -114,12 +114,12 @@
 
 {# If `count` and `endpoints` are specified, the endpoints will be put into a
  # secondary menu. `count` should be the string (e.g. 'four') number of endpoints. #}
-{% macro desktop_nav(current_user, site_name, endpoints=None, count=None) %}
+{% macro desktop_nav(current_user, site_name, logo, endpoints=None, count=None) %}
     <div class="computer tablet only row">
         <div class="ui fixed inverted black main menu">
             <div class="ui container">
                 <a class="header item" href="/">
-                    <img src="{{ url_for('static', filename='custom/logo.png') }}">
+                    <img src="{{ url_for('static', filename='custom/' + logo) }}">
                 </a>
                 {{ header_items(current_user, site_name) }}
                 <div class="right menu">
@@ -142,9 +142,9 @@
     </div>
 {% endmacro %}
 
-{% macro render_nav(current_user, site_name, count, endpoints) %}
+{% macro render_nav(current_user, site_name, logo, count, endpoints) %}
     <nav class="ui navigation grid {% if endpoints %}has-submenu{% endif %}">
         {{ mobile_nav(current_user, site_name, endpoints=endpoints) }}
-        {{ desktop_nav(current_user, site_name, endpoints=endpoints, count=count) }}
+        {{ desktop_nav(current_user, site_name, logo, endpoints=endpoints, count=count) }}
     </nav>
 {% endmacro %}

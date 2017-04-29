@@ -5,6 +5,7 @@
     ('admin.customize_site', 'Site information'),
     ('admin.change_site_name', 'Change name'),
     ('admin.change_site_logo', 'Change logo'),
+    ('admin.change_site_style', 'Change style'),
 ] %}
 
 {% macro navigation(items) %}
@@ -40,7 +41,9 @@
                 {% else %}
                     <table class="ui compact definition table">
                         <tr><td>Name</td><td>{{ app_name }}</td></tr>
-                        <tr><td>Logo</td><td> ? </td></tr>
+                        <tr><td>Logo</td><td> 
+                            <img width="70px" src="{{ url_for('static', filename='custom/' + logo_url) }}">
+                        </td></tr>
                     </table>
                 {% endif %}
             </div>

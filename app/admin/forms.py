@@ -3,6 +3,7 @@ from wtforms.fields import PasswordField, StringField, SubmitField
 from wtforms.fields.html5 import EmailField
 from wtforms.ext.sqlalchemy.fields import QuerySelectField
 from wtforms.validators import InputRequired, Length, Email, EqualTo
+from flask_wtf.file import FileRequired, FileAllowed, FileField
 from wtforms import ValidationError
 from ..models import User, Role
 from .. import db
@@ -67,7 +68,19 @@ class ChangeSiteNameForm(Form):
 
 
 class ChangeSiteLogoForm(Form):
-    site_logo = StringField('Logo', validators=[InputRequired(),
-                                                Length(1, 30)])
+    site_logo = FileField(validators=[
+        FileRequired(),
+        FileAllowed(['jpg', 'png', 'gif', 'jpeg'],
+                    'jpg, jpeg, png, or gif images only!')
+    ])
 
     submit = SubmitField('Change logo')
+
+
+class ChangeSiteStyleForm(Form):
+    site_style = FileField(validators=[
+        FileRequired(),
+        FileAllowed(['css'], 'Please upload a .css file!')
+    ])
+
+    submit = SubmitField('Change stylesheet')

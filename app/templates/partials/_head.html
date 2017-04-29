@@ -8,7 +8,7 @@
     {% assets 'app_css' %}<link rel="stylesheet" type="text/css" href="{{ ASSET_URL }}">{% endassets %}
 
     <!-- custom stylesheet for stylesheet uploads -->
-    <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='custom/style.css') }}">
+    <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='custom/' + style_sheet) }}?{{ style_timestamp }}">
 
     <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyAhkKJDnPxq0_xvF6pLAFcKfVAL6GbARBs&libraries=places"></script>
     {% assets 'vendor_js' %}<script type="text/javascript" src="{{ ASSET_URL }}"></script>{% endassets %}

@@ -16,7 +16,10 @@ def register_template_utils(app):
 
     @app.context_processor
     def inject_name():
-        return dict(site_name=SiteAttribute.get_value("ORG_NAME"))
+        return dict(site_name=SiteAttribute.get_value("ORG_NAME"),
+                    logo_url=SiteAttribute.get_value("SITE_LOGO"),
+                    style_timestamp=SiteAttribute.get_value("STYLE_TIME"),
+                    style_sheet=SiteAttribute.get_value("STYLE_SHEET"))
 
     app.add_template_global(index_for_role)
 
