@@ -14,3 +14,6 @@ dist
 migrations/
 .env
 dump.rdb
+.ropeproject/
+*.swp
+config.env

@@ -65,17 +65,31 @@ You need to install [Foreman](https://ddollar.github.io/foreman/) and [Redis](ht
 $ gem install foreman
 ```
 
-Mac (using [homebrew](http://brew.sh/)):
+For Mac (using [homebrew](http://brew.sh/)):
 
 ```
 $ brew install redis
 ```
 
-Linux:
+For Linux (Fedora)
+
+```
+$ sudo dnf install redis
+```
+
+For Linux (Debian/Ubuntu):
 
 ```
 $ sudo apt-get install redis-server
 ```
+
+If you don't want to install redis locally, you can use Redis container with docker
+
+```
+$ docker pull redis:latest
+$ docker run -d -p 6379:6379 --name maps4all-redis redis:latest
+```
+
 
 ##### Create the database
 
@@ -100,6 +114,20 @@ $ python manage.py add_fake_data
 ```
 $ source env/bin/activate
 $ foreman start -f Local
+```
+
+**Note**: if you are using Redis container with docker, you can ignore the error that `foreman` will display when you run the `foreman` command above. `foreman` will try to start the redis-server locally and it will not find the `redis-server` command. This is fine as long as you followed the [instructions above](#other-dependencies-for-running-locally) to run Redis in a container. The error should look like this
+
+```
+$ foreman start -f Local
+10:22:56 redis.1  | unknown command: redis-server
+10:22:56 web.1    | started with pid 14409
+10:22:56 worker.1 | started with pid 14410
+10:22:57 worker.1 | 10:22:57 RQ worker u'rq:worker:dev.14410' started, version 0.5.6
+10:22:57 worker.1 | 10:22:57 
+10:22:57 worker.1 | 10:22:57 *** Listening on default...
+10:22:57 web.1    |  * Running on http://127.0.0.1:5000/ (Press CTRL+C to quit)
+10:22:57 web.1    |  * Restarting with stat
 ```
 
 ## Project Structure

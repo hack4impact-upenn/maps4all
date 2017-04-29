@@ -1,5 +1,5 @@
-import csv
-import StringIO
+from . import csv
+import io
 
 from sqlalchemy import desc
 
@@ -125,7 +125,7 @@ class CsvHeaderCell(db.Model):
 
     def add_new_options_from_string(self, new_options_string):
         l = []
-        csv_reader = csv.reader(StringIO.StringIO(new_options_string))
+        csv_reader = csv.reader(io.StringIO(new_options_string))
         for row in csv_reader:
             for option in row:
                 option = option.strip()

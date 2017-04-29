@@ -117,7 +117,7 @@ def edit(resource_id):
     resource = Resource.query.get(resource_id)
     if resource is None:
         abort(404)
-    resource_field_names = Resource.__table__.columns.keys()
+    resource_field_names = list(Resource.__table__.columns.keys())
     descriptors = Descriptor.query.all()
     for descriptor in descriptors:
         if descriptor.values:  # Fields for option descriptors.

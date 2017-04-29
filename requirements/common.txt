@@ -20,6 +20,7 @@ Flask-WTF==0.11
 geocoder==1.12.0
 geopy==1.11.0
 gunicorn==19.3.0
+honcho==0.7.1
 itsdangerous==0.24
 Jinja2==2.7.3
 jsmin==2.1.6
@@ -27,7 +28,7 @@ Mako==1.0.1
 MarkupSafe==0.23
 mccabe==0.4.0
 pep8==1.7.0
-psycopg2==2.6.1
+psycopg2==2.7
 pyflakes==1.0.0
 pytz==2016.3
 ratelim==0.1.6
@@ -40,5 +41,4 @@ twilio==5.6.0
 SQLAlchemy==1.0.6
 webassets==0.10.1
 Werkzeug==0.10.4
-wsgiref==0.1.2
 WTForms==2.0.2

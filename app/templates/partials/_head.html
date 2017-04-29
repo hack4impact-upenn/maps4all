@@ -1,11 +1,14 @@
 <head>
     <meta name="charset" content="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <title>{% block page_title %}{{ config.APP_NAME }}{% endblock %}</title>
+    <title>{% block page_title %}{{ site_name }}{% endblock %}</title>
 
     <link href="https://fonts.googleapis.com/css?family=Nunito+Sans:300,400,700" rel="stylesheet">
     {% assets 'vendor_css' %}<link rel="stylesheet" type="text/css" href="{{ ASSET_URL }}">{% endassets %}
     {% assets 'app_css' %}<link rel="stylesheet" type="text/css" href="{{ ASSET_URL }}">{% endassets %}
+
+    <!-- custom stylesheet for stylesheet uploads -->
+    <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='custom/' + style_sheet) }}?{{ style_timestamp }}">
 
     <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyAhkKJDnPxq0_xvF6pLAFcKfVAL6GbARBs&libraries=places"></script>
     {% assets 'vendor_js' %}<script type="text/javascript" src="{{ ASSET_URL }}"></script>{% endassets %}
