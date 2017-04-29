@@ -173,9 +173,11 @@ def create_page():
     form = NewPageForm()
     if form.validate_on_submit():
         if( not EditableHTML.get_editable_html(form.editor_name.data)):
-           editable_html_obj = EditableHTML(editor_name=form.editor_name.data, page_name=form.page_name.data, value=' ')
-           db.session.add(editable_html_obj)
-           db.session.commit()
+            editor_name = form.editor_name.data
+            editor_name = editor_name.lower().strip()
+            editable_html_obj = EditableHTML(editor_name=editor_name, page_name=form.page_name.data, value=' ')
+            db.session.add(editable_html_obj)
+            db.session.commit()
         else: 
             flash('There is already a static page at that URL', 'error')
     return render_template('/admin/create_pages.html', form=form)

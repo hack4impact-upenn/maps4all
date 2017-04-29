@@ -35,6 +35,15 @@
     </a>
 {% endmacro %}
 
+{% macro page_dropdown(title, url_name , icon=None, id="") %}
+    <a id="{{ id }}" class="item" href="/pages/{{ url_name }}"  >
+        {% if icon is not none %}
+            <i class="{{ icon }}"></i>
+        {% endif %}
+        {{ title }}
+    </a>
+{% endmacro %}
+
 {% macro account_items(current_user) %}
     <a href="{{ url_for('main.about') }}" class="item">About</a>
     <a href="{{ url_for('contact.index') }}" class="item">Contact Us</a>
@@ -43,7 +52,7 @@
         <i class="dropdown icon"></i>
             <div class="menu">
                 {% for p in 'yes'| pages %}
-                    {{ dropdown_choice(p.page_name, 'single_resource.index', icon='book icon') }}
+                    {{ page_dropdown(p.page_name, p.editor_name , icon='book icon') }}
                 {% endfor %}
             </div>
     </div>x
@@ -78,6 +87,8 @@
                 <h3 class="ui header">Info</h3>
                 {{ dropdown_choice('App Overview', 'main.overview',
                                     icon='help circle icon') }}
+                {{ dropdown_choice('Add a Static Page', 'admin.create_page',
+                                    icon='add circle icon') }}
             </div>
         </div>
         <a href="{{ url_for('account.manage') }}" class="item">Your Account</a>
