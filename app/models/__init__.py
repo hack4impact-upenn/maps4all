@@ -12,3 +12,4 @@ from .user import *  # flake8: noqa
 from .contact_category import * # flake8: noqa
 from .csv import * # flake8: noqa
 from .geocoder_cache import * # flake8: noqa
+from .site_attribute import * # flake8: noqa
