@@ -128,9 +128,16 @@ def get_associations(resource_id):
         associations[od.descriptor.name] = list(values)
     return json.dumps(associations)
 
+
+@main.route('/pages/<pageName>')
+def render_page(pageName):
+    editable_html_obj = EditableHTML.get_editable_html(pageName)
+    return render_template('main/generalized_page.html',
+                          editable=editable_html_obj)
+
 @main.route('/about')
 def about():
-    editable_html_obj = EditableHTML.get_editable_html('about')
+    editable_html_obj = EditableHTML.get_editable_html(editor_name='about', page_name='About')
     return render_template('main/about.html',
                            editable_html_obj=editable_html_obj)
 
