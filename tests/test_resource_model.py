@@ -26,7 +26,7 @@ class ResourceModelTestCase(unittest.TestCase):
         r.option_descriptors.append(a)
 
         option_assoc = r.option_descriptors[0]
-        self.assertEquals(option_assoc.option, 0)
-        self.assertEquals(option_assoc.descriptor.name, 'Open')
-        self.assertEquals(option_assoc.descriptor.values, options)
+        self.assertEqual(option_assoc.option, 0)
+        self.assertEqual(option_assoc.descriptor.name, 'Open')
+        self.assertEqual(option_assoc.descriptor.values, options)
 

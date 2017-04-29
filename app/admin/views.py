@@ -1,16 +1,22 @@
-from flask import abort, flash, redirect, render_template, url_for
+import os
+import datetime
+from flask import abort, flash, redirect, render_template, url_for, current_app
 from flask.ext.login import current_user, login_required
 from flask.ext.rq import get_queue
+from werkzeug.utils import secure_filename
 
 from . import admin
 from .. import db
-from ..models import Role, User, Rating, Resource, EditableHTML
+from ..models import Role, User, Rating, Resource, EditableHTML, SiteAttribute
 from forms import (
     ChangeAccountTypeForm,
     ChangeUserEmailForm,
     InviteUserForm,
     NewUserForm,
-    NewPageForm
+    NewPageForm,
+    ChangeSiteNameForm,
+    ChangeSiteLogoForm,
+    ChangeSiteStyleForm
 )
 from ..email import send_email
 
@@ -179,3 +185,86 @@ def create_page():
         else: 
             flash('There is already a static page at that URL', 'error')
     return render_template('/admin/create_pages.html', form=form)
+
+@admin.route('/customize-site')
+@login_required
+def customize_site():
+    """Customize the site"""
+    return render_template('admin/customize_site.html',
+                           app_name=SiteAttribute.get_value("ORG_NAME"))
+
+
+@admin.route('/customize-site/name', methods=['GET', 'POST'])
+@login_required
+def change_site_name():
+    """Change a site's name."""
+    site_name = SiteAttribute.get("ORG_NAME")
+
+    form = ChangeSiteNameForm()
+    if form.validate_on_submit():
+        site_name.value = form.site_name.data
+        db.session.add(site_name)
+        db.session.commit()
+        flash('Site name successfully changed to {}.'
+              .format(form.site_name.data),
+              'form-success')
+    return render_template('admin/customize_site.html',
+                           app_name=site_name.value, form=form)
+
+
+@admin.route('/customize-site/logo', methods=['GET', 'POST'])
+@login_required
+def change_site_logo():
+    """Change a site's logo."""
+    logo_url = SiteAttribute.get("SITE_LOGO")
+
+    form = ChangeSiteLogoForm()
+    if form.validate_on_submit():
+        site_logo = form.site_logo.data
+        filename = secure_filename(site_logo.filename)
+
+        site_logo.save(os.path.join(
+            current_app.root_path, 'static/custom', filename
+        ))
+
+        logo_url.value = str(filename)
+        db.session.add(logo_url)
+        db.session.commit()
+
+        flash('Site logo successfully changed to <br>' +
+              '<img width="70px" src="{}"/>'
+              .format(url_for('static', filename='custom/' + logo_url.value)),
+              'form-success')
+
+    return render_template('admin/customize_site.html',
+                           app_name=SiteAttribute.get_value("ORG_NAME"),
+                           form=form)
+
+
+@admin.route('/customize-site/style', methods=['GET', 'POST'])
+@login_required
+def change_site_style():
+    """Change a site's stylesheet."""
+    style_sheet = SiteAttribute.get("STYLE_SHEET")
+    style_time = SiteAttribute.get("STYLE_TIME")
+
+    form = ChangeSiteStyleForm()
+    if form.validate_on_submit():
+        site_style = form.site_style.data
+        filename = 'style.css'
+
+        site_style.save(os.path.join(
+            current_app.root_path, 'static/custom', filename
+        ))
+
+        style_sheet.value = str(filename)
+        db.session.add(style_sheet)
+        style_time.value = str(datetime.datetime.utcnow()).replace(' ', '-')
+        db.session.add(style_time)
+        db.session.commit()
+
+        flash('Site style successfully changed.', 'form-success')
+
+    return render_template('admin/customize_site.html',
+                           app_name=SiteAttribute.get_value("ORG_NAME"),
+                           form=form)

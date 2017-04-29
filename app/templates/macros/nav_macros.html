@@ -9,8 +9,8 @@
     {% endfor %}
 {% endmacro %}
 
-{% macro header_items(current_user) %}
-    <a class="header item" href="{{ url_for('main.index') }}">{{ config.APP_NAME }}</a>
+{% macro header_items(current_user, site_name) %}
+    <a class="header item" href="{{ url_for('main.index') }}">{{ site_name }}</a>
     {% if current_user.is_authenticated() %}
         {% set href = url_for(current_user.role.index + '.index') %}
         <a class="item" href="{{ href }}">{{ current_user.role.name }} Dashboard</a>
@@ -102,10 +102,10 @@
     {% endif %}
 {% endmacro %}
 
-{% macro mobile_nav(current_user, endpoints=None) %}
+{% macro mobile_nav(current_user, site_name, endpoints=None) %}
     <div class="mobile only row">
         <div class="ui fixed inverted black main menu">
-            {{ header_items(current_user) }}
+            {{ header_items(current_user, site_name) }}
             <div class="right menu">
                 <a class="icon item" id="open-nav"><i class="sidebar icon"></i></a>
             </div>
@@ -123,11 +123,14 @@
 
 {# If `count` and `endpoints` are specified, the endpoints will be put into a
  # secondary menu. `count` should be the string (e.g. 'four') number of endpoints. #}
-{% macro desktop_nav(current_user, endpoints=None, count=None) %}
+{% macro desktop_nav(current_user, site_name, logo, endpoints=None, count=None) %}
     <div class="computer tablet only row">
         <div class="ui fixed inverted black main menu">
             <div class="ui container">
-                {{ header_items(current_user) }}
+                <a class="header item" href="/">
+                    <img src="{{ url_for('static', filename='custom/' + logo) }}">
+                </a>
+                {{ header_items(current_user, site_name) }}
                 <div class="right menu">
                     {{ account_items(current_user) }}
                     <a class="header item" id="h4i-logo" target="_blank" href="https://hack4impact.org">
@@ -148,9 +151,9 @@
     </div>
 {% endmacro %}
 
-{% macro render_nav(current_user, count, endpoints) %}
+{% macro render_nav(current_user, site_name, logo, count, endpoints) %}
     <nav class="ui navigation grid {% if endpoints %}has-submenu{% endif %}">
-        {{ mobile_nav(current_user, endpoints=endpoints) }}
-        {{ desktop_nav(current_user, endpoints=endpoints, count=count) }}
+        {{ mobile_nav(current_user, site_name, endpoints=endpoints) }}
+        {{ desktop_nav(current_user, site_name, logo, endpoints=endpoints, count=count) }}
     </nav>
 {% endmacro %}

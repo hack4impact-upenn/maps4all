@@ -3,6 +3,7 @@ from wtforms.fields import PasswordField, StringField, SubmitField
 from wtforms.fields.html5 import EmailField
 from wtforms.ext.sqlalchemy.fields import QuerySelectField
 from wtforms.validators import InputRequired, Length, Email, EqualTo, Regexp
+from flask_wtf.file import FileRequired, FileAllowed, FileField
 from wtforms import ValidationError
 from ..models import User, Role
 from .. import db
@@ -48,6 +49,7 @@ class InviteUserForm(Form):
         if User.query.filter_by(email=field.data).first():
             raise ValidationError('Email already registered.')
 
+
 class NewUserForm(InviteUserForm):
     password = PasswordField('Password', validators=[
         InputRequired(), EqualTo('password2',
@@ -58,7 +60,33 @@ class NewUserForm(InviteUserForm):
     submit = SubmitField('Create')
 
 class NewPageForm(Form):
-    editor_name = StringField('Page URL',validators=[InputRequired(), Length(1, 500),
-                                        Regexp(r'^[\w.@+-]+$')])
-    page_name = StringField('Page Title', validators=[InputRequired(), Length(1,500)])
+    editor_name = StringField('Page URL', validators=[InputRequired(),
+                            Length(1, 500), Regexp(r'^[\w.@+-]+$')])
+    page_name = StringField('Page Title', validators=[InputRequired(),
+                                                      Length(1,500)])
     submit = SubmitField('Create Page')
+
+class ChangeSiteNameForm(Form):
+    site_name = StringField('Name', validators=[InputRequired(),
+                                                Length(1, 30)])
+
+    submit = SubmitField('Change name')
+
+
+class ChangeSiteLogoForm(Form):
+    site_logo = FileField(validators=[
+        FileRequired(),
+        FileAllowed(['jpg', 'png', 'gif', 'jpeg'],
+                    'jpg, jpeg, png, or gif images only!')
+    ])
+
+    submit = SubmitField('Change logo')
+
+
+class ChangeSiteStyleForm(Form):
+    site_style = FileField(validators=[
+        FileRequired(),
+        FileAllowed(['css'], 'Please upload a .css file!')
+    ])
+
+    submit = SubmitField('Change stylesheet')
