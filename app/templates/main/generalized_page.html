@@ -1,0 +1,26 @@
+{% import 'macros/page_macros.html' as page %}
+{% extends 'layouts/base.html' %}
+
+{% block content %}
+  <div class="static-page">
+    <div class="ui text container">
+        <h1 class="ui header">
+          {{ editable.page_name }}
+        	{% if current_user.is_admin() %}
+        		<div class="sub header">This is what the user will see on the {{page_name }}page</div>
+        	{% endif %}
+        </h1>
+        {{ page.render_inline_editor(editable, current_user) }}
+    </div>
+
+    {% if not current_user.is_admin() %}
+    <div class="ui text container">
+      <a class="header item" id="h4i-full-logo" target="_blank" href="https://hack4impact.org">
+        <img src="{{ url_for('static', filename='images/applogo_color.png') }}">
+      </a>
+    </div>
+    {% endif %}
+  </div>
+  <script src="{{ url_for('static', filename='ckeditor/ckeditor.js') }}"></script>
+  <script></script>
+{% endblock %}

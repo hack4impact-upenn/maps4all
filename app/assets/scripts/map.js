@@ -266,6 +266,7 @@ function initMap() {
   initLocationSearch(map);
   initResourceSearch();
   initResetButton();
+  initCurrentLocationButton();
 
   $.get('/get-resources').done(function(resourcesString) {
     var resources = JSON.parse(resourcesString);
@@ -303,36 +304,13 @@ function initLocationSearch(map) {
           place.address_components[2].short_name) || '')
       ].join(' ');
     }
-
-    if (!locationMarker) {
-      locationMarker = new google.maps.Marker({
-        map: map,
-        position: place.geometry.location,
-        icon: {
-          path: google.maps.SymbolPath.CIRCLE,
-          scale: 8,
-          strokeColor: 'grey',
-          fillColor: 'black',
-          fillOpacity: 1,
-        },
-      });
-    } else {
-      locationMarker.setPosition(place.geometry.location);
-    }
-
-    // Marker info window for searched location
-    var searchedLocationInfoWindowTemplate =
-      $("#searched-location-info-window-template").html();
-    var compiledLocInfoWindowTemplate =
-      Handlebars.compile(searchedLocationInfoWindowTemplate);
-    var context = {
-      name: place.name,
+    var marker_info = {
+      location: place.location,
       address: address,
+      name: place.name,
+      currentLocation: false
     };
-    var locationMarkerInfo = compiledLocInfoWindowTemplate(context);
-
-    infowindow.setContent(locationMarkerInfo);
-    infowindow.open(map, locationMarker);
+    createLocationMarker(marker_info);
 
     // If in single column view, entering a location should go to the map view
     if ($(window).width() <= singleColBreakpoint) {
@@ -347,6 +325,78 @@ function initLocationSearch(map) {
       locationMarker = null;
     }
   });
+}
+
+function initCurrentLocationButton(){
+  $('#get-user-location').click(function() {
+    if (navigator.geolocation) {
+      navigator.geolocation.getCurrentPosition(function(position) {
+        var pos = {
+          lat: position.coords.latitude,
+          lng: position.coords.longitude
+        };
+
+        var marker_info = {
+          location: pos,
+          address: "",
+          name: "You are here",
+          currentLocation: true
+        }
+        console.log('current location called');
+        createLocationMarker(marker_info);
+        }, function() {
+        console.log("o no")
+        // add in error handling !!!!!! 
+        }
+      );
+    }
+  });
+}
+
+
+function createLocationMarker(marker_info){
+  if (!locationMarker) {
+      locationMarker = new google.maps.Marker({
+        map: map,
+        position: marker_info.location,
+        icon: {
+          path: google.maps.SymbolPath.CIRCLE,
+          scale: 8,
+          strokeColor: 'grey',
+          fillColor: 'black',
+          fillOpacity: 1,
+        },
+      });
+      console.log("location marker made")
+    } else {
+      locationMarker.setPosition(marker_info.location);
+    }
+
+  // Marker info window for searched location
+  var searchedLocationInfoWindowTemplate =
+    $("#searched-location-info-window-template").html();
+  var compiledLocInfoWindowTemplate =
+    Handlebars.compile(searchedLocationInfoWindowTemplate);
+  if(marker_info.currentLocation){
+    var context = {
+    name: marker_info.name,
+    address: " ",
+    };
+  } else {
+    var context = {
+      name: marker_info.name,
+      address: address,
+    };
+  }
+  var locationMarkerInfo = compiledLocInfoWindowTemplate(context);
+
+  infowindow.setContent(locationMarkerInfo);
+  infowindow.open(map, locationMarker);
+
+  // If in single column view, entering a location should go to the map view
+  if ($(window).width() <= singleColBreakpoint) {
+    listToMapSingleColumn();
+  }
 }
 
 /*
@@ -640,7 +690,6 @@ function listToMapSingleColumn() {
 function mapToListSingleColumn() {
   $('#left-column').show();
   $('#right-column').hide();
-
   $('#nav-to-list').hide();
   $('#nav-to-map').show();
 }

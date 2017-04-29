@@ -5,6 +5,7 @@ class EditableHTML(db.Model):
     """ CKEditor instances """
     id = db.Column(db.Integer, primary_key=True)
     editor_name = db.Column(db.String(100), unique=True)
+    page_name = db.Column(db.String(100), unique=True)
     value = db.Column(db.Text)
 
     @staticmethod
@@ -14,5 +15,5 @@ class EditableHTML(db.Model):
         ).first()
 
         if editable_html_obj is None:
-            editable_html_obj = EditableHTML(editor_name=editor_name, value='')
+            return False
         return editable_html_obj

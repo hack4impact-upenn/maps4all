@@ -7,12 +7,13 @@ from werkzeug.utils import secure_filename
 
 from . import admin
 from .. import db
-from ..models import Role, User, Rating, Resource, SiteAttribute
-from .forms import (
+from ..models import Role, User, Rating, Resource, EditableHTML, SiteAttribute
+from forms import (
     ChangeAccountTypeForm,
     ChangeUserEmailForm,
     InviteUserForm,
     NewUserForm,
+    NewPageForm,
     ChangeSiteNameForm,
     ChangeSiteLogoForm,
     ChangeSiteStyleForm
@@ -43,7 +44,6 @@ def new_user():
         flash('User {} successfully created'.format(user.full_name()),
               'form-success')
     return render_template('admin/new_user.html', form=form)
-
 
 @admin.route('/invite-user', methods=['GET', 'POST'])
 @login_required
@@ -173,6 +173,18 @@ def ratings_table():
                 rating.resource_name = temp.first().name
     return render_template('rating/index.html', ratings=ratings)
 
+@admin.route('/create-static-page', methods=['GET', 'POST'])
+@login_required
+def create_page():
+    form = NewPageForm()
+    if form.validate_on_submit():
+        if( not EditableHTML.get_editable_html(form.editor_name.data)):
+           editable_html_obj = EditableHTML(editor_name=form.editor_name.data, page_name=form.page_name.data, value=' ')
+           db.session.add(editable_html_obj)
+           db.session.commit()
+        else: 
+            flash('There is already a static page at that URL', 'error')
+    return render_template('/admin/create_pages.html', form=form)
 
 @admin.route('/customize-site')
 @login_required

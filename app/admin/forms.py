@@ -2,7 +2,7 @@ from flask.ext.wtf import Form
 from wtforms.fields import PasswordField, StringField, SubmitField
 from wtforms.fields.html5 import EmailField
 from wtforms.ext.sqlalchemy.fields import QuerySelectField
-from wtforms.validators import InputRequired, Length, Email, EqualTo
+from wtforms.validators import InputRequired, Length, Email, EqualTo, Regexp
 from flask_wtf.file import FileRequired, FileAllowed, FileField
 from wtforms import ValidationError
 from ..models import User, Role
@@ -59,6 +59,12 @@ class NewUserForm(InviteUserForm):
 
     submit = SubmitField('Create')
 
+class NewPageForm(Form):
+    editor_name = StringField('Page URL', validators=[InputRequired(),
+                            Length(1, 500), Regexp(r'^[\w.@+-]+$')])
+    page_name = StringField('Page Title', validators=[InputRequired(),
+                                                      Length(1,500)])
+    submit = SubmitField('Create Page')
 
 class ChangeSiteNameForm(Form):
     site_name = StringField('Name', validators=[InputRequired(),
