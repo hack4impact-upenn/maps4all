@@ -8,7 +8,7 @@ from werkzeug.utils import secure_filename
 from . import admin
 from .. import db
 from ..models import Role, User, Rating, Resource, EditableHTML, SiteAttribute
-from forms import (
+from .forms import (
     ChangeAccountTypeForm,
     ChangeUserEmailForm,
     InviteUserForm,
