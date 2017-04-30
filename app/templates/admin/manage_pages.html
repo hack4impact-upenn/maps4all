@@ -1,43 +1,71 @@
 {% extends 'layouts/base.html' %}
 {% import 'macros/form_macros.html' as f %}
 
-{% block scripts %}
-{% endblock %}
+{% set deletion_endpoint = 'admin.delete_page_request' %}
+{% set change_endpoint = 'admin.edit_page_name' %}
+
+{% set endpoints = [
+    (change_endpoint, 'Edit Page Details'),
+    (deletion_endpoint, 'Delete page')
+] %}
+
+{% macro navigation(items) %}
+    <div class="ui vertical fluid secondary menu">
+        {% for route, name in items %}
+        {% set href = url_for(route, editor_name=page.editor_name) %}
+            <a class="item {% if request.endpoint == route %} active {% endif %}" href="{{ href }}">
+                {{ name }}
+            </a>
+        {% endfor %}
+    </div>
+{% endmacro %}
 
 {% block content %}
     <div class="ui stackable centered grid container">
         <div class="twelve wide column">
             <a class="ui basic compact button" href="{{ url_for('admin.index') }}">
                 <i class="caret left icon"></i>
-                Back to dashboard
+                Back to all contact information
             </a>
             <h2 class="ui header">
-                <a href="/admin/create-static-page"> Create New Static Page</a>
+                {{ page.page_name }}
+                <div class="sub header">View and manage page {{ page.page_name }}.</div>
             </h2>
+        </div>
+        <div class="stretched divided very relaxed row">
+            <div class="four wide column">
+                {{ navigation(endpoints) }}
+            </div>
+            <div class="eight wide column">
+                {% if request.endpoint == deletion_endpoint %}
+                    <h3 class="ui red block header">
+                        <i class="warning circle icon"></i>
+                        <div class="content">
+                            This action is permanent
+                            <div class="sub header">
+                                Deleting a page is not a reversible change. Any information associated
+                                with this page will be removed, and cannot be recovered.
+                            </div>
+                        </div>
+                    </h3>
 
-            {% set flashes = {
-                'error':   get_flashed_messages(category_filter=['form-error']),
-                'warning': get_flashed_messages(category_filter=['form-check-email']),
-                'info':    get_flashed_messages(category_filter=['form-info']),
-                'success': get_flashed_messages(category_filter=['form-success'])
-            } %}
-
-            {{ f.begin_form(form, flashes) }}
-            
-                <div class="two fields">
-                    {{ f.render_form_field(form.editor_name) }}
-                    {{ f.render_form_field(form.page_name) }}
-                </div>
-                {{ f.form_message(flashes['error'], header='Something went wrong.', class='error') }}
-                {{ f.form_message(flashes['warning'], header='Check your email.', class='warning') }}
-                {{ f.form_message(flashes['info'], header='Information', class='info') }}
-                {{ f.form_message(flashes['success'], header='Success!', class='success') }}
-
-                {% for field in form | selectattr('type', 'equalto', 'SubmitField') %}
-                    {{ f.render_form_field(field) }}
-                {% endfor %}
-
-            {{ f.end_form() }}
+                    <div class="ui form">
+                        <div class="inline field">
+                            <div class="ui deletion checkbox">
+                                <input type="checkbox" tabindex="0" class="hidden">
+                                <label>I understand that this action cannot be undone.</label>
+                            </div>
+                        </div>
+                        <a class="ui disabled negative deletion button" href="{{ url_for('admin.delete_page', editor_name=page.editor_name) }}")>
+                            Delete this page
+                        </a>
+                    </div>
+                    </div>
+                {% elif form %}
+                    {{ f.render_form(form) }}
+                {% endif %}
+            </div>
         </div>
     </div>
+
 {% endblock %}

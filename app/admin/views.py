@@ -4,6 +4,7 @@ from flask import abort, flash, redirect, render_template, url_for, current_app
 from flask.ext.login import current_user, login_required
 from flask.ext.rq import get_queue
 from werkzeug.utils import secure_filename
+from sqlalchemy.exc import IntegrityError
 
 from . import admin
 from .. import db
@@ -14,6 +15,7 @@ from .forms import (
     InviteUserForm,
     NewUserForm,
     NewPageForm,
+    EditPageForm,
     ChangeSiteNameForm,
     ChangeSiteLogoForm,
     ChangeSiteStyleForm
@@ -176,15 +178,70 @@ def ratings_table():
 @admin.route('/create-static-page', methods=['GET', 'POST'])
 @login_required
 def create_page():
+    pages = EditableHTML.query.all()
     form = NewPageForm()
     if form.validate_on_submit():
-        if( not EditableHTML.get_editable_html(form.editor_name.data)):
-           editable_html_obj = EditableHTML(editor_name=form.editor_name.data, page_name=form.page_name.data, value=' ')
-           db.session.add(editable_html_obj)
-           db.session.commit()
+        if(not EditableHTML.get_editable_html(form.editor_name.data)):
+            editable_html_obj = EditableHTML(editor_name=form.editor_name.data, page_name=form.page_name.data, value=' ')
+            db.session.add(editable_html_obj)
+            db.session.commit()
         else: 
             flash('There is already a static page at that URL', 'error')
-    return render_template('/admin/create_pages.html', form=form)
+    return render_template('/admin/create_pages.html', form=form, pages=pages)
+
+@admin.route('/manage-pages/<string:editor_name>', methods=['GET', 'POST'])
+@login_required
+def edit_page_name(editor_name):
+    """Edit a category"""
+    page = EditableHTML.query.filter_by(editor_name=editor_name).first()
+    if page is None:
+        abort(404)
+    form = EditPageForm()
+    if form.validate_on_submit():
+        page.page_name = form.page_name.data
+        db.session.add(page)
+        try:
+            db.session.commit()
+            flash('Page Successfully Changed.'
+                'form-success')
+        except IntegrityError:
+            db.session.rollback()
+            flash('Database error occurred. Please try again.', 'form-error')
+        return render_template('admin/manage_pages.html',
+                                page=page,
+                                form=form)
+    form.page_name.data = page.page_name
+    return render_template('admin/manage_pages.html',
+                            page=page,
+                            form=form)
+
+@admin.route('/manage-pages/<string:editor_name>/delete_request')
+@login_required
+def delete_page_request(editor_name):
+    """Shows the page for deletion of a contact category."""
+    page = EditableHTML.query.filter_by(editor_name=editor_name).first()
+    if page is None:
+        abort(404)
+    return render_template('admin/manage_pages.html',
+                            page=page)
+
+@admin.route('/manage-pages/<string:editor_name>/delete')
+@login_required
+def delete_page(editor_name):
+    """Deletes a contact category."""
+    page = EditableHTML.query.filter_by(editor_name=editor_name).first()
+    if page is None:
+        abort(404)
+    db.session.delete(page)
+    try:
+        db.session.commit()
+        flash('Successfully deleted page', 'success') 
+    except IntegrityError:
+        db.session.rollback()
+        flash('Database error occurred. Please try again.', 'form-error')
+        return render_template('admin/manage_pages.html',
+                                page=page)
+    return redirect(url_for('admin.index'))
 
 @admin.route('/customize-site')
 @login_required

@@ -5,6 +5,9 @@ from flask.ext.rq import get_queue
 
 from wtforms.fields import SelectField
 
+from wtforms.validators import (
+    Optional
+)
 from .. import db
 from ..models import EditableHTML, Resource, ContactCategory
 from . import contact
@@ -15,9 +18,19 @@ from ..email import send_email
 @contact.route('/', methods=['GET', 'POST'])
 def index():
     editable_html_obj = EditableHTML.get_editable_html('contact')
+
+    if editable_html_obj is False:
+        edit = EditableHTML(editor_name='contact', page_name='Overview', value='')
+        db.session.add(edit)
+        db.session.commit()
+        editable_html_obj = edit
     setattr(ContactForm,
             'category',
-            SelectField('Category', choices=[(c.name, c.name) for c in ContactCategory.query.all()]))
+            SelectField('Category',
+                        choices=[(c.name, c.name) for c in ContactCategory.query.all()],
+                        validators=[Optional()]
+                        )
+            )
     form = ContactForm()
     app = create_app(os.getenv('FLASK_CONFIG') or 'default')
     contact_email = app.config['ADMIN_EMAIL']

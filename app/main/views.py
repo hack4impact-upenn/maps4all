@@ -137,15 +137,25 @@ def render_page(pageName):
 
 @main.route('/about')
 def about():
-    editable_html_obj = EditableHTML.get_editable_html(editor_name='about', page_name='About')
+    editable_html_obj = EditableHTML.get_editable_html('about')
+    if editable_html_obj is False:
+        edit = EditableHTML(editor_name='about', page_name='About', value='')
+        db.session.add(edit)
+        db.session.commit()
+        editable_html_obj = edit
     return render_template('main/about.html',
                            editable_html_obj=editable_html_obj)
 
 @main.route('/overview')
 @login_required
 def overview():
-   editable_html_obj = EditableHTML.get_editable_html('overview')
-   return render_template('main/overview.html',
+    editable_html_obj = EditableHTML.get_editable_html('overview')
+    if editable_html_obj is False:
+        edit = EditableHTML(editor_name='overview', page_name='Overview', value='')
+        db.session.add(edit)
+        db.session.commit()
+        editable_html_obj = edit
+    return render_template('main/overview.html',
                           editable_html_obj=editable_html_obj)
 
 @main.route('/update-editor-contents', methods=['POST'])

@@ -35,15 +35,25 @@
     </a>
 {% endmacro %}
 
+{% macro page_dropdown_choice(title, page, icon=None, id="") %}
+    <a id="{{ id }}" class="item" href="{{ url_for('main.render_page', pageName=page) }}">
+        {% if icon is not none %}
+            <i class="{{ icon }}"></i>
+        {% endif %}
+        {{ title }}
+    </a>
+{% endmacro %}
+
 {% macro account_items(current_user) %}
-    <a href="{{ url_for('main.about') }}" class="item">About</a>
     <a href="{{ url_for('contact.index') }}" class="item">Contact Us</a>
     <div class="ui simple dropdown item">
-        Pages
+        More Info
         <i class="dropdown icon"></i>
             <div class="menu">
                 {% for p in 'yes'| pages %}
-                    {{ dropdown_choice(p.page_name, '.index', icon='book icon') }}
+                {% if p.page_name != 'Contact' %}
+                    {{ page_dropdown_choice(p.page_name, p.editor_name, icon='book icon') }}
+                {% endif %}
                 {% endfor %}
             </div>
     </div>x
