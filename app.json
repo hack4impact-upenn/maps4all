@@ -1,21 +1,15 @@
 {
   "name": "maps4all",
-  "description": "Generalized application for displaying location-based resources on a map",
+  "description": "Simple way to create resource maps",
   "scripts": {
-    "postdeploy": "python manage.py recreate_db && python manage.py setup_dev && python manage.py add_fake_data"
+    "postdeploy": "python manage.py recreate_db && python manage.py setup_prod"
   },
   "env": {
     "FLASK_CONFIG": {
-      "required": true
+      "value": "production"
     },
     "SECRET_KEY": {
       "generator": "secret"
-    },
-    "MAIL_USERNAME": {
-      "required": true
-    },
-    "MAIL_PASSWORD": {
-      "required": true
     }
   },
   "formation": {
