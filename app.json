@@ -2,7 +2,7 @@
   "name": "maps4all",
   "description": "Simple way to create resource maps",
   "scripts": {
-    "postdeploy": "python manage.py recreate_db && python manage.py setup_prod"
+    "postdeploy": "python manage.py recreate_db && python manage.py setup_dev"
   },
   "env": {
     "FLASK_CONFIG": {
