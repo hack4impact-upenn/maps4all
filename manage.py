@@ -82,11 +82,12 @@ def setup_dev():
     setup_general()
 
     admin_email = os.environ.get('ADMIN_EMAIL')
+    admin_password = os.environ.get('ADMIN_PASSWORD')
     if User.query.filter_by(email=admin_email).first() is None:
         User.create_confirmed_admin('Default',
                                     'Admin',
                                     admin_email,
-                                    'password')
+                                    admin_password)
 
 
 @manager.command
