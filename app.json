@@ -5,6 +5,24 @@
     "postdeploy": "python manage.py recreate_db && python manage.py setup_dev"
   },
   "env": {
+    "MAIL_USERNAME": {
+      "required": true
+    },
+    "MAIL_PASSWORD": {
+      "required": true
+    },
+    "TWILIO_AUTH_TOKEN": {
+      "required": true
+    },
+    "TWILIO_ACCOUNT_SID": {
+      "required": true
+    },
+    "ADMIN_EMAIL": {
+      "required": true
+    },
+    "ADMIN_PASSWORD": {
+      "required": true
+    },
     "FLASK_CONFIG": {
       "value": "production"
     },
