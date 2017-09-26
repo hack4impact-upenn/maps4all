@@ -21,6 +21,7 @@ from .forms import (
     ChangeSiteStyleForm
 )
 from ..email import send_email
+from ..utils import s3_upload
 
 
 @admin.route('/')
@@ -284,6 +285,8 @@ def change_site_logo():
             current_app.root_path, 'static/custom', filename
         ))
 
+        s3_upload(form.site_logo)
+
         logo_url.value = str(filename)
         db.session.add(logo_url)
         db.session.commit()
@@ -313,6 +316,8 @@ def change_site_style():
         site_style.save(os.path.join(
             current_app.root_path, 'static/custom', filename
         ))
+
+        s3_upload(form.site_style)
 
         style_sheet.value = str(filename)
         db.session.add(style_sheet)

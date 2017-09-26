@@ -98,4 +98,3 @@ class ChangeSiteStyleForm(Form):
     ])
 
     submit = SubmitField('Change stylesheet')
-
