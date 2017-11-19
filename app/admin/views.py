@@ -285,7 +285,7 @@ def change_site_logo():
             current_app.root_path, 'static/custom', filename
         ))
 
-        s3_upload(form.site_logo)
+        get_queue().enqueue(s3_upload, site_logo)
 
         logo_url.value = str(filename)
         db.session.add(logo_url)
@@ -317,7 +317,7 @@ def change_site_style():
             current_app.root_path, 'static/custom', filename
         ))
 
-        s3_upload(form.site_style)
+        get_queue().enqueue(s3_upload, form.site_style)
 
         style_sheet.value = str(filename)
         db.session.add(style_sheet)
