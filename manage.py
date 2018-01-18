@@ -18,7 +18,6 @@ from config import Config
 from flask.ext.script import Manager, Shell
 from flask.ext.migrate import Migrate, MigrateCommand
 
-
 # Import settings from .env file. Must define FLASK_CONFIG
 if os.path.exists('.env'):
     print('Importing environment from .env file')

@@ -34,6 +34,8 @@ class Config:
     RQ_DEFAULT_PASSWORD = url.password
     RQ_DEFAULT_DB = 0
 
+    FILEPICKER_API_KEY = os.environ.get('FILEPICKER_API_KEY')
+
     @staticmethod
     def init_app(app):
         pass

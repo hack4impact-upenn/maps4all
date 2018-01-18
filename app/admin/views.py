@@ -1,6 +1,14 @@
 import os
 import datetime
-from flask import abort, flash, redirect, render_template, url_for, current_app
+from flask import (
+    abort,
+    flash,
+    redirect,
+    render_template,
+    url_for,
+    current_app,
+    request
+)
 from flask.ext.login import current_user, login_required
 from flask.ext.rq import get_queue
 from werkzeug.utils import secure_filename
@@ -274,59 +282,39 @@ def change_site_name():
 @login_required
 def change_site_logo():
     """Change a site's logo."""
-    logo_url = SiteAttribute.get("SITE_LOGO")
+    if request.method == 'POST':
+        logo_attr = SiteAttribute.get("SITE_LOGO")
 
-    form = ChangeSiteLogoForm()
-    if form.validate_on_submit():
-        site_logo = form.site_logo.data
-        filename = secure_filename(site_logo.filename)
+        url = request.form['file_url']
+        logo_attr.value = url
 
-        site_logo.save(os.path.join(
-            current_app.root_path, 'static/custom', filename
-        ))
-
-        get_queue().enqueue(s3_upload, site_logo)
-
-        logo_url.value = str(filename)
-        db.session.add(logo_url)
+        db.session.add(logo_attr)
         db.session.commit()
 
-        flash('Site logo successfully changed to <br>' +
-              '<img width="70px" src="{}"/>'
-              .format(url_for('static', filename='custom/' + logo_url.value)),
-              'form-success')
+        flash('Site logo successfully changed.')
+
+        return redirect(url_for('admin.customize_site'))
 
     return render_template('admin/customize_site.html',
-                           app_name=SiteAttribute.get_value("ORG_NAME"),
-                           form=form)
+                           app_name=SiteAttribute.get_value("ORG_NAME"))
 
 
 @admin.route('/customize-site/style', methods=['GET', 'POST'])
 @login_required
 def change_site_style():
     """Change a site's stylesheet."""
-    style_sheet = SiteAttribute.get("STYLE_SHEET")
-    style_time = SiteAttribute.get("STYLE_TIME")
+    if request.method == 'POST':
+        style_attr = SiteAttribute.get("STYLE_SHEET")
 
-    form = ChangeSiteStyleForm()
-    if form.validate_on_submit():
-        site_style = form.site_style.data
-        filename = 'style.css'
+        url = request.form['url']
+        style_attr.value = url
 
-        site_style.save(os.path.join(
-            current_app.root_path, 'static/custom', filename
-        ))
-
-        get_queue().enqueue(s3_upload, form.site_style)
-
-        style_sheet.value = str(filename)
-        db.session.add(style_sheet)
-        style_time.value = str(datetime.datetime.utcnow()).replace(' ', '-')
-        db.session.add(style_time)
+        db.session.add(style_attr)
         db.session.commit()
 
-        flash('Site style successfully changed.', 'form-success')
+        flash('Site style sheet successfully changed.')
+
+        return redirect(url_for('admin.customize_site'))
 
     return render_template('admin/customize_site.html',
-                           app_name=SiteAttribute.get_value("ORG_NAME"),
-                           form=form)
+                           app_name=SiteAttribute.get_value("ORG_NAME"))

@@ -31,23 +31,94 @@
                 <div class="sub header">View and manage this site.</div>
             </h2>
         </div>
-        <div class="stretched divided very relaxed row">
+        <div class="divided very relaxed row">
             <div class="four wide column">
                 {{ navigation(endpoints) }}
             </div>
             <div class="eight wide column">
                 {% if form %}
                     {{ f.render_form(form) }}
+                {% elif request.endpoint == 'admin.change_site_logo' %}
+                    <button onclick="openPickerLogo()" class="ui labeled icon button">
+                        <i class="upload icon"></i>
+                        Upload
+                    </button>
+                {% elif request.endpoint == 'admin.change_site_style' %}
+                    <button onclick="openPickerStyle()" class="ui labeled icon button">
+                        <i class="upload icon"></i>
+                        Upload
+                    </button>
                 {% else %}
                     <table class="ui compact definition table">
                         <tr><td>Name</td><td>{{ app_name }}</td></tr>
                         <tr><td>Logo</td><td> 
-                            <img width="70px" src="{{ url_for('static', filename='custom/' + logo_url) }}">
+                            <img width="70px" src="{{ logo_url }}">
                         </td></tr>
                     </table>
                 {% endif %}
             </div>
         </div>
     </div>
+
+    <script type="text/javascript">
+        // Found at https://stackoverflow.com/a/5533477/3624201
+        function post(path, parameters) {
+            var form = $('<form></form>');
+
+            form.attr("method", "post");
+            form.attr("action", path);
+
+            parameters["csrf_token"] = "{{ csrf_token() }}";
+
+            $.each(parameters, function(key, value) {
+                var field = $('<input></input>');
+
+                field.attr("type", "hidden");
+                field.attr("name", key);
+                field.attr("value", value);
+
+                form.append(field);
+            });
+
+            // The form needs to be a part of the document in
+            // order for us to be able to submit it.
+            $(document.body).append(form);
+            form.submit();
+        }
+
+        var fsClient = filestack.init("{{ config.FILEPICKER_API_KEY }}");
+        function openPickerLogo() {
+            fsClient.pick({
+            fromSources:["local_file_system","url","googledrive","dropbox"],
+            maxFiles:1,
+            minFiles:1,
+            imageMax: [500, 500],
+            startUploadingWhenMaxFilesReached: true,
+            accept:["image/*"]
+            }).then(function(response) {
+                if (response.filesFailed.length != 0) {
+                    alert("An error occurred. Please share this with the developer: " + JSON.stringify(response));
+                } else {
+                    post("{{ url_for('admin.change_site_logo') }}", {"file_url": response.filesUploaded[0].url});
+                }
+            });
+        }
+
+        function openPickerStyle() {
+            fsClient.pick({
+            fromSources:["local_file_system","googledrive","dropbox"],
+            maxFiles:1,
+            minFiles:1,
+            accept:[".css"],
+            startUploadingWhenMaxFilesReached: true,
+            }).then(function(response) {
+                if (response.filesFailed.length != 0) {
+                    alert("An error occurred. Please share this with the developer: " + JSON.stringify(response));
+                } else {
+                    post("{{ url_for('admin.change_site_style') }}", {'url': response.filesUploaded[0].url});
+                }
+            });
+        }
+    </script>
 
 {% endblock %}
