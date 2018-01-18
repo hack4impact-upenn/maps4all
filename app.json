@@ -11,12 +11,6 @@
     "MAIL_PASSWORD": {
       "required": true
     },
-    "TWILIO_AUTH_TOKEN": {
-      "required": true
-    },
-    "TWILIO_ACCOUNT_SID": {
-      "required": true
-    },
     "ADMIN_EMAIL": {
       "required": true
     },
