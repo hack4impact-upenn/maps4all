@@ -34,7 +34,8 @@
   },
   "addons": [
     "heroku-postgresql",
-    "redistogo"
+    "redistogo",
+    "filepicker"
   ],
   "buildpacks": [
 
