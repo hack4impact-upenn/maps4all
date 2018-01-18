@@ -24,9 +24,7 @@ from .forms import (
     NewUserForm,
     NewPageForm,
     EditPageForm,
-    ChangeSiteNameForm,
-    ChangeSiteLogoForm,
-    ChangeSiteStyleForm
+    ChangeSiteNameForm
 )
 from ..email import send_email
 from ..utils import s3_upload
