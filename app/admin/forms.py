@@ -79,22 +79,3 @@ class ChangeSiteNameForm(Form):
                                                 Length(1, 30)])
 
     submit = SubmitField('Change name')
-
-
-class ChangeSiteLogoForm(Form):
-    site_logo = FileField(validators=[
-        FileRequired(),
-        FileAllowed(['jpg', 'png', 'gif', 'jpeg'],
-                    'jpg, jpeg, png, or gif images only!')
-    ])
-
-    submit = SubmitField('Change logo')
-
-
-class ChangeSiteStyleForm(Form):
-    site_style = FileField(validators=[
-        FileRequired(),
-        FileAllowed(['css'], 'Please upload a .css file!')
-    ])
-
-    submit = SubmitField('Change stylesheet')

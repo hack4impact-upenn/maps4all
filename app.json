@@ -29,6 +29,7 @@
   "addons": [
     "heroku-postgresql",
     "redistogo",
+    "filepicker",
     "sendgrid"
   ],
   "buildpacks": [
