@@ -15,8 +15,8 @@ class Config:
     MAIL_SERVER = 'smtp.sendgrid.net'
     MAIL_PORT = 587
     MAIL_USE_TLS = True
-    MAIL_USERNAME = os.environ.get('MAIL_USERNAME')
-    MAIL_PASSWORD = os.environ.get('MAIL_PASSWORD')
+    MAIL_USERNAME = os.environ.get('MAIL_USERNAME') or os.environ.get('SENDGRID_USERNAME')
+    MAIL_PASSWORD = os.environ.get('MAIL_PASSWORD') or os.environ.get('SENDGRID_PASSWORD')
 
     ADMIN_EMAIL = os.environ.get('ADMIN_EMAIL')
     EMAIL_SUBJECT_PREFIX = '[{}]'.format(APP_NAME)
