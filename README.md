@@ -130,20 +130,7 @@ $ python manage.py add_fake_data
 $ source venv/bin/activate
 $ honcho start -f Local
 ```
-
-**Note**: if you are using Redis container with docker, you can ignore the error that `foreman` will display when you run the `foreman` command above. `foreman` will try to start the redis-server locally and it will not find the `redis-server` command. This is fine as long as you followed the [instructions above](#other-dependencies-for-running-locally) to run Redis in a container. The error should look like this
-
-```
-$ honcho start -f Local
-10:22:56 redis.1  | unknown command: redis-server
-10:22:56 web.1    | started with pid 14409
-10:22:56 worker.1 | started with pid 14410
-10:22:57 worker.1 | 10:22:57 RQ worker u'rq:worker:dev.14410' started, version 0.5.6
-10:22:57 worker.1 | 10:22:57
-10:22:57 worker.1 | 10:22:57 *** Listening on default...
-10:22:57 web.1    |  * Running on http://127.0.0.1:5000/ (Press CTRL+C to quit)
-10:22:57 web.1    |  * Restarting with stat
-```
+Then navigate to `http://localhost:5000` on your preferred browser to open the web app.
 
 ## Project Structure
 
