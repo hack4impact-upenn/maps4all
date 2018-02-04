@@ -1,5 +1,6 @@
 from .. import db
 from .. models import Rating
+import os
 
 
 class OptionAssociation(db.Model):
@@ -131,9 +132,8 @@ class Resource(db.Model):
         from sqlalchemy.exc import IntegrityError
         from random import randint
         from faker import Faker
-        from geopy.geocoders import Nominatim
+        import googlemaps
 
-        geolocater = Nominatim()
         fake = Faker()
 
         num_options = 5
@@ -146,25 +146,28 @@ class Resource(db.Model):
                 is_searchable=fake.boolean()
             ))
 
+        gmaps = googlemaps.Client(key=os.environ['GOOGLE_API_KEY'])
+
         for i in range(count):
 
             # Generates random coordinates around Philadelphia.
-            latitude = str(fake.geo_coordinate(
+            latitude = fake.geo_coordinate(
                 center=center_lat,
                 radius=0.01
-            ))
-            longitude = str(fake.geo_coordinate(
+            )
+            longitude = fake.geo_coordinate(
                 center=center_long,
                 radius=0.01
-            ))
+            )
 
-            location = geolocater.reverse(latitude + ', ' + longitude)
+            # Create an address with reverse geocoding
+            location = gmaps.reverse_geocode((latitude, longitude))[0]
 
             # Create one or two resources with that location.
             for i in range(randint(1, 2)):
                 resource = Resource(
                     name=fake.name(),
-                    address=location.address,
+                    address=location['formatted_address'],
                     latitude=latitude,
                     longitude=longitude
                 )

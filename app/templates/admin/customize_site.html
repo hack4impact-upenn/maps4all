@@ -86,7 +86,7 @@
             form.submit();
         }
 
-        var fsClient = filestack.init("{{ config.FILEPICKER_API_KEY }}");
+        var fsClient = filestack.init("{{ config.FILESTACK_API_KEY }}");
         function openPickerLogo() {
             fsClient.pick({
             fromSources:["local_file_system","url","googledrive","dropbox"],

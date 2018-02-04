@@ -2,32 +2,24 @@
 
 ## Team Members
 
-- Elizabeth Hamp
-- Natasha Narang
-- Arman Tokanov
-- Veronica Wharton
-- Daniel Zhang
 - Annie Meng
-- Stephanie Shi
-- Sanjay Subramanian
+- Arman Tokanov
 - Ben Sandler
 - Brandon Obas
+- Daniel Zhang
+- Elizabeth Hamp
+- Hana Pearlman
+- Katie Jiang
 - Kyle Rosenbluth
+- Natasha Narang
 - Rani Iyer
+- Sanjay Subramanian
+- Stephanie Shi
+- Veronica Wharton
 
 ## Synopsis
 
-A Flask application template with the boilerplate code already done for you.
-
-## What's included?
-
-* Blueprints
-* User and permissions management
-* Flask-SQLAlchemy for databases
-* Flask-WTF for forms
-* Flask-Assets for asset management and SCSS compilation
-* Flask-Mail for sending emails
-* Automatic SSL + gzip compression
+A generalized Flask application for displaying location-based resources on a map.
 
 ## Setting up
 
@@ -42,8 +34,8 @@ $ cd maps4all
 
 ```
 $ pip install virtualenv
-$ virtualenv env
-$ source env/bin/activate
+$ virtualenv -p python3 venv
+$ source venv/bin/activate
 ```
 (If you're on a mac) Make sure xcode tools are installed
 ```
@@ -53,8 +45,7 @@ $ xcode-select --install
 ##### Install the dependencies
 
 ```
-$ pip install -r requirements/common.txt
-$ pip install -r requirements/dev.txt
+$ pip install -r requirements.txt
 ```
 
 ##### Other dependencies for running locally
@@ -90,6 +81,30 @@ $ docker pull redis:latest
 $ docker run -d -p 6379:6379 --name maps4all-redis redis:latest
 ```
 
+##### Set your environment variables
+
+Create a `.env` file in your directory and include the following variables:
+* `ADMIN_EMAIL` and `ADMIN_PASSWORD` allow you to login as an administrator to Maps4All on your local machine.
+* `FILESTACK_API_KEY` is an API key which you can obtain [here](https://dev.filestack.com/signup/free/).
+* `MAIL_PASSWORD` and `MAIL_USERNAME` are your login credentials for [Sendgrid](https://sendgrid.com/).
+* `GOOGLE_API_KEY`, `GOOGLE_API_1`, and `GOOGLE_API_2` are API keys for Google maps. They can be obtained [here](https://developers.google.com/maps/documentation/javascript/get-api-key#step-1-get-an-api-key-from-the-google-api-console).
+* `TWILIO_ACCOUNT_SID` and `TWILIO_AUTH_TOKEN` allow you to use the Twilio API to send text messages. They can be obtained through the [Twilio console](https://www.twilio.com/login).
+TWILIO_ACCOUNT_SID=AC66b23a9fb924a84547e9c95e56436895
+TWILIO_AUTH_TOKEN=873011dea73b3449b7fb9ca01fbcc264
+
+Your `.env` file should look something like this:
+```
+ADMIN_EMAIL=admin@maps4all.org
+ADMIN_PASSWORD=password123
+FILESTACK_API_KEY=XXXXXXXXXXXXXXXX
+MAIL_USERNAME=janedoe
+MAIL_PASSWORD=password123
+GOOGLE_API_KEY=XXXXXXXXXXXXXXXX
+GOOGLE_API_1=XXXXXXXXXXXXXXXX
+GOOGLE_API_2=XXXXXXXXXXXXXXXX
+TWILIO_ACCOUNT_SID=XXXXXXXXXXXXXXXX
+TWILIO_AUTH_TOKEN=XXXXXXXXXXXXXXXX
+```
 
 ##### Create the database
 
@@ -112,19 +127,19 @@ $ python manage.py add_fake_data
 ## Running the app
 
 ```
-$ source env/bin/activate
-$ foreman start -f Local
+$ source venv/bin/activate
+$ honcho start -f Local
 ```
 
 **Note**: if you are using Redis container with docker, you can ignore the error that `foreman` will display when you run the `foreman` command above. `foreman` will try to start the redis-server locally and it will not find the `redis-server` command. This is fine as long as you followed the [instructions above](#other-dependencies-for-running-locally) to run Redis in a container. The error should look like this
 
 ```
-$ foreman start -f Local
+$ honcho start -f Local
 10:22:56 redis.1  | unknown command: redis-server
 10:22:56 web.1    | started with pid 14409
 10:22:56 worker.1 | started with pid 14410
 10:22:57 worker.1 | 10:22:57 RQ worker u'rq:worker:dev.14410' started, version 0.5.6
-10:22:57 worker.1 | 10:22:57 
+10:22:57 worker.1 | 10:22:57
 10:22:57 worker.1 | 10:22:57 *** Listening on default...
 10:22:57 web.1    |  * Running on http://127.0.0.1:5000/ (Press CTRL+C to quit)
 10:22:57 web.1    |  * Restarting with stat
