@@ -243,36 +243,65 @@ function sendText(number,id) {
   });
 }
 
+function getCurrentLocation(callback) {
+  if (navigator.geolocation) {
+    navigator.geolocation.getCurrentPosition(function(position) {
+      var currentLocation = {
+        lat: position.coords.latitude,
+        lng: position.coords.longitude
+      };
+      callback(true, currentLocation);
+    }, function() {
+      console.log('Error getting current user location')
+      callback(false, null);
+    });
+  }
+}
+
 /*
  * Initializes the map, the corresponding list of resources and search
  * functionality on the resources
  */
-function initMap() {
-  // hide resource-info
+function initMap(callback) {
+  // Hide resource-info
   $("#resource-info").empty();
   $("#resource-info").hide();
 
-  map = new google.maps.Map(document.getElementById('map'), {
-    center: {lat: 39.949, lng: -75.181}, // TODO(#52): Do not hardcode this.
-    zoom: focusZoom,
+  getCurrentLocation(function(success, currentLocation) {
+    map = new google.maps.Map(document.getElementById('map'), {
+      center: success ? currentLocation : {lat: 39.8283, lng: -98.5795},
+      zoom: success ? focusZoom : 4
+    });
+
+    oms = new OverlappingMarkerSpiderfier(map, {keepSpiderfied: true, nearbyDistance: 10});
+
+    // Add click listener to marker for displaying infoWindow
+    oms.addListener('click', markerListener);
+
+    infowindow = new google.maps.InfoWindow();
+    initLocationSearch(map);
+    initResourceSearch();
+    initResetButton();
+    initCurrentLocationButton();
+
+    $.get('/get-resources').done(function(resourcesString) {
+      var resources = JSON.parse(resourcesString);
+      if (resources && resources.length > 0) {
+        populateMarkers(resources);
+        populateListDiv();
+
+        if (!currentLocation) {
+          // Centers map around markers if no current location
+          map.fitBounds(bounds);
+          map.setCenter(bounds.getCenter());
+        }
+      }
+    });
+
+    callback();
   });
 
-  oms = new OverlappingMarkerSpiderfier(map, {keepSpiderfied: true, nearbyDistance: 10});
 
-  // Add click listener to marker for displaying infoWindow
-  oms.addListener('click', markerListener);
-
-  infowindow = new google.maps.InfoWindow();
-  initLocationSearch(map);
-  initResourceSearch();
-  initResetButton();
-  initCurrentLocationButton();
-
-  $.get('/get-resources').done(function(resourcesString) {
-    var resources = JSON.parse(resourcesString);
-    populateMarkers(resources);
-    populateListDiv();
-  });
 }
 
 /*
@@ -327,7 +356,7 @@ function initLocationSearch(map) {
   });
 }
 
-function initCurrentLocationButton(){
+function initCurrentLocationButton() {
   $('#get-user-location').click(function() {
     if (navigator.geolocation) {
       navigator.geolocation.getCurrentPosition(function(position) {
@@ -342,13 +371,11 @@ function initCurrentLocationButton(){
           name: "You are here",
           currentLocation: true
         }
-        console.log('current location called');
         createLocationMarker(marker_info);
-        }, function() {
-        console.log("o no")
-        // add in error handling !!!!!! 
-        }
-      );
+      }, function() {
+        // TODO: Add error handling
+        console.log('Error getting current user location')
+      });
     }
   });
 }
@@ -487,9 +514,6 @@ function populateMarkers(resources) {
     oms.addMarker(markers[i]);
     bounds.extend(markers[i].getPosition());
   }
-
-  map.fitBounds(bounds);
-  map.setCenter(bounds.getCenter());
   allResourceBounds = bounds;
 }
 
