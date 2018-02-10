@@ -79,3 +79,11 @@ class ChangeSiteNameForm(Form):
                                                 Length(1, 30)])
 
     submit = SubmitField('Change name')
+
+
+class ChangeTwilioCredentialsForm(Form):
+    twilio_auth_token = StringField('Twilio Authentication Token',
+        validators=[InputRequired(), Length(1, 64)])
+    twilio_account_sid = StringField('Twilio Account SID',
+        validators=[InputRequired(), Length(1, 64)])
+    submit = SubmitField('Change Twilio credentials')
