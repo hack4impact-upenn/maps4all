@@ -89,8 +89,6 @@ Create a `.env` file in your directory and include the following variables:
 * `MAIL_PASSWORD` and `MAIL_USERNAME` are your login credentials for [Sendgrid](https://sendgrid.com/).
 * `GOOGLE_API_KEY`, `GOOGLE_API_1`, and `GOOGLE_API_2` are API keys for Google maps. They can be obtained [here](https://developers.google.com/maps/documentation/javascript/get-api-key#step-1-get-an-api-key-from-the-google-api-console).
 * `TWILIO_ACCOUNT_SID` and `TWILIO_AUTH_TOKEN` allow you to use the Twilio API to send text messages. They can be obtained through the [Twilio console](https://www.twilio.com/login).
-TWILIO_ACCOUNT_SID=AC66b23a9fb924a84547e9c95e56436895
-TWILIO_AUTH_TOKEN=873011dea73b3449b7fb9ca01fbcc264
 
 Your `.env` file should look something like this:
 ```
