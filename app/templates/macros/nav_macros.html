@@ -12,7 +12,7 @@
 {% macro header_items(current_user, site_name) %}
     <a class="header item" href="{{ url_for('main.index') }}">{{ site_name }}</a>
     {% if current_user.is_authenticated() %}
-        {% set href = url_for(current_user.role.index + '.index') %}
+        {% set href = url_for('admin.index') %}
         <a class="item" href="{{ href }}">{{ current_user.role.name }} Dashboard</a>
     {% else %}
         <a class="item nav-mobile-switch" id="nav-to-map">
@@ -67,19 +67,24 @@
                                     icon='book icon') }}
                 {{ dropdown_choice('Add New Resource', 'single_resource.create',
                                     icon='add circle icon') }}
-                {{ dropdown_choice('Suggested Resources', 'suggestion.index',
-                                    icon='checkmark box icon', id='suggested-resources') }}
-                {{ dropdown_choice('View Ratings/Reviews', 'admin.ratings_table',
-                                    icon='star icon') }}
+
+                {% if current_user.is_admin() %}
+                    {{ dropdown_choice('Suggested Resources', 'suggestion.index',
+                                        icon='checkmark box icon', id='suggested-resources') }}
+                    {{ dropdown_choice('View Ratings/Reviews', 'admin.ratings_table',
+                                        icon='star icon') }}
+                {% endif %}
                 <div class="ui section divider"></div>
                 <h3 class="ui header">Descriptors</h3>
                 {{ dropdown_choice('All Descriptors', 'descriptor.index',
                                     icon='tags icon') }}
                 {{ dropdown_choice('Add New Descriptor', 'descriptor.new_descriptor',
                                     icon='add circle icon') }}
-                {{ dropdown_choice('Change Required Option Descriptor',
-                                    'descriptor.change_required_option_descriptor',
-                                    icon='configure icon') }}
+                {% if current_user.is_admin() %}
+                    {{ dropdown_choice('Change Required Option Descriptor',
+                                        'descriptor.change_required_option_descriptor',
+                                        icon='configure icon') }}
+                {% endif %}
                 <div class="ui section divider"></div>
                 <h3 class="ui header">Bulk</h3>
                 {{ dropdown_choice('Upload Resources', 'bulk_resource.upload',
