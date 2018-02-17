@@ -262,46 +262,34 @@ function getCurrentLocation(callback) {
  * Initializes the map, the corresponding list of resources and search
  * functionality on the resources
  */
-function initMap(callback) {
+function initMap() {
   // Hide resource-info
   $("#resource-info").empty();
   $("#resource-info").hide();
 
-  getCurrentLocation(function(success, currentLocation) {
-    map = new google.maps.Map(document.getElementById('map'), {
-      center: success ? currentLocation : {lat: 39.8283, lng: -98.5795},
-      zoom: success ? focusZoom : 4
-    });
-
-    oms = new OverlappingMarkerSpiderfier(map, {keepSpiderfied: true, nearbyDistance: 10});
-
-    // Add click listener to marker for displaying infoWindow
-    oms.addListener('click', markerListener);
-
-    infowindow = new google.maps.InfoWindow();
-    initLocationSearch(map);
-    initResourceSearch();
-    initResetButton();
-    initCurrentLocationButton();
-
-    $.get('/get-resources').done(function(resourcesString) {
-      var resources = JSON.parse(resourcesString);
-      if (resources && resources.length > 0) {
-        populateMarkers(resources);
-        populateListDiv();
-
-        if (!currentLocation) {
-          // Centers map around markers if no current location
-          map.fitBounds(bounds);
-          map.setCenter(bounds.getCenter());
-        }
-      }
-    });
-
-    callback();
+  map = new google.maps.Map(document.getElementById('map'), {
+    center: {lat: 39.8283, lng: -98.5795},
+    zoom: 4
   });
 
+  oms = new OverlappingMarkerSpiderfier(map, {keepSpiderfied: true, nearbyDistance: 10});
 
+  // Add click listener to marker for displaying infoWindow
+  oms.addListener('click', markerListener);
+
+  infowindow = new google.maps.InfoWindow();
+  initLocationSearch(map);
+  initResourceSearch();
+  initResetButton();
+  initCurrentLocationButton();
+
+  $.get('/get-resources').done(function(resourcesString) {
+    var resources = JSON.parse(resourcesString);
+    if (resources && resources.length > 0) {
+      populateMarkers(resources);
+      populateListDiv();
+    }
+  });
 }
 
 /*
@@ -507,7 +495,6 @@ function populateMarkers(resources) {
   for (var i = 0; i < resources.length; i++) {
     createMarker(resources[i]);
   }
-
   var bounds = new google.maps.LatLngBounds();
   for (var i = 0; i < markers.length; i++) {
     markers[i].setMap(map);
@@ -515,6 +502,11 @@ function populateMarkers(resources) {
     bounds.extend(markers[i].getPosition());
   }
   allResourceBounds = bounds;
+  map.fitBounds(bounds);
+  map.setCenter(bounds.getCenter());
+  if (markers.length == 1) {
+    map.setZoom(15);
+  }
 }
 
 /*
