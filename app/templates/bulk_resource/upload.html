@@ -8,13 +8,15 @@
                 CSV Upload
             </h2>
             <p>
-                <h4 class="ui header"> Reset </h4>
-                The "Reset" mode clears all data in the database
-                and sets up a new schema based on the contents of the CSV.
+                {% if current_user.is_admin() %}
+                    <h4 class="ui header"> Reset </h4>
+                    The "Reset" mode clears all data in the database
+                    and sets up a new schema based on the contents of the CSV. All resources must have a name under the 'Name' column and an address that can be converted by Google Maps into latitude/longitude under the 'Address' column.
+                {% endif %}
 
                 <h4 class="ui header"> Update </h4>
                 The "Update" model only adds new resources or updates existing
-                resources. <br>
+                resources. All resources must have a name under the 'Name' column and an address that can be converted by Google Maps into latitude/longitude under the 'Address' column.<br>
                 <div class="ui bulleted list">
                   <div class="ui item">
                     If a resource in the CSV has the same name ('Name' column in the CSV) as
@@ -47,12 +49,14 @@
                       <label>Update</label>
                     </div>
                   </div>
-                  <div class="field">
-                    <div class="ui radio checkbox">
-                      <input type="radio" id="reset" name="reset-or-update" tabindex="0" class="hidden">
-                      <label>Reset</label>
+                  {% if current_user.is_admin() %}
+                    <div class="field">
+                      <div class="ui radio checkbox">
+                        <input type="radio" id="reset" name="reset-or-update" tabindex="0" class="hidden">
+                        <label>Reset</label>
+                      </div>
                     </div>
-                  </div>
+                  {% endif %}
                 </div>
                 <button class="ui disabled button" type="submit" id="upload-button">Upload</button>
             </form>

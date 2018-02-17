@@ -420,4 +420,3 @@ def review_required_option_descriptor():
         form.resources[j].label = r_name
         form.resources[j].choices = [(v, v) for v in req_opt_desc_const.values]
     return render_template('descriptor/review_required_option_descriptor.html', form=form)
-

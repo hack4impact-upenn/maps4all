@@ -9,6 +9,7 @@ from sqlalchemy.exc import IntegrityError
 
 from . import suggestion
 from .. import db
+from ..decorators import admin_required
 from ..models import Resource, Suggestion, Descriptor, TextAssociation, OptionAssociation
 from .forms import SuggestionBasicForm, SuggestionAdvancedForm
 from wtforms.fields import TextAreaField, SelectField
@@ -20,6 +21,7 @@ from ..email import send_email
 
 @suggestion.route('/')
 @login_required
+@admin_required
 def index():
     """View all suggestions in a list."""
     suggestions = Suggestion.query.all()
@@ -28,6 +30,7 @@ def index():
 
 @suggestion.route('/unread')
 @login_required
+@admin_required
 def unread():
     """Returns the number of unread suggestions."""
     num_unread = Suggestion.query.filter(
@@ -38,6 +41,7 @@ def unread():
 
 @suggestion.route('/toggle-read/<int:sugg_id>')
 @login_required
+@admin_required
 def toggle_read(sugg_id):
     """Toggles the readability of a given suggestion."""
     suggestion = Suggestion.query.get(sugg_id)
@@ -55,6 +59,7 @@ def toggle_read(sugg_id):
 
 @suggestion.route('/delete/<int:sugg_id>')
 @login_required
+@admin_required
 def delete(sugg_id):
     """Delete a given suggestion."""
     suggestion = Suggestion.query.get(sugg_id)
@@ -135,6 +140,7 @@ def suggest(resource_id):
 
 @suggestion.route('/create/<int:sugg_id>', methods=['GET', 'POST'])
 @login_required
+@admin_required
 def create(sugg_id):
     suggestion = Suggestion.query.get(sugg_id)
     if suggestion is None:
@@ -173,6 +179,7 @@ def create(sugg_id):
 
 @suggestion.route('/edit/<int:sugg_id>', methods=['GET', 'POST'])
 @login_required
+@admin_required
 def edit(sugg_id):
     suggestion = Suggestion.query.get(sugg_id)
     if suggestion is None:
