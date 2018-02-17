@@ -70,7 +70,7 @@
             {% if old_opt_descs %}
               <h5 class="ui header">Existing Option Descriptor Values in CSV</h5>
               <div class="ui relaxed divided list">
-                  {% for (desc, old_desc) in old_opt_descs.iter() %}
+                  {% for (desc, old_desc) in old_opt_descs.items() %}
                   <div class="item">
                     <div class="content">
                       <h5 class="header">{{ desc.name }}</h5>
