@@ -115,24 +115,7 @@
 {% macro mobile_account_items(current_user) %}
     <a href="{{ url_for('contact.index') }}" class="item">Contact Us</a>
     {% if ('yes' | pages)|length > 0 %}
-        <div class="ui text container item">
-            <div class="right menu">
-                <div class="ui simple dropdown item">
-                    Pages
-                    <i class="dropdown icon"></i>
-                    <div class="menu">
-                        {% for p in 'yes' | pages %}
-                          {% if p.page_name != 'Contact' %}
-                              {{ page_dropdown_choice(p.page_name, p.editor_name, icon='book icon') }}
-                          {% endif %}
-                        {% endfor %}
-                    </div>
-                </div>
-            </div>
-        </div>
-    {% endif %}
-    {% if ('yes' | pages)|length > 0 %}
-        <div class = "item"> Pages </div>
+        <div class = "item">Pages </div>
         <div class="menu">
             {% for p in 'yes' | pages %}
               {% if p.page_name != 'Contact' %}
