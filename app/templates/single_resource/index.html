@@ -31,10 +31,8 @@
                 <table class="ui searchable sortable unstackable selectable celled striped table">
                     <thead>
                         <tr>
-                            <th class="three wide sorted ascending">Name</th>
-                            <th class="five wide sorted ascending">Address</th>
-                            <th class="one wide sorted ascending">Latitude</th>
-                            <th class="one wide sorted ascending">Longitude</th>
+                            <th class="four wide sorted ascending">Name</th>
+                            <th class="six wide sorted ascending">Address</th>
                         </tr>
                     </thead>
                     <tbody>
@@ -42,10 +40,8 @@
                         <tr>
                             <td>
                                 <a href="{{ url_for('single_resource.edit', resource_id=resource['id']) }}">{{ resource['name'] }}</a>
-                            <td>{{ resource['address'] }}</td>
-                            <td>{{ resource['latitude'] | round(2) }}</td>
-                            <td>{{ resource['longitude'] | round(2) }}</td>
                             </td>
+                            <td>{{ resource['address'] }}</td>
                         </tr>
                     {% endfor %}
                     </tbody>
