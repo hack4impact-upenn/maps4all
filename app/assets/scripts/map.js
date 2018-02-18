@@ -259,6 +259,24 @@ function getCurrentLocation(callback) {
 }
 
 /*
+ * Set minimum initial zoom level so the map is not zoomed in too much
+*/
+function setInitialZoom() {
+  google.maps.event.addListener(map, 'zoom_changed', function() {
+    zoomChangeBoundsListener = 
+      google.maps.event.addListener(map, 'bounds_changed', function(event) {
+        if (this.getZoom() > 16 && this.initialZoom) {
+          // Change max/min zoom here
+          this.setZoom(16);
+          this.initialZoom = false;
+        }
+      google.maps.event.removeListener(zoomChangeBoundsListener);
+    });
+  });
+  map.initialZoom = true;
+}
+
+/*
  * Initializes the map, the corresponding list of resources and search
  * functionality on the resources
  */
@@ -282,6 +300,7 @@ function initMap() {
   initResourceSearch();
   initResetButton();
   initCurrentLocationButton();
+  setInitialZoom();
 
   $.get('/get-resources').done(function(resourcesString) {
     var resources = JSON.parse(resourcesString);
@@ -502,12 +521,8 @@ function populateMarkers(resources) {
     bounds.extend(markers[i].getPosition());
   }
   allResourceBounds = bounds;
-  if (markers.length == 1) {
-    map.setZoom(15);
-  } else {
-    map.fitBounds(bounds);
-  }
   map.setCenter(bounds.getCenter());
+  map.fitBounds(bounds);
 }
 
 /*
@@ -620,6 +635,8 @@ function resizeMapListGrid() {
  *   marker
  */
 function makeResponsive() {
+  setInitialZoom();
+
   // Change to a single column view
   if ($(window).width() <= singleColNoSpaceBreakpoint) {
     singleColumnResets();
