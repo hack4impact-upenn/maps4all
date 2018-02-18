@@ -502,11 +502,12 @@ function populateMarkers(resources) {
     bounds.extend(markers[i].getPosition());
   }
   allResourceBounds = bounds;
-  map.fitBounds(bounds);
-  map.setCenter(bounds.getCenter());
   if (markers.length == 1) {
     map.setZoom(15);
+  } else {
+    map.fitBounds(bounds);
   }
+  map.setCenter(bounds.getCenter());
 }
 
 /*
