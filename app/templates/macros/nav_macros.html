@@ -112,6 +112,86 @@
     {% endif %}
 {% endmacro %}
 
+{% macro mobile_account_items(current_user) %}
+    <a href="{{ url_for('contact.index') }}" class="item">Contact Us</a>
+    {% if ('yes' | pages)|length > 0 %}
+        <div class = "item">Pages </div>
+        <div class="menu">
+            {% for p in 'yes' | pages %}
+              {% if p.page_name != 'Contact' %}
+
+                  <a id="" class="item" href="{{ url_for('main.render_page', pageName=p.editor_name) }}">
+                      {{ p.page_name }}
+                  </a>
+              {% endif %}
+            {% endfor %}
+        </div>
+    {% endif %}
+    {% if current_user.is_authenticated() %}
+        <div class="item"> Manage</div>
+        <div class="menu">
+            <div class="ui test container">
+                <div class="right menu">
+                    <div class = "ui simple dropdown item">
+                        Resources
+                        <i class="dropdown icon"></i>
+                        <div class="menu">
+                            {{ dropdown_choice('All Resources', 'single_resource.index',
+                                                icon='book icon') }}
+                            {{ dropdown_choice('Add New Resource', 'single_resource.create',
+                                                icon='add circle icon') }}
+                            {{ dropdown_choice('Suggested Resources', 'suggestion.index',
+                                                icon='checkmark box icon', id='suggested-resources') }}
+                            {{ dropdown_choice('View Ratings/Reviews', 'admin.ratings_table',
+                                                icon='star icon') }}
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="ui test container">
+                <div class="right menu">
+                    <div class = "ui simple dropdown item">
+                        Descriptors
+                        <i class="dropdown icon"></i>
+                        <div class="menu">
+                            {{ dropdown_choice('All Descriptors', 'descriptor.index',
+                                    icon='tags icon') }}
+                            {{ dropdown_choice('Add New Descriptor', 'descriptor.new_descriptor',
+                                    icon='add circle icon') }}
+                            {{ dropdown_choice('Change Required Option Descriptor',
+                                    'descriptor.change_required_option_descriptor',
+                                    icon='configure icon') }}
+                        </div>
+                    </div>
+                </div>
+            </div>
+            {{ dropdown_choice('Upload Resources', 'bulk_resource.upload',
+                                    icon=None) }}
+            {{ dropdown_choice('App Overview', 'main.overview',
+                                    icon=None) }}
+        </div>
+        <a href="{{ url_for('account.manage') }}" class="item">Your Account</a>
+        <a href="{{ url_for('account.logout') }}" class="item">Log out</a>
+    {% else %}
+        <a href="{{ url_for('suggestion.suggest') }}" class="item">Suggest Resource</a>
+        <a href="{{ url_for('account.login') }}" class="item">Log in</a>
+    {% endif %}
+
+    {% if current_user.is_authenticated() %}
+      <script>
+        // Generates the icon for unread suggested resources
+        $.get('/suggestion/unread', function (data) {
+            var numUnread = data;
+            if (parseInt(numUnread) > 0) {
+                var icon = document.createElement("i");
+                $(icon).addClass('ui red label').html(numUnread);
+                $("#suggested-resources i").replaceWith(icon);
+            }
+        });
+      </script>
+    {% endif %}
+{% endmacro %}
+
 {% macro mobile_nav(current_user, site_name, endpoints=None) %}
     <div class="mobile only row">
         <div class="ui fixed inverted black main menu">
@@ -126,7 +206,7 @@
             {% if endpoints %}
                 {{ render_menu_items(endpoints) }}
             {% endif %}
-            {{ account_items(current_user) }}
+            {{ mobile_account_items(current_user) }}
         </div>
     </div>
 {% endmacro %}
