@@ -1,12 +1,6 @@
 from flask.ext.wtf import Form
-<<<<<<< HEAD
 from wtforms.fields import FloatField, StringField, SubmitField
-from wtforms.validators import InputRequired, Length, Optional
-=======
-from wtforms.fields import FloatField, HiddenField, StringField, SubmitField
 from wtforms.validators import InputRequired, Length
->>>>>>> master
-
 
 class SingleResourceForm(Form):
     name = StringField('Name', validators=[
@@ -17,17 +11,8 @@ class SingleResourceForm(Form):
         InputRequired(),
         Length(1, 500)
     ])
-<<<<<<< HEAD
-    latitude = FloatField('Latitude', validators=[
-        Optional()
-    ])
-    longitude = FloatField('Longitude', validators=[
-        Optional()
-    ])
-=======
     latitude = FloatField('Latitude')
     longitude = FloatField('Longitude')
->>>>>>> master
     submit = SubmitField('Save Resource')
 
     def validate(self):
