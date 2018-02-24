@@ -6,7 +6,34 @@
 } %}
 
 
-{{ f.render_form(form) }}
+{{ f.begin_form(form, flashes) }}
+    {% for field in form %}
+        {% if field.name != 'submit'
+        and field.name != 'latitude'
+        and field.name != 'longitude' %}
+            {% if field.name == 'csrf_token' %}
+                <div style="display: none;">
+                    {{ f.render_form_field(field) }}
+                </div>
+            {% elif field.name == 'address' %}
+	            {{ f.render_form_field(field) }}
+            	<div class="two fields">
+            		<div class="field">
+            			<label for="latitude">Latitude</label>
+            			<input id="latitude" name="latitude" placeholder="Latitude" readonly="" type="text" value>
+            		</div>
+            		<div class="field">
+            			<label for="longitude">Longitude</label>
+            			<input id="longitude" name="longitude" placeholder="Longitude" readonly="" type="text" value>
+            		</div>
+            	</div>
+            {% else %}
+                {{ f.render_form_field(field) }}
+            {% endif %}
+        {% endif %}
+    {% endfor %}
+    {{ f.render_form_field(form.submit) }}
+{{ f.end_form(form) }}
 
 <script>
 $(document).ready(function() {
