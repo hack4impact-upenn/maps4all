@@ -20,11 +20,13 @@
             	<div class="two fields">
             		<div class="field">
             			<label for="latitude">Latitude</label>
-            			<input id="latitude" name="latitude" placeholder="Latitude" readonly="" type="text" value="{{ form.latitude.data }}">
+            			<input id="latitude" name="latitude" placeholder="Latitude" readonly="" type="text"
+                  value{% if form.latitude.data %}="{{ form.latitude.data }}"{% endif %}>
             		</div>
             		<div class="field">
             			<label for="longitude">Longitude</label>
-            			<input id="longitude" name="longitude" placeholder="Longitude" readonly="" type="text" value="{{ form.longitude.data }}">
+            			<input id="longitude" name="longitude" placeholder="Longitude" readonly="" type="text"
+                  value{% if form.longitude.data %}="{{ form.longitude.data }}"{% endif %}>
             		</div>
             	</div>
             {% else %}
