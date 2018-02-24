@@ -27,17 +27,6 @@
                 Administrator Dashboard
             </h1>
             <h3 class="ui dividing header">
-                Manage Users
-            </h3>
-            <div class="ui two column stackable grid">
-                {{ dashboard_option('Registered Users', 'admin.registered_users',
-                                    description='View and manage user accounts', icon='users icon') }}
-                {{ dashboard_option('Add New User', 'admin.new_user',
-                                    description='Create a new user account', icon='add user icon') }}
-                {{ dashboard_option('Invite New User', 'admin.invite_user',
-                                    description='Invites a new user to create their own account', icon='add user icon') }}
-            </div>
-            <h3 class="ui dividing header">
                 Manage Resources
             </h3>
             <div class="ui two column stackable grid">
@@ -65,6 +54,17 @@
             <div class="ui two column stackable grid">
                 {{ dashboard_option('View Ratings/Reviews', 'admin.ratings_table',
                                     description='See all the Ratings and Reviews', icon='star icon') }}
+            </div>
+            <h3 class="ui dividing header">
+                Manage Users
+            </h3>
+            <div class="ui two column stackable grid">
+                {{ dashboard_option('Registered Users', 'admin.registered_users',
+                                    description='View and manage user accounts', icon='users icon') }}
+                {{ dashboard_option('Add New User', 'admin.new_user',
+                                    description='Create a new user account', icon='add user icon') }}
+                {{ dashboard_option('Invite New User', 'admin.invite_user',
+                                    description='Invites a new user to create their own account', icon='add user icon') }}
             </div>
             <h3 class="ui dividing header">
                 Manage Site

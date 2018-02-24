@@ -20,7 +20,7 @@ def index():
     editable_html_obj = EditableHTML.get_editable_html('contact')
 
     if editable_html_obj is False:
-        edit = EditableHTML(editor_name='contact', page_name='Overview', value='')
+        edit = EditableHTML(editor_name='contact', page_name='Contact', value='')
         db.session.add(edit)
         db.session.commit()
         editable_html_obj = edit
