@@ -173,6 +173,7 @@ def edit(resource_id):
             flash('Error: failed to save resource. Please try again.',
                   'form-error')
     # Field id is not needed for the form, hence omitted with [1:].
+    print(resource_field_names)
     for field_name in resource_field_names[1:]:
         if form[field_name]:
             form[field_name].data = resource.__dict__[field_name]
