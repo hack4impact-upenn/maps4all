@@ -150,7 +150,6 @@ def create(sugg_id):
             setattr(SingleResourceForm, descriptor.name, TextAreaField())
     form = SingleResourceForm()
     form.name.data = suggestion.resource_name
-    form.address.data = suggestion.resource_address
     if form.validate_on_submit():
         new_resource = Resource(name=form.name.data,
                                 address=form.address.data,
