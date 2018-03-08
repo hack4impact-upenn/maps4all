@@ -16,14 +16,35 @@ class OptionAssociation(db.Model):
     descriptor_id = db.Column(db.Integer, db.ForeignKey(
         'descriptors.id', ondelete='CASCADE'))
     option = db.Column(db.Integer)
-    resource = db.relationship('Resource',
-                               back_populates='option_descriptors')
-    descriptor = db.relationship('Descriptor',
-                                 back_populates='option_resources')
+    resource = db.relationship('Resource', back_populates='option_descriptors')
+    descriptor = db.relationship(
+        'Descriptor', back_populates='option_resources')
+
+    def generate_fake():
+        options = []
+        options.append(Descriptor(
+            name='Residential Program',
+            values=['Arts House', 'Cultures Collective', 'Mentors Program'],
+            dtype='Option',
+            is_searchable=False
+        ))
+        options.append(Descriptor(
+            name='Room Options',
+            values=['Singles', 'Doubles', 'Triples'],
+            dtype='Option',
+            is_searchable=True
+        ))
+        options.append(Descriptor(
+            name='Dorm Type',
+            values=['Freshmen', 'Upperclassmen', 'Four-year'],
+            dtype='Option',
+            is_searchable=True
+        ))
+        return options
 
     def __repr__(self):
         return "{}: {}".format(self.descriptor.name,
-                           self.descriptor.values[self.option])
+                               self.descriptor.values[self.option])
 
 
 class TextAssociation(db.Model):
@@ -58,8 +79,10 @@ class HyperlinkAssociation(db.Model):
     descriptor_id = db.Column(db.Integer, db.ForeignKey(
         'descriptors.id', ondelete='CASCADE'))
     url = db.Column(db.String(250))
-    resource = db.relationship('Resource', back_populates='hyperlink_descriptors')
-    descriptor = db.relationship('Descriptor', back_populates='hyperlink_resources')
+    resource = db.relationship(
+        'Resource', back_populates='hyperlink_descriptors')
+    descriptor = db.relationship(
+        'Descriptor', back_populates='hyperlink_resources')
 
     def __repr__(self):
         return "{}: {}".format(self.descriptor.name, self.url)
@@ -74,8 +97,10 @@ class Descriptor(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     name = db.Column(db.String(500), index=True)
     # should only have value for option descriptor
-    values = db.Column(db.PickleType)
+    values = db.Column(db.PickleType, default=[])
     is_searchable = db.Column(db.Boolean)
+    # descriptor type, can be 'Text', 'Optional', or 'Hyperlink'
+    dtype = db.Column(db.String(15))
     text_resources = db.relationship(
         'TextAssociation',
         back_populates='descriptor',
@@ -167,23 +192,31 @@ class Resource(db.Model):
         from random import randint
         from faker import Faker
         import googlemaps
-
         fake = Faker()
 
-        num_options = 5
-        options = []
+        num_options = 3
+        options = OptionAssociation.generate_fake()
+        text_serve = Descriptor(
+            name='Who We Serve',
+            dtype='Text',
+            is_searchable=True
+        )
+        text_about = Descriptor(
+            name='About',
+            dtype='Text',
+            is_searchable=True
+        )
 
-        for i in range(num_options):
-            options.append(Descriptor(
-                name=fake.word(),
-                values=['True', 'False'],
-                is_searchable=fake.boolean()
-            ))
+        hyperlink_website = Descriptor(
+            name='Website',
+            dtype='Hyperlink',
+            is_searchable=False
+        )
 
         gmaps = googlemaps.Client(key=os.environ['GOOGLE_API_KEY'])
 
+        # Generate resources
         for i in range(count):
-
             # Generates random coordinates around Philadelphia.
             latitude = fake.geo_coordinate(
                 center=center_lat,
@@ -193,7 +226,6 @@ class Resource(db.Model):
                 center=center_long,
                 radius=0.01
             )
-
             # Create an address with reverse geocoding
             location = gmaps.reverse_geocode((latitude, longitude))[0]
 
@@ -205,25 +237,17 @@ class Resource(db.Model):
                     latitude=latitude,
                     longitude=longitude
                 )
-
-                oa = OptionAssociation(option=randint(0, 1))
-                oa.descriptor = options[randint(0, num_options - 1)]
+                # Add option descriptors
+                oa = OptionAssociation(option=randint(0, num_options - 1))
+                oa.descriptor = options[randint(0, 2)]
                 resource.option_descriptors.append(oa)
-
-                ta = TextAssociation(text=fake.sentence(nb_words=10))
-                ta.descriptor = Descriptor(
-                    name=fake.word(),
-                    values=[],
-                    is_searchable=fake.boolean()
-                )
-                resource.text_descriptors.append(ta)
-
-                ha = HyperlinkAssociation(url='http://maps4all.org')
-                ta.descriptor = Descriptor(
-                    name='Website',
-                    values=[],
-                    is_searchable=False
-                )
+                # Add text descriptors
+                for tdescriptor in [text_serve, text_about]:
+                    ta = TextAssociation(text=fake.sentence(
+                        nb_words=10), descriptor=tdescriptor)
+                    resource.text_descriptors.append(ta)
+                ha = HyperlinkAssociation(
+                    url='http://maps4all.org', descriptor=hyperlink_website)
                 resource.hyperlink_descriptors.append(ha)
 
                 db.session.add(resource)
