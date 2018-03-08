@@ -1,12 +1,11 @@
 from flask import abort, flash, redirect, render_template, url_for, request
 from flask.ext.login import login_required
 from sqlalchemy.exc import IntegrityError
-from wtforms.fields import SelectMultipleField, TextAreaField
-from wtforms.fields import SelectMultipleField, SelectField, TextAreaField
+from wtforms.fields import SelectMultipleField, SelectField, TextAreaField, StringField
 from flask_wtf.file import InputRequired
 
 from .. import db
-from ..models import Descriptor, OptionAssociation, Resource, TextAssociation, RequiredOptionDescriptor
+from ..models import Descriptor, OptionAssociation, TextAssociation, HyperlinkAssociation, Resource, RequiredOptionDescriptor
 from . import single_resource
 from .forms import SingleResourceForm
 
@@ -28,6 +27,7 @@ def index():
             req_options[val] = False
     return render_template('single_resource/index.html', resources=resources, req_options=req_options)
 
+
 @single_resource.route('/search')
 @login_required
 def search_resources():
@@ -37,7 +37,8 @@ def search_resources():
     req_options = request.args.getlist('reqoption')
     if req_options is None:
         req_options = []
-    resource_pool = Resource.query.filter(Resource.name.ilike('%{}%'.format(name))).all()
+    resource_pool = Resource.query.filter(
+        Resource.name.ilike('%{}%'.format(name))).all()
     req_opt_desc = RequiredOptionDescriptor.query.all()
     if req_opt_desc:
         req_opt_desc = req_opt_desc[0]
@@ -65,19 +66,22 @@ def search_resources():
             query_req_options[val] = val in req_options
     return render_template('single_resource/index.html', resources=resources, query_name=name, req_options=query_req_options)
 
+
 @single_resource.route('/create', methods=['GET', 'POST'])
 @login_required
 def create():
     """Add a resource."""
     descriptors = Descriptor.query.all()
     for descriptor in descriptors:
-        if descriptor.values:  # Fields for option descriptors.
+        if descriptor.dtype == 'Option' and descriptor.values:
             choices = [(str(i), v) for i, v in enumerate(descriptor.values)]
             setattr(SingleResourceForm,
                     descriptor.name,
                     SelectMultipleField(choices=choices))
-        else:  # Fields for text descriptors
+        elif descriptor.dtype == 'Text':  # Fields for text descriptors
             setattr(SingleResourceForm, descriptor.name, TextAreaField())
+        else:
+            setattr(SingleResourceForm, descriptor.name, StringField())
     form = SingleResourceForm()
     if form.validate_on_submit():
         req_opt_desc = RequiredOptionDescriptor.query.all()
@@ -88,7 +92,8 @@ def create():
             ).first()
             if descriptor is not None:
                 if not form[descriptor.name].data:
-                    flash('Error: Must set required descriptor: {}'.format(descriptor.name), 'form-error')
+                    flash('Error: Must set required descriptor: {}'.format(
+                        descriptor.name), 'form-error')
                     return render_template('single_resource/create.html', form=form)
         new_resource = Resource(name=form.name.data,
                                 address=form.address.data,
@@ -120,7 +125,8 @@ def edit(resource_id):
     resource_field_names = list(Resource.__table__.columns.keys())
     descriptors = Descriptor.query.all()
     for descriptor in descriptors:
-        if descriptor.values:  # Fields for option descriptors.
+        # Fields for option descriptors.
+        if descriptor.dtype == 'Option' and descriptor.values:
             choices = [(str(i), v) for i, v in enumerate(descriptor.values)]
             default = None
             option_associations = OptionAssociation.query.filter_by(
@@ -132,7 +138,7 @@ def edit(resource_id):
             setattr(SingleResourceForm,
                     descriptor.name,
                     SelectMultipleField(choices=choices, default=default))
-        else:  # Fields for text descriptors.
+        elif descriptor.dtype == 'Text':  # Fields for text descriptors.
             default = None
             text_association = TextAssociation.query.filter_by(
                 resource_id=resource_id,
@@ -143,6 +149,20 @@ def edit(resource_id):
             setattr(SingleResourceForm,
                     descriptor.name,
                     TextAreaField(default=default))
+        else:  # Field for hyperlink descriptors.
+            default = None
+            hyperlink_association = HyperlinkAssociation.query.filter_by(
+                resource_id=resource_id,
+                descriptor_id=descriptor.id
+            ).first()
+            print(hyperlink_association.resource_id)
+            print(hyperlink_association.descriptor_id)
+            print(hyperlink_association.url)
+            if hyperlink_association is not None:
+                default = hyperlink_association.url
+            setattr(SingleResourceForm,
+                    descriptor.name,
+                    StringField(default=default))
     form = SingleResourceForm()
     if form.validate_on_submit():
         req_opt_desc = RequiredOptionDescriptor.query.all()
@@ -153,7 +173,8 @@ def edit(resource_id):
             ).first()
             if descriptor is not None:
                 if not form[descriptor.name].data:
-                    flash('Error: Must set required descriptor: {}'.format(descriptor.name), 'form-error')
+                    flash('Error: Must set required descriptor: {}'.format(
+                        descriptor.name), 'form-error')
                     return render_template('single_resource/edit.html',
                                            form=form,
                                            resource_id=resource_id)
@@ -184,13 +205,15 @@ def edit(resource_id):
 def save_associations(resource, form, descriptors, resource_existed):
     """Save associations from the forms received by 'create' and 'edit' route
     handlers to the database."""
-    #first delete all the associations for this resource if it already existed (to handle the "empty" case)
+    # first delete all the associations for this resource if it already existed (to handle the "empty" case)
     if resource_existed:
-        options = OptionAssociation.query.filter_by(resource_id=resource.id).all()
+        options = OptionAssociation.query.filter_by(
+            resource_id=resource.id).all()
         texts = TextAssociation.query.filter_by(resource_id=resource.id).all()
-        associations = options + texts
+        hyperlinks = HyperlinkAssociation.query.filter_by(resource_id=resource.id).all()
+        associations = options + texts + hyperlinks
         for a in associations:
-             db.session.delete(a)
+            db.session.delete(a)
         try:
             db.session.commit()
         except IntegrityError:
@@ -199,14 +222,18 @@ def save_associations(resource, form, descriptors, resource_existed):
                   'form-error')
 
     for descriptor in descriptors:
-        if descriptor.values:
+        if descriptor.dtype == 'Option' and descriptor.values:
             AssociationClass = OptionAssociation
             values = [int(i) for i in form[descriptor.name].data]
             keyword = 'option'
-        else:
+        elif descriptor.dtype == 'Text':
             AssociationClass = TextAssociation
             values = [form[descriptor.name].data]
             keyword = 'text'
+        else: # Hyperlink descriptor
+            AssociationClass = HyperlinkAssociation
+            values = [form[descriptor.name].data]
+            keyword = 'url'
         for value in values:
             arguments = {'resource_id': resource.id,
                          'descriptor_id': descriptor.id,
@@ -215,6 +242,7 @@ def save_associations(resource, form, descriptors, resource_existed):
                          'descriptor': descriptor}
             new_association = AssociationClass(**arguments)
             db.session.add(new_association)
+
 
 @single_resource.route('/<int:resource_id>/delete', methods=['POST'])
 @login_required
