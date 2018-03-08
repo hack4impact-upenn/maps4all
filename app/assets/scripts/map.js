@@ -107,7 +107,8 @@ function displayDetailedResourceView(marker) {
     var associationObject = JSON.parse(associations);
     var descriptors = [];
     for (var key in associationObject) {
-      var value = associationObject[key];
+      var value = associationObject[key]['value'];
+      var type = associationObject[key]['type'];
 
       // Combine multiple option descriptor values
       if (Array.isArray(associationObject[key])) {
@@ -119,7 +120,8 @@ function displayDetailedResourceView(marker) {
 
       var descriptor = {
         key: key,
-        value: value
+        value: value,
+        hyperlink: type == 'Hyperlink'
       };
       descriptors.push(descriptor);
     }
@@ -263,7 +265,7 @@ function getCurrentLocation(callback) {
 */
 function setInitialZoom() {
   google.maps.event.addListener(map, 'zoom_changed', function() {
-    zoomChangeBoundsListener = 
+    zoomChangeBoundsListener =
       google.maps.event.addListener(map, 'bounds_changed', function(event) {
         if (this.getZoom() > 16 && this.initialZoom) {
           // Change max/min zoom here

@@ -113,8 +113,10 @@ def get_associations(resource_id):
     associations = {}
     if resource is None:
         return json.dumps(associations)
+    for hd in resource.hyperlink_descriptors:
+        associations[hd.descriptor.name] = {'value': hd.url, 'type': 'Hyperlink'}
     for td in resource.text_descriptors:
-        associations[td.descriptor.name] = td.text
+        associations[td.descriptor.name] = {'value': td.text, 'type': 'Text'}
     for od in resource.option_descriptors:
         val = od.descriptor.values[od.option]
         values = set()
@@ -125,7 +127,7 @@ def get_associations(resource_id):
             values = set(curr)
         else:
             values.add(val)
-        associations[od.descriptor.name] = list(values)
+        associations[od.descriptor.name] = {'value': list(values), 'type': 'Option'}
     return json.dumps(associations)
 
 
