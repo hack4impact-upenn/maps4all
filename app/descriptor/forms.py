@@ -12,7 +12,7 @@ from wtforms.validators import InputRequired, Length
 
 class NewDescriptorForm(Form):
     desc_type = SelectField('Descriptor type',
-                            choices=[('Text', 'Text'), ('Option', 'Option')],
+                            choices=[('Text', 'Text'), ('Option', 'Option'), ('Hyperlink', 'Hyperlink')],
                             validators=[InputRequired()]
                             )
     name = TextField('Name', validators=[InputRequired(), Length(1, 500)])
