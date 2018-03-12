@@ -110,7 +110,7 @@ def search_resources():
 @main.route('/get-associations/<int:resource_id>')
 def get_associations(resource_id):
     resource = Resource.query.get(resource_id)
-    associations = {}
+    associations = {} # map from descriptor name -> {descriptor value(s), descriptor type}
     if resource is None:
         return json.dumps(associations)
     for hd in resource.hyperlink_descriptors:
@@ -119,15 +119,11 @@ def get_associations(resource_id):
         associations[td.descriptor.name] = {'value': td.text, 'type': 'Text'}
     for od in resource.option_descriptors:
         val = od.descriptor.values[od.option]
-        values = set()
-        # multiple option association values
         if associations.get(od.descriptor.name):
-            curr = associations.get(od.descriptor.name)
-            curr.append(val)
-            values = set(curr)
+            od_association = associations.get(od.descriptor.name)
+            od_association['value'].append(val)
         else:
-            values.add(val)
-        associations[od.descriptor.name] = {'value': list(values), 'type': 'Option'}
+            associations[od.descriptor.name] = {'value': [val], 'type': 'Option'}
     return json.dumps(associations)
 
 
