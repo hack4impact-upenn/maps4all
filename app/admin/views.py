@@ -196,8 +196,10 @@ def create_page():
                 editor_name=form.editor_name.data, page_name=form.page_name.data, value=' ')
             db.session.add(editable_html_obj)
             db.session.commit()
+            flash('Successfully added page %s.' % editable_html_obj.page_name, 'form-success')
+            pages = EditableHTML.query.all() # update pages in table
         else:
-            flash('There is already a static page at that URL', 'error')
+            flash('There is already a static page at that URL', 'form-error')
     return render_template('/admin/create_pages.html', form=form, pages=pages)
 
 
