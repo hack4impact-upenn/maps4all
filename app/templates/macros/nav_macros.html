@@ -46,7 +46,7 @@
 
 {% macro account_items(current_user) %}
     <a href="{{ url_for('contact.index') }}" class="item">Contact Us</a>
-    <div class="ui simple dropdown item">
+    <div class="ui simple dropdown item" id="nav-contact-dropdown">
         Pages
         <i class="dropdown icon"></i>
             <div class="menu">
@@ -58,7 +58,7 @@
             </div>
     </div>
     {% if current_user.is_authenticated() %}
-        <div class="ui simple dropdown item">
+        <div class="ui simple dropdown item" id="nav-resources-dropdown">
             Manage Resources
             <i class="dropdown icon"></i>
             <div class="menu">
@@ -217,7 +217,7 @@
     <div class="computer tablet only row">
         <div class="ui fixed inverted black main menu">
             <div class="ui container">
-                <a class="header item" href="/">
+                <a class="header item" href="/" id="nav-header-logo">
                     <img src="{{ logo }}">
                 </a>
                 {{ header_items(current_user, site_name) }}
