@@ -6,6 +6,7 @@
     ('admin.change_site_name', 'Change name'),
     ('admin.change_site_logo', 'Change logo'),
     ('admin.change_site_style', 'Change style'),
+    ('admin.change_twilio_credentials', 'Change Twilio credentials'),
 ] %}
 
 {% macro navigation(items) %}
@@ -51,7 +52,7 @@
                 {% else %}
                     <table class="ui compact definition table">
                         <tr><td>Name</td><td>{{ app_name }}</td></tr>
-                        <tr><td>Logo</td><td> 
+                        <tr><td>Logo</td><td>
                             <img width="70px" src="{{ logo_url }}">
                         </td></tr>
                     </table>
@@ -86,7 +87,7 @@
             form.submit();
         }
 
-        var fsClient = filestack.init("{{ config.FILESTACK_API_KEY }}");
+        var fsClient = filestack.init("{{ config.FILEPICKER_API_KEY }}");
         function openPickerLogo() {
             fsClient.pick({
             fromSources:["local_file_system","url","googledrive","dropbox"],
