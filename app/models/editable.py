@@ -17,3 +17,13 @@ class EditableHTML(db.Model):
         if editable_html_obj is None:
             return False
         return editable_html_obj
+
+    @staticmethod
+    def get_editable_html_by_page_name(page_name):
+        editable_html_obj = EditableHTML.query.filter_by(
+            page_name=page_name
+        ).first()
+
+        if editable_html_obj is None:
+            return False
+        return editable_html_obj
