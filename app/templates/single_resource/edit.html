@@ -1,3 +1,4 @@
+
 {% extends 'layouts/base.html' %}
 
 {% block content %}
@@ -8,7 +9,30 @@
         <form action="{{ url_for('single_resource.delete', resource_id=resource_id) }}"
               method="post">
             <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
-            <button class="negative ui button" onclick="return confirm('Are you sure you want to delete this resource?');"">Delete Resource</button>
+            <button class="negative ui button" id="delete-resource">Delete Resource</button>
         </form>
-    </div>
+          <div id="add-resource-delete-modal" class="ui tiny modal"> 
+            <div class="header">Delete Resource</div>
+            <div class="content"> Are you sure you want to delete this resource?</div>
+            <div class="actions">
+            <div style="background-color:#21ba45" class="ui approve button" 
+            id="approve-delete">Yes</div>
+            <div style="background-color:#db2828" class="ui cancel button">Cancel</div>
+              </div>
+            </div>
+        </div>
+     </div>
+
+    <script type="text/javascript">
+    $(document).ready(function(){
+        $('#delete-resource').on('click', function(e) {
+            e.preventDefault();
+            $('#add-resource-delete-modal')
+            .modal('show');
+        });
+        $('#approve-delete').click(function() {
+            $('form').submit();
+        })
+    });
+    </script>
 {% endblock %}
