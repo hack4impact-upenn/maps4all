@@ -29,21 +29,25 @@
                         {% endfor %}
                     </select>
                     <button class="ui button" id="search-resources" style="margin-right:6px;">Search</button>
+                    {% if resources|length > 0 %}
                     <form action="{{ url_for('single_resource.download') }}" method="post">
                         <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
                         <button class="ui button">Download</button>
                     </form>
+                    {% endif %}
                 </div>
             </div>
             {% else %}
             <div class="ui middle aligned divided list">
                 <div class="item">
+                    {% if resources|length > 0 %}
                     <div class="right floated content">
                         <form action="{{ url_for('single_resource.download') }}" method="post">
                             <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
                             <button class="ui button">Download</button>
                         </form>
                     </div>
+                    {% endif %}
                     <div class="content">
                         <div class="ui left icon fluid action input">
                             <i class="search icon"></i>
@@ -63,21 +67,31 @@
                         <tr>
                             <th class="four wide sorted ascending">Name</th>
                             <th class="six wide sorted ascending">Address</th>
-                            <th class="one wide"></th>
+                            {% if resources|length > 0 %}
+                                <th class="one wide"></th>
+                            {% endif %}
                         </tr>
                     </thead>
                     <tbody>
-                    {% for resource in resources | sort(attribute='name') %}
+                    {% if resources|length > 0 %}
+                        {% for resource in resources | sort(attribute='name') %}
+                            <tr>
+                                <td>
+                                    {{ resource['name'] }}
+                                </td>
+                                <td>{{ resource['address'] }}</td>
+                                <td class="selectable">
+                                  <a href="{{ url_for('single_resource.edit', resource_id=resource['id']) }}">Edit</a>
+                                </td>
+                            </tr>
+                        {% endfor %}
+                    {% else %}
                         <tr>
-                            <td>
-                                {{ resource['name'] }}
-                            </td>
-                            <td>{{ resource['address'] }}</td>
-                            <td class="selectable">
-                              <a href="{{ url_for('single_resource.edit', resource_id=resource['id']) }}">Edit</a>
+                            <td colspan="3">
+                                No resources have been added yet.
                             </td>
                         </tr>
-                    {% endfor %}
+                    {% endif %}
                     </tbody>
                 </table>
             </div>
