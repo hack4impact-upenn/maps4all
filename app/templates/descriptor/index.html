@@ -10,9 +10,20 @@
                 </div>
             </h2>
 
-            <div class="ui right action left icon input menu">
-                <i class="search icon"></i>
-                <input id="search-descriptors" type="text" placeholder="Search descriptors by name">
+            <div class="ui middle aligned divided list">
+                <div class="item">
+                    <div class="right floated content">
+                        <a href="{{ url_for('descriptor.new_descriptor') }}" class="ui button">
+                            New Descriptor
+                        </a>
+                    </div>
+                    <div class="content">
+                        <div class="ui left icon fluid input">
+                            <i class="search icon"></i>
+                            <input id="search-descriptors" type="text" placeholder="Search descriptors by name">
+                        </div>
+                    </div>
+                </div>
             </div>
 
             {# Use overflow-x: scroll so that mobile views don't freak out
