@@ -244,17 +244,42 @@ def delete(resource_id):
 @single_resource.route('/download', methods=['POST'])
 @login_required
 def download():
-    # format string to be csv-friendly
-    def format_for_csv(str):
+    # format string or list of strings to be csv-friendly
+    def csv_friendly(str):
         return '\"{}\"'.format(str.replace('\"', '\"\"')) if str else ''
 
     # write headers
-    csv = 'Name,Address\n'
-    # write each resource
-    for resource in Resource.query.all():
-        csv += (',').join([format_for_csv(resource.name),
-                           format_for_csv(resource.address)]) + '\n'
+    csv = 'Name,Address'
+    descriptors = Descriptor.query.all()
+    if len(descriptors) > 0:
+        csv += ',' + ','.join([desc.name for desc in descriptors])
+    csv += '\n'
 
+    # write each resource
+    resources = Resource.query.all()
+    for resource in resources:
+        # write name and address
+        csv += ','.join([
+            csv_friendly(resource.name),
+            csv_friendly(resource.address)
+        ])
+        if len(descriptors) > 0:
+            # write descriptors
+            associations = Resource.get_associations(resource)
+            values = []
+            for desc in descriptors:
+                value = ''
+                if desc.name in associations:
+                    value = associations[desc.name]
+                    # option descriptors with multiple values are lists
+                    if type(value) == list:
+                        value = ', '.join([csv_friendly(str) for str in value])
+                    else:
+                        value = csv_friendly(value)
+                values.append(value)
+            csv += ',' + ','.join(values)
+        csv += '\n'
+        
     # send csv response
     response = make_response(csv)
     response.headers['Content-Disposition'] = 'attachment; filename=resources.csv'
