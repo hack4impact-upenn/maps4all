@@ -243,18 +243,51 @@ function sendText(number,id) {
   });
 }
 
+function getCurrentLocation(callback) {
+  if (navigator.geolocation) {
+    navigator.geolocation.getCurrentPosition(function(position) {
+      var currentLocation = {
+        lat: position.coords.latitude,
+        lng: position.coords.longitude
+      };
+      callback(true, currentLocation);
+    }, function() {
+      console.log('Error getting current user location')
+      callback(false, null);
+    });
+  }
+}
+
+/*
+ * Set minimum initial zoom level so the map is not zoomed in too much
+*/
+function setInitialZoom() {
+  google.maps.event.addListener(map, 'zoom_changed', function() {
+    zoomChangeBoundsListener = 
+      google.maps.event.addListener(map, 'bounds_changed', function(event) {
+        if (this.getZoom() > 16 && this.initialZoom) {
+          // Change max/min zoom here
+          this.setZoom(16);
+          this.initialZoom = false;
+        }
+      google.maps.event.removeListener(zoomChangeBoundsListener);
+    });
+  });
+  map.initialZoom = true;
+}
+
 /*
  * Initializes the map, the corresponding list of resources and search
  * functionality on the resources
  */
 function initMap() {
-  // hide resource-info
+  // Hide resource-info
   $("#resource-info").empty();
   $("#resource-info").hide();
 
   map = new google.maps.Map(document.getElementById('map'), {
-    center: {lat: 39.949, lng: -75.181}, // TODO(#52): Do not hardcode this.
-    zoom: focusZoom,
+    center: {lat: 39.8283, lng: -98.5795},
+    zoom: 4
   });
 
   oms = new OverlappingMarkerSpiderfier(map, {keepSpiderfied: true, nearbyDistance: 10});
@@ -267,11 +300,14 @@ function initMap() {
   initResourceSearch();
   initResetButton();
   initCurrentLocationButton();
+  setInitialZoom();
 
   $.get('/get-resources').done(function(resourcesString) {
     var resources = JSON.parse(resourcesString);
-    populateMarkers(resources);
-    populateListDiv();
+    if (resources && resources.length > 0) {
+      populateMarkers(resources);
+      populateListDiv();
+    }
   });
 }
 
@@ -327,7 +363,7 @@ function initLocationSearch(map) {
   });
 }
 
-function initCurrentLocationButton(){
+function initCurrentLocationButton() {
   $('#get-user-location').click(function() {
     if (navigator.geolocation) {
       navigator.geolocation.getCurrentPosition(function(position) {
@@ -342,13 +378,11 @@ function initCurrentLocationButton(){
           name: "You are here",
           currentLocation: true
         }
-        console.log('current location called');
         createLocationMarker(marker_info);
-        }, function() {
-        console.log("o no")
-        // add in error handling !!!!!! 
-        }
-      );
+      }, function() {
+        // TODO: Add error handling
+        console.log('Error getting current user location')
+      });
     }
   });
 }
@@ -480,17 +514,15 @@ function populateMarkers(resources) {
   for (var i = 0; i < resources.length; i++) {
     createMarker(resources[i]);
   }
-
   var bounds = new google.maps.LatLngBounds();
   for (var i = 0; i < markers.length; i++) {
     markers[i].setMap(map);
     oms.addMarker(markers[i]);
     bounds.extend(markers[i].getPosition());
   }
-
-  map.fitBounds(bounds);
-  map.setCenter(bounds.getCenter());
   allResourceBounds = bounds;
+  map.setCenter(bounds.getCenter());
+  map.fitBounds(bounds);
 }
 
 /*
@@ -603,6 +635,8 @@ function resizeMapListGrid() {
  *   marker
  */
 function makeResponsive() {
+  setInitialZoom();
+
   // Change to a single column view
   if ($(window).width() <= singleColNoSpaceBreakpoint) {
     singleColumnResets();

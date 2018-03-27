@@ -25,7 +25,8 @@ from .forms import (
     NewUserForm,
     NewPageForm,
     EditPageForm,
-    ChangeSiteNameForm
+    ChangeSiteNameForm,
+    ChangeTwilioCredentialsForm
 )
 from ..email import send_email
 from ..utils import s3_upload
@@ -55,6 +56,7 @@ def new_user():
         flash('User {} successfully created'.format(user.full_name()),
               'form-success')
     return render_template('admin/new_user.html', form=form)
+
 
 @admin.route('/invite-user', methods=['GET', 'POST'])
 @login_required
@@ -192,6 +194,7 @@ def ratings_table():
                 rating.resource_name = temp.first().name
     return render_template('rating/index.html', ratings=ratings)
 
+
 @admin.route('/create-static-page', methods=['GET', 'POST'])
 @login_required
 @admin_required
@@ -199,13 +202,22 @@ def create_page():
     pages = EditableHTML.query.all()
     form = NewPageForm()
     if form.validate_on_submit():
-        if(not EditableHTML.get_editable_html(form.editor_name.data)):
-            editable_html_obj = EditableHTML(editor_name=form.editor_name.data, page_name=form.page_name.data, value=' ')
+        if(not EditableHTML.get_editable_html(form.editor_name.data) and not EditableHTML.get_editable_html_by_page_name(form.page_name.data)):
+            editable_html_obj = EditableHTML(
+                editor_name=form.editor_name.data, page_name=form.page_name.data, value=' ')
             db.session.add(editable_html_obj)
             db.session.commit()
+<<<<<<< HEAD
         else:
             flash('There is already a static page at that URL', 'error')
+=======
+            flash('Successfully added page %s.' % editable_html_obj.page_name, 'form-success')
+            pages = EditableHTML.query.all() # update pages in table
+        else:
+            flash('There is already a page with that URL or page title', 'form-error')
+>>>>>>> 477174360f97fc880bb667a75ae28ed6a148beec
     return render_template('/admin/create_pages.html', form=form, pages=pages)
+
 
 @admin.route('/manage-pages/<string:editor_name>', methods=['GET', 'POST'])
 @login_required
@@ -222,17 +234,18 @@ def edit_page_name(editor_name):
         try:
             db.session.commit()
             flash('Page Successfully Changed.'
-                'form-success')
+                  'form-success')
         except IntegrityError:
             db.session.rollback()
             flash('Database error occurred. Please try again.', 'form-error')
         return render_template('admin/manage_pages.html',
-                                page=page,
-                                form=form)
+                               page=page,
+                               form=form)
     form.page_name.data = page.page_name
     return render_template('admin/manage_pages.html',
-                            page=page,
-                            form=form)
+                           page=page,
+                           form=form)
+
 
 @admin.route('/manage-pages/<string:editor_name>/delete_request')
 @login_required
@@ -243,7 +256,8 @@ def delete_page_request(editor_name):
     if page is None:
         abort(404)
     return render_template('admin/manage_pages.html',
-                            page=page)
+                           page=page)
+
 
 @admin.route('/manage-pages/<string:editor_name>/delete')
 @login_required
@@ -261,8 +275,9 @@ def delete_page(editor_name):
         db.session.rollback()
         flash('Database error occurred. Please try again.', 'form-error')
         return render_template('admin/manage_pages.html',
-                                page=page)
+                               page=page)
     return redirect(url_for('admin.index'))
+
 
 @admin.route('/customize-site')
 @login_required
@@ -334,3 +349,23 @@ def change_site_style():
 
     return render_template('admin/customize_site.html',
                            app_name=SiteAttribute.get_value("ORG_NAME"))
+
+
+@admin.route('/customize-site/twilio', methods=['GET', 'POST'])
+@login_required
+def change_twilio_credentials():
+    """Change the app's Twilio credentials."""
+    form = ChangeTwilioCredentialsForm(
+        twilio_auth_token=SiteAttribute.get_value("TWILIO_AUTH_TOKEN") or "",
+        twilio_account_sid=SiteAttribute.get_value("TWILIO_ACCOUNT_SID") or ""
+    )
+    if form.validate_on_submit():
+        twilio_auth_token = SiteAttribute.get("TWILIO_AUTH_TOKEN")
+        twilio_account_sid = SiteAttribute.get("TWILIO_ACCOUNT_SID")
+        twilio_auth_token.value = form.twilio_auth_token.data
+        twilio_account_sid.value = form.twilio_account_sid.data
+        db.session.add(twilio_auth_token)
+        db.session.add(twilio_account_sid)
+        db.session.commit()
+        flash('Twilio credentials successfully updated.', 'form-success')
+    return render_template('admin/customize_site.html', app_name=SiteAttribute.get_value("ORG_NAME"), form=form)
