@@ -233,7 +233,7 @@ def delete(resource_id):
     db.session.delete(resource)
     try:
         db.session.commit()
-        flash('Resource deleted', 'form-success')
+        flash('Resource deleted', 'success')
         return redirect(url_for('single_resource.index'))
     except IntegrityError:
         db.session.rollback()
