@@ -7,7 +7,7 @@ from flask.ext.login import login_required
 from twilio import twiml
 from app import csrf
 from .. import db
-from ..models import EditableHTML, Resource, Rating, Descriptor, OptionAssociation, RequiredOptionDescriptor
+from ..models import SiteAttribute, EditableHTML, Resource, Rating, Descriptor, OptionAssociation, RequiredOptionDescriptor
 from . import main
 from wtforms.fields import SelectMultipleField, TextAreaField
 from ..single_resource.forms import SingleResourceForm
@@ -34,7 +34,7 @@ def index():
         for val in req_opt_desc.values:
             req_options[val] = False
     twilio_auth = False
-    if os.environ.get('TWILIO_AUTH_TOKEN') is not None:
+    if os.environ.get('TWILIO_AUTH_TOKEN') is not None or SiteAttribute.get_value('TWILIO_AUTH_TOKEN') is not None: 
         twilio_auth = True
     return render_template('main/index.html', options=options_dict, req_options=req_options, req_desc=req_opt_desc, twilio_auth=twilio_auth)
 
