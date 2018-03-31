@@ -12,9 +12,12 @@
                 Back to dashboard
             </a>
             <h2 class="ui header">
-                Add New Static Page
-                <div class="sub header">Create a new static page </div>
+                Add New Page
+                <div class="sub header">Create a new page</div>
             </h2>
+
+            <div class="description">Pages will be created at <a href="/pages/YOUR_URL_HERE">/pages/YOUR_URL_HERE</a>. Page URLs can only include alphanumeric characters and ., @, +, -. Page URLs and page titles must be unique. Page URLs and titles are not case sensitive.</div>
+            <div class="ui hidden divider"></div>
 
             {% set flashes = {
                 'error':   get_flashed_messages(category_filter=['form-error']),
@@ -24,44 +27,45 @@
             } %}
 
             {{ f.begin_form(form, flashes) }}
-            
-                <div class="two fields">
-                    {{ f.render_form_field(form.editor_name) }}
-                    {{ f.render_form_field(form.page_name) }}
-                </div>
+
                 {{ f.form_message(flashes['error'], header='Something went wrong.', class='error') }}
                 {{ f.form_message(flashes['warning'], header='Check your email.', class='warning') }}
                 {{ f.form_message(flashes['info'], header='Information', class='info') }}
                 {{ f.form_message(flashes['success'], header='Success!', class='success') }}
+                <div class="two fields">
+                    {{ f.render_form_field(form.editor_name) }}
+                    {{ f.render_form_field(form.page_name) }}
+                </div>
 
                 {% for field in form | selectattr('type', 'equalto', 'SubmitField') %}
                     {{ f.render_form_field(field) }}
                 {% endfor %}
 
             {{ f.end_form() }}
-        </div>
+
             <h3>Current Pages</h3>
             <div style="overflow-x: scroll;">
                 <table class="ui searchable sortable unstackable selectable celled table">
                     <thead>
                         <tr>
-                            <th>Page Name</th>
-                            <th>URL ID</th>
+                            <th>Page URL</th>
+                            <th>Page Title</th>
                         </tr>
                     </thead>
                     <tbody>
                         {% for page in pages %}
-                            <tr>
+                            <tr onclick="window.location.href = '{{ url_for('admin.edit_page_name', editor_name=page.editor_name) }}';">
                                 <td>
-                                    <a href="{{ url_for('admin.edit_page_name', editor_name=page.editor_name) }}">{{ page.page_name }}</a>
+                                    /{{ page.editor_name }}
                                 </td>
                                 <td>
-                                    <a href="{{ url_for('admin.edit_page_name', editor_name=page.editor_name) }}">{{ page.editor_name }}</a>
+                                    {{ page.page_name }}
                                 </td>
                             </tr>
                         {% endfor %}
                     </tbody>
                 </table>
             </div>
+          </div>
     </div>
 {% endblock %}

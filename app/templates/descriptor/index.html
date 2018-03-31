@@ -21,9 +21,10 @@
                 <table class="ui searchable sortable unstackable selectable celled striped table">
                     <thead>
                         <tr>
-                            <th class="six wide sorted ascending">Name</th>
+                            <th class="five wide sorted ascending">Name</th>
                             <th class="five wide sorted ascending">Type</th>
                             <th class="five wide">Values</th>
+                            <th class="two wide"></th>
                         </tr>
                     </thead>
                     <tbody>
@@ -37,6 +38,9 @@
                                 <td class="descriptor type">Option</td>
                                 <td>{{ ', '.join(d.values) }}</td>
                             {% endif %}
+                            <td class="selectable">
+                              <a href="{{ url_for('descriptor.descriptor_info', desc_id=d.id) }}">Edit</a>
+                            </td>
                         </tr>
                     {% endfor %}
                     </tbody>
