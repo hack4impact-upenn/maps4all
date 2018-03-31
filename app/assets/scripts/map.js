@@ -458,6 +458,7 @@ function initResourceSearch() {
     }
     var endpoint = '/search-resources'+query;
     resourceSearchRequest(endpoint);
+    $('#resource-info').hide();
   });
 
   // Remove query from resource name input displays

@@ -154,6 +154,7 @@
   <div class="actions">
     <h2 class="ui dividing header">Actions</h2>
     <div class="text-save">
+      {% if twilio_auth %}
         <div class="ui form">
           <h3 class="ui header" id="sms-header">Save this resource through SMS</h3>
           <p class="disclaimer-sms">Standard messaging rates apply</p>
@@ -163,6 +164,7 @@
           <button class="ui button" id="text-save-submit">Text me</button>
         </div>
     </div>
+    {% endif %}
     <div class="textSentSuccess">
       <div class="ui positive message">
         <i class="close icon" id="sms-success-close"></i>
