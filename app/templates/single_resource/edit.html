@@ -5,7 +5,7 @@
     <div class="ui text container">
         <h2 class="ui dividing header">Edit Resource</h2>
         {% include 'single_resource/resource_form.html' %}
-        <br>
+        <div class="ui divider"></div>
         <form action="{{ url_for('single_resource.delete', resource_id=resource_id) }}"
               method="post">
             <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
