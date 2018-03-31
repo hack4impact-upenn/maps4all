@@ -117,7 +117,7 @@ def get_associations(resource_id):
     return json.dumps(Resource.get_associations(resource))
 
 
-@main.route('/pages/<page_name>')
+@main.route('/pages/<pageName>')
 def render_page(page_name):
     editable_html_obj = EditableHTML.get_editable_html(page_name)
     return render_template('main/generalized_page.html',
