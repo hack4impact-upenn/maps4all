@@ -56,6 +56,11 @@
   margin-top: 0.5em;
 }
 
+@media -sass-debug-info{filename{}line{font-family:\0000371}}
+#search-descriptors, #search-resources-text, #search-users {
+  font-family: "Nunito Sans", sans-serif;
+}
+
 @media -sass-debug-info{filename{}line{font-family:\0000316}}
 body {
   font-family: "Nunito Sans", sans-serif;
@@ -136,7 +141,7 @@ nav {
 
 @media -sass-debug-info{filename{}line{font-family:\0000395}}
 .ui.fixed.main.menu .right.menu > .item:last-of-type {
-  border-right: 1px solid rgba(34, 36, 38, 0.09804);
+  border-right: 1px solid rgba(34, 36, 38, 0.0980392);
 }
 
 @media -sass-debug-info{filename{}line{font-family:\00003101}}
