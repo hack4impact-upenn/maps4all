@@ -263,7 +263,7 @@ function getCurrentLocation(callback) {
 */
 function setInitialZoom() {
   google.maps.event.addListener(map, 'zoom_changed', function() {
-    zoomChangeBoundsListener = 
+    zoomChangeBoundsListener =
       google.maps.event.addListener(map, 'bounds_changed', function(event) {
         if (this.getZoom() > 16 && this.initialZoom) {
           // Change max/min zoom here
@@ -456,6 +456,7 @@ function initResourceSearch() {
     }
     var endpoint = '/search-resources'+query;
     resourceSearchRequest(endpoint);
+    $('#resource-info').hide();
   });
 
   // Remove query from resource name input displays

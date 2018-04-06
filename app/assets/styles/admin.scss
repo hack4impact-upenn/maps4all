@@ -67,3 +67,7 @@ $transform: translate(-50%,0%);
     margin-top: 0.5em;
   }
 }
+
+#search-descriptors, #search-resources-text, #search-users {
+  font-family: $font-choice;
+}
