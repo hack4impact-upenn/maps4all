@@ -26,23 +26,6 @@
             <h1 class="ui header">
                 {{ current_user.role.name }} Dashboard
             </h1>
-<<<<<<< HEAD
-
-            {% if current_user.is_admin() %}
-                <h3 class="ui dividing header">
-                    Manage Users
-                </h3>
-                <div class="ui two column stackable grid">
-                    {{ dashboard_option('Registered Users', 'admin.registered_users',
-                                        description='View and manage user accounts', icon='users icon') }}
-                    {{ dashboard_option('Add New User', 'admin.new_user',
-                                        description='Create a new user account', icon='add user icon') }}
-                    {{ dashboard_option('Invite New User', 'admin.invite_user',
-                                        description='Invites a new user to create their own account', icon='add user icon') }}
-                </div>
-            {% endif %}
-=======
->>>>>>> 477174360f97fc880bb667a75ae28ed6a148beec
             <h3 class="ui dividing header">
                 Manage Resources
             </h3>
@@ -67,24 +50,6 @@
                 {{ dashboard_option('Add New Descriptor', 'descriptor.new_descriptor',
                                     description='Create a new descriptor', icon='add circle icon') }}
             </div>
-<<<<<<< HEAD
-            {% if current_user.is_admin() %}
-                <h3 class="ui dividing header">
-                    Manage Ratings and Reviews
-                </h3>
-                <div class="ui two column stackable grid">
-                    {{ dashboard_option('View Ratings/Reviews', 'admin.ratings_table',
-                                        description='See all the Ratings and Reviews', icon='star icon') }}
-                </div>
-                <h3 class="ui dividing header">
-                    Manage Site
-                </h3>
-                <div class="ui two column stackable grid">
-                    {{ dashboard_option('Customize Site', 'admin.customize_site',
-                                        description='Options for customizing the site', icon='wizard icon') }}
-                    {{ dashboard_option('Create Pages', 'admin.create_page',
-                                        description='Add more pages to the website', icon='plus icon') }}
-=======
             <h3 class="ui dividing header">
                 Manage Ratings and Reviews
             </h3>
@@ -111,7 +76,6 @@
                                     description='Options for customizing the site', icon='wizard icon') }}
                 {{ dashboard_option('Create Pages', 'admin.create_page',
                                     description='Add more pages to the website', icon='plus icon') }}
->>>>>>> 477174360f97fc880bb667a75ae28ed6a148beec
             </div>
             {% endif %}
         </div>
