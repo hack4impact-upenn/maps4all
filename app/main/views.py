@@ -110,6 +110,7 @@ def search_resources():
     resources_as_dicts = Resource.get_resources_as_dicts(resources)
     return json.dumps(resources_as_dicts)
 
+
 @main.route('/get-associations/<int:resource_id>')
 def get_associations(resource_id):
     resource = Resource.query.get(resource_id)
@@ -128,11 +129,11 @@ def get_associations(resource_id):
         else:
             associations[od.descriptor.name] = {'value': [val], 'type': 'Option'}
     return json.dumps(associations)
-
+  
 
 @main.route('/pages/<pageName>')
-def render_page(pageName):
-    editable_html_obj = EditableHTML.get_editable_html(pageName)
+def render_page(page_name):
+    editable_html_obj = EditableHTML.get_editable_html(page_name)
     return render_template('main/generalized_page.html',
                           editable=editable_html_obj)
 

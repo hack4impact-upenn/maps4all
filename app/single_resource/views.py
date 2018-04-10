@@ -1,8 +1,10 @@
-from flask import abort, flash, redirect, render_template, url_for, request
+from flask import abort, flash, redirect, render_template, url_for, request, make_response
 from flask.ext.login import login_required
 from sqlalchemy.exc import IntegrityError
 from wtforms.fields import SelectMultipleField, SelectField, TextAreaField, StringField
 from flask_wtf.file import InputRequired
+from werkzeug.datastructures import Headers
+from werkzeug.wrappers import Response
 
 from .. import db
 from ..models import Descriptor, OptionAssociation, TextAssociation, HyperlinkAssociation, Resource, RequiredOptionDescriptor
@@ -258,3 +260,49 @@ def delete(resource_id):
         db.session.rollback()
         flash('Error: failed to delete resource. Please try again.',
               'form-error')
+
+
+@single_resource.route('/download', methods=['POST'])
+@login_required
+def download():
+    # format string or list of strings to be csv-friendly
+    def csv_friendly(str):
+        return '\"{}\"'.format(str.replace('\"', '\"\"')) if str else ''
+
+    # write headers
+    csv = 'Name,Address'
+    descriptors = Descriptor.query.all()
+    if len(descriptors) > 0:
+        csv += ',' + ','.join([desc.name for desc in descriptors])
+    csv += '\n'
+
+    # write each resource
+    resources = Resource.query.all()
+    for resource in resources:
+        # write name and address
+        csv += ','.join([
+            csv_friendly(resource.name),
+            csv_friendly(resource.address)
+        ])
+        if len(descriptors) > 0:
+            # write descriptors
+            associations = Resource.get_associations(resource)
+            values = []
+            for desc in descriptors:
+                value = ''
+                if desc.name in associations:
+                    value = associations[desc.name]
+                    # option descriptors with multiple values are lists
+                    if type(value) == list:
+                        value = ', '.join([csv_friendly(str) for str in value])
+                    else:
+                        value = csv_friendly(value)
+                values.append(value)
+            csv += ',' + ','.join(values)
+        csv += '\n'
+        
+    # send csv response
+    response = make_response(csv)
+    response.headers['Content-Disposition'] = 'attachment; filename=resources.csv'
+    response.mimetype = 'text/csv'
+    return response
