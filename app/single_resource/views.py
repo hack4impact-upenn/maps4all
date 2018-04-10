@@ -1,9 +1,11 @@
-from flask import abort, flash, redirect, render_template, url_for, request
+from flask import abort, flash, redirect, render_template, url_for, request, make_response
 from flask.ext.login import login_required
 from sqlalchemy.exc import IntegrityError
 from wtforms.fields import SelectMultipleField, TextAreaField
 from wtforms.fields import SelectMultipleField, SelectField, TextAreaField
 from flask_wtf.file import InputRequired
+from werkzeug.datastructures import Headers
+from werkzeug.wrappers import Response
 
 from .. import db
 from ..models import Descriptor, OptionAssociation, Resource, TextAssociation, RequiredOptionDescriptor
@@ -28,6 +30,7 @@ def index():
             req_options[val] = False
     return render_template('single_resource/index.html', resources=resources, req_options=req_options)
 
+
 @single_resource.route('/search')
 @login_required
 def search_resources():
@@ -37,7 +40,8 @@ def search_resources():
     req_options = request.args.getlist('reqoption')
     if req_options is None:
         req_options = []
-    resource_pool = Resource.query.filter(Resource.name.ilike('%{}%'.format(name))).all()
+    resource_pool = Resource.query.filter(
+        Resource.name.ilike('%{}%'.format(name))).all()
     req_opt_desc = RequiredOptionDescriptor.query.all()
     if req_opt_desc:
         req_opt_desc = req_opt_desc[0]
@@ -65,6 +69,7 @@ def search_resources():
             query_req_options[val] = val in req_options
     return render_template('single_resource/index.html', resources=resources, query_name=name, req_options=query_req_options)
 
+
 @single_resource.route('/create', methods=['GET', 'POST'])
 @login_required
 def create():
@@ -88,7 +93,8 @@ def create():
             ).first()
             if descriptor is not None:
                 if not form[descriptor.name].data:
-                    flash('Error: Must set required descriptor: {}'.format(descriptor.name), 'form-error')
+                    flash('Error: Must set required descriptor: {}'.format(
+                        descriptor.name), 'form-error')
                     return render_template('single_resource/create.html', form=form)
         new_resource = Resource(name=form.name.data,
                                 address=form.address.data,
@@ -153,7 +159,8 @@ def edit(resource_id):
             ).first()
             if descriptor is not None:
                 if not form[descriptor.name].data:
-                    flash('Error: Must set required descriptor: {}'.format(descriptor.name), 'form-error')
+                    flash('Error: Must set required descriptor: {}'.format(
+                        descriptor.name), 'form-error')
                     return render_template('single_resource/edit.html',
                                            form=form,
                                            resource_id=resource_id)
@@ -184,13 +191,14 @@ def edit(resource_id):
 def save_associations(resource, form, descriptors, resource_existed):
     """Save associations from the forms received by 'create' and 'edit' route
     handlers to the database."""
-    #first delete all the associations for this resource if it already existed (to handle the "empty" case)
+    # first delete all the associations for this resource if it already existed (to handle the "empty" case)
     if resource_existed:
-        options = OptionAssociation.query.filter_by(resource_id=resource.id).all()
+        options = OptionAssociation.query.filter_by(
+            resource_id=resource.id).all()
         texts = TextAssociation.query.filter_by(resource_id=resource.id).all()
         associations = options + texts
         for a in associations:
-             db.session.delete(a)
+            db.session.delete(a)
         try:
             db.session.commit()
         except IntegrityError:
@@ -216,6 +224,7 @@ def save_associations(resource, form, descriptors, resource_existed):
             new_association = AssociationClass(**arguments)
             db.session.add(new_association)
 
+
 @single_resource.route('/<int:resource_id>/delete', methods=['POST'])
 @login_required
 def delete(resource_id):
@@ -230,3 +239,49 @@ def delete(resource_id):
         db.session.rollback()
         flash('Error: failed to delete resource. Please try again.',
               'form-error')
+
+
+@single_resource.route('/download', methods=['POST'])
+@login_required
+def download():
+    # format string or list of strings to be csv-friendly
+    def csv_friendly(str):
+        return '\"{}\"'.format(str.replace('\"', '\"\"')) if str else ''
+
+    # write headers
+    csv = 'Name,Address'
+    descriptors = Descriptor.query.all()
+    if len(descriptors) > 0:
+        csv += ',' + ','.join([desc.name for desc in descriptors])
+    csv += '\n'
+
+    # write each resource
+    resources = Resource.query.all()
+    for resource in resources:
+        # write name and address
+        csv += ','.join([
+            csv_friendly(resource.name),
+            csv_friendly(resource.address)
+        ])
+        if len(descriptors) > 0:
+            # write descriptors
+            associations = Resource.get_associations(resource)
+            values = []
+            for desc in descriptors:
+                value = ''
+                if desc.name in associations:
+                    value = associations[desc.name]
+                    # option descriptors with multiple values are lists
+                    if type(value) == list:
+                        value = ', '.join([csv_friendly(str) for str in value])
+                    else:
+                        value = csv_friendly(value)
+                values.append(value)
+            csv += ',' + ','.join(values)
+        csv += '\n'
+        
+    # send csv response
+    response = make_response(csv)
+    response.headers['Content-Disposition'] = 'attachment; filename=resources.csv'
+    response.mimetype = 'text/csv'
+    return response
