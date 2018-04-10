@@ -222,6 +222,27 @@ class Resource(db.Model):
             resources_as_dicts.append(res)
         return resources_as_dicts
 
+
+    @staticmethod
+    def get_associations(resource):
+        associations = {}
+        if resource is None:
+            return json.dumps(associations)
+        for td in resource.text_descriptors:
+            associations[td.descriptor.name] = td.text
+        for od in resource.option_descriptors:
+            val = od.descriptor.values[od.option]
+            values = set()
+            # multiple option association values
+            if associations.get(od.descriptor.name):
+                curr = associations.get(od.descriptor.name)
+                curr.append(val)
+                values = set(curr)
+            else:
+                values.add(val)
+            associations[od.descriptor.name] = list(values)
+        return associations
+
     @staticmethod
     def print_resources():
         resources = Resource.query.all()
