@@ -19,6 +19,25 @@ class OptionAssociation(db.Model):
     descriptor = db.relationship('Descriptor',
                                  back_populates='option_resources')
 
+    def generate_fake():
+        options = []
+        options.append(Descriptor(
+            name='Residential Program',
+            values=['Arts House', 'Cultures Collective', 'Mentors Program'],
+            is_searchable=False
+        ))
+        options.append(Descriptor(
+            name='Room Options',
+            values=['Singles', 'Doubles', 'Triples'],
+            is_searchable=True
+        ))
+        options.append(Descriptor(
+            name='Dorm Type',
+            values=['Freshmen', 'Upperclassmen', 'Four-year'],
+            is_searchable=True
+        ))
+        return options
+
     def __repr__(self):
         return '%s: %s' % (self.descriptor.name,
                            self.descriptor.values[self.option])
@@ -136,15 +155,16 @@ class Resource(db.Model):
 
         fake = Faker()
 
-        num_options = 5
-        options = []
-
-        for i in range(num_options):
-            options.append(Descriptor(
-                name=fake.word(),
-                values=['True', 'False'],
-                is_searchable=fake.boolean()
-            ))
+        num_options = 3
+        options = OptionAssociation.generate_fake()
+        text_serve = Descriptor(
+            name='Who We Serve',
+            is_searchable=True
+        )
+        text_about = Descriptor(
+            name='About',
+            is_searchable=True
+        )
 
         gmaps = googlemaps.Client(key=os.environ['GOOGLE_API_KEY'])
 
@@ -172,17 +192,15 @@ class Resource(db.Model):
                     longitude=longitude
                 )
 
-                oa = OptionAssociation(option=randint(0, 1))
-                oa.descriptor = options[randint(0, num_options - 1)]
+                # Add option descriptors
+                oa = OptionAssociation(option=randint(0, num_options - 1))
+                oa.descriptor = options[randint(0, 2)]
                 resource.option_descriptors.append(oa)
-
-                ta = TextAssociation(text=fake.sentence(nb_words=10))
-                ta.descriptor = Descriptor(
-                    name=fake.word(),
-                    values=[],
-                    is_searchable=fake.boolean()
-                )
-                resource.text_descriptors.append(ta)
+                # Add text descriptors
+                for tdescriptor in [text_serve, text_about]:
+                    ta = TextAssociation(text=fake.sentence(
+                        nb_words=10), descriptor=tdescriptor)
+                    resource.text_descriptors.append(ta)
 
                 db.session.add(resource)
                 try:
