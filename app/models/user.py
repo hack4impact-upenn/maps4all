@@ -7,8 +7,8 @@ from .. import db, login_manager
 
 
 class Permission:
-    GENERAL = 0xff
-    ADMINISTER = 0x01
+    GENERAL = 0x01
+    ADMINISTER = 0xff
 
 
 class Role(db.Model):
