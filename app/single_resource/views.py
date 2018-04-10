@@ -273,13 +273,13 @@ def download():
                     value = associations[desc.name]
                     # option descriptors with multiple values are lists
                     if type(value) == list:
-                        value = ', '.join([csv_friendly(str) for str in value])
+                        value = csv_friendly(', '.join(value))
                     else:
                         value = csv_friendly(value)
                 values.append(value)
             csv += ',' + ','.join(values)
         csv += '\n'
-        
+
     # send csv response
     response = make_response(csv)
     response.headers['Content-Disposition'] = 'attachment; filename=resources.csv'
