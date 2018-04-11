@@ -26,8 +26,9 @@ from ..models import (
     CsvRow,
     CsvDescriptor,
     CsvDescriptorRemove,
-    GeocoderCache,
     Descriptor,
+    GeocoderCache,
+    HyperlinkAssociation,
     OptionAssociation,
     Rating,
     Resource,
@@ -590,7 +591,7 @@ def save_csv():
 
         # Create/Update descriptors
         for desc in csv_storage.csv_descriptors:
-            # if existing descriptor, add new descriptor values
+            # If existing descriptor, add new descriptor values
             if csv_storage.action == 'update' and desc.descriptor_id:
                 if desc.descriptor_type == 'option':
                     existing_descriptor = Descriptor.query.filter_by(
@@ -604,6 +605,7 @@ def save_csv():
                 descriptor = Descriptor(
                     name=desc.name,
                     values=list(desc.values),
+                    dtype=desc.descriptor_type,
                     is_searchable=True,
                 )
                 db.session.add(descriptor)
@@ -659,7 +661,7 @@ def save_csv():
                     ).first()
                     values = list(descriptor.values)
                     assocValues = []
-                    if len(descriptor.values) == 0:  # text descriptor
+                    if descriptor.dtype == 'text':
                         association_class = TextAssociation
                         keyword = 'text'
                         # see if same descriptor already exists
@@ -674,6 +676,22 @@ def save_csv():
                             elif text_association.text != row.data[key]:
                                 text_association.text = row.data[key]
                                 db.session.add(text_association)
+                        else:
+                            assocValues.append(row.data[key])
+                    elif descriptor.dtype == 'hyperlink':
+                        association_class = HyperlinkAssociation
+                        keyword = 'url'
+                        if csv_storage.action == 'update':
+                            hyperlink_association = HyperlinkAssociation.query.filter_by(
+                                resource_id=resource.id,
+                                descriptor_id=descriptor.id,
+                            ).first()
+                            if hyperlink_association is None:
+                                assocValues.append(row.data[key])
+                            # Just update text value if only text changed
+                            elif hyperlink_association.url != row.data[key]:
+                                hyperlink_association.url = row.data[key]
+                                db.session.add(hyperlink_association)
                         else:
                             assocValues.append(row.data[key])
                     else:  # option descriptor
