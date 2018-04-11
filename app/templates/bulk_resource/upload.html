@@ -5,8 +5,20 @@
     <div class="ui stackable centered grid container">
         <div class="twelve wide column">
             <h2 class="ui header">
-                CSV Upload
+                Upload Resources by CSV
             </h2>
+            <p>
+              You can easily upload multiple resources at once by writing your
+              resource descriptions to any spreadsheet program, such as
+              Microsoft Excel or Google Sheets, and exporting it as a CSV file,
+              which has a .csv file extension. The details for the file format
+              are listed below.
+
+              <form action="{{ url_for('bulk_resource.download_template') }}" method="post">
+                  <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+                  <button class="ui button">Download Template</button>
+              </form>
+            </p>
             <p>
                 {% if current_user.is_admin() %}
                     <h4 class="ui header"> Reset </h4>
