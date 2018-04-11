@@ -53,14 +53,14 @@ from .helpers import (
 @bulk_resource.route('/upload', methods=['GET', 'POST'])
 @login_required
 def upload():
-    """Upload new resources in bulk with CSV file."""
+    """ Upload new resources in bulk with CSV file. """
     return render_template('bulk_resource/upload.html')
 
 
-''' Processes each Deferred Ajax request '''
 @csrf.exempt
 @bulk_resource.route('/_upload', methods=['POST'])
 def upload_row():
+    """ Processes each Deferred Ajax request """
     data = json.loads(request.form['json'])
 
     # Store CSV fields as descriptors
@@ -246,9 +246,7 @@ def upload_row():
                 "message": 'No resources to update from CSV'
                 })
 
-        return jsonify(
-            redirect=url_for('bulk_resource.set_descriptor_types')
-        )
+        return jsonify(redirect=url_for('bulk_resource.set_descriptor_types'))
 
 
 ''' Sets each descriptor in the CSV to be an option or a text descriptor '''

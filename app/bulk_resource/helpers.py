@@ -13,6 +13,9 @@ def validate_address(data, address):
     Returns gstatus to check validity of address using Google Maps API.
     If the address is valid, gstatus will be 'OK'. Otherwise, the gstatus will
     be a helpful error message.
+
+    data is the json data from the post request to /bulk_resource/_upload
+    address is a string
     """
     # See if address exists in cache
     cached = GeocoderCache.query.filter_by(
