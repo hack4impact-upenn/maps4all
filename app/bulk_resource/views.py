@@ -26,8 +26,9 @@ from ..models import (
     CsvRow,
     CsvDescriptor,
     CsvDescriptorRemove,
-    GeocoderCache,
     Descriptor,
+    GeocoderCache,
+    HyperlinkAssociation,
     OptionAssociation,
     Rating,
     Resource,
@@ -44,20 +45,23 @@ from .forms import (
     NavigationForm,
     SaveCsvDataForm
 )
+from .helpers import (
+    validate_address
+)
 
 
 @csrf.exempt
 @bulk_resource.route('/upload', methods=['GET', 'POST'])
 @login_required
 def upload():
-    """Upload new resources in bulk with CSV file."""
+    """ Upload new resources in bulk with CSV file. """
     return render_template('bulk_resource/upload.html')
 
 
-''' Processes each Deferred Ajax request '''
 @csrf.exempt
 @bulk_resource.route('/_upload', methods=['POST'])
 def upload_row():
+    """ Processes each Deferred Ajax request """
     data = json.loads(request.form['json'])
 
     # Store CSV fields as descriptors
@@ -165,31 +169,14 @@ def upload_row():
 
             # Validate addresses
             address = clean_row['Address']
-            # See if address exists in cache
-            cached = GeocoderCache.query.filter_by(
-                address=address
-            ).first()
-            if cached is None:
-                # Toggle API to avoid Google geocoder API limit - temp solution
-                if data['count'] % 45 == 0:
-                    if os.environ.get('GOOGLE_API_KEY') == os.environ.get('GOOGLE_API_1'):
-                        os.environ['GOOGLE_API_KEY'] = os.environ.get('GOOGLE_API_2')
-                    else:
-                        os.environ['GOOGLE_API_KEY'] = os.environ.get('GOOGLE_API_1')
-                g = geocoder.google(address, key=os.environ.get('GOOGLE_API_KEY'))
-                if g.status != 'OK':
-                    msg = 'Address cannot be geocoded due to ' + g.status + ": " + address
-                    return jsonify({
-                        "status": "Error",
-                        "message": msg
-                        })
-                else:
-                    geo = GeocoderCache(
-                        address=address,
-                        latitude=g.latlng[0],
-                        longitude=g.latlng[1]
-                    )
-                    db.session.add(geo)
+            # print(validate_address(data, address))
+            gstatus = validate_address(data, address)
+            if gstatus != 'OK':
+                msg = 'Address cannot be geocoded due to ' + gstatus + ": " + address
+                return jsonify({
+                    "status": "Error",
+                    "message": msg
+                    })
 
             csv_storage = CsvStorage.most_recent(user=current_user)
             if csv_storage is None:
@@ -215,31 +202,13 @@ def upload_row():
 
             # Validate addresses
             address = clean_row['Address']
-            # See if address exists in cache
-            cached = GeocoderCache.query.filter_by(
-                address=address
-            ).first()
-            if cached is None:
-                # Toggle API to avoid Google geocoder API limit - temp solution
-                if data['count'] % 45 == 0:
-                    if os.environ.get('GOOGLE_API_KEY') == os.environ.get('GOOGLE_API_1'):
-                        os.environ['GOOGLE_API_KEY'] = os.environ.get('GOOGLE_API_2')
-                    else:
-                        os.environ['GOOGLE_API_KEY'] = os.environ.get('GOOGLE_API_1')
-                g = geocoder.google(address, key=os.environ.get('GOOGLE_API_KEY'))
-                if g.status != 'OK':
-                    msg = 'Address cannot be geocoded due to ' + g.status + ": " + address
-                    return jsonify({
-                        "status": "Error",
-                        "message": msg
-                        })
-                else:
-                    geo = GeocoderCache(
-                        address=address,
-                        latitude=g.latlng[0],
-                        longitude=g.latlng[1]
-                    )
-                    db.session.add(geo)
+            gstatus = validate_address(data, address)
+            if gstatus != 'OK':
+                msg = 'Address cannot be geocoded due to ' + gstatus + ": " + address
+                return jsonify({
+                    "status": "Error",
+                    "message": msg
+                    })
 
             csv_storage = CsvStorage.most_recent(user=current_user)
             if csv_storage is None:
@@ -278,15 +247,13 @@ def upload_row():
                 "message": 'No resources to update from CSV'
                 })
 
-        return jsonify(
-            redirect=url_for('bulk_resource.set_descriptor_types')
-        )
+        return jsonify(redirect=url_for('bulk_resource.set_descriptor_types'))
 
 
-''' Sets each descriptor in the CSV to be an option or a text descriptor '''
 @bulk_resource.route('/set-descriptor-types', methods=['GET', 'POST'])
 @login_required
 def set_descriptor_types():
+    """ Sets each descriptor in the CSV to be an option, text, or hyperlink descriptor """
     csv_storage = CsvStorage.most_recent(user=current_user)
     if csv_storage is None:
         db.session.rollback()
@@ -331,7 +298,8 @@ def set_descriptor_types():
             form.descriptor_types.append_entry()
             form.descriptor_types[num].label = desc.name
             if desc.descriptor_type == 'option' or \
-                    desc.descriptor_type == 'text':
+                    desc.descriptor_type == 'text' or \
+                    desc.descriptor_type == 'hyperlink':
                 form.descriptor_types[num].data = desc.descriptor_type
             num += 1
 
@@ -351,11 +319,11 @@ def set_descriptor_types():
                            num=num, remove_descs=remove_descs)
 
 
-''' If there are option descriptors in the CSV, display the option values parsed
-from the CSV for verification '''
 @bulk_resource.route('/review-desc-options', methods=['GET', 'POST'])
 @login_required
 def review_desc_options():
+    """ If there are option descriptors in the CSV, display the option values parsed
+    from the CSV for verification """
     csv_storage = CsvStorage.most_recent(user=current_user)
     if csv_storage is None:
         db.session.rollback()
@@ -393,12 +361,12 @@ def review_desc_options():
                            form=form)
 
 
-''' Choose one option descriptor to be the required option descriptor.
-Can only select from option descriptors in the CSV or the existing required
-option descriptor if any.'''
 @bulk_resource.route('/set-required-option-descriptor', methods=['GET', 'POST'])
 @login_required
 def set_required_option_descriptor():
+    """ Choose one option descriptor to be the required option descriptor.
+    Can only select from option descriptors in the CSV or the existing required
+    option descriptor if any. """
     csv_storage = CsvStorage.most_recent(user=current_user)
     if csv_storage is None:
         db.session.rollback()
@@ -495,11 +463,11 @@ def set_required_option_descriptor():
     )
 
 
-''' If there are resources that don't have the selected required option descriptor value set,
-enforce that they are updated to have the required option descriptor'''
 @bulk_resource.route('/validate-required-option-descriptor', methods=['GET', 'POST'])
 @login_required
 def validate_required_option_descriptor():
+    """ If there are resources that don't have the selected required option descriptor value set,
+    enforce that they are updated to have the required option descriptor """
     csv_storage = CsvStorage.most_recent(user=current_user)
     if csv_storage is None:
         db.session.rollback()
@@ -586,10 +554,10 @@ def validate_required_option_descriptor():
     )
 
 
-''' Last step in CSV workflow to update the resource and descriptor data models'''
 @bulk_resource.route('/save-csv', methods=['GET', 'POST'])
 @login_required
 def save_csv():
+    """ Last step in CSV workflow to update the resource and descriptor data models. """
     csv_storage = CsvStorage.most_recent(user=current_user)
     if csv_storage is None:
         db.session.rollback()
@@ -614,6 +582,7 @@ def save_csv():
         if csv_storage.action == 'reset':
             OptionAssociation.query.delete()
             TextAssociation.query.delete()
+            HyperlinkAssociation.query.delete()
             # on delete suggestions linked to resources
             Suggestion.query.filter(Suggestion.resource_id != None).delete()
             Rating.query.delete()
@@ -622,7 +591,7 @@ def save_csv():
 
         # Create/Update descriptors
         for desc in csv_storage.csv_descriptors:
-            # if existing descriptor, add new descriptor values
+            # If existing descriptor, add new descriptor values
             if csv_storage.action == 'update' and desc.descriptor_id:
                 if desc.descriptor_type == 'option':
                     existing_descriptor = Descriptor.query.filter_by(
@@ -636,6 +605,7 @@ def save_csv():
                 descriptor = Descriptor(
                     name=desc.name,
                     values=list(desc.values),
+                    dtype=desc.descriptor_type,
                     is_searchable=True,
                 )
                 db.session.add(descriptor)
@@ -691,7 +661,7 @@ def save_csv():
                     ).first()
                     values = list(descriptor.values)
                     assocValues = []
-                    if len(descriptor.values) == 0:  # text descriptor
+                    if descriptor.dtype == 'text':
                         association_class = TextAssociation
                         keyword = 'text'
                         # see if same descriptor already exists
@@ -708,6 +678,25 @@ def save_csv():
                                 db.session.add(text_association)
                         else:
                             assocValues.append(row.data[key])
+                    elif descriptor.dtype == 'hyperlink':
+                        association_class = HyperlinkAssociation
+                        keyword = 'url'
+                        url = row.data[key]
+                        if url != '' and url.find('http') != 0:
+                            url = 'https://{}'.format(url)
+                        if csv_storage.action == 'update':
+                            hyperlink_association = HyperlinkAssociation.query.filter_by(
+                                resource_id=resource.id,
+                                descriptor_id=descriptor.id,
+                            ).first()
+                            if hyperlink_association is None:
+                                assocValues.append(row.data[key])
+                            # Just update text value if only text changed
+                            elif hyperlink_association.url != row.data[key]:
+                                hyperlink_association.url = url
+                                db.session.add(hyperlink_association)
+                        else:
+                            assocValues.append(url)
                     else:  # option descriptor
                         association_class = OptionAssociation
                         keyword = 'option'
