@@ -77,7 +77,7 @@ def descriptor_info(desc_id):
     descriptor = Descriptor.query.get(desc_id)
     if descriptor is None:
         abort(404)
-    is_option = len(descriptor.values) != 0
+    is_option = descriptor.values is not None and len(descriptor.values) != 0
     return render_template('descriptor/manage_descriptor.html',
                            desc=descriptor, is_option=is_option)
 
@@ -89,7 +89,7 @@ def edit_name(desc_id):
     descriptor = Descriptor.query.get(desc_id)
     if descriptor is None:
         abort(404)
-    is_option = len(descriptor.values) != 0
+    is_option = descriptor.values is not None and len(descriptor.values) != 0
     old_name = descriptor.name
     form = EditDescriptorNameForm()
     if form.validate_on_submit():
@@ -126,7 +126,7 @@ def edit_searchable(desc_id):
     descriptor = Descriptor.query.get(desc_id)
     if descriptor is None:
         abort(404)
-    is_option = len(descriptor.values) != 0
+    is_option = descriptor.values is not None and len(descriptor.values) != 0
     old_value = descriptor.is_searchable
     form = EditDescriptorSearchableForm()
     if form.validate_on_submit():
@@ -154,7 +154,7 @@ def change_option_values_index(desc_id):
     descriptor = Descriptor.query.get(desc_id)
     if descriptor is None:
         abort(404)
-    is_option = len(descriptor.values) != 0
+    is_option = descriptor.values is not None and len(descriptor.values) != 0
     if not is_option:
         abort(404)
     form = AddDescriptorOptionValueForm()
@@ -191,7 +191,7 @@ def edit_option_value(desc_id, option_index):
     descriptor = Descriptor.query.get(desc_id)
     if descriptor is None:
         abort(404)
-    is_option = len(descriptor.values) != 0
+    is_option = descriptor.values is not None and len(descriptor.values) != 0
     form = EditDescriptorOptionValueForm()
     if not is_option:
         abort(404)
@@ -296,7 +296,7 @@ def delete_descriptor_request(desc_id):
     descriptor = Descriptor.query.get(desc_id)
     if descriptor is None:
         abort(404)
-    is_option = len(descriptor.values) != 0
+    is_option = descriptor.values is not None and len(descriptor.values) != 0
     req_opt_desc = RequiredOptionDescriptor.query.all()
     is_required = False
     if req_opt_desc:
@@ -314,7 +314,7 @@ def delete_descriptor(desc_id):
     descriptor = Descriptor.query.get(desc_id)
     if descriptor is None:
         abort(404)
-    is_option = len(descriptor.values) != 0
+    is_option = descriptor.values is not None and len(descriptor.values) != 0
 
     db.session.delete(descriptor)
     try:
