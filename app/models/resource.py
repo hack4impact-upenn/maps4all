@@ -85,12 +85,13 @@ class Descriptor(db.Model):
     def __repr__(self):
         return '<Descriptor \'%s\'>' % self.name
 
-    def value_string(self):
+    def value_list(self):
         if not self.values:
-            return ''
+            return []
         l = list(self.values)
+        map(str, l)
         l.sort()
-        return ', '.join(map(str, l))
+        return l
 
 
 class RequiredOptionDescriptor(db.Model):
