@@ -25,19 +25,19 @@ class OptionAssociation(db.Model):
         options.append(Descriptor(
             name='Residential Program',
             values=['Arts House', 'Cultures Collective', 'Mentors Program'],
-            dtype='Option',
+            dtype='option',
             is_searchable=False
         ))
         options.append(Descriptor(
             name='Room Options',
             values=['Singles', 'Doubles', 'Triples'],
-            dtype='Option',
+            dtype='option',
             is_searchable=True
         ))
         options.append(Descriptor(
             name='Dorm Type',
             values=['Freshmen', 'Upperclassmen', 'Four-year'],
-            dtype='Option',
+            dtype='option',
             is_searchable=True
         ))
         return options
@@ -217,18 +217,18 @@ class Resource(db.Model):
         options = OptionAssociation.generate_fake()
         text_serve = Descriptor(
             name='Who We Serve',
-            dtype='Text',
+            dtype='text',
             is_searchable=True
         )
         text_about = Descriptor(
             name='About',
-            dtype='Text',
+            dtype='text',
             is_searchable=True
         )
 
         hyperlink_website = Descriptor(
             name='Website',
-            dtype='Hyperlink',
+            dtype='hyperlink',
             is_searchable=False
         )
 

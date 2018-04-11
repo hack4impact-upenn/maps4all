@@ -28,9 +28,9 @@
     <table class="ui compact definition table">
         <tr><td>Name</td><td>{{ '%s' % (desc.name) }}</td></tr>
         <tr><td>Type</td>
-        {% if desc.dtype == 'Text' %}
+        {% if desc.dtype == 'text' %}
             <td>Text</td></tr>
-        {% elif desc.dtype == 'Hyperlink' %}
+        {% elif desc.dtype == 'hyperlink' %}
             <td>Hyperlink</td></tr>
         {% else %}
             <td>Option</td></tr>

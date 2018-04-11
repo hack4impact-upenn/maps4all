@@ -75,12 +75,12 @@ def create():
     """Add a resource."""
     descriptors = Descriptor.query.all()
     for descriptor in descriptors:
-        if descriptor.dtype == 'Option' and descriptor.values:
+        if descriptor.dtype == 'option' and descriptor.values:
             choices = [(str(i), v) for i, v in enumerate(descriptor.values)]
             setattr(SingleResourceForm,
                     descriptor.name,
                     SelectMultipleField(choices=choices))
-        elif descriptor.dtype == 'Text':  # Fields for text descriptors
+        elif descriptor.dtype == 'text':  # Fields for text descriptors
             setattr(SingleResourceForm, descriptor.name, TextAreaField())
         else:
             setattr(SingleResourceForm, descriptor.name, StringField())
@@ -128,7 +128,7 @@ def edit(resource_id):
     descriptors = Descriptor.query.all()
     for descriptor in descriptors:
         # Fields for option descriptors.
-        if descriptor.dtype == 'Option' and descriptor.values:
+        if descriptor.dtype == 'option' and descriptor.values:
             choices = [(str(i), v) for i, v in enumerate(descriptor.values)]
             default = None
             option_associations = OptionAssociation.query.filter_by(
@@ -140,7 +140,7 @@ def edit(resource_id):
             setattr(SingleResourceForm,
                     descriptor.name,
                     SelectMultipleField(choices=choices, default=default))
-        elif descriptor.dtype == 'Text':  # Fields for text descriptors.
+        elif descriptor.dtype == 'text':  # Fields for text descriptors.
             default = None
             text_association = TextAssociation.query.filter_by(
                 resource_id=resource_id,
@@ -228,7 +228,7 @@ def save_associations(resource, form, descriptors, resource_existed):
             AssociationClass = OptionAssociation
             values = [int(i) for i in form[descriptor.name].data]
             keyword = 'option'
-        elif descriptor.dtype == 'Text':
+        elif descriptor.dtype == 'text':
             AssociationClass = TextAssociation
             values = [form[descriptor.name].data]
             keyword = 'text'
