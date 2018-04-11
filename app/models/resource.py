@@ -71,6 +71,7 @@ class Descriptor(db.Model):
     name = db.Column(db.String(500), index=True)
     values = db.Column(db.PickleType) # should only have value for option descriptor
     is_searchable = db.Column(db.Boolean)
+    dtype = db.Column(db.String(15))
     text_resources = db.relationship(
         'TextAssociation',
         back_populates='descriptor',
