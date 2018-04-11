@@ -203,7 +203,7 @@ def upload_row():
             db.session.commit()
             return jsonify({
                 "status": "Success",
-                "message": "Successfully added row"
+                "message": "Successfully added {}".format(clean_row['Name'])
                 })
         except:
             db.session.rollback()
@@ -260,7 +260,7 @@ def upload_row():
             db.session.commit()
             return jsonify({
                 "status": "Success",
-                "message": "Successfully added row"
+                "message": "Successfully added {}".format(clean_row['Name'])
                 })
         except:
             db.session.rollback()
