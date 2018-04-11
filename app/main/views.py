@@ -25,7 +25,7 @@ def index():
         if req_opt_desc is not None:
             req_opt_id = req_opt_desc.id
     options = Descriptor.query.all()
-    options = [o for o in options if o.dtype == 'Option' and o.id != req_opt_id]
+    options = [o for o in options if o.dtype == 'option' and o.id != req_opt_id]
     options_dict = {}
     for o in options:
         options_dict[o.name] = o.values
@@ -129,7 +129,7 @@ def get_associations(resource_id):
         else:
             associations[od.descriptor.name] = {'value': [val], 'type': 'Option'}
     return json.dumps(associations)
-  
+
 
 @main.route('/pages/<pageName>')
 def render_page(pageName):

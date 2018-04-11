@@ -224,7 +224,7 @@ def save_associations(resource, form, descriptors, resource_existed):
                   'form-error')
 
     for descriptor in descriptors:
-        if descriptor.dtype == 'Option' and descriptor.values:
+        if descriptor.dtype == 'option' and descriptor.values:
             AssociationClass = OptionAssociation
             values = [int(i) for i in form[descriptor.name].data]
             keyword = 'option'
