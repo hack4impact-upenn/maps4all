@@ -32,6 +32,7 @@ def upgrade():
         	descriptor.dtype = "text"
 
     session.commit()
+    print("done; silly change")
     ### end Alembic commands ###
 
 
