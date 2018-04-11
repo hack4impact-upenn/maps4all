@@ -45,20 +45,24 @@
                   and recreate it under a different type through CSV upload or in-app.
                 </div>
               </h4>
-              <div class="ui relaxed list">
-                {% for desc in existing_descs %}
-                <div class="item">
-                  <div class="content">
-                    <h5 class="header">{{ desc.name }}</h5>
-                    {% if desc.values %}
-                      <div class="description">Option</div>
-                    {% else %}
-                      <div class="description">Text</div>
-                    {% endif %}
-                  </div>
-                </div>
-                {% endfor %}
-              </div>
+              <table class="ui relaxed collapsing celled table">
+                <thead>
+                  <tr>
+                    <th>Descriptor Name</th>
+                    <th>Type</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {% for desc in existing_descs %}
+                  <tr>
+                    <td>{{ desc.name }}</td>
+                    <td>
+                      {% if desc.values %}Option{% else %}Text{% endif %}
+                    </td>
+                  </tr>
+                  {% endfor %}
+                </tbody>
+              </table>
               <div class="ui divider"></div>
             {% endif %}
 

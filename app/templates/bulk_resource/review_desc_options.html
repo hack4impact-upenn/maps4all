@@ -1,91 +1,100 @@
 {% extends 'layouts/base.html' %}
 {% import 'macros/form_macros.html' as f %}
-
 {% block content %}
-    <div class="ui stackable centered grid container">
-        <div class="twelve wide column">
-            <div class="ui fluid steps">
-                <div class="completed step">
-                    <i class="truck icon"></i>
-                    <div class="content">
-                        <div class="title">Upload</div>
-                        <div class="description">Upload your CSV file</div>
-                    </div>
-                </div>
-                <div class="active step">
-                    <i class="configure icon"></i>
-                    <div class="content">
-                        <div class="title">Configure</div>
-                        <div class="description">Review your data</div>
-                    </div>
-                </div>
-                <div class="disabled step">
-                    <i class="save icon"></i>
-                    <div class="content">
-                        <div class="title">Save</div>
-                        <div class="description">Add your data</div>
-                    </div>
-                </div>
-            </div>
+<div class="ui stackable centered grid container">
+  <div class="twelve wide column">
+    <div class="ui fluid steps">
+      <div class="completed step">
+        <i class="truck icon"></i>
+        <div class="content">
+          <div class="title">Upload</div>
+          <div class="description">Upload your CSV file</div>
         </div>
-
-        <div class="twelve wide column">
-            <h2 class="ui header">
-                CSV Upload Workflow
-            </h2>
+      </div>
+      <div class="active step">
+        <i class="configure icon"></i>
+        <div class="content">
+          <div class="title">Configure</div>
+          <div class="description">Review your data</div>
         </div>
-        <div class="twelve wide column">
-          <h4 class="ui header">
-            Review Option Descriptor Option Values
-            <div class="sub header">
-              For each of the column headers that you marked as option descriptors,
-              we have identified the option values present in your CSV file. If
-              any of the existing options are incorrect, please edit the original
-              CSV file and re-upload it. <br>
-              If doing an 'Update', the option values already in the app will
-              not be overridden. You can also later add/delete option values in the app.
-            </div>
-          </h4>
+      </div>
+      <div class="disabled step">
+        <i class="save icon"></i>
+        <div class="content">
+          <div class="title">Save</div>
+          <div class="description">Add your data</div>
         </div>
-        <div class="twelve wide column">
-            <h5 class="ui header">New Option Descriptor Values</h5>
-            <div class="ui relaxed divided list">
-                {% if not new_opt_descs %}
-                  <i>No new option descriptors in CSV</i>
-                {% endif %}
-                {% for desc in new_opt_descs %}
-                <div class="item">
-                  <div class="content">
-                    <h5 class="header">{{ desc.name }}</h5>
-                    {% if desc.value_string() %}
-                      <div class="description">{{ desc.value_string() }}</div>
-                    {% else %}
-                      <div class="description"><i>None specified</i></div>
-                    {% endif %}
-                  </div>
-                </div>
-                {% endfor %}
-            </div>
-
-            {% if old_opt_descs %}
-              <h5 class="ui header">Existing Option Descriptor Values in CSV</h5>
-              <div class="ui relaxed divided list">
-                  {% for (desc, old_desc) in old_opt_descs.items() %}
-                  <div class="item">
-                    <div class="content">
-                      <h5 class="header">{{ desc.name }}</h5>
-                      {% if desc.value_string() %}
-                        <div class="description"><b>In CSV:</b> {{ desc.value_string() }}</div>
-                        {% else %}
-                        <div class="description"><b>In CSV:</b> <i>None specified</i></div>
-                      {% endif %}
-                        <div class="description"><b>In app:</b> {{ old_desc.value_string() }}</div>
-                    </div>
-                  </div>
-                  {% endfor %}
-              </div>
-            {% endif %}
-            {{ f.render_form(form) }}
-        </div>
+      </div>
     </div>
+  </div>
+
+  <div class="twelve wide column">
+    <h2 class="ui header">CSV Upload Workflow</h2>
+    <h3 class="ui header">
+      Review Option Descriptor Values
+      <div class="sub header">
+        For each of the column headers that you marked as option descriptors,
+        we have identified the option values present in your CSV file. If
+        any of the existing options are incorrect, please edit the original
+        CSV file and re-upload it. <br>
+        If doing an 'Update', the option values already in the app will
+        not be overridden. You can also later add/delete option values in the app.
+      </div>
+    </h3>
+    <h3 class="ui header">New Option Descriptor Values</h3>
+      {% if not new_opt_descs %}
+      <i>No new option descriptors in CSV</i>
+      {% endif %}
+      {% for desc in new_opt_descs %}
+      <div class="ui segment">
+        <div class="content">
+          <h5 class="header">{{ desc.name }}</h5>
+          <div class="description">
+            {% if desc.value_list()|length > 0 %}
+              <ul>
+                {% for value in desc.value_list() %}
+                  <li>{{ value }}</li>
+                {% endfor %}
+              </ul>
+            {% else %}
+              <i>None specified</i>
+            {% endif %}
+          </div>
+        </div>
+      </div>
+      {% endfor %}
+
+    {% if old_opt_descs %}
+    <h3 class="ui header">Existing Option Descriptor Values in CSV</h3>
+      {% for (desc, old_desc) in old_opt_descs.items() %}
+      <div class="ui segment">
+        <div class="content">
+          <h5 class="header">{{ desc.name }}</h5>
+          <div class="description">
+            <b>In CSV:</b>
+            {% if desc.value_list()|length > 0 %}
+              <ul>
+                {% for value in desc.value_list() %}
+                  <li>{{ value }}</li>
+                {% endfor %}
+              </ul>
+            {% else %}
+              <i>None specified</i>
+            {% endif %}
+            <b>In app:</b>
+            {% if old_desc.value_list()|length > 0 %}
+              <ul>
+                {% for value in old_desc.value_list() %}
+                <li>{{ value }}</li>
+                {% endfor %}
+              </ul>
+            {% endif %}
+          </div>
+        </div>
+      </div>
+      {% endfor %}
+    {% endif %}
+    {{ f.render_form(form) }}
+  </div>
+</div>
 {% endblock %}

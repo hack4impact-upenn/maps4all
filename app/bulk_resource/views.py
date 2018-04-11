@@ -4,7 +4,7 @@ import geocoder
 import time
 import os
 
-from flask import abort, jsonify, redirect, render_template, request, url_for, flash
+from flask import abort, jsonify, redirect, render_template, request, url_for, flash, make_response
 from flask.ext.login import current_user, login_required
 
 from flask_wtf.file import (
@@ -56,6 +56,27 @@ from .helpers import (
 def upload():
     """ Upload new resources in bulk with CSV file. """
     return render_template('bulk_resource/upload.html')
+
+
+@bulk_resource.route('/download_template', methods=['POST'])
+@login_required
+def download_template():
+    # format string or list of strings to be csv-friendly
+    def csv_friendly(str):
+        return '\"{}\"'.format(str.replace('\"', '\"\"')) if str else ''
+
+    # write headers
+    csv = 'Name,Address'
+    descriptors = Descriptor.query.all()
+    if len(descriptors) > 0:
+        csv += ',' + ','.join([desc.name for desc in descriptors])
+    csv += '\n'
+
+    # send csv response
+    response = make_response(csv)
+    response.headers['Content-Disposition'] = 'attachment; filename=resources.csv'
+    response.mimetype = 'text/csv'
+    return response
 
 
 @csrf.exempt
@@ -190,7 +211,7 @@ def upload_row():
             db.session.commit()
             return jsonify({
                 "status": "Success",
-                "message": "Successfully added row"
+                "message": "Successfully added {}".format(clean_row['Name'])
                 })
         except:
             db.session.rollback()
@@ -229,7 +250,7 @@ def upload_row():
             db.session.commit()
             return jsonify({
                 "status": "Success",
-                "message": "Successfully added row"
+                "message": "Successfully added {}".format(clean_row['Name'])
                 })
         except:
             db.session.rollback()
