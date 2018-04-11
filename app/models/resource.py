@@ -118,7 +118,7 @@ class Descriptor(db.Model):
     # should only have value for option descriptor
     values = db.Column(db.PickleType, default=[])
     is_searchable = db.Column(db.Boolean)
-    # descriptor type, can be 'Text', 'Optional', or 'Hyperlink'
+    # descriptor type, can be 'text', 'optional', or 'hyperlink'
     dtype = db.Column(db.String(15))
     text_resources = db.relationship(
         'TextAssociation',

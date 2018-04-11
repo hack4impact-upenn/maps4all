@@ -249,10 +249,10 @@ def upload_row():
         return jsonify(redirect=url_for('bulk_resource.set_descriptor_types'))
 
 
-''' Sets each descriptor in the CSV to be an option or a text descriptor '''
 @bulk_resource.route('/set-descriptor-types', methods=['GET', 'POST'])
 @login_required
 def set_descriptor_types():
+    """ Sets each descriptor in the CSV to be an option, text, or hyperlink descriptor """
     csv_storage = CsvStorage.most_recent(user=current_user)
     if csv_storage is None:
         db.session.rollback()
@@ -297,7 +297,8 @@ def set_descriptor_types():
             form.descriptor_types.append_entry()
             form.descriptor_types[num].label = desc.name
             if desc.descriptor_type == 'option' or \
-                    desc.descriptor_type == 'text':
+                    desc.descriptor_type == 'text' or \
+                    desc.descriptor_type == 'hyperlink':
                 form.descriptor_types[num].data = desc.descriptor_type
             num += 1
 
@@ -317,11 +318,11 @@ def set_descriptor_types():
                            num=num, remove_descs=remove_descs)
 
 
-''' If there are option descriptors in the CSV, display the option values parsed
-from the CSV for verification '''
 @bulk_resource.route('/review-desc-options', methods=['GET', 'POST'])
 @login_required
 def review_desc_options():
+    """ If there are option descriptors in the CSV, display the option values parsed
+    from the CSV for verification """
     csv_storage = CsvStorage.most_recent(user=current_user)
     if csv_storage is None:
         db.session.rollback()
@@ -359,12 +360,12 @@ def review_desc_options():
                            form=form)
 
 
-''' Choose one option descriptor to be the required option descriptor.
-Can only select from option descriptors in the CSV or the existing required
-option descriptor if any.'''
 @bulk_resource.route('/set-required-option-descriptor', methods=['GET', 'POST'])
 @login_required
 def set_required_option_descriptor():
+    """ Choose one option descriptor to be the required option descriptor.
+    Can only select from option descriptors in the CSV or the existing required
+    option descriptor if any. """
     csv_storage = CsvStorage.most_recent(user=current_user)
     if csv_storage is None:
         db.session.rollback()
@@ -461,11 +462,11 @@ def set_required_option_descriptor():
     )
 
 
-''' If there are resources that don't have the selected required option descriptor value set,
-enforce that they are updated to have the required option descriptor'''
 @bulk_resource.route('/validate-required-option-descriptor', methods=['GET', 'POST'])
 @login_required
 def validate_required_option_descriptor():
+    """ If there are resources that don't have the selected required option descriptor value set,
+    enforce that they are updated to have the required option descriptor """
     csv_storage = CsvStorage.most_recent(user=current_user)
     if csv_storage is None:
         db.session.rollback()
@@ -552,10 +553,10 @@ def validate_required_option_descriptor():
     )
 
 
-''' Last step in CSV workflow to update the resource and descriptor data models'''
 @bulk_resource.route('/save-csv', methods=['GET', 'POST'])
 @login_required
 def save_csv():
+    """ Last step in CSV workflow to update the resource and descriptor data models. """
     csv_storage = CsvStorage.most_recent(user=current_user)
     if csv_storage is None:
         db.session.rollback()
@@ -580,6 +581,7 @@ def save_csv():
         if csv_storage.action == 'reset':
             OptionAssociation.query.delete()
             TextAssociation.query.delete()
+            HyperlinkAssociation.query.delete()
             # on delete suggestions linked to resources
             Suggestion.query.filter(Suggestion.resource_id != None).delete()
             Rating.query.delete()
