@@ -44,6 +44,9 @@ from .forms import (
     NavigationForm,
     SaveCsvDataForm
 )
+from .helpers import (
+    validate_address
+)
 
 
 @csrf.exempt
@@ -165,31 +168,14 @@ def upload_row():
 
             # Validate addresses
             address = clean_row['Address']
-            # See if address exists in cache
-            cached = GeocoderCache.query.filter_by(
-                address=address
-            ).first()
-            if cached is None:
-                # Toggle API to avoid Google geocoder API limit - temp solution
-                if data['count'] % 45 == 0:
-                    if os.environ.get('GOOGLE_API_KEY') == os.environ.get('GOOGLE_API_1'):
-                        os.environ['GOOGLE_API_KEY'] = os.environ.get('GOOGLE_API_2')
-                    else:
-                        os.environ['GOOGLE_API_KEY'] = os.environ.get('GOOGLE_API_1')
-                g = geocoder.google(address, key=os.environ.get('GOOGLE_API_KEY'))
-                if g.status != 'OK':
-                    msg = 'Address cannot be geocoded due to ' + g.status + ": " + address
-                    return jsonify({
-                        "status": "Error",
-                        "message": msg
-                        })
-                else:
-                    geo = GeocoderCache(
-                        address=address,
-                        latitude=g.latlng[0],
-                        longitude=g.latlng[1]
-                    )
-                    db.session.add(geo)
+            # print(validate_address(data, address))
+            gstatus = validate_address(data, address)
+            if gstatus != 'OK':
+                msg = 'Address cannot be geocoded due to ' + gstatus + ": " + address
+                return jsonify({
+                    "status": "Error",
+                    "message": msg
+                    })
 
             csv_storage = CsvStorage.most_recent(user=current_user)
             if csv_storage is None:
@@ -215,31 +201,13 @@ def upload_row():
 
             # Validate addresses
             address = clean_row['Address']
-            # See if address exists in cache
-            cached = GeocoderCache.query.filter_by(
-                address=address
-            ).first()
-            if cached is None:
-                # Toggle API to avoid Google geocoder API limit - temp solution
-                if data['count'] % 45 == 0:
-                    if os.environ.get('GOOGLE_API_KEY') == os.environ.get('GOOGLE_API_1'):
-                        os.environ['GOOGLE_API_KEY'] = os.environ.get('GOOGLE_API_2')
-                    else:
-                        os.environ['GOOGLE_API_KEY'] = os.environ.get('GOOGLE_API_1')
-                g = geocoder.google(address, key=os.environ.get('GOOGLE_API_KEY'))
-                if g.status != 'OK':
-                    msg = 'Address cannot be geocoded due to ' + g.status + ": " + address
-                    return jsonify({
-                        "status": "Error",
-                        "message": msg
-                        })
-                else:
-                    geo = GeocoderCache(
-                        address=address,
-                        latitude=g.latlng[0],
-                        longitude=g.latlng[1]
-                    )
-                    db.session.add(geo)
+            gstatus = validate_address(data, address)
+            if gstatus != 'OK':
+                msg = 'Address cannot be geocoded due to ' + gstatus + ": " + address
+                return jsonify({
+                    "status": "Error",
+                    "message": msg
+                    })
 
             csv_storage = CsvStorage.most_recent(user=current_user)
             if csv_storage is None:
