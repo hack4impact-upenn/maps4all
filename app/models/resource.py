@@ -42,6 +42,25 @@ class OptionAssociation(db.Model):
         ))
         return options
 
+    def generate_fake():
+        options = []
+        options.append(Descriptor(
+            name='Residential Program',
+            values=['Arts House', 'Cultures Collective', 'Mentors Program'],
+            is_searchable=False
+        ))
+        options.append(Descriptor(
+            name='Room Options',
+            values=['Singles', 'Doubles', 'Triples'],
+            is_searchable=True
+        ))
+        options.append(Descriptor(
+            name='Dorm Type',
+            values=['Freshmen', 'Upperclassmen', 'Four-year'],
+            is_searchable=True
+        ))
+        return options
+
     def __repr__(self):
         return "{}: {}".format(self.descriptor.name,
                                self.descriptor.values[self.option])

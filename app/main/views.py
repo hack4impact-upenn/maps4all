@@ -132,8 +132,8 @@ def get_associations(resource_id):
   
 
 @main.route('/pages/<pageName>')
-def render_page(page_name):
-    editable_html_obj = EditableHTML.get_editable_html(page_name)
+def render_page(pageName):
+    editable_html_obj = EditableHTML.get_editable_html(pageName)
     return render_template('main/generalized_page.html',
                           editable=editable_html_obj)
 
