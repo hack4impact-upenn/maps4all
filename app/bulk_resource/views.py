@@ -681,6 +681,9 @@ def save_csv():
                     elif descriptor.dtype == 'hyperlink':
                         association_class = HyperlinkAssociation
                         keyword = 'url'
+                        url = row.data[key]
+                        if url != '' and url.find('http') != 0:
+                            url = 'https://{}'.format(url)
                         if csv_storage.action == 'update':
                             hyperlink_association = HyperlinkAssociation.query.filter_by(
                                 resource_id=resource.id,
@@ -690,10 +693,10 @@ def save_csv():
                                 assocValues.append(row.data[key])
                             # Just update text value if only text changed
                             elif hyperlink_association.url != row.data[key]:
-                                hyperlink_association.url = row.data[key]
+                                hyperlink_association.url = url
                                 db.session.add(hyperlink_association)
                         else:
-                            assocValues.append(row.data[key])
+                            assocValues.append(url)
                     else:  # option descriptor
                         association_class = OptionAssociation
                         keyword = 'option'
