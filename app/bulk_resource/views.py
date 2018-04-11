@@ -757,6 +757,7 @@ def save_csv():
             if required_option_descriptor is None:
                 required_option_descriptor = Descriptor(
                                                 name=req_opt_desc_const.name,
+                                                dtype='option',
                                                 values=req_opt_desc_const.values,
                                                 is_searchable=True)
                 db.session.add(required_option_descriptor)
