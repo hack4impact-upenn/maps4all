@@ -115,15 +115,9 @@ class Descriptor(db.Model):
     __tablename__ = 'descriptors'
     id = db.Column(db.Integer, primary_key=True)
     name = db.Column(db.String(500), index=True)
-<<<<<<< HEAD
-    # should only have value for option descriptor
-    values = db.Column(db.PickleType, default=[])
-=======
-
     # list of option values for option descriptors
     # [] if text or hyperlink descriptor
     values = db.Column(db.PickleType)
->>>>>>> master
     is_searchable = db.Column(db.Boolean)
     # descriptor type, can be 'text', 'optional', or 'hyperlink'
     dtype = db.Column(db.String(15))
