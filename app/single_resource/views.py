@@ -273,7 +273,7 @@ def download():
                     value = associations[desc.name]
                     # option descriptors with multiple values are lists
                     if type(value) == list:
-                        value = csv_friendly(', '.join(value))
+                        value = csv_friendly('; '.join(value))
                     else:
                         value = csv_friendly(value)
                 values.append(value)
