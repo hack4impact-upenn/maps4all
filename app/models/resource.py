@@ -24,12 +24,12 @@ class OptionAssociation(db.Model):
         options.append(Descriptor(
             name='Residential Program',
             values=['Arts House', 'Cultures Collective', 'Mentors Program'],
-            is_searchable=False
+            is_searchable=False,
         ))
         options.append(Descriptor(
             name='Room Options',
             values=['Singles', 'Doubles', 'Triples'],
-            is_searchable=True
+            is_searchable=True,
         ))
         options.append(Descriptor(
             name='Dorm Type',
@@ -69,7 +69,10 @@ class Descriptor(db.Model):
     __tablename__ = 'descriptors'
     id = db.Column(db.Integer, primary_key=True)
     name = db.Column(db.String(500), index=True)
-    values = db.Column(db.PickleType) # should only have value for option descriptor
+
+    # list of option values for option descriptors
+    # [] if text or hyperlink descriptor
+    values = db.Column(db.PickleType)
     is_searchable = db.Column(db.Boolean)
     text_resources = db.relationship(
         'TextAssociation',
@@ -160,11 +163,13 @@ class Resource(db.Model):
         options = OptionAssociation.generate_fake()
         text_serve = Descriptor(
             name='Who We Serve',
-            is_searchable=True
+            is_searchable=True,
+            values=[]
         )
         text_about = Descriptor(
             name='About',
-            is_searchable=True
+            is_searchable=True,
+            values=[]
         )
 
         gmaps = googlemaps.Client(key=os.environ['GOOGLE_API_KEY'])
