@@ -72,12 +72,13 @@ class CsvDescriptor(db.Model):
     values = db.Column(db.PickleType) # list of string options from CSV ONLY
     descriptor_id = db.Column(db.Integer) # no foreign key because could be null
 
-    def value_string(self):
+    def value_list(self):
         if not self.values:
-            return ''
+            return []
         l = list(self.values)
+        map(str, l)
         l.sort()
-        return ', '.join(map(str, l))
+        return l
 
 
 class CsvDescriptorRemove(db.Model):
