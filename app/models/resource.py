@@ -47,12 +47,12 @@ class OptionAssociation(db.Model):
         options.append(Descriptor(
             name='Residential Program',
             values=['Arts House', 'Cultures Collective', 'Mentors Program'],
-            is_searchable=False
+            is_searchable=False,
         ))
         options.append(Descriptor(
             name='Room Options',
             values=['Singles', 'Doubles', 'Triples'],
-            is_searchable=True
+            is_searchable=True,
         ))
         options.append(Descriptor(
             name='Dorm Type',
@@ -115,8 +115,15 @@ class Descriptor(db.Model):
     __tablename__ = 'descriptors'
     id = db.Column(db.Integer, primary_key=True)
     name = db.Column(db.String(500), index=True)
+<<<<<<< HEAD
     # should only have value for option descriptor
     values = db.Column(db.PickleType, default=[])
+=======
+
+    # list of option values for option descriptors
+    # [] if text or hyperlink descriptor
+    values = db.Column(db.PickleType)
+>>>>>>> master
     is_searchable = db.Column(db.Boolean)
     # descriptor type, can be 'text', 'optional', or 'hyperlink'
     dtype = db.Column(db.String(15))
@@ -218,19 +225,20 @@ class Resource(db.Model):
         options = OptionAssociation.generate_fake()
         text_serve = Descriptor(
             name='Who We Serve',
-            dtype='text',
-            is_searchable=True
+            is_searchable=True,
+            values=[]
         )
         text_about = Descriptor(
             name='About',
-            dtype='text',
-            is_searchable=True
+            is_searchable=True,
+            values=[]
         )
 
         hyperlink_website = Descriptor(
             name='Website',
             dtype='hyperlink',
-            is_searchable=False
+            is_searchable=False,
+            values=[]
         )
 
         gmaps = googlemaps.Client(key=os.environ['GOOGLE_API_KEY'])
