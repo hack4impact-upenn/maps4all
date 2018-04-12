@@ -1,4 +1,7 @@
 $(document).ready(function () {
+    // Import jquery-tablesort.js method to make resource table sortable
+    $('#resources-table').tablesort()
+
     // This is for search on the index page
     // Search resources by name
     $('#search-resources').click(searchQuery); // click submit button

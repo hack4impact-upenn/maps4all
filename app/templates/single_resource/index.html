@@ -58,7 +58,7 @@
             {# Use overflow-x: scroll so that mobile views don't freak out
              # when the table is too wide #}
             <div style="overflow-x: scroll;">
-                <table class="ui searchable sortable unstackable celled striped table">
+                <table id="resources-table" class="ui searchable sortable unstackable celled striped table">
                     <thead>
                         <tr>
                             <th class="four wide sorted ascending">Name</th>
@@ -72,9 +72,7 @@
                     {% if resources|length > 0 %}
                         {% for resource in resources | sort(attribute='name') %}
                             <tr>
-                                <td>
-                                    {{ resource['name'] }}
-                                </td>
+                                <td>{{ resource['name'] }}</td>
                                 <td>{{ resource['address'] }}</td>
                                 <td class="selectable">
                                   <a href="{{ url_for('single_resource.edit', resource_id=resource['id']) }}">Edit</a>
