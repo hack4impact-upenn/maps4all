@@ -7,6 +7,7 @@
     ('admin.change_site_logo', 'Change logo'),
     ('admin.change_site_style', 'Change style'),
     ('admin.change_twilio_credentials', 'Change Twilio credentials'),
+    ('admin.change_site_color', 'Change site color')
 ] %}
 
 {% macro navigation(items) %}
@@ -48,6 +49,12 @@
                     <button onclick="openPickerStyle()" class="ui labeled icon button">
                         <i class="upload icon"></i>
                         Upload
+                    </button>
+                {% elif request.endpoint == 'admin.change_site_color' %}
+                    <input type="color" class="color-picker" id="html5colorpicker" value="#FFFFFF">
+                    <button onclick="changeSiteColor()" class="ui labeled icon button">
+                        <i class="check icon"></i>
+                        Change Color
                     </button>
                 {% else %}
                     <table class="ui compact definition table">
@@ -119,6 +126,11 @@
                     post("{{ url_for('admin.change_site_style') }}", {'url': response.filesUploaded[0].url});
                 }
             });
+        }
+
+        function changeSiteColor() {
+            var x = document.getElementById("html5colorpicker");
+            post("{{ url_for('admin.change_site_color') }}", {"site_color": x.value})
         }
     </script>
 

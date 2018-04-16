@@ -302,6 +302,26 @@ def change_site_name():
                            app_name=site_name.value, form=form)
 
 
+@admin.route('/customize-site/color', methods=['GET', 'POST'])
+@login_required
+@admin_required
+def change_site_color():
+    """Change a site's color."""
+    site_color = SiteAttribute.get("SITE_COLOR")
+
+    form = ChangeSiteNameForm()
+    if form.validate_on_submit():
+        print("IN CHANGE SITE COLOR WITH DATA: " + form.site_color.data)
+        site_color.value = form.site_color.data
+        print("IN CHANGE SITE COLOR WITH VALUE: " + site_color.value)
+        db.session.add(site_color)
+        db.session.commit()
+        flash('Site color successfully changed',
+              'form-success')
+    return render_template('admin/customize_site.html',
+                           app_name=SiteAttribute.get_value("ORG_NAME"))
+
+
 @admin.route('/customize-site/logo', methods=['GET', 'POST'])
 @login_required
 @admin_required
