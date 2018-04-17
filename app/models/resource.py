@@ -74,6 +74,7 @@ class Descriptor(db.Model):
     # [] if text or hyperlink descriptor
     values = db.Column(db.PickleType)
     is_searchable = db.Column(db.Boolean)
+    dtype = db.Column(db.String(15))
     text_resources = db.relationship(
         'TextAssociation',
         back_populates='descriptor',
