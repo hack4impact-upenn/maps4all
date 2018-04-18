@@ -81,7 +81,7 @@ class ChangeSiteNameForm(Form):
     submit = SubmitField('Change name')
 
 
-class ChangeSiteNameForm(Form):
+class ChangeSiteColorForm(Form):
     site_color = HiddenField('site_color', validators=[])
     submit = SubmitField('Change site color')
 
