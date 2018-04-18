@@ -37,17 +37,37 @@ def index():
         for val in req_opt_desc.values:
             req_options[val] = False
     # check if admin has set twilio authentication
-    twilio_auth = not os.environ.get(
-        'TWILIO_AUTH_TOKEN') and not os.environ.get('TWILIO_ACCOUNT_SID')
+    twilio_auth = not SiteAttribute.get_value(
+        'TWILIO_AUTH_TOKEN') and not SiteAttribute.get_value('TWILIO_ACCOUNT_SID')
+    # modal attributes
+    attributes = [
+        'WELCOME_HEADER',
+        'WELCOME_CONTENT',
+        'WELCOME_ACTION',
+        'WELCOME_FOOTER',
+        'WELCOME_WEBSITE_TEXT',
+        'WELCOME_WEBSITE_URL',
+        'WELCOME_EMAIL',
+        'WELCOME_FACEBOOK_URL',
+        'WELCOME_TWITTER_URL',
+        'WELCOME_INSTAGRAM_URL',
+        'WELCOME_YOUTUBE_URL',
+    ]
+    modal_attributes = {}
+    for attr in attributes:
+        modal_attributes[attr] = SiteAttribute.get_value(attr) or ''
     # check for first-time user to render welcome modal to
-    show_modal = request.cookies.get('first_time_user') and SiteAttribute.get_value('HAS_WELCOME_MODAL') == 'True'
+    print(request.cookies.get('first_time_user'))
+    show_modal = request.cookies.get(
+        'first_time_user') != 'False' and SiteAttribute.get_value('HAS_WELCOME_MODAL') == 'Yes'
     resp = make_response(render_template('main/index.html',
                                          options=options_dict,
                                          req_options=req_options,
                                          req_desc=req_opt_desc,
                                          twilio_auth=twilio_auth,
-                                         show_modal=show_modal))
-    resp.set_cookie('first_time_user', 'True')
+                                         show_modal=show_modal,
+                                         modal=modal_attributes))
+    resp.set_cookie('first_time_user', 'False')
     return resp
 
 
