@@ -157,9 +157,6 @@ def edit(resource_id):
                 resource_id=resource_id,
                 descriptor_id=descriptor.id
             ).first()
-            print(hyperlink_association.resource_id)
-            print(hyperlink_association.descriptor_id)
-            print(hyperlink_association.url)
             if hyperlink_association is not None:
                 default = hyperlink_association.url
             setattr(SingleResourceForm,
