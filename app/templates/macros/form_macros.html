@@ -109,12 +109,12 @@
 {% endmacro %}
 
 {# Render a field for the form #}
-{% macro render_form_field(field, extra_classes='') %}
+{% macro render_form_field(field, extra_classes='', icon='') %}
     {% if field.type == 'Radio Field' %}
         {% set extra_classes = extra_classes + ' grouped fields' %}
     {% endif %}
     <div class="field {% if field.errors %}error{% endif %} {{ extra_classes }}">
-        {{ render_form_input(field) }}
+        {{ render_form_input(field, icon=icon) }}
         {% if field.errors %}
             <div class="ui red pointing label">
                 {{ field.errors[0] | safe }}
@@ -123,7 +123,7 @@
     </div>
 {% endmacro %}
 
-{% macro render_form_input(field) %}
+{% macro render_form_input(field, icon='') %}
     {% if field.widget.input_type == 'checkbox' %}
         <div class="ui checkbox">
             {{ field }}
@@ -145,6 +145,13 @@
         {{ field(placeholder=field.label.text, rows='4') }}
     {% else %}
         {{ field.label }}
-        {{ field(placeholder=field.label.text) }}
+        {% if icon != '' %}
+            <div class="ui left icon input">
+                {{ field(placeholder=field.label.text) }}
+                <i class="{{ icon }}"></i>
+            </div>
+        {% else %}
+            {{ field(placeholder=field.label.text) }}
+        {% endif %}
     {% endif %}
 {% endmacro %}
