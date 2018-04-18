@@ -6,7 +6,6 @@
 
     <body>
         {% block nav %}
-            {{ nav.render_nav(current_user, site_name, logo_url) }}
             <script type="text/javascript">
             var styleSheetList = document.styleSheets;
             var backgroundSelectors = [".ui.fixed.main.menu", ".ui.button", "#search-user-resources", "#submit-rating"];
@@ -31,6 +30,7 @@
                 }
             }
          </script>
+         {{ nav.render_nav(current_user, site_name, logo_url) }}
         {% endblock %}
 
         {% include 'partials/_flashes.html' %}
