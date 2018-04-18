@@ -68,7 +68,38 @@
   </div>
 </div>
 
+<!-- First time user welcome modal -->
+<div class="ui basic small modal" id="welcome-modal">
+  <i class="close icon"></i>
+  <div class="content">
+    <h1 class="ui teal header">Welcome to Maps4All</h1>
+    <p style="font-size: 1.3em">
+      Maps4All is an open source platform for organizations to display their resources and other information on a map.
+      This application was built by developers at Hack4Impact, a nonprofit that creates software for social good.
+    </p>
+    <p>
+      <button class="ui teal button">View Resources</button>
+    </p>
+    <p>
+      Follow Hack4Impact on social media to learn more!
+    </p>
+    <button class="ui facebook icon circular button">
+      <i class="facebook icon"></i>
+    </button>
+    <button class="ui twitter icon circular button">
+      <i class="twitter icon"></i>
+    </button>
+    <button class="ui instagram icon circular button">
+      <i class="instagram icon"></i>
+    </button>
+    <button class="ui youtube icon circular button">
+      <i class="youtube icon"></i>
+    </button>
+  </div>
+</div>
+
 <!-- HANDLEBARS.JS TEMPLATES COMPILED IN MAP.JS -->
+
 <!-- Populate location search marker info-->
 <script id="searched-location-info-window-template" type="text/x-handlebars-template">
   <div class="loc-marker-info">
@@ -230,6 +261,10 @@
 
 <script>
   $(document).ready(function(){
+    //
+    $('#welcome-modal').modal('show')
+    console.log($('#welcome-modal'))
+
     // Defined in map.js
     initMap();
     makeResponsive();
