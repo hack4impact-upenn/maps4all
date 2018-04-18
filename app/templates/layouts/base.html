@@ -7,6 +7,30 @@
     <body>
         {% block nav %}
             {{ nav.render_nav(current_user, site_name, logo_url) }}
+            <script type="text/javascript">
+            var styleSheetList = document.styleSheets;
+            var backgroundSelectors = [".ui.fixed.main.menu", ".ui.button", "#search-user-resources", "#submit-rating"];
+            var colorSelectors = ["h1.ui.header, h2.ui.header", "body a, body h1", ".ui.header", ".static-page .ui.header",
+            "#advanced-filters-show, #advanced-filters-hide", "#resource-info .ui.header", "#back-button", "#avg_rating"];
+            var s = styleSheetList[2]; //TODO: not sure if can hardcode this?
+
+            for(var i = 0; i < s.cssRules.length; i++) {
+                var rule = s.cssRules[i];
+                var text = rule.selectorText;
+                if (backgroundSelectors.indexOf(text) > -1) {
+                    rule.style["background-color"] = "{{ site_color }}";
+                }
+                else if (colorSelectors.indexOf(text) > -1) {
+                    rule.style["color"] = "{{ site_color }}";
+                }
+                else if (text === ".ui.menu:not(.secondary):not(.text):not(.tabular):not(.borderless) > .container > .item:not(.right):not(.borderless):first-child") {
+                    rule.style["border-left-color"] = "{{ site_color }}";
+                }
+                else if (text === "#pac-input:focus, #resources-input:focus, #search-resources-req-options:focus") {
+                    rule.style["border-color"] = "{{ site_color }}";
+                }
+            }
+         </script>
         {% endblock %}
 
         {% include 'partials/_flashes.html' %}
