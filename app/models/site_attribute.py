@@ -5,7 +5,7 @@ import os
 class SiteAttribute(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     attr_name = db.Column(db.String(100), unique=True)
-    value = db.Column(db.String(255))
+    value = db.Column(db.Text)
 
     @staticmethod
     def get(attr):

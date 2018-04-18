@@ -2,19 +2,21 @@ import json
 import os
 from twilio.rest.lookups import TwilioLookupsClient
 from twilio.rest import TwilioRestClient
-from flask import render_template, url_for, request, jsonify
+from flask import render_template, url_for, request, jsonify, make_response
 from flask.ext.login import login_required
 from twilio import twiml
 from app import csrf
 from .. import db
-from ..models import EditableHTML, Resource, Rating, Descriptor, OptionAssociation, RequiredOptionDescriptor
+from ..models import EditableHTML, Resource, Rating, Descriptor, OptionAssociation, RequiredOptionDescriptor, SiteAttribute
 from . import main
 from wtforms.fields import SelectMultipleField, TextAreaField
 from ..single_resource.forms import SingleResourceForm
 from datetime import datetime
 
+
 @main.route('/')
 def index():
+    # set descriptors
     req_opt_desc = RequiredOptionDescriptor.query.all()
     req_opt_id = -1
     if req_opt_desc:
@@ -25,7 +27,8 @@ def index():
         if req_opt_desc is not None:
             req_opt_id = req_opt_desc.id
     options = Descriptor.query.all()
-    options = [o for o in options if len(o.text_resources) == 0 and o.id != req_opt_id]
+    options = [o for o in options if len(
+        o.text_resources) == 0 and o.id != req_opt_id]
     options_dict = {}
     for o in options:
         options_dict[o.name] = o.values
@@ -33,16 +36,27 @@ def index():
     if req_opt_desc:
         for val in req_opt_desc.values:
             req_options[val] = False
-    twilio_auth = False
-    if os.environ.get('TWILIO_AUTH_TOKEN') is not None:
-        twilio_auth = True
-    return render_template('main/index.html', options=options_dict, req_options=req_options, req_desc=req_opt_desc, twilio_auth=twilio_auth)
+    # check if admin has set twilio authentication
+    twilio_auth = not os.environ.get(
+        'TWILIO_AUTH_TOKEN') and not os.environ.get('TWILIO_ACCOUNT_SID')
+    # check for first-time user to render welcome modal to
+    show_modal = request.cookies.get('first_time_user') and SiteAttribute.get_value('HAS_WELCOME_MODAL') == 'True'
+    resp = make_response(render_template('main/index.html',
+                                         options=options_dict,
+                                         req_options=req_options,
+                                         req_desc=req_opt_desc,
+                                         twilio_auth=twilio_auth,
+                                         show_modal=show_modal))
+    resp.set_cookie('first_time_user', 'True')
+    return resp
+
 
 @main.route('/get-resources')
 def get_resources():
     resources = Resource.query.all()
     resources_as_dicts = Resource.get_resources_as_dicts(resources)
     return json.dumps(resources_as_dicts)
+
 
 @main.route('/search-resources')
 def search_resources():
@@ -53,7 +67,8 @@ def search_resources():
     if req_options is None:
         req_options = []
     # case insensitive search
-    resource_pool = Resource.query.filter(Resource.name.ilike('%{}%'.format(name))).all()
+    resource_pool = Resource.query.filter(
+        Resource.name.ilike('%{}%'.format(name))).all()
     req_opt_desc = RequiredOptionDescriptor.query.all()
     if req_opt_desc:
         req_opt_desc = req_opt_desc[0]
@@ -121,7 +136,8 @@ def get_associations(resource_id):
 def render_page(pageName):
     editable_html_obj = EditableHTML.get_editable_html(pageName)
     return render_template('main/generalized_page.html',
-                          editable=editable_html_obj)
+                           editable=editable_html_obj)
+
 
 @main.route('/about')
 def about():
@@ -134,17 +150,20 @@ def about():
     return render_template('main/about.html',
                            editable_html_obj=editable_html_obj)
 
+
 @main.route('/overview')
 @login_required
 def overview():
     editable_html_obj = EditableHTML.get_editable_html('overview')
     if editable_html_obj is False:
-        edit = EditableHTML(editor_name='overview', page_name='Overview', value='')
+        edit = EditableHTML(editor_name='overview',
+                            page_name='Overview', value='')
         db.session.add(edit)
         db.session.commit()
         editable_html_obj = edit
     return render_template('main/overview.html',
-                          editable_html_obj=editable_html_obj)
+                           editable_html_obj=editable_html_obj)
+
 
 @main.route('/update-editor-contents', methods=['POST'])
 @login_required
@@ -161,6 +180,7 @@ def update_editor_contents():
     db.session.commit()
     return 'OK', 200
 
+
 @csrf.exempt
 @main.route('/send-sms', methods=['POST'])
 def send_sms():
@@ -169,14 +189,15 @@ def send_sms():
     client = TwilioLookupsClient(account=sid, token=auth)
     send_client = TwilioRestClient(account=sid, token=auth)
     if request is not None:
-        phone_num= request.json['number']
+        phone_num = request.json['number']
         resourceID = request.json['id']
         curr_res = Resource.query.get(resourceID)
         name = "Name: " + curr_res.name
         address = "Address: " + curr_res.address
-        message = name +"\n" + address
+        message = name + "\n" + address
         try:
-            number = client.phone_numbers.get(phone_num, include_carrier_info=False)
+            number = client.phone_numbers.get(
+                phone_num, include_carrier_info=False)
             num = number.phone_number
             send_client.messages.create(
                 to=num,
@@ -186,25 +207,26 @@ def send_sms():
         except:
             return jsonify(status='error')
 
+
 @csrf.exempt
-@main.route('/rating-post', methods =['POST'])
+@main.route('/rating-post', methods=['POST'])
 def post_rating():
     if request is not None:
-            time = datetime.now()
-            star_rating = request.json['rating']
-            comment = request.json['review']
-            resourceID = request.json['id']
-            if comment and star_rating:
-                rating = Rating(submission_time=time,
-                                rating=star_rating,
-                                review=comment,
-                                resource_id=resourceID)
-                db.session.add(rating)
-                db.session.commit()
-            elif star_rating:
-                rating = Rating(submission_time=time,
-                                rating=star_rating,
-                                resource_id=resourceID)
-                db.session.add(rating)
-                db.session.commit()
+        time = datetime.now()
+        star_rating = request.json['rating']
+        comment = request.json['review']
+        resourceID = request.json['id']
+        if comment and star_rating:
+            rating = Rating(submission_time=time,
+                            rating=star_rating,
+                            review=comment,
+                            resource_id=resourceID)
+            db.session.add(rating)
+            db.session.commit()
+        elif star_rating:
+            rating = Rating(submission_time=time,
+                            rating=star_rating,
+                            resource_id=resourceID)
+            db.session.add(rating)
+            db.session.commit()
     return jsonify(status='success')

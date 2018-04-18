@@ -26,7 +26,8 @@ from .forms import (
     NewPageForm,
     EditPageForm,
     ChangeSiteNameForm,
-    ChangeTwilioCredentialsForm
+    ChangeTwilioCredentialsForm,
+    WelcomeModalForm
 )
 from ..email import send_email
 from ..utils import s3_upload
@@ -364,3 +365,44 @@ def change_twilio_credentials():
         db.session.commit()
         flash('Twilio credentials successfully updated.', 'form-success')
     return render_template('admin/customize_site.html', app_name=SiteAttribute.get_value("ORG_NAME"), form=form)
+
+@admin.route('/customize-site/welcome', methods=['GET', 'POST'])
+@login_required
+def change_welcome_message():
+    """Customize the app's welcome modal."""
+    form = WelcomeModalForm(
+        has_welcome_modal=SiteAttribute.get_value('HAS_WELCOME_MODAL') or 'No',
+        header=SiteAttribute.get_value('WELCOME_HEADER') or '',
+        content=SiteAttribute.get_value('WELCOME_CONTENT') or '',
+        action=SiteAttribute.get_value('ACTION_BUTTON_TEXT') or '',
+        footer=SiteAttribute.get_value('WELCOME_FOOTER') or '',
+        website_text=SiteAttribute.get_value('WELCOME_WEBSITE_TEXT') or '',
+        website_url=SiteAttribute.get_value('WELCOME_WEBSITE_URL') or '',
+        email=SiteAttribute.get_value('WELCOME_EMAIL') or '',
+        facebook_url=SiteAttribute.get_value('WELCOME_FACEBOOK_URL') or '',
+        twitter_url=SiteAttribute.get_value('WELCOME_TWITTER_URL') or '',
+        instagram_url=SiteAttribute.get_value('WELCOME_INSTAGRAM_URL') or '',
+        youtube_url=SiteAttribute.get_value('WELCOME_YOUTUBE_URL') or ''
+    )
+    if form.validate_on_submit():
+        attributes = [
+            { 'name': 'HAS_WELCOME_MODAL', 'form_data': form.has_welcome_modal.data },
+            { 'name': 'WELCOME_HEADER', 'form_data': form.header.data },
+            { 'name': 'WELCOME_CONTENT', 'form_data': form.content.data },
+            { 'name': 'ACTION_BUTTON_TEXT', 'form_data': form.action.data },
+            { 'name': 'WELCOME_FOOTER', 'form_data': form.footer.data },
+            { 'name': 'WELCOME_WEBSITE_TEXT', 'form_data': form.website_text.data },
+            { 'name': 'WELCOME_WEBSITE_URL', 'form_data': form.website_url.data },
+            { 'name': 'WELCOME_EMAIL', 'form_data': form.email.data },
+            { 'name': 'WELCOME_FACEBOOK_URL', 'form_data': form.facebook_url.data },
+            { 'name': 'WELCOME_TWITTER_URL', 'form_data': form.twitter_url.data },
+            { 'name': 'WELCOME_INSTAGRAM_URL', 'form_data': form.instagram_url.data },
+            { 'name': 'WELCOME_YOUTUBE_URL', 'form_data': form.youtube_url.data },
+        ]
+        for attr in attributes:
+            site_attr = SiteAttribute.get(attr['name'])
+            site_attr.value = attr['form_data']
+            db.session.add(site_attr)
+        db.session.commit()
+        flash('Welcome message successfully updated.', 'form-success')
+    return render_template('admin/customize_site.html', app_name=SiteAttribute.get_value('ORG_NAME'), form=form)

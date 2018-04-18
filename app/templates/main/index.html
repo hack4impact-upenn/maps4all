@@ -78,11 +78,17 @@
       This application was built by developers at Hack4Impact, a nonprofit that creates software for social good.
     </p>
     <p>
-      <button class="ui teal button">View Resources</button>
+      <button class="ui teal button" id="welcome-modal-button">View Resources</button>
     </p>
     <p>
       Follow Hack4Impact on social media to learn more!
     </p>
+    <button class="ui tiny button">
+      Hack4Impact Website
+    </button>
+    <button class="ui icon circular green button">
+      <i class="mail icon"></i>
+    </button>
     <button class="ui facebook icon circular button">
       <i class="facebook icon"></i>
     </button>
@@ -261,9 +267,10 @@
 
 <script>
   $(document).ready(function(){
-    //
     $('#welcome-modal').modal('show')
-    console.log($('#welcome-modal'))
+    $('#welcome-modal-button').click(function() {
+      $('#welcome-modal').modal('hide')
+    })
 
     // Defined in map.js
     initMap();
