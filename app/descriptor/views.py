@@ -49,7 +49,8 @@ def new_descriptor():
         descriptor = Descriptor(
             name=form.name.data,
             values=values,
-            is_searchable=form.is_searchable.data
+            is_searchable=form.is_searchable.data,
+            dtype=form.desc_type.data
         )
         if Descriptor.query.filter(Descriptor.name == form.name.data).first() \
                 is not None:

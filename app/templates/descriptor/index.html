@@ -40,7 +40,7 @@
                     </thead>
                     <tbody>
                     {% for d in descriptors | sort(attribute='name') %}
-                        <tr>
+                        <tr onclick="window.location.href = '{{ url_for('descriptor.descriptor_info', desc_id=d.id) }}';">
                             <td class="descriptor-name">{{ d.name }}</td>
                             {% if not d.values %}
                                 <td class="descriptor type">Text</td>

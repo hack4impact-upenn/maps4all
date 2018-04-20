@@ -11,13 +11,36 @@ class OptionAssociation(db.Model):
     """
     __tablename__ = 'option_associations'
     id = db.Column(db.Integer, primary_key=True)
-    resource_id = db.Column(db.Integer, db.ForeignKey('resources.id', ondelete='CASCADE'))
-    descriptor_id = db.Column(db.Integer, db.ForeignKey('descriptors.id', ondelete='CASCADE'))
+    resource_id = db.Column(db.Integer, db.ForeignKey(
+        'resources.id', ondelete='CASCADE'))
+    descriptor_id = db.Column(db.Integer, db.ForeignKey(
+        'descriptors.id', ondelete='CASCADE'))
     option = db.Column(db.Integer)
-    resource = db.relationship('Resource',
-                               back_populates='option_descriptors')
-    descriptor = db.relationship('Descriptor',
-                                 back_populates='option_resources')
+    resource = db.relationship('Resource', back_populates='option_descriptors')
+    descriptor = db.relationship(
+        'Descriptor', back_populates='option_resources')
+
+    def generate_fake():
+        options = []
+        options.append(Descriptor(
+            name='Residential Program',
+            values=['Arts House', 'Cultures Collective', 'Mentors Program'],
+            dtype='option',
+            is_searchable=False
+        ))
+        options.append(Descriptor(
+            name='Room Options',
+            values=['Singles', 'Doubles', 'Triples'],
+            dtype='option',
+            is_searchable=True
+        ))
+        options.append(Descriptor(
+            name='Dorm Type',
+            values=['Freshmen', 'Upperclassmen', 'Four-year'],
+            dtype='option',
+            is_searchable=True
+        ))
+        return options
 
     def generate_fake():
         options = []
@@ -39,8 +62,8 @@ class OptionAssociation(db.Model):
         return options
 
     def __repr__(self):
-        return '%s: %s' % (self.descriptor.name,
-                           self.descriptor.values[self.option])
+        return "{}: {}".format(self.descriptor.name,
+                               self.descriptor.values[self.option])
 
 
 class TextAssociation(db.Model):
@@ -51,14 +74,37 @@ class TextAssociation(db.Model):
     """
     __tablename__ = 'text_associations'
     id = db.Column(db.Integer, primary_key=True)
-    resource_id = db.Column(db.Integer, db.ForeignKey('resources.id', ondelete='CASCADE'))
-    descriptor_id = db.Column(db.Integer, db.ForeignKey('descriptors.id', ondelete='CASCADE'))
+    resource_id = db.Column(db.Integer, db.ForeignKey(
+        'resources.id', ondelete='CASCADE'))
+    descriptor_id = db.Column(db.Integer, db.ForeignKey(
+        'descriptors.id', ondelete='CASCADE'))
     text = db.Column(db.Text)
     resource = db.relationship('Resource', back_populates='text_descriptors')
     descriptor = db.relationship('Descriptor', back_populates='text_resources')
 
     def __repr__(self):
-        return '%s: %s' % (self.descriptor.name, self.text)
+        return "{}: {}".format(self.descriptor.name, self.text)
+
+
+class HyperlinkAssociation(db.Model):
+    """
+    Association between a resource and a descriptor with a hyperlink url for the
+    value of the descriptor.
+    """
+    __tablename__ = 'hyperlink_associations'
+    id = db.Column(db.Integer, primary_key=True)
+    resource_id = db.Column(db.Integer, db.ForeignKey(
+        'resources.id', ondelete='CASCADE'))
+    descriptor_id = db.Column(db.Integer, db.ForeignKey(
+        'descriptors.id', ondelete='CASCADE'))
+    url = db.Column(db.String(250))
+    resource = db.relationship(
+        'Resource', back_populates='hyperlink_descriptors')
+    descriptor = db.relationship(
+        'Descriptor', back_populates='hyperlink_resources')
+
+    def __repr__(self):
+        return "{}: {}".format(self.descriptor.name, self.url)
 
 
 class Descriptor(db.Model):
@@ -69,11 +115,12 @@ class Descriptor(db.Model):
     __tablename__ = 'descriptors'
     id = db.Column(db.Integer, primary_key=True)
     name = db.Column(db.String(500), index=True)
-
     # list of option values for option descriptors
     # [] if text or hyperlink descriptor
     values = db.Column(db.PickleType)
     is_searchable = db.Column(db.Boolean)
+    # descriptor type, can be 'text', 'optional', or 'hyperlink'
+    dtype = db.Column(db.String(15))
     text_resources = db.relationship(
         'TextAssociation',
         back_populates='descriptor',
@@ -84,9 +131,14 @@ class Descriptor(db.Model):
         back_populates='descriptor',
         cascade='all, delete-orphan'
     )
+    hyperlink_resources = db.relationship(
+        'HyperlinkAssociation',
+        back_populates='descriptor',
+        cascade='all, delete-orphan'
+    )
 
     def __repr__(self):
-        return '<Descriptor \'%s\'>' % self.name
+        return "<Descriptor '{}'>".format(self.name)
 
     def value_list(self):
         if not self.values:
@@ -104,7 +156,7 @@ class RequiredOptionDescriptor(db.Model):
     """
     __tablename__ = 'required_option_descriptor'
     id = db.Column(db.Integer, primary_key=True)
-    descriptor_id = db.Column(db.Integer); # -1 if none
+    descriptor_id = db.Column(db.Integer)  # -1 if none
 
     @staticmethod
     def init_required_option_descriptor():
@@ -133,6 +185,11 @@ class Resource(db.Model):
         back_populates='resource',
         cascade='all, delete-orphan'
     )
+    hyperlink_descriptors = db.relationship(
+        'HyperlinkAssociation',
+        back_populates='resource',
+        cascade='all, delete-orphan'
+    )
     suggestions = db.relationship(
         'Suggestion',
         backref='resource',
@@ -147,7 +204,7 @@ class Resource(db.Model):
     )
 
     def __repr__(self):
-        return '<Resource \'%s\'>' % self.name
+        return "<Resource '{}'>".format(self.name)
 
     @staticmethod
     def generate_fake(count=20, center_lat=39.951021, center_long=-75.197243):
@@ -156,7 +213,6 @@ class Resource(db.Model):
         from random import randint
         from faker import Faker
         import googlemaps
-
         fake = Faker()
 
         num_options = 3
@@ -172,10 +228,17 @@ class Resource(db.Model):
             values=[]
         )
 
+        hyperlink_website = Descriptor(
+            name='Website',
+            dtype='hyperlink',
+            is_searchable=False,
+            values=[]
+        )
+
         gmaps = googlemaps.Client(key=os.environ['GOOGLE_API_KEY'])
 
+        # Generate resources
         for i in range(count):
-
             # Generates random coordinates around Philadelphia.
             latitude = fake.geo_coordinate(
                 center=center_lat,
@@ -185,7 +248,6 @@ class Resource(db.Model):
                 center=center_long,
                 radius=0.01
             )
-
             # Create an address with reverse geocoding
             location = gmaps.reverse_geocode((latitude, longitude))[0]
 
@@ -197,7 +259,6 @@ class Resource(db.Model):
                     latitude=latitude,
                     longitude=longitude
                 )
-
                 # Add option descriptors
                 oa = OptionAssociation(option=randint(0, num_options - 1))
                 oa.descriptor = options[randint(0, 2)]
@@ -207,6 +268,9 @@ class Resource(db.Model):
                     ta = TextAssociation(text=fake.sentence(
                         nb_words=10), descriptor=tdescriptor)
                     resource.text_descriptors.append(ta)
+                ha = HyperlinkAssociation(
+                    url='http://maps4all.org', descriptor=hyperlink_website)
+                resource.hyperlink_descriptors.append(ha)
 
                 db.session.add(resource)
                 try:
@@ -273,7 +337,7 @@ class Resource(db.Model):
         for resource in resources:
             print(resource)
             print(resource.address)
-            print('(%s , %s)' % (resource.latitude, resource.longitude))
+            print("({}, {})".format(resource.latitude, resource.longitude))
             print(resource.text_descriptors)
             print(resource.option_descriptors)
 
