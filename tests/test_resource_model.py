@@ -22,11 +22,10 @@ class ResourceModelTestCase(unittest.TestCase):
         r = Resource(name='test')
         a = OptionAssociation(option=0)
         options = ['True', 'False']
-        a.descriptor = Descriptor(name='Open', values=options)
+        a.descriptor = Descriptor(name='Open', dtype='option', values=options)
         r.option_descriptors.append(a)
 
         option_assoc = r.option_descriptors[0]
         self.assertEqual(option_assoc.option, 0)
         self.assertEqual(option_assoc.descriptor.name, 'Open')
         self.assertEqual(option_assoc.descriptor.values, options)
-

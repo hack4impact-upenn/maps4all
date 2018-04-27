@@ -25,7 +25,7 @@ def index():
         if req_opt_desc is not None:
             req_opt_id = req_opt_desc.id
     options = Descriptor.query.all()
-    options = [o for o in options if len(o.text_resources) == 0 and o.id != req_opt_id]
+    options = [o for o in options if o.dtype == 'option' and o.id != req_opt_id]
     options_dict = {}
     for o in options:
         options_dict[o.name] = o.values
@@ -114,7 +114,21 @@ def search_resources():
 @main.route('/get-associations/<int:resource_id>')
 def get_associations(resource_id):
     resource = Resource.query.get(resource_id)
-    return json.dumps(Resource.get_associations(resource))
+    associations = {} # map from descriptor name -> {descriptor value(s), descriptor type}
+    if resource is None:
+        return json.dumps(associations)
+    for hd in resource.hyperlink_descriptors:
+        associations[hd.descriptor.name] = {'value': hd.url, 'type': 'Hyperlink'}
+    for td in resource.text_descriptors:
+        associations[td.descriptor.name] = {'value': td.text, 'type': 'Text'}
+    for od in resource.option_descriptors:
+        val = od.descriptor.values[od.option]
+        if associations.get(od.descriptor.name):
+            od_association = associations.get(od.descriptor.name)
+            od_association['value'].append(val)
+        else:
+            associations[od.descriptor.name] = {'value': [val], 'type': 'Option'}
+    return json.dumps(associations)
 
 
 @main.route('/pages/<pageName>')
