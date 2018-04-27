@@ -26,8 +26,7 @@ class DetermineRequiredOptionDescriptorForm(Form):
 class DetermineDescriptorTypesForm(Form):
     descriptor_types = FieldList(RadioField(choices=[
         ('text', 'Text'),
-        ('option', 'Option'),
-        ('hyperlink', 'Hyperlink'),
+        ('option', 'Option')
     ], validators=[InputRequired()]))
     navigation = FormField(NavigationForm)
 

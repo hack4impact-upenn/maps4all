@@ -68,7 +68,7 @@ class CsvDescriptor(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     csv_storage_id = db.Column(db.Integer, db.ForeignKey('csv_storages.id', ondelete='CASCADE'))
     name = db.Column(db.String(500))
-    descriptor_type = db.Column(db.String, default='text') # values are 'text', 'option', and 'hyperlink'
+    descriptor_type = db.Column(db.String, default='text') # or 'option'
     values = db.Column(db.PickleType) # list of string options from CSV ONLY
     descriptor_id = db.Column(db.Integer) # no foreign key because could be null
 

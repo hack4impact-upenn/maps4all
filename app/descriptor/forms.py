@@ -13,7 +13,7 @@ from ..models import Descriptor
 
 class NewDescriptorForm(Form):
     desc_type = SelectField('Descriptor type',
-                            choices=[('text', 'Text'), ('option', 'Option'), ('hyperlink', 'Hyperlink')],
+                            choices=[('Text', 'Text'), ('Option', 'Option')],
                             validators=[InputRequired()]
                             )
     name = TextField('Name', validators=[InputRequired(), Length(1, 500)])

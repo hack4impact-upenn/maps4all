@@ -28,10 +28,8 @@
     <table class="ui compact definition table">
         <tr><td>Name</td><td>{{ '%s' % (desc.name) }}</td></tr>
         <tr><td>Type</td>
-        {% if desc.dtype == 'text' %}
+        {% if not desc.values %}
             <td>Text</td></tr>
-        {% elif desc.dtype == 'hyperlink' %}
-            <td>Hyperlink</td></tr>
         {% else %}
             <td>Option</td></tr>
             <tr><td>Values</td><td>{{ ', '.join(desc.values) }}</td>
@@ -55,11 +53,11 @@
             {% for i in range(desc.values|length) %}
                 <tr>
                     <td>{{ desc.values[i] }}</td>
-                    <td><a class="ui edit button"
+                    <td><a class="ui edit button" 
                         href="{{ url_for('descriptor.edit_option_value', desc_id=desc.id, option_index=i) }}">
                         Edit
                     </a></td>
-                    <td><a class="ui negative deletion button"
+                    <td><a class="ui negative deletion button" 
                         href="{{ url_for('descriptor.remove_option_value', desc_id=desc.id, option_index=i) }}">
                         Remove
                     </a></td>

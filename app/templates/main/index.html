@@ -139,11 +139,7 @@
           <div class="item descriptor">
             <div class="header" id="descriptor-name">{% raw %}{{ key }}{% endraw %}</div>
             <div id={% raw %}{{ concat 'descriptor-value-' key }}{% endraw %}>
-              {% raw %}{{#if hyperlink}}
-                <a href="{{value}}" target="_blank" style="color: #39CCCC">{{ value }}</a>
-              {{else}}
-                {{ value }}
-              {{/if}}{% endraw %}
+              {% raw %}{{ value }}{% endraw %}
             </div>
           </div>
         {% raw %}{{/if}}{% endraw %}
