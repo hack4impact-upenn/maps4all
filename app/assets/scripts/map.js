@@ -107,7 +107,8 @@ function displayDetailedResourceView(marker) {
     var associationObject = JSON.parse(associations);
     var descriptors = [];
     for (var key in associationObject) {
-      var value = associationObject[key];
+      var value = associationObject[key]['value'];
+      var type = associationObject[key]['type'];
 
       // Combine multiple option descriptor values
       if (Array.isArray(associationObject[key])) {
@@ -119,7 +120,8 @@ function displayDetailedResourceView(marker) {
 
       var descriptor = {
         key: key,
-        value: value
+        value: value,
+        hyperlink: type == 'Hyperlink'
       };
       descriptors.push(descriptor);
     }
