@@ -35,7 +35,7 @@ def upgrade():
     op.add_column('descriptors', sa.Column('dtype', sa.String(length=15), nullable=True))
 
     for descriptor in session.query(Descriptor):
-        if (descriptor.values is not None):
+        if (descriptor.values):
         	descriptor.dtype = "option" #if no values
         else:
         	descriptor.dtype = "text"
