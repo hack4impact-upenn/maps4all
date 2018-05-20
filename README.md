@@ -1,4 +1,4 @@
-﻿# Maps4All [![Circle CI](https://circleci.com/gh/hack4impact/maps4all.svg?style=svg)](https://circleci.com/gh/hack4impact/maps4all)  [![Code Climate](https://codeclimate.com/github/hack4impact/maps4all/badges/gpa.svg)](https://codeclimate.com/github/hack4impact/maps4all) [![Test Coverage](https://codeclimate.com/github/hack4impact/maps4all/badges/coverage.svg)](https://codeclimate.com/github/hack4impact/maps4all/coverage) [![Issue Count](https://codeclimate.com/github/hack4impact/maps4all/badges/issue_count.svg)](https://codeclimate.com/github/hack4impact/maps4all)
+# Maps4All [![Circle CI](https://circleci.com/gh/hack4impact/maps4all.svg?style=svg)](https://circleci.com/gh/hack4impact/maps4all)  [![Code Climate](https://codeclimate.com/github/hack4impact/maps4all/badges/gpa.svg)](https://codeclimate.com/github/hack4impact/maps4all) [![Test Coverage](https://codeclimate.com/github/hack4impact/maps4all/badges/coverage.svg)](https://codeclimate.com/github/hack4impact/maps4all/coverage) [![Issue Count](https://codeclimate.com/github/hack4impact/maps4all/badges/issue_count.svg)](https://codeclimate.com/github/hack4impact/maps4all)
 
 ## Team Members
 
@@ -34,6 +34,12 @@ $ cd maps4all
 
 ##### Initialize a virtualenv
 
+virtualenv does not properly handle spaces in filenames, but it will dereference hardlinks.  This created a problem for me in that it failed silently and did not create the venv folder.  I got around this problem by using the full path (that has no spaces in it) to python3 at %USERPROFILE%\AppData\Local\Programs\Python\Python36-32\python.exe.  However, I still ran into:
+ ERROR: The executable C:\Users\dscot\github\maps4all\venv\Scripts\python.exe is not functioning
+ ERROR: It thinks sys.prefix is 'c:\\users\\dscot\\github\\maps4all' (should be 'c:\\users\\dscot\\github\\maps4all\\venv')
+ ERROR: virtualenv is not compatible with this system or executable
+ Note: some Windows users have reported this error when they installed Python for "Only this user" or have multiple versions of Python installed. Copying the appropriate PythonXX.dll to the virtualenv Scripts/ directory may fix this problem.
+ 
 ```
 $ pip install virtualenv
 $ virtualenv -p python3 venv
@@ -136,77 +142,77 @@ Then navigate to `http://localhost:5000` on your preferred browser to open the w
 
 
 ```
-├── Procfile
-├── README.md
-├── app
-│   ├── __init__.py
-│   ├── account
-│   │   ├── __init__.py
-│   │   ├── forms.py
-│   │   └── views.py
-│   ├── admin
-│   │   ├── __init__.py
-│   │   ├── forms.py
-│   │   └── views.py
-│   ├── assets
-│   │   ├── scripts
-│   │   │   ├── app.js
-│   │   │   └── vendor
-│   │   │       ├── jquery.min.js
-│   │   │       ├── semantic.min.js
-│   │   │       └── tablesort.min.js
-│   │   └── styles
-│   │       ├── app.scss
-│   │       └── vendor
-│   │           └── semantic.min.css
-│   ├── assets.py
-│   ├── decorators.py
-│   ├── email.py
-│   ├── main
-│   │   ├── __init__.py
-│   │   ├── errors.py
-│   │   ├── forms.py
-│   │   └── views.py
-│   ├── models.py
-│   ├── static
-│   │   ├── fonts
-│   │   │   └── vendor
-│   │   ├── images
-│   │   └── styles
-│   │       └── app.css
-│   ├── templates
-│   │   ├── account
-│   │   │   ├── email
-│   │   │   ├── login.html
-│   │   │   ├── manage.html
-│   │   │   ├── register.html
-│   │   │   ├── reset_password.html
-│   │   │   └── unconfirmed.html
-│   │   ├── admin
-│   │   │   ├── index.html
-│   │   │   ├── manage_user.html
-│   │   │   ├── new_user.html
-│   │   │   └── registered_users.html
-│   │   ├── errors
-│   │   ├── layouts
-│   │   │   └── base.html
-│   │   ├── macros
-│   │   │   ├── form_macros.html
-│   │   │   └── nav_macros.html
-│   │   ├── main
-│   │   │   └── index.html
-│   │   └── partials
-│   │       ├── _flashes.html
-│   │       └── _head.html
-│   └── utils.py
-├── config.py
-├── manage.py
-├── requirements
-│   ├── common.txt
-│   └── dev.txt
-└── tests
-    ├── test_basics.py
-    └── test_user_model.py
+??? Procfile
+??? README.md
+??? app
+?   ??? __init__.py
+?   ??? account
+?   ?   ??? __init__.py
+?   ?   ??? forms.py
+?   ?   ??? views.py
+?   ??? admin
+?   ?   ??? __init__.py
+?   ?   ??? forms.py
+?   ?   ??? views.py
+?   ??? assets
+?   ?   ??? scripts
+?   ?   ?   ??? app.js
+?   ?   ?   ??? vendor
+?   ?   ?       ??? jquery.min.js
+?   ?   ?       ??? semantic.min.js
+?   ?   ?       ??? tablesort.min.js
+?   ?   ??? styles
+?   ?       ??? app.scss
+?   ?       ??? vendor
+?   ?           ??? semantic.min.css
+?   ??? assets.py
+?   ??? decorators.py
+?   ??? email.py
+?   ??? main
+?   ?   ??? __init__.py
+?   ?   ??? errors.py
+?   ?   ??? forms.py
+?   ?   ??? views.py
+?   ??? models.py
+?   ??? static
+?   ?   ??? fonts
+?   ?   ?   ??? vendor
+?   ?   ??? images
+?   ?   ??? styles
+?   ?       ??? app.css
+?   ??? templates
+?   ?   ??? account
+?   ?   ?   ??? email
+?   ?   ?   ??? login.html
+?   ?   ?   ??? manage.html
+?   ?   ?   ??? register.html
+?   ?   ?   ??? reset_password.html
+?   ?   ?   ??? unconfirmed.html
+?   ?   ??? admin
+?   ?   ?   ??? index.html
+?   ?   ?   ??? manage_user.html
+?   ?   ?   ??? new_user.html
+?   ?   ?   ??? registered_users.html
+?   ?   ??? errors
+?   ?   ??? layouts
+?   ?   ?   ??? base.html
+?   ?   ??? macros
+?   ?   ?   ??? form_macros.html
+?   ?   ?   ??? nav_macros.html
+?   ?   ??? main
+?   ?   ?   ??? index.html
+?   ?   ??? partials
+?   ?       ??? _flashes.html
+?   ?       ??? _head.html
+?   ??? utils.py
+??? config.py
+??? manage.py
+??? requirements
+?   ??? common.txt
+?   ??? dev.txt
+??? tests
+    ??? test_basics.py
+    ??? test_user_model.py
 ```
 
 ## License
