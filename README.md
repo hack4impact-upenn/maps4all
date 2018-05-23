@@ -23,7 +23,7 @@ A generalized Flask application for displaying location-based resources on a map
 
 ## Setting up
 
-If you have not yet done so, visit maps4all.org and create an account.  This will guide you through the creation of your Heroku account and the installation of the Heroku tools.  In my OS (Winows 10), I can then run "bash" to open the window in which to run the instructions below. 
+If you have not yet done so, visit maps4all.org and create an account. This will guide you through the creation of your Heroku account and the installation of the Heroku tools. To develop locally on Windows 10, we (@sbue and myself, independently) used Windows Subsystem for Linux and additionally installed Heroku CLI in Ubuntu terminal and deployed with the client. 
 
 ##### Clone the repo
 
@@ -33,12 +33,6 @@ $ cd maps4all
 ```
 
 ##### Initialize a virtualenv
-
-virtualenv does not properly handle spaces in filenames, but it will dereference hardlinks.  This created a problem for me in that it failed silently and did not create the venv folder.  I got around this problem by using the full path (that has no spaces in it) to python3 at %USERPROFILE%\AppData\Local\Programs\Python\Python36-32\python.exe.  However, I still ran into:
- ERROR: The executable C:\Users\dscot\github\maps4all\venv\Scripts\python.exe is not functioning
- ERROR: It thinks sys.prefix is 'c:\\users\\dscot\\github\\maps4all' (should be 'c:\\users\\dscot\\github\\maps4all\\venv')
- ERROR: virtualenv is not compatible with this system or executable
- Note: some Windows users have reported this error when they installed Python for "Only this user" or have multiple versions of Python installed. Copying the appropriate PythonXX.dll to the virtualenv Scripts/ directory may fix this problem.
  
 ```
 $ pip install virtualenv
