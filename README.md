@@ -23,6 +23,8 @@ A generalized Flask application for displaying location-based resources on a map
 
 ## Setting up
 
+If you have not yet done so, visit maps4all.org and create an account. This will guide you through the creation of your Heroku account and the installation of the Heroku tools. To develop locally on Windows 10, we (@sbue and myself, independently) used Windows Subsystem for Linux and additionally installed Heroku CLI in Ubuntu terminal and deployed with the client.
+
 ##### Clone the repo
 
 ```
