@@ -7,6 +7,7 @@
     ('admin.change_site_logo', 'Change logo'),
     ('admin.change_site_style', 'Change style'),
     ('admin.change_twilio_credentials', 'Change Twilio credentials'),
+    ('admin.add_javascript', 'Add Javascript'),
 ] %}
 
 {% macro navigation(items) %}
@@ -46,6 +47,11 @@
                     </button>
                 {% elif request.endpoint == 'admin.change_site_style' %}
                     <button onclick="openPickerStyle()" class="ui labeled icon button">
+                        <i class="upload icon"></i>
+                        Upload
+                    </button>
+                {% elif request.endpoint == 'admin.add_javascript' %}
+                    <button onclick="openPickerScript()" class="ui labeled icon button">
                         <i class="upload icon"></i>
                         Upload
                     </button>
@@ -117,6 +123,22 @@
                     alert("An error occurred. Please share this with the developer: " + JSON.stringify(response));
                 } else {
                     post("{{ url_for('admin.change_site_style') }}", {'url': response.filesUploaded[0].url});
+                }
+            });
+        }
+        
+        function openPickerScript() {
+            fsClient.pick({
+            fromSources:["local_file_system","googledrive","dropbox"],
+            maxFiles:1,
+            minFiles:1,
+            accept:[".js"],
+            startUploadingWhenMaxFilesReached: true,
+            }).then(function(response) {
+                if (response.filesFailed.length != 0) {
+                    alert("An error occurred. Please share this with the developer: " + JSON.stringify(response));
+                } else {
+                    post("{{ url_for('admin.add_javascript') }}", {'url': response.filesUploaded[0].url});
                 }
             });
         }
