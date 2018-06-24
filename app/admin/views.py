@@ -346,6 +346,28 @@ def change_site_style():
                            app_name=SiteAttribute.get_value("ORG_NAME"))
 
 
+@admin.route('/customize-site/script', methods=['GET', 'POST'])
+@login_required
+@admin_required
+def add_javascript():
+    """Add to a site's javascript."""
+    if request.method == 'POST':
+        script_attr = SiteAttribute.get("EXTRA_SCRIPT")
+
+        url = request.form['url']
+        script_attr.value = url
+
+        db.session.add(script_attr)
+        db.session.commit()
+
+        flash('Custom javascript successfully uploaded or replaced.')
+
+        return redirect(url_for('admin.customize_site'))
+
+    return render_template('admin/customize_site.html',
+                           app_name=SiteAttribute.get_value("ORG_NAME"))
+
+
 @admin.route('/customize-site/twilio', methods=['GET', 'POST'])
 @login_required
 def change_twilio_credentials():
