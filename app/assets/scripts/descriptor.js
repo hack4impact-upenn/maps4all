@@ -27,7 +27,7 @@ $(document).ready(function () {
 
     // This is for the new descriptor page
     $("#desc_type").change(function() {
-        if ($(this).val() === "Option") {
+        if ($(this).val() === "option") {
             $("#values-div").show();
         } else {
             $("#values-div").hide();
