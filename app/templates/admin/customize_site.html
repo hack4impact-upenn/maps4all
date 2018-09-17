@@ -2,137 +2,259 @@
 {% import 'macros/form_macros.html' as f %}
 
 {% set endpoints = [
-    ('admin.customize_site', 'Site information'),
-    ('admin.change_site_name', 'Change name'),
-    ('admin.change_site_logo', 'Change logo'),
-    ('admin.change_site_style', 'Change style'),
-    ('admin.change_twilio_credentials', 'Change Twilio credentials'),
-    ('admin.change_site_color', 'Change site color')
+  ('admin.customize_site', 'Site information'),
+  ('admin.change_site_name', 'Change name'),
+  ('admin.change_site_logo', 'Change logo'),
+  ('admin.change_site_style', 'Change style'),
+  ('admin.change_welcome_message', 'Customize welcome message'),
+  ('admin.change_twilio_credentials', 'Update Twilio credentials'),
+  ('admin.change_site_color', 'Change site color'),
 ] %}
 
 {% macro navigation(items) %}
-    <div class="ui vertical fluid secondary menu">
-        {% for route, name in items %}
-            {% set href = url_for(route) %}
-            <a class="item {% if request.endpoint == route %}active{% endif %}" href="{{ href }}">
-                {{ name }}
-            </a>
-        {% endfor %}
-    </div>
+  <div class="ui vertical fluid secondary menu">
+    {% for route, name in items %}
+      {% set href = url_for(route) %}
+      <a class="item {% if request.endpoint == route %}active{% endif %}" href="{{ href }}">
+        {{ name }}
+      </a>
+    {% endfor %}
+  </div>
 {% endmacro %}
 
-{% block content %}
-    <div class="ui stackable centered grid container">
-        <div class="twelve wide column">
-            <a class="ui basic compact button" href="{{ url_for('admin.index') }}">
-                <i class="caret left icon"></i>
-                Back to dashboard
-            </a>
-            <h2 class="ui header">
-                {{ app_name }}
-                <div class="sub header">View and manage this site.</div>
-            </h2>
+{% macro welcome_form(form) %}
+  {% set flashes = {
+      'error':   get_flashed_messages(category_filter=['form-error']),
+      'warning': get_flashed_messages(category_filter=['form-check-email']),
+      'info':    get_flashed_messages(category_filter=['form-info']),
+      'success': get_flashed_messages(category_filter=['form-success'])
+  } %}
+  {{ f.begin_form(form, flashes) }}
+    <div class="inline fields">
+      <label for="include-welcome">Include a welcome message?</label>
+      <div class="field">
+        <div class="ui radio checkbox" id="yes-welcome-checkbox">
+          <input type="radio" id="yes-welcome-input" name="include-welcome" value="Yes">
+          <label for="yes-welcome-input">Yes</label>
         </div>
-        <div class="divided very relaxed row">
-            <div class="four wide column">
-                {{ navigation(endpoints) }}
-            </div>
-            <div class="eight wide column">
-                {% if form %}
-                    {{ f.render_form(form) }}
-                {% elif request.endpoint == 'admin.change_site_logo' %}
-                    <button onclick="openPickerLogo()" class="ui labeled icon button">
-                        <i class="upload icon"></i>
-                        Upload
-                    </button>
-                {% elif request.endpoint == 'admin.change_site_style' %}
-                    <button onclick="openPickerStyle()" class="ui labeled icon button">
-                        <i class="upload icon"></i>
-                        Upload
-                    </button>
-                {% elif request.endpoint == 'admin.change_site_color' %}
-                    <input type="color" class="color-picker" id="html5colorpicker" value="{{ site_color }}">
-                    <button onclick="changeSiteColor()" class="ui labeled icon button">
-                        <i class="check icon"></i>
-                        Change Color
-                    </button>
-                {% else %}
-                    <table class="ui compact definition table">
-                        <tr><td>Name</td><td>{{ app_name }}</td></tr>
-                        <tr><td>Logo</td><td>
-                            <img width="70px" src="{{ logo_url }}">
-                        </td></tr>
-                    </table>
-                {% endif %}
-            </div>
+      </div>
+      <div class="field">
+        <div class="ui radio checkbox" id="no-welcome-checkbox">
+          <input type="radio" id="no-welcome-input" name="include-welcome" value="No">
+          <label for="no-welcome-input">No</label>
         </div>
+      </div>
+    </div>
+    <div style="display:none;">
+      {{ f.render_form_field(form.has_welcome_modal) }}
+    </div>
+    <div id="welcome-content" style="display:none;">
+      {{ f.render_form_field(form.header) }}
+      {{ f.render_form_field(form.content) }}
+      {{ f.render_form_field(form.action) }}
+      {{ f.render_form_field(form.footer) }}
+      {{ f.render_form_field(form.website_text) }}
+      {{ f.render_form_field(form.website_url, icon='linkify icon') }}
+      {{ f.render_form_field(form.email, icon='mail icon') }}
+      {{ f.render_form_field(form.facebook_url, icon='facebook icon') }}
+      {{ f.render_form_field(form.twitter_url, icon='twitter icon') }}
+      {{ f.render_form_field(form.instagram_url, icon='instagram icon') }}
+      {{ f.render_form_field(form.youtube_url, icon='youtube icon') }}
+    </div>
+    <br />
+    <div class="field">
+      <input class="ui blue button" id="submit" name="submit" type="submit" value="Save" />
+      <div class="ui button" id="preview-button" style="display:none;">Preview</div>
     </div>
 
     <script type="text/javascript">
-        // Found at https://stackoverflow.com/a/5533477/3624201
-        function post(path, parameters) {
-            var form = $('<form></form>');
-
-            form.attr("method", "post");
-            form.attr("action", path);
-
-            parameters["csrf_token"] = "{{ csrf_token() }}";
-
-            $.each(parameters, function(key, value) {
-                var field = $('<input></input>');
-
-                field.attr("type", "hidden");
-                field.attr("name", key);
-                field.attr("value", value);
-
-                form.append(field);
-            });
-
-            // The form needs to be a part of the document in
-            // order for us to be able to submit it.
-            $(document.body).append(form);
-            form.submit();
+      // Use radio buttons to populate hidden field
+      $('#yes-welcome-checkbox').checkbox({
+        onChecked: function() {
+          $('#has_welcome_modal').attr('value', 'Yes')
+          $('#welcome-content').css('display', 'block')
+          $('#preview-button').css('display', 'inline-block')
         }
-
-        var fsClient = filestack.init("{{ config.FILEPICKER_API_KEY }}");
-        function openPickerLogo() {
-            fsClient.pick({
-            fromSources:["local_file_system","url","googledrive","dropbox"],
-            maxFiles:1,
-            minFiles:1,
-            imageMax: [500, 500],
-            startUploadingWhenMaxFilesReached: true,
-            accept:["image/*"]
-            }).then(function(response) {
-                if (response.filesFailed.length != 0) {
-                    alert("An error occurred. Please share this with the developer: " + JSON.stringify(response));
-                } else {
-                    post("{{ url_for('admin.change_site_logo') }}", {"file_url": response.filesUploaded[0].url});
-                }
-            });
+      })
+      $('#no-welcome-checkbox').checkbox({
+        onChecked: function() {
+          $('#has_welcome_modal').attr('value', 'No')
+          $('#welcome-content').css('display', 'none')
+          $('#preview-button').css('display', 'none')
         }
-
-        function openPickerStyle() {
-            fsClient.pick({
-            fromSources:["local_file_system","googledrive","dropbox"],
-            maxFiles:1,
-            minFiles:1,
-            accept:[".css"],
-            startUploadingWhenMaxFilesReached: true,
-            }).then(function(response) {
-                if (response.filesFailed.length != 0) {
-                    alert("An error occurred. Please share this with the developer: " + JSON.stringify(response));
-                } else {
-                    post("{{ url_for('admin.change_site_style') }}", {'url': response.filesUploaded[0].url});
-                }
-            });
+      })
+      // includeModal is either 'Yes' or 'No'
+      var includeModal = $('#has_welcome_modal').attr('value').toLowerCase()
+      // Initialize checked radio button to hidden field value
+      $('#' + includeModal + '-welcome-checkbox').checkbox('check')
+      // Preview modal
+      $('#preview-button').click(function() {
+        // Populate modal header, content, and footer
+        ['header', 'content', 'footer'].forEach(function(element) {
+          console.log($('#' + element).val())
+          $('#modal-' + element).html($('#' + element).val())
+        })
+        // Show action button if text
+        $('#modal-action-button').css('display', 'none')
+        var actionText = $('#action').val()
+        if (actionText != '') {
+            $('#modal-action-button').html(actionText).css('display', 'inline-block')
         }
-
-        function changeSiteColor() {
-            var x = document.getElementById("html5colorpicker");
-            post("{{ url_for('admin.change_site_color') }}", {"site_color": x.value})
+        var socialMediaHtml = ''
+        // Show website button if link or text
+        var websiteText = $('#website_text').val()
+        var websiteUrl = $('#website_url').val()
+        if (websiteText != '' && websiteUrl != '') {
+          socialMediaHtml += '<a class="ui tiny button" target="_blank" href="' + websiteUrl + '">' + websiteText + '</a>'
         }
-
+        // Add social media buttons
+        var socialMedia = [
+          { 'icon': 'mail',       'link' : $('#email').val() },
+          { 'icon': 'facebook',   'link' : $('#facebook_url').val() },
+          { 'icon': 'twitter',    'link' : $('#twitter_url').val() },
+          { 'icon': 'instagram',  'link' : $('#instagram_url').val() },
+          { 'icon': 'youtube',    'link' : $('#youtube_url').val() }
+        ]
+        socialMedia.forEach(function(element) {
+          if (element['link'] != '') {
+            if (element['icon'] == 'mail') {
+              socialMediaHtml += '<a class="ui icon green circular button" target="_blank" href="mailto:'+ element['link'] +'">'
+            } else {
+              if (element['link'].indexOf('https://') != 0 && element['link'].indexOf('http://') != 0) {
+                element['link'] = 'https://' + element['link']
+              }
+              socialMediaHtml += '<a class="ui icon circular ' + element['icon'] + ' button" target="_blank" href="' + element['link'] + '">'
+            }
+            socialMediaHtml += '<i class="' + element['icon'] + ' icon"></i></a>'
+          }
+        })
+        $('#modal-social-media').html(socialMediaHtml)
+        // Show modal
+        $('#welcome-modal').modal('show')
+        $('#modal-action-button').click(function() {
+          $('#welcome-modal').modal('hide')
+        })
+      })
     </script>
+  {{ f.end_form(form) }}
+{% endmacro %}
+
+{% block content %}
+<!-- Modal preview for customize welcome message -->
+<div class="ui basic small modal" id="welcome-modal">
+  <div class="content">
+    <h1 class="ui teal header" id="modal-header"></h1>
+    <p style="font-size: 1.3em" id="modal-content"></p>
+    <p><button class="ui teal button" id="modal-action-button"></button></p>
+    <p id="modal-footer"></p>
+    <div id="modal-social-media"></div>
+  </div>
+</div>
+
+<div class="ui stackable centered grid container">
+  <div class="twelve wide column">
+    <a class="ui basic compact button" href="{{ url_for('admin.index') }}">
+      <i class="caret left icon"></i>
+      Back to dashboard
+    </a>
+    <h2 class="ui header">
+      {{ app_name }}
+      <div class="sub header">View and manage this site.</div>
+    </h2>
+  </div>
+  <div class="divided very relaxed row">
+    <div class="four wide column">
+      {{ navigation(endpoints) }}
+    </div>
+    <div class="eight wide column">
+      {% if request.endpoint == 'admin.change_welcome_message' %}
+        {{ welcome_form(form) }}
+      {% elif form %}
+        {{ f.render_form(form) }}
+      {% elif request.endpoint == 'admin.change_site_logo' %}
+        <button onclick="openPickerLogo()" class="ui labeled icon button">
+          <i class="upload icon"></i>
+          Upload
+        </button>
+      {% elif request.endpoint == 'admin.change_site_style' %}
+        <button onclick="openPickerStyle()" class="ui labeled icon button">
+          <i class="upload icon"></i>
+          Upload
+        </button>
+      {% elif request.endpoint == 'admin.change_site_color' %}
+        <input type="color" class="color-picker" id="html5colorpicker" value="{{ site_color }}">
+        <button onclick="changeSiteColor()" class="ui labeled icon button">
+            <i class="check icon"></i>
+            Change Color
+        </button>
+      {% else %}
+        <table class="ui compact definition table">
+          <tr><td>Name</td><td>{{ app_name }}</td></tr>
+          <tr><td>Logo</td><td>
+            <img width="70px" src="{{ logo_url }}">
+          </td></tr>
+        </table>
+      {% endif %}
+    </div>
+  </div>
+</div>
+
+<script type="text/javascript">
+    // Found at https://stackoverflow.com/a/5533477/3624201
+    function post(path, parameters) {
+        var form = $('<form></form>');
+        form.attr("method", "post");
+        form.attr("action", path);
+        parameters["csrf_token"] = "{{ csrf_token() }}";
+        $.each(parameters, function(key, value) {
+            var field = $('<input></input>');
+            field.attr("type", "hidden");
+            field.attr("name", key);
+            field.attr("value", value);
+            form.append(field);
+        });
+        // The form needs to be a part of the document in
+        // order for us to be able to submit it.
+        $(document.body).append(form);
+        form.submit();
+    }
+    var fsClient = filestack.init("{{ config.FILEPICKER_API_KEY }}");
+    function openPickerLogo() {
+        fsClient.pick({
+        fromSources:["local_file_system","url","googledrive","dropbox"],
+        maxFiles:1,
+        minFiles:1,
+        imageMax: [500, 500],
+        startUploadingWhenMaxFilesReached: true,
+        accept:["image/*"]
+        }).then(function(response) {
+            if (response.filesFailed.length != 0) {
+                alert("An error occurred. Please share this with the developer: " + JSON.stringify(response));
+            } else {
+                post("{{ url_for('admin.change_site_logo') }}", {"file_url": response.filesUploaded[0].url});
+            }
+        });
+    }
+    function openPickerStyle() {
+        fsClient.pick({
+        fromSources:["local_file_system","googledrive","dropbox"],
+        maxFiles:1,
+        minFiles:1,
+        accept:[".css"],
+        startUploadingWhenMaxFilesReached: true,
+        }).then(function(response) {
+            if (response.filesFailed.length != 0) {
+                alert("An error occurred. Please share this with the developer: " + JSON.stringify(response));
+            } else {
+                post("{{ url_for('admin.change_site_style') }}", {'url': response.filesUploaded[0].url});
+            }
+        });
+    }
+
+    function changeSiteColor() {
+        var x = document.getElementById("html5colorpicker");
+        post("{{ url_for('admin.change_site_color') }}", {"site_color": x.value})
+    }
+</script>
 
 {% endblock %}

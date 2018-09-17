@@ -68,7 +68,59 @@
   </div>
 </div>
 
+<!-- First time user welcome modal -->
+<div class="ui basic small modal" id="welcome-modal">
+  <i class="close icon"></i>
+  <div class="content">
+    {% if modal['WELCOME_HEADER'] %}
+      <h1 class="ui teal header">{{ modal['WELCOME_HEADER'] }}</h1>
+    {% endif %}
+    {% if modal['WELCOME_CONTENT'] %}
+      <p style="font-size: 1.3em">
+        {{ modal['WELCOME_CONTENT'] }}
+      </p>
+    {% endif %}
+    {% if modal['WELCOME_ACTION'] != '' %}
+      <p><button class="ui teal button" id="welcome-modal-button">{{ modal['WELCOME_ACTION'] }}</button></p>
+    {% endif %}
+    <p>
+      Follow Hack4Impact on social media to learn more!
+    </p>
+    {% if modal['WELCOME_WEBSITE_URL'] %}
+    <a href="{{ modal['WELCOME_WEBSITE_URL'] }}" target="_blank" class="ui tiny button">
+      Hack4Impact Website
+    </a>
+    {% endif %}
+    {% if modal['WELCOME_EMAIL'] %}
+    <a href="{{ modal['WELCOME_EMAIL'] }}" target="_blank" class="ui icon circular green button">
+      <i class="mail icon"></i>
+    </a>
+    {% endif %}
+    {% if modal['WELCOME_FACEBOOK_URL'] %}
+    <a href="{{ modal['WELCOME_FACEBOOK_URL'] }}" target="_blank" class="ui facebook icon circular button">
+      <i class="facebook icon"></i>
+    </a>
+    {% endif %}
+    {% if modal['WELCOME_TWITTER_URL'] %}
+    <a href="{{ modal['WELCOME_TWITTER_URL'] }}" target="_blank" class="ui twitter icon circular button">
+      <i class="twitter icon"></i>
+    </a>
+    {% endif %}
+    {% if modal['WELCOME_INSTAGRAM_URL'] %}
+    <a href="{{ modal['WELCOME_INSTAGRAM_URL'] }}" target="_blank" class="ui instagram icon circular button">
+      <i class="instagram icon"></i>
+    </a>
+    {% endif %}
+    {% if modal['WELCOME_YOUTUBE_URL'] %}
+    <a href="{{ modal['WELCOME_YOUTUBE_URL'] }}" target="_blank" class="ui youtube icon circular button">
+      <i class="youtube icon"></i>
+    </a>
+    {% endif %}
+  </div>
+</div>
+
 <!-- HANDLEBARS.JS TEMPLATES COMPILED IN MAP.JS -->
+
 <!-- Populate location search marker info-->
 <script id="searched-location-info-window-template" type="text/x-handlebars-template">
   <div class="loc-marker-info">
@@ -233,7 +285,15 @@
 </script>
 
 <script>
-  $(document).ready(function(){
+  $(document).ready(function() {
+    if ('{{ show_modal }}' != 'False') {
+      $('#welcome-modal').modal('show')
+      $('#welcome-modal-button').click(function() {
+        $('#welcome-modal').modal('hide')
+      })
+    }
+
+
     // Defined in map.js
     initMap();
     makeResponsive();
