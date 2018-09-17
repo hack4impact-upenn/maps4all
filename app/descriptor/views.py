@@ -1,8 +1,8 @@
 from flask import abort, flash, render_template, redirect, url_for, request
-from flask.ext.login import login_required
+from flask_login import login_required
 from sqlalchemy.exc import IntegrityError
 from wtforms.fields import SelectField
-from flask_wtf.file import InputRequired
+from flask_wtf.file import FileRequired
 
 from .forms import (
     AddDescriptorOptionValueForm,

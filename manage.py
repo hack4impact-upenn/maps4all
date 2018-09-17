@@ -15,8 +15,8 @@ from app.models import (
 from redis import Redis
 from rq import Worker, Queue, Connection
 from config import Config
-from flask.ext.script import Manager, Shell
-from flask.ext.migrate import Migrate, MigrateCommand
+from flask_script import Manager, Shell
+from flask_migrate import Migrate, MigrateCommand
 
 # Import settings from .env file. Must define FLASK_CONFIG
 if os.path.exists('.env'):

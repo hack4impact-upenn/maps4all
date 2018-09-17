@@ -1,7 +1,7 @@
 import os
 from flask import render_template, redirect, url_for, abort, flash
-from flask.ext.login import login_required
-from flask.ext.rq import get_queue
+from flask_login import login_required
+from flask_rq import get_queue
 
 from wtforms.fields import SelectField
 

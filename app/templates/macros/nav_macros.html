@@ -11,7 +11,7 @@
 
 {% macro header_items(current_user, site_name) %}
     <a class="header item" href="{{ url_for('main.index') }}">{{ site_name }}</a>
-    {% if current_user.is_authenticated() %}
+    {% if current_user.is_authenticated %}
         {% set href = url_for('admin.index') %}
         <a class="item" href="{{ href }}">{{ current_user.role.name }} Dashboard</a>
     {% else %}
@@ -57,7 +57,7 @@
                 {% endfor %}
             </div>
     </div>
-    {% if current_user.is_authenticated() %}
+    {% if current_user.is_authenticated %}
         <div class="ui simple dropdown item" id="nav-resources-dropdown">
             Manage Resources
             <i class="dropdown icon"></i>
@@ -102,7 +102,7 @@
         <a href="{{ url_for('account.login') }}" class="item">Log in</a>
     {% endif %}
 
-    {% if current_user.is_authenticated() %}
+    {% if current_user.is_authenticated %}
       <script>
         // Generates the icon for unread suggested resources
         $.get('/suggestion/unread', function (data) {
@@ -132,7 +132,7 @@
             {% endfor %}
         </div>
     {% endif %}
-    {% if current_user.is_authenticated() %}
+    {% if current_user.is_authenticated %}
         <div class="item"> Manage</div>
         <div class="menu">
             <div class="ui test container">
@@ -182,7 +182,7 @@
         <a href="{{ url_for('account.login') }}" class="item">Log in</a>
     {% endif %}
 
-    {% if current_user.is_authenticated() %}
+    {% if current_user.is_authenticated %}
       <script>
         // Generates the icon for unread suggested resources
         $.get('/suggestion/unread', function (data) {

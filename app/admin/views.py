@@ -9,8 +9,8 @@ from flask import (
     current_app,
     request
 )
-from flask.ext.login import current_user, login_required
-from flask.ext.rq import get_queue
+from flask_login import current_user, login_required
+from flask_rq import get_queue
 from werkzeug.utils import secure_filename
 from sqlalchemy.exc import IntegrityError
 

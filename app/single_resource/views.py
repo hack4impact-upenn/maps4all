@@ -1,8 +1,8 @@
 from flask import abort, flash, redirect, render_template, url_for, request, make_response
-from flask.ext.login import login_required
+from flask_login import login_required
 from sqlalchemy.exc import IntegrityError
 from wtforms.fields import SelectMultipleField, SelectField, TextAreaField, StringField
-from flask_wtf.file import InputRequired
+from flask_wtf.file import FileRequired
 from werkzeug.datastructures import Headers
 from werkzeug.wrappers import Response
 

@@ -1,6 +1,6 @@
-from flask.ext.wtf import Form
+from flask_wtf import Form
 from flask_wtf.file import (
-    InputRequired
+    FileRequired
 )
 from wtforms.fields import (
     FieldList,
@@ -12,6 +12,8 @@ from wtforms.fields import (
     SelectField,
     SelectMultipleField
 )
+
+from wtforms.validators import InputRequired
 
 
 class NavigationForm(Form):

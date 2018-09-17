@@ -1,9 +1,8 @@
 import json
 import os
-from twilio.rest.lookups import TwilioLookupsClient
-from twilio.rest import TwilioRestClient
+from twilio.rest import Client
 from flask import render_template, url_for, request, jsonify, make_response
-from flask.ext.login import login_required
+from flask_login import login_required
 from twilio import twiml
 from app import csrf
 from .. import db
@@ -219,8 +218,8 @@ def update_editor_contents():
 def send_sms():
     sid = os.environ.get('TWILIO_ACCOUNT_SID')
     auth = os.environ.get('TWILIO_AUTH_TOKEN')
-    client = TwilioLookupsClient(account=sid, token=auth)
-    send_client = TwilioRestClient(account=sid, token=auth)
+    client = Client(account=sid, token=auth)
+    send_client = Client(account=sid, token=auth)
     if request is not None:
         phone_num = request.json['number']
         resourceID = request.json['id']
