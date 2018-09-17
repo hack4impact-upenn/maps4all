@@ -312,9 +312,7 @@ def change_site_color():
 
     form = ChangeSiteColorForm()
     if form.validate_on_submit():
-        print("IN CHANGE SITE COLOR WITH DATA: " + form.site_color.data)
         site_color.value = form.site_color.data
-        print("IN CHANGE SITE COLOR WITH VALUE: " + site_color.value)
         db.session.add(site_color)
         db.session.commit()
         flash('Site color successfully changed',
