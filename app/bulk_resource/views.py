@@ -5,10 +5,10 @@ import time
 import os
 
 from flask import abort, jsonify, redirect, render_template, request, url_for, flash, make_response
-from flask.ext.login import current_user, login_required
+from flask_login import current_user, login_required
 
 from flask_wtf.file import (
-    InputRequired
+    FileRequired
 )
 from wtforms.fields import (
     FieldList,
@@ -16,7 +16,7 @@ from wtforms.fields import (
     FormField,
     SelectMultipleField
 )
-from flask.ext.wtf import Form
+from flask_wtf import Form
 
 from app import csrf
 from . import bulk_resource

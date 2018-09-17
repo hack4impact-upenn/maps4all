@@ -3,8 +3,8 @@ import os
 
 from datetime import datetime
 from flask import abort, flash, redirect, render_template, url_for
-from flask.ext.login import login_required
-from flask.ext.rq import get_queue
+from flask_login import login_required
+from flask_rq import get_queue
 from sqlalchemy.exc import IntegrityError
 
 from . import suggestion
