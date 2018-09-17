@@ -22,7 +22,8 @@ def register_template_utils(app):
         return dict(site_name=SiteAttribute.get_value("ORG_NAME"),
                     logo_url=SiteAttribute.get_value("SITE_LOGO"),
                     style_timestamp=SiteAttribute.get_value("STYLE_TIME"),
-                    style_sheet=SiteAttribute.get_value("STYLE_SHEET"))
+                    style_sheet=SiteAttribute.get_value("STYLE_SHEET"),
+                    site_color=SiteAttribute.get_value("SITE_COLOR"))
 
     app.add_template_global(index_for_role)
 

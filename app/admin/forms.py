@@ -1,5 +1,5 @@
 from flask.ext.wtf import Form
-from wtforms.fields import PasswordField, StringField, SubmitField, SelectField, TextField, TextAreaField
+from wtforms.fields import PasswordField, StringField, SubmitField, SelectField, TextField, TextAreaField, HiddenField
 from wtforms.fields.html5 import EmailField
 from wtforms.ext.sqlalchemy.fields import QuerySelectField
 from wtforms.validators import InputRequired, Length, Email, EqualTo, Regexp, Optional
@@ -79,6 +79,11 @@ class ChangeSiteNameForm(Form):
                                                 Length(1, 30)])
 
     submit = SubmitField('Change name')
+
+
+class ChangeSiteColorForm(Form):
+    site_color = HiddenField('site_color', validators=[])
+    submit = SubmitField('Change site color')
 
 
 class ChangeTwilioCredentialsForm(Form):

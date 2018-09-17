@@ -27,7 +27,8 @@ from .forms import (
     EditPageForm,
     ChangeSiteNameForm,
     ChangeTwilioCredentialsForm,
-    WelcomeModalForm
+    WelcomeModalForm,
+    ChangeSiteColorForm
 )
 from ..email import send_email
 from ..utils import s3_upload
@@ -301,6 +302,24 @@ def change_site_name():
               'form-success')
     return render_template('admin/customize_site.html',
                            app_name=site_name.value, form=form)
+
+
+@admin.route('/customize-site/color', methods=['GET', 'POST'])
+@login_required
+@admin_required
+def change_site_color():
+    """Change a site's color."""
+    site_color = SiteAttribute.get("SITE_COLOR")
+
+    form = ChangeSiteColorForm()
+    if form.validate_on_submit():
+        site_color.value = form.site_color.data
+        db.session.add(site_color)
+        db.session.commit()
+        flash('Site color successfully changed',
+              'form-success')
+    return render_template('admin/customize_site.html',
+                           app_name=SiteAttribute.get_value("ORG_NAME"))
 
 
 @admin.route('/customize-site/logo', methods=['GET', 'POST'])
