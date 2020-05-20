@@ -26,7 +26,7 @@ geocoder==1.12.0
 googlemaps==2.5.1
 gunicorn==19.3.0
 honcho==0.7.1
-httplib2==0.10.3
+httplib2==0.18.0
 idna==2.6
 itsdangerous==0.24
 Jinja2==2.7.3
