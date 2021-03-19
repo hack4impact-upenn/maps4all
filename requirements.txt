@@ -29,7 +29,7 @@ honcho==0.7.1
 httplib2==0.10.3
 idna==2.6
 itsdangerous==0.24
-Jinja2==2.7.3
+Jinja2==2.11.3
 jmespath==0.9.3
 jsmin==2.1.6
 Mako==1.0.1
