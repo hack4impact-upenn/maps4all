@@ -32,7 +32,7 @@ itsdangerous==0.24
 Jinja2==2.7.3
 jmespath==0.9.3
 jsmin==2.1.6
-Mako==1.0.1
+Mako==1.2.2
 MarkupSafe==0.23
 mccabe==0.4.0
 pep8==1.7.0
